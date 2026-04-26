@@ -180,6 +180,17 @@ body::after{content:"";position:fixed;inset:0;background:radial-gradient(circle 
     <div class="stat"><div class="stat-label">YOUR MON</div><div class="stat-value" id="statMon">—</div><div class="stat-sub" id="statMonUsd">connect wallet</div></div>
   </div>
 
+  <div style="background:rgba(20,5,50,.6);border:1.5px solid rgba(252,211,77,.3);border-radius:14px;padding:22px;margin-bottom:24px;">
+    <div style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;letter-spacing:3px;color:#FCD34D;margin-bottom:18px;text-shadow:0 0 10px rgba(252,211,77,.5);display:flex;align-items:center;justify-content:space-between;">
+      <span>🐋 TOP HOLDERS LEADERBOARD</span>
+      <span id="holderCount" style="font-size:10px;color:rgba(252,211,77,.6);letter-spacing:1px;font-weight:700;">— TOTAL HOLDERS</span>
+    </div>
+    <div id="holdersList" style="display:flex;flex-direction:column;gap:6px;">
+      <div style="text-align:center;padding:30px;color:rgba(139,92,246,.5);font-size:11px;letter-spacing:2px;">LOADING HOLDERS...</div>
+    </div>
+    <div style="margin-top:12px;text-align:center;font-size:10px;color:rgba(167,139,250,.4);letter-spacing:1.5px;">DATA FROM NAD.FUN · UPDATES EVERY 30s</div>
+  </div>
+
   <div class="bottom">
     <div class="card">
       <div class="panel-title"><span class="live-dot"></span>RECENT ACTIVITY</div>
@@ -453,6 +464,91 @@ if(walletAddr&&window.ethereum){
 }
 // Test RPC
 rpcCall('eth_chainId',[]);
+
+// ── Holder Leaderboard ─────────────────────────────────
+var HOLDER_API='https://api.nadapp.net/trade/holder/0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
+var totalSupply=0;
+
+function fmtBag(amt){
+  if(amt>=1e9)return (amt/1e9).toFixed(2)+'B';
+  if(amt>=1e6)return (amt/1e6).toFixed(2)+'M';
+  if(amt>=1e3)return (amt/1e3).toFixed(1)+'K';
+  return Math.floor(amt).toLocaleString();
+}
+
+function tierFor(amt){
+  if(amt<10000)return {emoji:'🦐',name:'SHRIMP',color:'#F97316'};
+  if(amt<100000)return {emoji:'🦀',name:'CRAB',color:'#FCD34D'};
+  if(amt<1000000)return {emoji:'🐬',name:'DOLPHIN',color:'#60A5FA'};
+  if(amt<10000000)return {emoji:'🐋',name:'WHALE',color:'#A855F7'};
+  return {emoji:'👑',name:'ROYALTY',color:'#4ADE80'};
+}
+
+function shortAddr2(a){return a.slice(0,6)+'...'+a.slice(-4);}
+
+function fetchHolders(){
+  fetch(HOLDER_API+'?tableType=holder-table&page=1&limit=20')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      // Try common response shapes
+      var holders = data.holders || data.data || data.list || (Array.isArray(data)?data:null) || [];
+      if(data.items)holders=data.items;
+      if(data.result)holders=data.result;
+      if(!Array.isArray(holders)){console.log('holder shape:',data);return;}
+      
+      var list=document.getElementById('holdersList');
+      if(!holders.length){list.innerHTML='<div style="text-align:center;padding:30px;color:rgba(139,92,246,.5);font-size:11px;">NO HOLDERS YET</div>';return;}
+      
+      // Update count if we have it
+      if(data.total||data.totalCount||data.count){
+        document.getElementById('holderCount').textContent=(data.total||data.totalCount||data.count)+' TOTAL HOLDERS';
+      }else{
+        document.getElementById('holderCount').textContent=holders.length+' SHOWN';
+      }
+      
+      list.innerHTML='';
+      holders.forEach(function(h,i){
+        // Try to find balance and address fields - varies by API
+        var addr=h.address||h.holder||h.wallet||h.account||h.holderAddress||'';
+        var rawBal=h.balance||h.amount||h.holdings||h.tokenAmount||h.value||0;
+        // Convert from wei-like if huge number
+        var bal=parseFloat(rawBal);
+        if(bal>1e15)bal=bal/1e18;
+        var pct=h.percentage||h.percent||h.share||((totalSupply&&bal)?(bal/totalSupply*100):null);
+        if(typeof pct==='string')pct=parseFloat(pct);
+        
+        var tier=tierFor(bal);
+        var medal=['🥇','🥈','🥉'][i]||'#'+(i+1);
+        var isMe=connectedAddr&&addr&&connectedAddr.toLowerCase()===addr.toLowerCase();
+        var bg=isMe?'rgba(74,222,128,.12)':(i<3?'rgba(252,211,77,.06)':'rgba(139,92,246,.04)');
+        var borderColor=isMe?'rgba(74,222,128,.4)':'rgba(139,92,246,.15)';
+        
+        var explorerUrl='https://monadexplorer.com/address/'+addr;
+        list.innerHTML+='<a href="'+explorerUrl+'" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:12px;padding:10px 14px;background:'+bg+';border:1px solid '+borderColor+';border-radius:8px;transition:all .2s;color:inherit;">'+
+          '<div style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;color:'+(i<3?'#FCD34D':'rgba(167,139,250,.5)')+';width:40px;">'+medal+'</div>'+
+          '<div style="flex:1;min-width:0;">'+
+            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:'+(isMe?'#4ADE80':'#EDE9FF')+';">'+shortAddr2(addr)+(isMe?' · YOU 👑':'')+'</div>'+
+            '<div style="margin-top:3px;display:flex;gap:6px;align-items:center;">'+
+              '<span style="font-size:9px;padding:2px 6px;border-radius:10px;color:'+tier.color+';border:1px solid '+tier.color+'40;background:'+tier.color+'10;letter-spacing:1px;font-family:Orbitron,sans-serif;font-weight:700;">'+tier.emoji+' '+tier.name+'</span>'+
+            '</div>'+
+          '</div>'+
+          '<div style="text-align:right;">'+
+            '<div style="font-family:Orbitron,sans-serif;font-size:14px;color:#fff;font-weight:700;">'+fmtBag(bal)+'</div>'+
+            (pct?'<div style="font-size:9px;color:rgba(167,139,250,.5);letter-spacing:1px;margin-top:2px;">'+pct.toFixed(3)+'%</div>':'')+
+          '</div>'+
+        '</a>';
+      });
+    })
+    .catch(function(e){
+      console.log('holder fetch error',e);
+      var list=document.getElementById('holdersList');
+      list.innerHTML='<div style="text-align:center;padding:20px;color:#F87171;font-size:11px;letter-spacing:1.5px;">⚠ COULD NOT LOAD HOLDERS — CORS BLOCKED</div>';
+    });
+}
+
+fetchHolders();
+setInterval(fetchHolders,30000);
+
 </script>
 
 </body>
