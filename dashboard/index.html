@@ -97,6 +97,21 @@ body::after{content:"";position:fixed;inset:0;background:radial-gradient(circle 
 .holder-badge{display:inline-block;padding:3px 8px;background:linear-gradient(135deg,#FCD34D,#F59E0B);color:#000;font-family:Orbitron,sans-serif;font-size:9px;font-weight:900;letter-spacing:1.5px;border-radius:4px;margin-top:6px;}
 .holder-badge.whale{background:linear-gradient(135deg,#3B82F6,#1E40AF);color:#fff;}
 .holder-badge.diamond{background:linear-gradient(135deg,#A855F7,#6D28D9);color:#fff;}
+
+.holder-row{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid rgba(139,92,246,.1);font-size:12px;transition:background .2s;}
+.holder-row:hover{background:rgba(139,92,246,.05);}
+.holder-row:last-child{border:none;}
+.holder-row.you{background:linear-gradient(90deg,rgba(74,222,128,.15),transparent);border-left:3px solid #4ADE80;padding-left:9px;}
+.holder-rank{width:46px;font-family:Orbitron,sans-serif;color:rgba(139,92,246,.6);font-weight:700;}
+.holder-rank.gold{color:#FCD34D;}
+.holder-rank.silver{color:#C4C4C4;}
+.holder-rank.bronze{color:#CD7F32;}
+.holder-addr{flex:1;font-family:'JetBrains Mono',monospace;color:rgba(220,210,255,.85);font-size:11px;}
+.holder-addr a{color:inherit;text-decoration:none;}
+.holder-addr a:hover{color:#A855F7;}
+.holder-bal{font-family:Orbitron,sans-serif;color:#fff;font-weight:700;text-align:right;min-width:80px;}
+.holder-pct{font-family:Orbitron,sans-serif;color:#4ADE80;font-size:10px;text-align:right;min-width:50px;margin-left:8px;}
+.holder-tier{font-size:10px;margin-left:6px;}
 </style>
 </head>
 <body>
@@ -185,6 +200,16 @@ body::after{content:"";position:fixed;inset:0;background:radial-gradient(circle 
     </div>
   </div>
 
+  
+  <div class="card" style="margin-bottom:20px;">
+    <div class="panel-title"><span class="live-dot"></span>TOP HOLDERS · LIVE FROM NAD.FUN</div>
+    <div id="holderLb" style="margin-top:14px;">
+      <div style="text-align:center;padding:30px;color:rgba(139,92,246,.5);font-size:11px;letter-spacing:1px;">
+        <span class="loading">loading whales</span>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:14px;font-size:9px;color:rgba(139,92,246,.4);letter-spacing:1.5px;">UPDATES EVERY 60 SECONDS</div>
+  </div>
   <div class="footer">
     BUILT BY KING PETTY × MONSHI.XYZ <br><br>
     LIVE DATA: DEXSCREENER + MONAD RPC · UPDATES EVERY 30 SECONDS
