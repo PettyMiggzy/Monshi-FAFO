@@ -201,12 +201,7 @@ function fetchPrice(){
 // ── Buttons ──────────────────────────────────────────────
 document.getElementById('btnShare').addEventListener('click',function(){
   var devLine=killedByDev?' I got RUGGED BY THE DEV 🎩 lmao':'';
-  var tweet='I scored '+String(Math.floor(lastScore)).padStart(6,'0')+' on MONSHI RUNNER reaching LVL '+LEVELS[Math.min(lastLvl,5)].num+' ('+LEVELS[Math.min(lastLvl,5)].name+')'+devLine+' 🚀
-
-Can you beat me? 👇
-'+GAME_URL+'
-
-$MONSHI #Monad #MonshiRunner';
+  var tweet='I scored '+String(Math.floor(lastScore)).padStart(6,'0')+' on MONSHI RUNNER reaching LVL '+LEVELS[Math.min(lastLvl,5)].num+' ('+LEVELS[Math.min(lastLvl,5)].name+')'+devLine+' LFG! Can you beat me? '+GAME_URL+' $MONSHI #Monad #MonshiRunner';
   window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tweet),'_blank');
 });
 document.getElementById('btnBuy').addEventListener('click',function(){window.open(BUY_URL,'_blank');});
