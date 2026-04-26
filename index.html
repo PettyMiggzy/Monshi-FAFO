@@ -8,8 +8,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;background:#02000a;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;}
-#wrap{position:relative;width:800px;height:420px;}
-#c{display:block;width:100%;height:100%;}
+#wrap{width:100vw;height:100vh;}
+#wrap{position:relative;display:flex;align-items:center;justify-content:center;}
+#c{display:block;image-rendering:crisp-edges;}
 .ui{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;}
 .ui.show{display:flex;}
 #nameModal{position:fixed !important;top:0;left:0;width:100vw !important;height:100vh !important;background:rgba(0,0,10,.96);z-index:9999;}
@@ -63,6 +64,7 @@ html,body{width:100%;height:100%;background:#02000a;overflow:hidden;display:flex
   <canvas id="c" width="800" height="420"></canvas>
   <div id="priceTicker">$MONSHI — loading...</div>
   <div id="devWarn">⚠️ DEV SPOTTED — RUN FASTER ⚠️</div>
+  <div id="mobileJump" style="position:absolute;bottom:0;left:0;width:100%;height:40%;display:none;z-index:3;opacity:0;"></div>
   <div id="startLb"><h3>🏆 LEADERBOARD</h3><ul id="startLbList"><li><span>Loading...</span></li></ul></div>
   <div class="ui show" id="nameModal">
     <div id="nameBox">
@@ -94,7 +96,7 @@ html,body{width:100%;height:100%;background:#02000a;overflow:hidden;display:flex
 // ── Config ──────────────────────────────────────────────
 var SUPABASE_URL = 'https://cuqhqcmrgpdjlhyqztnc.supabase.co';
 var SUPABASE_KEY = 'sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
-var BUY_URL      = 'https://nad.fund';
+var BUY_URL      = 'https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
 var GAME_URL     = 'https://monshi-fafo.vercel.app';
 
 // ── Assets ──────────────────────────────────────────────
@@ -424,6 +426,13 @@ function action(){
 }
 document.addEventListener('keydown',function(e){if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();action();}});
 canvas.addEventListener('pointerdown',function(e){e.preventDefault();action();});
+// Mobile jump zone
+var isMobile=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+var mj=document.getElementById('mobileJump');
+if(isMobile&&mj){
+  mj.style.display='block';
+  mj.addEventListener('touchstart',function(e){e.preventDefault();action();},{passive:false});
+}
 
 // ── Level check ───────────────────────────────────────────
 function checkLevel(){var lv=L();if(score>=lv.scoreEnd&&lvl<LEVELS.length-1){lvl++;spd=LEVELS[lvl].baseSpd;obs=[];devBossSpawned=false;devBossActive=false;document.getElementById('devWarn').style.display='none';triggerTransition();}}
