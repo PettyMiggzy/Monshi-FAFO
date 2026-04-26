@@ -1,139 +1,81 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><title>$MONSHI SLOTS</title><style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>MONSHI SLOTS</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;background:#02000a;overflow:hidden;font-family:'Space Mono',monospace;color:#EDE9FF;display:flex;align-items:center;justify-content:center;}
+html,body{width:100%;height:100%;background:#02000a;overflow:hidden;font-family:'Space Mono',monospace;color:#EDE9FF;}
+body{display:flex;align-items:center;justify-content:center;}
+#wrap{position:relative;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
 #hubBtn{position:fixed;top:8px;left:8px;z-index:7;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);}
 .btn{padding:10px 14px;border:none;border-radius:8px;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;}
-.btn:hover{opacity:.85;}
 #btnRetry{background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;}
 #btnShare{background:linear-gradient(135deg,#1DA1F2,#0d7abf);color:#fff;}
-#btnBuy{background:linear-gradient(135deg,#22C55E,#15803D);color:#fff;animation:pls 2s infinite;}
-@keyframes pls{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}50%{box-shadow:0 0 0 8px rgba(34,197,94,0);}}
+#btnBuy{background:linear-gradient(135deg,#22C55E,#15803D);color:#fff;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}50%{box-shadow:0 0 0 8px rgba(34,197,94,0);}}
 .death{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,8,.92);z-index:8;}
 .death.show{display:flex;}
-.deathCard{background:rgba(90,30,180,.18);border:1.5px solid rgba(150,120,255,.4);border-radius:18px;padding:22px 28px;width:min(420px,90vw);text-align:center;}
-.rugged{font-family:Orbitron,sans-serif;font-size:36px;font-weight:900;color:#FCA5A5;text-shadow:0 0 24px #EF4444;margin-bottom:6px;}
+.dCard{background:rgba(90,30,180,.18);border:1.5px solid rgba(150,120,255,.4);border-radius:18px;padding:22px 28px;width:min(440px,90vw);text-align:center;}
+.rugged{font-family:Orbitron,sans-serif;font-size:38px;font-weight:900;color:#FCA5A5;text-shadow:0 0 24px #EF4444;margin-bottom:6px;}
 .rugged.win{color:#4ADE80;text-shadow:0 0 24px #22C55E;}
 .scoreNum{font-family:Orbitron,sans-serif;font-size:24px;color:#EDE9FF;margin:10px 0;}
-.lbl{font-size:10px;color:rgba(167,139,250,.6);letter-spacing:1px;margin-bottom:14px;}
+.lbl{font-size:9px;color:rgba(167,139,250,.5);letter-spacing:1px;margin-bottom:10px;}
 #nameSubmit{margin-bottom:14px;display:none;}
 #nameSubmit input{background:rgba(0,0,0,.5);border:1.5px solid rgba(139,92,246,.5);border-radius:8px;padding:8px 12px;color:#fff;font-family:'Space Mono',monospace;font-size:13px;outline:none;text-align:center;letter-spacing:2px;width:160px;}
-#nameSubmit button{padding:8px 16px;background:linear-gradient(135deg,#7C3AED,#4ADE80);border:none;border-radius:8px;color:#fff;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;}
+#nameSubmit button{padding:8px 16px;background:linear-gradient(135deg,#7C3AED,#4ADE80);border:none;border-radius:8px;color:#fff;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;}
 #btnRow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
 .lbT{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:11px;}
 .lbT th{color:rgba(139,92,246,.6);text-align:left;padding:3px 6px;border-bottom:1px solid rgba(139,92,246,.2);font-size:9px;letter-spacing:1px;}
 .lbT td{padding:4px 6px;color:rgba(220,210,255,.8);}
 .lbT tr.me td{color:#4ADE80;background:rgba(74,222,128,.08);}
 .lbT .sc{text-align:right;font-family:Orbitron,sans-serif;}
-</style></head><body><a href="/" id="hubBtn">← ALL GAMES</a><div style="display:flex;flex-direction:column;align-items:center;gap:20px;width:min(380px,92vw);">
-<div style="font-family:Orbitron,sans-serif;font-size:32px;font-weight:900;letter-spacing:3px;color:#FCD34D;text-shadow:0 0 20px rgba(252,211,77,.5);">$MONSHI SLOTS</div>
-<div style="display:flex;gap:12px;font-family:Orbitron,sans-serif;">
-<div style="padding:10px 18px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:8px;text-align:center;"><div style="font-size:24px;color:#fff;" id="ssc">100</div><div style="font-size:9px;color:rgba(167,139,250,.6);letter-spacing:1.5px;">CHIPS</div></div>
-<div style="padding:10px 18px;background:rgba(20,5,50,.6);border:1px solid rgba(74,222,128,.3);border-radius:8px;text-align:center;"><div style="font-size:24px;color:#4ADE80;" id="sbest">0</div><div style="font-size:9px;color:rgba(74,222,128,.5);letter-spacing:1.5px;">BEST</div></div>
-</div>
-<div style="display:flex;gap:8px;background:rgba(0,0,0,.6);padding:18px;border-radius:14px;border:2px solid #FCD34D;box-shadow:0 0 30px rgba(252,211,77,.3);">
-<div class="reel" id="r1" style="width:80px;height:100px;background:#1a0040;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:48px;border:1px solid rgba(252,211,77,.4);">🍒</div>
-<div class="reel" id="r2" style="width:80px;height:100px;background:#1a0040;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:48px;border:1px solid rgba(252,211,77,.4);">🍋</div>
-<div class="reel" id="r3" style="width:80px;height:100px;background:#1a0040;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:48px;border:1px solid rgba(252,211,77,.4);">⭐</div>
-</div>
-<div id="srt" style="font-size:13px;color:rgba(196,181,253,.7);letter-spacing:1px;min-height:18px;text-align:center;">PLACE YOUR BET</div>
-<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
-<button class="btn" data-bet="5" style="background:rgba(139,92,246,.3);color:#fff;">BET 5</button>
-<button class="btn" data-bet="10" style="background:rgba(139,92,246,.3);color:#fff;">BET 10</button>
-<button class="btn" data-bet="25" style="background:rgba(139,92,246,.3);color:#fff;">BET 25</button>
-<button class="btn" data-bet="50" style="background:linear-gradient(135deg,#FCD34D,#92400E);color:#000;">BET 50</button>
-</div>
-<div style="font-size:9px;color:rgba(139,92,246,.5);letter-spacing:1px;text-align:center;">3x💎=100x · 3x⭐=20x · 3x🍒=5x · 2 match=1.5x</div>
-</div><div class="death" id="deathPanel"><div class="deathCard">
-<div class="rugged" id="ruggedTitle">RUGGED</div>
-<div class="scoreNum" id="dScore">0</div>
-<div class="lbl" id="lvlTag"></div>
-<div class="lbl" id="rankTag" style="color:#4ADE80;"></div>
-<div id="nameSubmit"><p style="color:rgba(196,181,253,.7);font-size:10px;letter-spacing:1.5px;margin-bottom:8px;">SUBMIT TO LEADERBOARD</p>
-<div style="display:flex;gap:6px;justify-content:center;"><input id="dNameInput" type="text" maxlength="16" placeholder="YOUR NAME"><button id="dSubmit">SUBMIT</button></div></div>
-<table class="lbT"><thead><tr><th>#</th><th>PLAYER</th><th class="sc">SCORE</th></tr></thead><tbody id="lbBody"></tbody></table>
+.kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
+.gw{display:flex;flex-direction:column;align-items:center;gap:18px;}.tit{font-family:Orbitron,sans-serif;font-size:34px;font-weight:900;letter-spacing:3px;color:#FCD34D;text-shadow:0 0 20px rgba(252,211,77,.6);}.hud{display:flex;gap:10px;}.st{padding:8px 16px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:8px;text-align:center;}.st .n{font-family:Orbitron,sans-serif;font-size:22px;color:#fff;}.st .l{font-size:8px;color:rgba(167,139,250,.6);letter-spacing:1.5px;}.reels{display:flex;gap:6px;background:linear-gradient(135deg,#92400E,#FCD34D);padding:14px;border-radius:14px;border:3px solid #92400E;box-shadow:0 0 30px rgba(252,211,77,.4);}.reel{width:80px;height:100px;background:#0a0015;border:2px solid #FCD34D;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:54px;overflow:hidden;}.spinning{animation:spin .08s linear infinite;}@keyframes spin{0%{transform:translateY(0);}100%{transform:translateY(-10px);}}.bt{padding:18px 36px;background:linear-gradient(135deg,#22C55E,#15803D);border:none;border-radius:10px;color:#fff;font-family:Orbitron,sans-serif;font-size:18px;font-weight:900;letter-spacing:3px;cursor:pointer;}.bt:disabled{opacity:.5;cursor:not-allowed;}.msg{font-family:Orbitron,sans-serif;font-size:14px;color:#FCD34D;letter-spacing:2px;height:20px;}</style></head><body>
+<a href="/" id="hubBtn">← ALL GAMES</a>
+<div id="wrap"><div class="gw"><div class="tit">$MONSHI SLOTS</div><div class="hud"><div class="st"><div class="n" id="bal">100</div><div class="l">CREDITS</div></div><div class="st"><div class="n" id="bst">0</div><div class="l">BIGGEST WIN</div></div></div><div class="reels" id="rs"><div class="reel" id="r0">🐱</div><div class="reel" id="r1">$</div><div class="reel" id="r2">💎</div></div><div class="msg" id="msg">SPIN TO WIN</div><button class="bt" id="bSpin">SPIN -10</button><div style="font-size:10px;color:rgba(167,139,250,.5);letter-spacing:1.5px;line-height:1.6;text-align:center;">3x 🐱 = 500 · 3x 💎 = 250 · 3x 🚀 = 200 · 3x $ = 100<br>3x 🐂 = 80 · 3x 💰 = 50 · 2 MATCHING = 15</div></div></div>
+<div class="death" id="dP"><div class="dCard">
+<div class="rugged" id="rT">RUGGED</div>
+<div class="scoreNum" id="dS">0</div>
+<div class="lbl" id="lT"></div>
+<div class="lbl" id="rTag" style="color:#4ADE80;"></div>
+<div id="nS"><p style="color:rgba(196,181,253,.7);font-size:10px;letter-spacing:1.5px;margin-bottom:8px;">SUBMIT TO LEADERBOARD</p>
+<div style="display:flex;gap:6px;justify-content:center;"><input id="dN" type="text" maxlength="16" placeholder="YOUR NAME"><button id="dSb">SUBMIT</button></div></div>
+<table class="lbT"><thead><tr><th>#</th><th>PLAYER</th><th class="sc">SCORE</th></tr></thead><tbody id="lB"></tbody></table>
 <div id="btnRow"><button class="btn" id="btnShare">SHARE 𝕏</button><button class="btn" id="btnBuy">BUY $MONSHI</button><button class="btn" id="btnRetry" onclick="location.reload()">RETRY</button></div>
-</div></div><script>var SUPABASE_URL='https://cuqhqcmrgpdjlhyqztnc.supabase.co';
+</div></div>
+<div class="kingP">a KING PETTY build</div>
+<script>var SUPABASE_URL='https://cuqhqcmrgpdjlhyqztnc.supabase.co';
 var SUPABASE_KEY='sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
 var BUY_URL='https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
 var playerName=localStorage.getItem('monshi_name')||'';
-var leaderboard=[],playerRank=0;
+var leaderboard=[],playerRank=0,lastScore=0;
 function sbH(){return{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation'};}
 function fetchLB(t){fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score&order=score.desc&limit=10',{headers:sbH()}).then(function(r){return r.json();}).then(function(d){if(Array.isArray(d))leaderboard=d;}).catch(function(){});}
-function submitScore(t,sc,cb){if(!playerName)return cb&&cb();fetch(SUPABASE_URL+'/rest/v1/'+t,{method:'POST',headers:sbH(),body:JSON.stringify({name:playerName,score:Math.floor(sc)})}).then(function(){return fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score&order=score.desc&limit=10',{headers:sbH()});}).then(function(r){return r.json();}).then(function(d){if(Array.isArray(d)){leaderboard=d;playerRank=leaderboard.findIndex(function(s){return s.name===playerName&&s.score===Math.floor(sc);})+1;}if(cb)cb();}).catch(function(){if(cb)cb();});}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function showDeath(GAME,TABLE,URL,sc,subtitle,isWin){
+function submitS(t,sc,cb){if(!playerName)return cb&&cb();fetch(SUPABASE_URL+'/rest/v1/'+t,{method:'POST',headers:sbH(),body:JSON.stringify({name:playerName,score:Math.floor(sc)})}).then(function(){return fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score&order=score.desc&limit=10',{headers:sbH()});}).then(function(r){return r.json();}).then(function(d){if(Array.isArray(d)){leaderboard=d;playerRank=leaderboard.findIndex(function(s){return s.name===playerName&&s.score===Math.floor(sc);})+1;}cb&&cb();}).catch(function(){cb&&cb();});}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function showDeath(GN,GU,T,sc,sub,isWin){
+  lastScore=sc;
   function render(){
-    document.getElementById('ruggedTitle').textContent=isWin?'YOU WIN':'GAME OVER';
-    document.getElementById('ruggedTitle').className='rugged'+(isWin?' win':'');
-    document.getElementById('dScore').textContent=Math.floor(sc);
-    document.getElementById('lvlTag').textContent=subtitle||'';
-    document.getElementById('rankTag').textContent=playerRank>0?'#'+playerRank+' GLOBALLY':'';
-    var tb=document.getElementById('lbBody');tb.innerHTML='';
+    document.getElementById('rT').textContent=isWin?'YOU WON':'RUGGED';
+    document.getElementById('rT').className='rugged'+(isWin?' win':'');
+    document.getElementById('dS').textContent=Math.floor(sc);
+    document.getElementById('lT').textContent=sub||'';
+    document.getElementById('rTag').textContent=playerRank>0?'#'+playerRank+' GLOBALLY':'';
+    var tb=document.getElementById('lB');tb.innerHTML='';
     leaderboard.slice(0,5).forEach(function(s,i){var tr=document.createElement('tr');var isMe=s.name===playerName&&s.score===Math.floor(sc);if(isMe)tr.className='me';var medal=['🥇','🥈','🥉'][i]||'#'+(i+1);tr.innerHTML='<td>'+medal+'</td><td>'+esc(s.name)+'</td><td class="sc">'+s.score+'</td>';tb.appendChild(tr);});
-    document.getElementById('deathPanel').classList.add('show');
+    document.getElementById('dP').classList.add('show');
   }
-  if(playerName){submitScore(TABLE,sc,render);}else{document.getElementById('nameSubmit').style.display='block';render();}
-  document.getElementById('dSubmit').onclick=function(){var n=document.getElementById('dNameInput').value.trim();playerName=(n||'ANON').toUpperCase().slice(0,16);localStorage.setItem('monshi_name',playerName);document.getElementById('nameSubmit').style.display='none';submitScore(TABLE,sc,render);};
-  document.getElementById('dNameInput').onkeydown=function(e){if(e.key==='Enter')document.getElementById('dSubmit').click();};
-  document.getElementById('btnShare').onclick=function(){var tw='I scored '+Math.floor(sc)+' on '+GAME+' on Monshi Arcade '+URL+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');};
+  if(playerName){submitS(T,sc,render);}else{document.getElementById('nS').style.display='block';render();}
+  document.getElementById('dSb').onclick=function(){var n=document.getElementById('dN').value.trim();playerName=(n||'ANON').toUpperCase().slice(0,16);localStorage.setItem('monshi_name',playerName);document.getElementById('nS').style.display='none';submitS(T,sc,render);};
+  document.getElementById('dN').onkeydown=function(e){if(e.key==='Enter')document.getElementById('dSb').click();};
+  document.getElementById('btnShare').onclick=function(){var tw='I scored '+sc+' on '+GN+' '+GU+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');};
   document.getElementById('btnBuy').onclick=function(){window.open(BUY_URL,'_blank');};
 }
-var AC=window.AudioContext||window.webkitAudioContext,actx=null,master=null;
-function initAudio(){if(actx)return;try{actx=new AC();master=actx.createGain();master.gain.value=0.25;master.connect(actx.destination);}catch(e){}}
-function tone(f,t,v,o,d){if(!actx)return;var st=actx.currentTime+(o||0);var os=actx.createOscillator();var g=actx.createGain();os.type=t||'square';os.frequency.setValueAtTime(f,st);g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(v,st+0.01);g.gain.exponentialRampToValueAtTime(0.001,st+d);os.connect(g);g.connect(master);os.start(st);os.stop(st+d+0.05);}
+var AC=window.AudioContext||window.webkitAudioContext,actx=null,ma=null;
+function initA(){if(actx)return;try{actx=new AC();ma=actx.createGain();ma.gain.value=0.2;ma.connect(actx.destination);}catch(e){}}
+function tone(f,t,v,o,d){if(!actx)return;var st=actx.currentTime+(o||0);var os=actx.createOscillator();var g=actx.createGain();os.type=t||'square';os.frequency.setValueAtTime(f,st);g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(v,st+0.01);g.gain.exponentialRampToValueAtTime(0.001,st+d);os.connect(g);g.connect(ma);os.start(st);os.stop(st+d+0.05);}
 function sfxWin(){[523,659,784,1046].forEach(function(f,i){tone(f,'square',0.18,i*0.06,0.12);});}
 function sfxLose(){[440,330,220].forEach(function(f,i){tone(f,'sawtooth',0.25,i*0.12,0.18);});}
 function sfxClick(){tone(800,'square',0.08,0,0.04);}
 function sfxCoin(){tone(880,'square',0.12,0,0.05);tone(1320,'square',0.1,0.05,0.06);}
-
-var sc=100,bs=parseInt(localStorage.getItem('slots_best')||'0');
-document.getElementById('sbest').textContent=bs;
-var SYMS=['🍒','🍋','⭐','💎','🍇','🍊','🔔'];
-var WTS=[30,25,20,5,12,15,10]; // weights - 💎 rare
-function spin(bet){
-  initAudio();
-  if(sc<bet){document.getElementById('srt').textContent='NOT ENOUGH CHIPS';return;}
-  sc-=bet;document.getElementById('ssc').textContent=sc;
-  document.getElementById('srt').textContent='SPINNING...';
-  var totalW=WTS.reduce(function(a,b){return a+b;},0);
-  function pick(){var r=Math.random()*totalW,a=0;for(var i=0;i<SYMS.length;i++){a+=WTS[i];if(r<a)return SYMS[i];}return SYMS[0];}
-  var results=[pick(),pick(),pick()];
-  // Animate
-  var spins=0;
-  var iv=setInterval(function(){
-    sfxClick();
-    document.getElementById('r1').textContent=SYMS[Math.floor(Math.random()*SYMS.length)];
-    document.getElementById('r2').textContent=SYMS[Math.floor(Math.random()*SYMS.length)];
-    document.getElementById('r3').textContent=SYMS[Math.floor(Math.random()*SYMS.length)];
-    spins++;
-    if(spins>=12){
-      clearInterval(iv);
-      document.getElementById('r1').textContent=results[0];
-      document.getElementById('r2').textContent=results[1];
-      document.getElementById('r3').textContent=results[2];
-      var win=0;
-      if(results[0]===results[1]&&results[1]===results[2]){
-        var s=results[0];
-        var mult=s==='💎'?100:s==='⭐'?20:s==='🔔'?15:s==='🍒'?5:s==='🍇'?4:s==='🍊'?3:s==='🍋'?2:1;
-        win=bet*mult;
-        sfxWin();
-        document.getElementById('srt').textContent='🎉 JACKPOT! +'+win;
-      }else if(results[0]===results[1]||results[1]===results[2]||results[0]===results[2]){
-        win=Math.floor(bet*1.5);
-        sfxCoin();
-        document.getElementById('srt').textContent='✓ MATCH! +'+win;
-      }else{
-        sfxLose();
-        document.getElementById('srt').textContent='RUGGED — TRY AGAIN';
-      }
-      sc+=win;
-      if(sc>bs){bs=sc;localStorage.setItem('slots_best',bs);document.getElementById('sbest').textContent=bs;}
-      document.getElementById('ssc').textContent=sc;
-      if(sc<5){fetchLB('scores_slots');setTimeout(function(){showDeath('$MONSHI SLOTS','scores_slots','https://monshi-fafo.vercel.app/slots.html',bs,'BEST CHIP COUNT',bs>=500);},800);}
-    }
-  },80);
-}
-document.querySelectorAll('[data-bet]').forEach(function(b){b.onclick=function(){spin(parseInt(b.dataset.bet));};});
-fetchLB('scores_slots');
-</script></body></html>
+var bal=parseInt(localStorage.getItem("slot_bal")||"100"),bst=parseInt(localStorage.getItem("slot_bst")||"0");var sym=["🐱","$","💎","🚀","🐂","💰","🐻","📈","📉"];var py={"🐱":500,"💎":250,"🚀":200,"$":100,"🐂":80,"💰":50};function up(){document.getElementById("bal").textContent=bal;document.getElementById("bst").textContent=bst;localStorage.setItem("slot_bal",bal);localStorage.setItem("slot_bst",bst);}up();fetchLB("scores_slots");document.getElementById("bSpin").onclick=function(){if(bal<10)return;initA();var btn=this;btn.disabled=true;bal-=10;up();var rr=[document.getElementById("r0"),document.getElementById("r1"),document.getElementById("r2")];var fin=[0,0,0];for(var i=0;i<3;i++){(function(idx){var iv=setInterval(function(){rr[idx].textContent=sym[Math.floor(Math.random()*sym.length)];},80);setTimeout(function(){clearInterval(iv);var s=sym[Math.floor(Math.random()*sym.length)];rr[idx].textContent=s;fin[idx]=s;tone(800-idx*100,"square",0.1,0,0.06);if(idx===2){setTimeout(function(){var w=0;if(fin[0]===fin[1]&&fin[1]===fin[2]){w=py[fin[0]]||30;document.getElementById("msg").textContent="WIN! +"+w;sfxWin();}else if(fin[0]===fin[1]||fin[1]===fin[2]||fin[0]===fin[2]){w=15;document.getElementById("msg").textContent="2 MATCH +15";sfxCoin();}else{document.getElementById("msg").textContent="TRY AGAIN";}bal+=w;if(w>bst){bst=w;}up();btn.disabled=false;if(bal<10){setTimeout(function(){showDeath("MONSHI SLOTS","https://monshi-fafo.vercel.app/slots.html","scores_slots",bst,"out of credits",false);bal=100;up();},800);}},200);}},900+idx*350);})(i);}};</script>
+</body></html>

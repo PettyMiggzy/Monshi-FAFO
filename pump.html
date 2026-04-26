@@ -1,96 +1,81 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><title>PUMP OR DUMP</title><style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>PUMP OR DUMP</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;background:#02000a;overflow:hidden;font-family:'Space Mono',monospace;color:#EDE9FF;display:flex;align-items:center;justify-content:center;}
+html,body{width:100%;height:100%;background:#02000a;overflow:hidden;font-family:'Space Mono',monospace;color:#EDE9FF;}
+body{display:flex;align-items:center;justify-content:center;}
+#wrap{position:relative;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
 #hubBtn{position:fixed;top:8px;left:8px;z-index:7;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);}
 .btn{padding:10px 14px;border:none;border-radius:8px;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;}
-.btn:hover{opacity:.85;}
 #btnRetry{background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;}
 #btnShare{background:linear-gradient(135deg,#1DA1F2,#0d7abf);color:#fff;}
-#btnBuy{background:linear-gradient(135deg,#22C55E,#15803D);color:#fff;animation:pls 2s infinite;}
-@keyframes pls{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}50%{box-shadow:0 0 0 8px rgba(34,197,94,0);}}
+#btnBuy{background:linear-gradient(135deg,#22C55E,#15803D);color:#fff;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}50%{box-shadow:0 0 0 8px rgba(34,197,94,0);}}
 .death{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,8,.92);z-index:8;}
 .death.show{display:flex;}
-.deathCard{background:rgba(90,30,180,.18);border:1.5px solid rgba(150,120,255,.4);border-radius:18px;padding:22px 28px;width:min(420px,90vw);text-align:center;}
-.rugged{font-family:Orbitron,sans-serif;font-size:36px;font-weight:900;color:#FCA5A5;text-shadow:0 0 24px #EF4444;margin-bottom:6px;}
+.dCard{background:rgba(90,30,180,.18);border:1.5px solid rgba(150,120,255,.4);border-radius:18px;padding:22px 28px;width:min(440px,90vw);text-align:center;}
+.rugged{font-family:Orbitron,sans-serif;font-size:38px;font-weight:900;color:#FCA5A5;text-shadow:0 0 24px #EF4444;margin-bottom:6px;}
 .rugged.win{color:#4ADE80;text-shadow:0 0 24px #22C55E;}
 .scoreNum{font-family:Orbitron,sans-serif;font-size:24px;color:#EDE9FF;margin:10px 0;}
-.lbl{font-size:10px;color:rgba(167,139,250,.6);letter-spacing:1px;margin-bottom:14px;}
+.lbl{font-size:9px;color:rgba(167,139,250,.5);letter-spacing:1px;margin-bottom:10px;}
 #nameSubmit{margin-bottom:14px;display:none;}
 #nameSubmit input{background:rgba(0,0,0,.5);border:1.5px solid rgba(139,92,246,.5);border-radius:8px;padding:8px 12px;color:#fff;font-family:'Space Mono',monospace;font-size:13px;outline:none;text-align:center;letter-spacing:2px;width:160px;}
-#nameSubmit button{padding:8px 16px;background:linear-gradient(135deg,#7C3AED,#4ADE80);border:none;border-radius:8px;color:#fff;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;}
+#nameSubmit button{padding:8px 16px;background:linear-gradient(135deg,#7C3AED,#4ADE80);border:none;border-radius:8px;color:#fff;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;}
 #btnRow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
 .lbT{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:11px;}
 .lbT th{color:rgba(139,92,246,.6);text-align:left;padding:3px 6px;border-bottom:1px solid rgba(139,92,246,.2);font-size:9px;letter-spacing:1px;}
 .lbT td{padding:4px 6px;color:rgba(220,210,255,.8);}
 .lbT tr.me td{color:#4ADE80;background:rgba(74,222,128,.08);}
 .lbT .sc{text-align:right;font-family:Orbitron,sans-serif;}
-</style></head><body><a href="/" id="hubBtn">← ALL GAMES</a><div style="display:flex;flex-direction:column;align-items:center;gap:20px;width:min(440px,92vw);">
-<div style="font-family:Orbitron,sans-serif;font-size:28px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#22C55E,#EF4444);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;">PUMP OR DUMP</div>
-<div style="display:flex;gap:8px;width:100%;font-family:Orbitron,sans-serif;">
-<div style="flex:1;padding:8px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:8px;text-align:center;"><div style="font-size:22px;color:#fff;" id="psc">0</div><div style="font-size:8px;color:rgba(167,139,250,.6);letter-spacing:1.5px;">SCORE</div></div>
-<div style="flex:1;padding:8px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:8px;text-align:center;"><div style="font-size:22px;color:#FCD34D;" id="pst">0</div><div style="font-size:8px;color:rgba(167,139,250,.6);letter-spacing:1.5px;">STREAK</div></div>
-<div style="flex:1;padding:8px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:8px;text-align:center;"><div style="font-size:22px;color:#EF4444;" id="plv">3</div><div style="font-size:8px;color:rgba(167,139,250,.6);letter-spacing:1.5px;">LIVES</div></div>
-</div>
-<canvas id="ch" width="420" height="200" style="width:100%;border:1.5px solid rgba(139,92,246,.3);border-radius:14px;background:#0a0015;"></canvas>
-<div id="tmr" style="font-family:Orbitron,sans-serif;font-size:14px;color:#FCD34D;letter-spacing:2px;min-height:20px;">PICK A SIDE</div>
-<div style="display:flex;gap:14px;width:100%;">
-<button class="btn" id="bU" style="flex:1;padding:24px;font-size:18px;background:linear-gradient(135deg,#22C55E,#15803D);color:#fff;box-shadow:0 0 20px rgba(34,197,94,.4);">▲ PUMP</button>
-<button class="btn" id="bD" style="flex:1;padding:24px;font-size:18px;background:linear-gradient(135deg,#EF4444,#991B1B);color:#fff;box-shadow:0 0 20px rgba(239,68,68,.4);">▼ DUMP</button>
-</div></div><div class="death" id="deathPanel"><div class="deathCard">
-<div class="rugged" id="ruggedTitle">RUGGED</div>
-<div class="scoreNum" id="dScore">0</div>
-<div class="lbl" id="lvlTag"></div>
-<div class="lbl" id="rankTag" style="color:#4ADE80;"></div>
-<div id="nameSubmit"><p style="color:rgba(196,181,253,.7);font-size:10px;letter-spacing:1.5px;margin-bottom:8px;">SUBMIT TO LEADERBOARD</p>
-<div style="display:flex;gap:6px;justify-content:center;"><input id="dNameInput" type="text" maxlength="16" placeholder="YOUR NAME"><button id="dSubmit">SUBMIT</button></div></div>
-<table class="lbT"><thead><tr><th>#</th><th>PLAYER</th><th class="sc">SCORE</th></tr></thead><tbody id="lbBody"></tbody></table>
+.kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
+.gw{display:flex;flex-direction:column;align-items:center;gap:18px;width:min(420px,92vw);}.tit{font-family:Orbitron,sans-serif;font-size:30px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#22C55E,#EF4444);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;}.hud{display:flex;gap:8px;width:100%;}.st{flex:1;padding:8px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:8px;text-align:center;}.st .n{font-family:Orbitron,sans-serif;font-size:20px;color:#fff;}.st .l{font-size:8px;color:rgba(167,139,250,.6);letter-spacing:1.5px;}.ch{width:100%;height:200px;background:rgba(20,5,50,.6);border:1.5px solid rgba(139,92,246,.3);border-radius:14px;}.bts{display:flex;gap:14px;width:100%;}.pb{flex:1;padding:22px;border:none;border-radius:12px;font-family:Orbitron,sans-serif;font-size:18px;font-weight:900;letter-spacing:3px;cursor:pointer;color:#fff;}.pu{background:linear-gradient(135deg,#22C55E,#15803D);box-shadow:0 0 20px rgba(34,197,94,.4);}.pd{background:linear-gradient(135deg,#EF4444,#991B1B);box-shadow:0 0 20px rgba(239,68,68,.4);}.tm{font-family:Orbitron,sans-serif;font-size:14px;color:#FCD34D;letter-spacing:2px;height:20px;}</style></head><body>
+<a href="/" id="hubBtn">← ALL GAMES</a>
+<div id="wrap"><div class="gw"><div class="tit">PUMP OR DUMP</div><div class="hud"><div class="st"><div class="n" id="sc">0</div><div class="l">SCORE</div></div><div class="st"><div class="n" id="sk">0</div><div class="l">STREAK</div></div><div class="st"><div class="n" id="lv">3</div><div class="l">LIVES</div></div></div><canvas class="ch" id="cv" width="600" height="200"></canvas><div class="tm" id="tm">CALL IT</div><div class="bts"><button class="pb pu" id="bU">▲ PUMP</button><button class="pb pd" id="bD">▼ DUMP</button></div></div></div>
+<div class="death" id="dP"><div class="dCard">
+<div class="rugged" id="rT">RUGGED</div>
+<div class="scoreNum" id="dS">0</div>
+<div class="lbl" id="lT"></div>
+<div class="lbl" id="rTag" style="color:#4ADE80;"></div>
+<div id="nS"><p style="color:rgba(196,181,253,.7);font-size:10px;letter-spacing:1.5px;margin-bottom:8px;">SUBMIT TO LEADERBOARD</p>
+<div style="display:flex;gap:6px;justify-content:center;"><input id="dN" type="text" maxlength="16" placeholder="YOUR NAME"><button id="dSb">SUBMIT</button></div></div>
+<table class="lbT"><thead><tr><th>#</th><th>PLAYER</th><th class="sc">SCORE</th></tr></thead><tbody id="lB"></tbody></table>
 <div id="btnRow"><button class="btn" id="btnShare">SHARE 𝕏</button><button class="btn" id="btnBuy">BUY $MONSHI</button><button class="btn" id="btnRetry" onclick="location.reload()">RETRY</button></div>
-</div></div><script>var SUPABASE_URL='https://cuqhqcmrgpdjlhyqztnc.supabase.co';
+</div></div>
+<div class="kingP">a KING PETTY build</div>
+<script>var SUPABASE_URL='https://cuqhqcmrgpdjlhyqztnc.supabase.co';
 var SUPABASE_KEY='sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
 var BUY_URL='https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
 var playerName=localStorage.getItem('monshi_name')||'';
-var leaderboard=[],playerRank=0;
+var leaderboard=[],playerRank=0,lastScore=0;
 function sbH(){return{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation'};}
 function fetchLB(t){fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score&order=score.desc&limit=10',{headers:sbH()}).then(function(r){return r.json();}).then(function(d){if(Array.isArray(d))leaderboard=d;}).catch(function(){});}
-function submitScore(t,sc,cb){if(!playerName)return cb&&cb();fetch(SUPABASE_URL+'/rest/v1/'+t,{method:'POST',headers:sbH(),body:JSON.stringify({name:playerName,score:Math.floor(sc)})}).then(function(){return fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score&order=score.desc&limit=10',{headers:sbH()});}).then(function(r){return r.json();}).then(function(d){if(Array.isArray(d)){leaderboard=d;playerRank=leaderboard.findIndex(function(s){return s.name===playerName&&s.score===Math.floor(sc);})+1;}if(cb)cb();}).catch(function(){if(cb)cb();});}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function showDeath(GAME,TABLE,URL,sc,subtitle,isWin){
+function submitS(t,sc,cb){if(!playerName)return cb&&cb();fetch(SUPABASE_URL+'/rest/v1/'+t,{method:'POST',headers:sbH(),body:JSON.stringify({name:playerName,score:Math.floor(sc)})}).then(function(){return fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score&order=score.desc&limit=10',{headers:sbH()});}).then(function(r){return r.json();}).then(function(d){if(Array.isArray(d)){leaderboard=d;playerRank=leaderboard.findIndex(function(s){return s.name===playerName&&s.score===Math.floor(sc);})+1;}cb&&cb();}).catch(function(){cb&&cb();});}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function showDeath(GN,GU,T,sc,sub,isWin){
+  lastScore=sc;
   function render(){
-    document.getElementById('ruggedTitle').textContent=isWin?'YOU WIN':'GAME OVER';
-    document.getElementById('ruggedTitle').className='rugged'+(isWin?' win':'');
-    document.getElementById('dScore').textContent=Math.floor(sc);
-    document.getElementById('lvlTag').textContent=subtitle||'';
-    document.getElementById('rankTag').textContent=playerRank>0?'#'+playerRank+' GLOBALLY':'';
-    var tb=document.getElementById('lbBody');tb.innerHTML='';
+    document.getElementById('rT').textContent=isWin?'YOU WON':'RUGGED';
+    document.getElementById('rT').className='rugged'+(isWin?' win':'');
+    document.getElementById('dS').textContent=Math.floor(sc);
+    document.getElementById('lT').textContent=sub||'';
+    document.getElementById('rTag').textContent=playerRank>0?'#'+playerRank+' GLOBALLY':'';
+    var tb=document.getElementById('lB');tb.innerHTML='';
     leaderboard.slice(0,5).forEach(function(s,i){var tr=document.createElement('tr');var isMe=s.name===playerName&&s.score===Math.floor(sc);if(isMe)tr.className='me';var medal=['🥇','🥈','🥉'][i]||'#'+(i+1);tr.innerHTML='<td>'+medal+'</td><td>'+esc(s.name)+'</td><td class="sc">'+s.score+'</td>';tb.appendChild(tr);});
-    document.getElementById('deathPanel').classList.add('show');
+    document.getElementById('dP').classList.add('show');
   }
-  if(playerName){submitScore(TABLE,sc,render);}else{document.getElementById('nameSubmit').style.display='block';render();}
-  document.getElementById('dSubmit').onclick=function(){var n=document.getElementById('dNameInput').value.trim();playerName=(n||'ANON').toUpperCase().slice(0,16);localStorage.setItem('monshi_name',playerName);document.getElementById('nameSubmit').style.display='none';submitScore(TABLE,sc,render);};
-  document.getElementById('dNameInput').onkeydown=function(e){if(e.key==='Enter')document.getElementById('dSubmit').click();};
-  document.getElementById('btnShare').onclick=function(){var tw='I scored '+Math.floor(sc)+' on '+GAME+' on Monshi Arcade '+URL+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');};
+  if(playerName){submitS(T,sc,render);}else{document.getElementById('nS').style.display='block';render();}
+  document.getElementById('dSb').onclick=function(){var n=document.getElementById('dN').value.trim();playerName=(n||'ANON').toUpperCase().slice(0,16);localStorage.setItem('monshi_name',playerName);document.getElementById('nS').style.display='none';submitS(T,sc,render);};
+  document.getElementById('dN').onkeydown=function(e){if(e.key==='Enter')document.getElementById('dSb').click();};
+  document.getElementById('btnShare').onclick=function(){var tw='I scored '+sc+' on '+GN+' '+GU+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');};
   document.getElementById('btnBuy').onclick=function(){window.open(BUY_URL,'_blank');};
 }
-var AC=window.AudioContext||window.webkitAudioContext,actx=null,master=null;
-function initAudio(){if(actx)return;try{actx=new AC();master=actx.createGain();master.gain.value=0.25;master.connect(actx.destination);}catch(e){}}
-function tone(f,t,v,o,d){if(!actx)return;var st=actx.currentTime+(o||0);var os=actx.createOscillator();var g=actx.createGain();os.type=t||'square';os.frequency.setValueAtTime(f,st);g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(v,st+0.01);g.gain.exponentialRampToValueAtTime(0.001,st+d);os.connect(g);g.connect(master);os.start(st);os.stop(st+d+0.05);}
+var AC=window.AudioContext||window.webkitAudioContext,actx=null,ma=null;
+function initA(){if(actx)return;try{actx=new AC();ma=actx.createGain();ma.gain.value=0.2;ma.connect(actx.destination);}catch(e){}}
+function tone(f,t,v,o,d){if(!actx)return;var st=actx.currentTime+(o||0);var os=actx.createOscillator();var g=actx.createGain();os.type=t||'square';os.frequency.setValueAtTime(f,st);g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(v,st+0.01);g.gain.exponentialRampToValueAtTime(0.001,st+d);os.connect(g);g.connect(ma);os.start(st);os.stop(st+d+0.05);}
 function sfxWin(){[523,659,784,1046].forEach(function(f,i){tone(f,'square',0.18,i*0.06,0.12);});}
 function sfxLose(){[440,330,220].forEach(function(f,i){tone(f,'sawtooth',0.25,i*0.12,0.18);});}
 function sfxClick(){tone(800,'square',0.08,0,0.04);}
 function sfxCoin(){tone(880,'square',0.12,0,0.05);tone(1320,'square',0.1,0.05,0.06);}
-
-var ch=document.getElementById('ch'),cx=ch.getContext('2d');var W=420,H=200;
-var prices=[],price=100;
-function nc(){var m=(Math.random()-0.5)*8;var o=price,c=price+m,h=Math.max(o,c)+Math.random()*3,l=Math.min(o,c)-Math.random()*3;prices.push({o:o,c:c,h:h,l:l});price=c;if(prices.length>20)prices.shift();}
-for(var i=0;i<15;i++)nc();
-var sc=0,st=0,lv=3,locked=false,pick=null;
-function draw(){cx.fillStyle='#0a0015';cx.fillRect(0,0,W,H);cx.strokeStyle='rgba(139,92,246,.1)';for(var y=0;y<H;y+=20){cx.beginPath();cx.moveTo(0,y);cx.lineTo(W,y);cx.stroke();}if(prices.length<2)return;var mn=Infinity,mx=-Infinity;prices.forEach(function(p){if(p.l<mn)mn=p.l;if(p.h>mx)mx=p.h;});var r=mx-mn||1;var cw=W/prices.length;prices.forEach(function(p,i){var x=i*cw+cw/2;var oy=H-((p.o-mn)/r)*(H-30)-15;var cy=H-((p.c-mn)/r)*(H-30)-15;var hy=H-((p.h-mn)/r)*(H-30)-15;var ly=H-((p.l-mn)/r)*(H-30)-15;var col=p.c>=p.o?'#22C55E':'#EF4444';cx.strokeStyle=col;cx.lineWidth=1;cx.beginPath();cx.moveTo(x,hy);cx.lineTo(x,ly);cx.stroke();cx.fillStyle=col;cx.fillRect(x-cw/3,Math.min(oy,cy),cw*0.66,Math.max(2,Math.abs(cy-oy)));});}
-function ud(){document.getElementById('psc').textContent=sc;document.getElementById('pst').textContent=st;document.getElementById('plv').textContent=lv;}
-function nrx(){if(locked)return;locked=true;pick=null;document.getElementById('tmr').textContent='PICK YOUR SIDE — 5s';var t=5;var iv=setInterval(function(){t--;if(pick||t<=0){clearInterval(iv);res();}else document.getElementById('tmr').textContent='PICK — '+t+'s';},1000);}
-function res(){if(!pick){lv--;ud();if(lv<=0)return go();locked=false;nc();draw();setTimeout(nrx,800);return;}initAudio();var p1=price;nc();var d=price-p1;var w=(pick==='up'&&d>0)||(pick==='down'&&d<0);draw();if(w){st++;sc+=10*Math.max(1,Math.floor(st/3)+1);sfxCoin();document.getElementById('tmr').textContent='✅ +'+(10*Math.max(1,Math.floor(st/3)+1));}else{st=0;lv--;sfxLose();document.getElementById('tmr').textContent='❌ WRONG';}ud();if(lv<=0)return setTimeout(go,800);setTimeout(function(){locked=false;nrx();},1200);}
-function go(){document.getElementById('tmr').textContent='GAME OVER';fetchLB('scores_pump');setTimeout(function(){showDeath('PUMP OR DUMP','scores_pump','https://monshi-fafo.vercel.app/pump.html',sc,'STREAK '+st,sc>=100);},800);}
-document.getElementById('bU').onclick=function(){if(locked&&!pick){pick='up';}};
-document.getElementById('bD').onclick=function(){if(locked&&!pick){pick='down';}};
-draw();fetchLB('scores_pump');setTimeout(nrx,500);
-</script></body></html>
+var c=document.getElementById("cv"),x=c.getContext("2d"),W=c.width,H=c.height;var ps=[],p=100,s=0,sk=0,lv=3,lk=false;function nC(){var m=(Math.random()-0.5)*8;var o=p,cl=p+m,h=Math.max(o,cl)+Math.random()*3,l=Math.min(o,cl)-Math.random()*3;ps.push({o:o,c:cl,h:h,l:l});p=cl;if(ps.length>20)ps.shift();}for(var i=0;i<15;i++)nC();function dC(){x.fillStyle="#0a0015";x.fillRect(0,0,W,H);if(ps.length<2)return;var mn=Infinity,mx=-Infinity;ps.forEach(function(q){if(q.l<mn)mn=q.l;if(q.h>mx)mx=q.h;});var rg=mx-mn||1,cw=W/ps.length;ps.forEach(function(q,i){var xx=i*cw+cw/2;var oy=H-((q.o-mn)/rg)*(H-30)-15,cy=H-((q.c-mn)/rg)*(H-30)-15,hy=H-((q.h-mn)/rg)*(H-30)-15,ly=H-((q.l-mn)/rg)*(H-30)-15;var cl=q.c>=q.o?"#22C55E":"#EF4444";x.strokeStyle=cl;x.lineWidth=1;x.beginPath();x.moveTo(xx,hy);x.lineTo(xx,ly);x.stroke();x.fillStyle=cl;x.fillRect(xx-cw/3,Math.min(oy,cy),cw*0.66,Math.max(2,Math.abs(cy-oy)));});}dC();function up(){document.getElementById("sc").textContent=s;document.getElementById("sk").textContent=sk;document.getElementById("lv").textContent=lv;}fetchLB("scores_pump");function pick(d){if(lk)return;lk=true;initA();var pp=p;nC();var diff=p-pp;var w=(d==="up"&&diff>0)||(d==="down"&&diff<0);dC();if(w){sk++;s+=10*Math.max(1,Math.floor(sk/3)+1);sfxCoin();document.getElementById("tm").textContent="✅ +"+(10*Math.max(1,Math.floor(sk/3)+1));}else{sk=0;lv--;sfxLose();document.getElementById("tm").textContent="❌ WRONG";}up();if(lv<=0){setTimeout(function(){showDeath("PUMP OR DUMP","https://monshi-fafo.vercel.app/pump.html","scores_pump",s,"streak: "+sk,false);},900);return;}setTimeout(function(){lk=false;document.getElementById("tm").textContent="CALL IT";},900);}document.getElementById("bU").onclick=function(){pick("up");};document.getElementById("bD").onclick=function(){pick("down");};</script>
+</body></html>
