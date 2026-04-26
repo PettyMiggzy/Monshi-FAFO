@@ -34,7 +34,7 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Sp
 #btnBuy{background:linear-gradient(135deg,#22C55E,#15803D);color:#fff;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}50%{box-shadow:0 0 0 8px rgba(34,197,94,0);}}
 #priceTicker{position:fixed;font-size:10px;color:rgba(139,92,246,.6);letter-spacing:1px;pointer-events:none;z-index:4;padding:8px 12px;}
-#startLb{position:fixed;background:rgba(0,0,0,.75);border:1.5px solid rgba(139,92,246,.4);border-radius:14px;padding:18px 22px;width:280px;pointer-events:none;z-index:4;display:none;backdrop-filter:blur(8px);box-shadow:0 0 30px rgba(139,92,246,.3);}
+#startLb{position:fixed;top:50%;right:20px;transform:translateY(-50%);background:rgba(0,0,0,.85);border:1.5px solid rgba(139,92,246,.4);border-radius:14px;padding:18px 22px;width:260px;pointer-events:none;z-index:4;display:none;box-shadow:0 0 30px rgba(139,92,246,.3);}
 #startLb h3{font-family:Orbitron,sans-serif;font-size:13px;color:#C4B5FD;letter-spacing:3px;margin-bottom:12px;text-align:center;text-shadow:0 0 10px rgba(139,92,246,.8);}
 #startLbList{list-style:none;font-size:12px;}
 #startLbList li{display:flex;justify-content:space-between;align-items:center;padding:6px 4px;border-bottom:1px solid rgba(139,92,246,.15);color:rgba(220,210,255,.85);gap:10px;}
@@ -52,7 +52,7 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Sp
 </head>
 <body>
 <canvas id="c"></canvas>
-<a id="backLink" href="/">← RUNNER</a>
+<a id="backLink" href="/menu.html">← ARCADE</a>
 <div id="priceTicker">$MONSHI loading...</div>
 <button id="musicBtn" type="button">MUSIC ON</button>
 <div id="startLb"><h3>🏆 SHOOTER LEADERBOARD</h3><ul id="startLbList"><li><span style="color:rgba(139,92,246,.4)">Loading...</span></li></ul></div>
@@ -108,8 +108,7 @@ function resize(){
     var el=document.getElementById(id); if(!el)return;
     el.style.left=OX+'px'; el.style.top=OY+'px';
   });
-  var lb=document.getElementById('startLb');
-  if(lb){lb.style.left=(OX+w-310)+'px';lb.style.top=(OY+(h-340)/2)+'px';}
+
   var mb=document.getElementById('musicBtn');
   if(mb){mb.style.left=(OX+w-92)+'px';mb.style.top=(OY+8)+'px';}
   var hw=document.getElementById('hudWave');
@@ -211,7 +210,7 @@ window.addEventListener('keyup',function(e){keys[e.key.toLowerCase()]=false;});
 
 // Virtual joystick (mobile)
 var joy={active:false,baseX:0,baseY:0,x:0,y:0,dx:0,dy:0};
-canvas.addEventListener('touchstart',function(e){e.preventDefault();initAudio();if(state==='start'){state='playing';if(musicOn)startMusic();return;}if(state==='dead'||state==='win')return;var t=e.touches[0];var rect=canvas.getBoundingClientRect();var tx=(t.clientX-rect.left)/SCALE,ty=(t.clientY-rect.top)/SCALE;joy.active=true;joy.baseX=tx;joy.baseY=ty;joy.x=tx;joy.y=ty;joy.dx=0;joy.dy=0;});
+canvas.addEventListener('touchstart',function(e){e.preventDefault();initAudio();if(state==='start'){state='playing';if(!enemies.length)spawnWave();if(musicOn)startMusic();document.getElementById('startLb').style.display='none';return;}if(state==='dead'||state==='win')return;var t=e.touches[0];var rect=canvas.getBoundingClientRect();var tx=(t.clientX-rect.left)/SCALE,ty=(t.clientY-rect.top)/SCALE;joy.active=true;joy.baseX=tx;joy.baseY=ty;joy.x=tx;joy.y=ty;joy.dx=0;joy.dy=0;});
 canvas.addEventListener('touchmove',function(e){e.preventDefault();if(!joy.active)return;var t=e.touches[0];var rect=canvas.getBoundingClientRect();joy.x=(t.clientX-rect.left)/SCALE;joy.y=(t.clientY-rect.top)/SCALE;var ddx=joy.x-joy.baseX,ddy=joy.y-joy.baseY;var d=Math.sqrt(ddx*ddx+ddy*ddy);var maxR=50;if(d>maxR){ddx=ddx/d*maxR;ddy=ddy/d*maxR;}joy.dx=ddx/maxR;joy.dy=ddy/maxR;});
 canvas.addEventListener('touchend',function(e){e.preventDefault();joy.active=false;joy.dx=0;joy.dy=0;});
 canvas.addEventListener('touchcancel',function(){joy.active=false;joy.dx=0;joy.dy=0;});
