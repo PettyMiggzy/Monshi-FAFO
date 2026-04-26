@@ -10,9 +10,8 @@
 html,body{width:100%;height:100%;background:#02000a;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;}
 #wrap{position:relative;width:800px;height:420px;}
 #c{display:block;width:100%;height:100%;}
-.ui{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;}
+.ui{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;}
 .ui.show{display:flex;}
-.ui *{pointer-events:all;}
 #nameModal{background:rgba(0,0,10,.93);z-index:10;}
 #nameBox{background:rgba(90,30,180,.2);border:1.5px solid rgba(150,120,255,.45);border-radius:16px;padding:32px 40px;text-align:center;width:340px;}
 #nameBox h2{font-family:Orbitron,sans-serif;color:#EDE9FF;font-size:22px;margin-bottom:6px;}
@@ -136,16 +135,19 @@ var gameReady=false;
 function L(){return LEVELS[lvl];}
 
 // ── Name entry ──────────────────────────────────────────
-document.getElementById('nameBtn').addEventListener('click',function(){
+function startGame(){
   var n=document.getElementById('nameInput').value.trim();
-  if(!n)return;
-  playerName=n.toUpperCase().slice(0,16);
+  playerName=(n||'ANON').toUpperCase().slice(0,16);
   localStorage.setItem('monshi_name',playerName);
-  document.getElementById('nameModal').classList.remove('show');
-  gameReady=true; fetchLeaderboard(); fetchPrice();
-});
-document.getElementById('nameInput').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('nameBtn').click();});
-if(playerName){document.getElementById('nameModal').classList.remove('show');gameReady=true;setTimeout(function(){fetchLeaderboard();fetchPrice();},500);}
+  document.getElementById('nameModal').style.display='none';
+  document.getElementById('startLb').style.display='block';
+  gameReady=true;
+  try{fetchLeaderboard();}catch(e){}
+  try{fetchPrice();}catch(e){}
+}
+document.getElementById('nameBtn').addEventListener('click',startGame);
+document.getElementById('nameInput').addEventListener('keydown',function(e){if(e.key==='Enter')startGame();});
+if(playerName){document.getElementById('nameModal').style.display='none';document.getElementById('startLb').style.display='block';gameReady=true;setTimeout(function(){try{fetchLeaderboard();}catch(e){}try{fetchPrice();}catch(e){}},500);}
 
 // ── Leaderboard ─────────────────────────────────────────
 function sbHeaders(){return{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation'};}
@@ -471,7 +473,7 @@ function loop(){
   if(state==='start')drawStartScreen();
   if(transState)drawTransition();
 }
-reset();document.getElementById('startLb').style.display=gameReady?'block':'none';loop();
+reset();document.getElementById('startLb').style.display='none';loop();
 </script>
 </body>
 </html>
