@@ -74,7 +74,7 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;}
 <div id="devWarn">WARNING: DEV SPOTTED - RUN FASTER</div>
 <div id="startLb"><h3>LEADERBOARD</h3><ul id="startLbList"><li><span style="color:rgba(139,92,246,.4)">Loading...</span></li></ul></div>
 <button id="musicBtn" type="button">MUSIC OFF</button>
-<div class="overlay show" id="nameModal">
+<div class="overlay" id="nameModal" style="display:none;">
   <div id="nameBox">
     <h2>MONSHI RUNNER</h2>
     <p>ENTER YOUR NAME TO PLAY</p>
@@ -91,6 +91,13 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;}
       <div class="sBlock"><div class="num" id="dBest">000000</div><div class="lbl">BEST</div></div>
     </div>
     <div class="rankTag" id="rankTag"></div>
+    <div id="nameSubmit" style="margin-bottom:14px;display:none;">
+      <p style="color:rgba(196,181,253,.7);font-size:10px;letter-spacing:1.5px;margin-bottom:8px;">SUBMIT YOUR SCORE TO LEADERBOARD</p>
+      <div style="display:flex;gap:6px;justify-content:center;">
+        <input id="dNameInput" type="text" maxlength="16" placeholder="YOUR NAME" autocomplete="off" spellcheck="false" style="background:rgba(0,0,0,.5);border:1.5px solid rgba(139,92,246,.5);border-radius:8px;padding:8px 12px;color:#fff;font-family:'Space Mono',monospace;font-size:13px;outline:none;text-align:center;letter-spacing:2px;width:160px;">
+        <button id="dSubmit" type="button" style="padding:8px 16px;background:linear-gradient(135deg,#7C3AED,#4ADE80);border:none;border-radius:8px;color:#fff;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;">SUBMIT</button>
+      </div>
+    </div>
     <table id="lbTable"><thead><tr><th class="rank">#</th><th>PLAYER</th><th class="sc">SCORE</th></tr></thead><tbody id="lbBody"></tbody></table>
     <div id="btnRow">
       <button class="btn" id="btnShare" type="button">SHARE X</button>
@@ -335,13 +342,11 @@ function startGame(){
 }
 document.getElementById('nameBtn').addEventListener('click',startGame);
 document.getElementById('nameInput').addEventListener('keydown',function(e){if(e.key==='Enter')startGame();});
-if(playerName){
-  document.getElementById('nameModal').classList.remove('show');
-  document.getElementById('nameModal').style.display='none';
-  document.getElementById('startLb').style.display='block';
-  gameReady=true;
-  setTimeout(function(){try{fetchLeaderboard();}catch(e){}try{fetchPrice();}catch(e){}},500);
-}
+// Always start ready - name entry now happens AFTER death
+document.getElementById('nameModal').style.display='none';
+document.getElementById('startLb').style.display='block';
+gameReady=true;
+setTimeout(function(){try{fetchLeaderboard();}catch(e){}try{fetchPrice();}catch(e){}},500);
 
 // ── Leaderboard ──────────────────────────────────────────
 function sbH(){return{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation'};}
@@ -371,6 +376,8 @@ function renderStartLb(){
   ul.innerHTML='';leaderboard.slice(0,8).forEach(function(s,i){var li=document.createElement('li');var medal=['🥇','🥈','🥉'][i]||'#'+(i+1);li.innerHTML='<span class="pn">'+medal+' '+esc(s.name)+'</span><span class="sn">'+String(Math.floor(s.score)).padStart(6,'0')+'</span>';ul.appendChild(li);});
 }
 function renderDeathPanel(sc,lv){
+  // Hide name input if we already have a name
+  if(playerName)document.getElementById('nameSubmit').style.display='none';
   var rt=document.getElementById('ruggedTitle');
   if(killedByDev){rt.textContent='RUGGED BY THE DEV';rt.className='rugged devKill';}
   else{rt.textContent='RUGGED';rt.className='rugged';}
@@ -382,6 +389,26 @@ function renderDeathPanel(sc,lv){
   leaderboard.slice(0,6).forEach(function(s,i){var tr=document.createElement('tr');var isMe=s.name===playerName&&s.score===Math.floor(sc);if(isMe)tr.className='me';var medal=['🥇','🥈','🥉'][i]||'#'+(i+1);tr.innerHTML='<td class="rank">'+medal+'</td><td>'+esc(s.name)+'</td><td class="sc">'+String(Math.floor(s.score)).padStart(6,'0')+'</td>';tbody.appendChild(tr);});
   document.getElementById('deathPanel').classList.add('show');
 }
+
+function showDeathWithoutSubmit(sc,lv){
+  // Show death panel with name input visible, leaderboard from current data
+  killedByDev=killedByDev||false;
+  document.getElementById('nameSubmit').style.display='block';
+  document.getElementById('dNameInput').value='';
+  document.getElementById('dNameInput').focus();
+  renderDeathPanel(sc,lv);
+}
+
+document.getElementById('dSubmit').addEventListener('click',function(){
+  var n=document.getElementById('dNameInput').value.trim();
+  playerName=(n||'ANON').toUpperCase().slice(0,16);
+  localStorage.setItem('monshi_name',playerName);
+  document.getElementById('nameSubmit').style.display='none';
+  submitScore(lastScore,lastLvl);
+});
+document.getElementById('dNameInput').addEventListener('keydown',function(e){
+  if(e.key==='Enter')document.getElementById('dSubmit').click();
+});
 
 // ── Price ticker ─────────────────────────────────────────
 function fetchPrice(){
@@ -659,7 +686,10 @@ function loop(){
       var o=obs[ci];
       if(hit(hb,{x:o.x+4,y:GROUND-o.h,w:o.w-8,h:o.h})){
         state='dead';if(score>best)best=score;lastScore=score;lastLvl=lvl;
-        killedByDev=o.isDev;sfxDie();stopMusic();submitScore(score,lvl);break;
+        killedByDev=o.isDev;sfxDie();stopMusic();
+        if(playerName){submitScore(score,lvl);}
+        else{showDeathWithoutSubmit(score,lvl);}
+        break;
       }
     }
     P.update();checkLevel();checkDevBoss();updateHeckler();
