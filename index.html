@@ -399,6 +399,7 @@ document.getElementById('btnShare').addEventListener('click',function(){
 document.getElementById('btnBuy').addEventListener('click',function(){window.open(BUY_URL,'_blank');});
 document.getElementById('btnRetry').addEventListener('click',function(){
   document.getElementById('deathPanel').classList.remove('show');
+  document.getElementById('startLb').style.display='none'; // keep hidden during play
   reset();state='playing';
   initAudio();
   if(musicOn)startMusic();
@@ -605,7 +606,11 @@ function hit(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;}
 function action(){
   if(!gameReady)return;var now=Date.now();if(now-lastAction<80)return;lastAction=now;
   initAudio();
-  if(state==='start'){state='playing';if(musicOn)startMusic();}
+  if(state==='start'){
+    state='playing';
+    document.getElementById('startLb').style.display='none'; // hide LB during play
+    if(musicOn)startMusic();
+  }
   else if(state==='playing'){P.jump();}
 }
 document.addEventListener('keydown',function(e){if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();action();}});
