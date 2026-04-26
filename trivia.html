@@ -1,0 +1,107 @@
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>CRYPTO TRIVIA</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#02000a;overflow:hidden;font-family:'Space Mono',monospace;color:#EDE9FF;}
+body{display:flex;align-items:center;justify-content:center;}
+#wrap{position:relative;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+#hubBtn{position:fixed;top:8px;left:8px;z-index:7;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);}
+.btn{padding:10px 14px;border:none;border-radius:8px;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;}
+#btnRetry{background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;}
+#btnShare{background:linear-gradient(135deg,#1DA1F2,#0d7abf);color:#fff;}
+#btnBuy{background:linear-gradient(135deg,#22C55E,#15803D);color:#fff;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}50%{box-shadow:0 0 0 8px rgba(34,197,94,0);}}
+.death{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,8,.92);z-index:8;}
+.death.show{display:flex;}
+.dCard{background:rgba(90,30,180,.18);border:1.5px solid rgba(150,120,255,.4);border-radius:18px;padding:22px 28px;width:min(440px,90vw);text-align:center;}
+.rugged{font-family:Orbitron,sans-serif;font-size:38px;font-weight:900;color:#FCA5A5;text-shadow:0 0 24px #EF4444;margin-bottom:6px;}
+.rugged.win{color:#4ADE80;text-shadow:0 0 24px #22C55E;}
+.scoreNum{font-family:Orbitron,sans-serif;font-size:24px;color:#EDE9FF;margin:10px 0;}
+.lbl{font-size:9px;color:rgba(167,139,250,.5);letter-spacing:1px;margin-bottom:10px;}
+#nS{margin-bottom:14px;display:none;}
+#nS input{background:rgba(0,0,0,.5);border:1.5px solid rgba(139,92,246,.5);border-radius:8px;padding:8px 12px;color:#fff;font-family:'Space Mono',monospace;font-size:13px;outline:none;text-align:center;letter-spacing:2px;width:160px;}
+#nS button{padding:8px 16px;background:linear-gradient(135deg,#7C3AED,#4ADE80);border:none;border-radius:8px;color:#fff;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;}
+#btnRow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+.lbT{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:11px;}
+.lbT th{color:rgba(139,92,246,.6);text-align:left;padding:3px 6px;border-bottom:1px solid rgba(139,92,246,.2);font-size:9px;letter-spacing:1px;}
+.lbT td{padding:4px 6px;color:rgba(220,210,255,.8);}
+.lbT tr.me td{color:#4ADE80;background:rgba(74,222,128,.08);}
+.lbT .sc{text-align:right;font-family:Orbitron,sans-serif;}
+.kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
+.gw{display:flex;flex-direction:column;align-items:center;gap:18px;width:min(560px,92vw);}.tit{font-family:Orbitron,sans-serif;font-size:30px;font-weight:900;letter-spacing:3px;color:#A855F7;text-shadow:0 0 16px rgba(168,85,247,.5);}.hud{display:flex;gap:10px;width:100%;}.st{flex:1;padding:8px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:8px;text-align:center;}.st .n{font-family:Orbitron,sans-serif;font-size:20px;color:#fff;}.st .l{font-size:8px;color:rgba(167,139,250,.6);letter-spacing:1.5px;}.qBox{padding:24px;background:rgba(20,5,50,.7);border:1.5px solid rgba(139,92,246,.4);border-radius:14px;width:100%;text-align:center;}.q{font-family:Orbitron,sans-serif;font-size:18px;color:#fff;line-height:1.5;}.opts{display:flex;flex-direction:column;gap:10px;width:100%;}.opt{padding:14px 18px;background:rgba(20,5,50,.6);border:1.5px solid rgba(139,92,246,.4);border-radius:10px;cursor:pointer;font-family:Orbitron,sans-serif;font-size:13px;letter-spacing:1px;text-align:left;transition:all .2s;color:#fff;}.opt:hover{border-color:#fff;background:rgba(139,92,246,.2);}.opt.right{border-color:#22C55E;background:rgba(34,197,94,.2);}.opt.wrong{border-color:#EF4444;background:rgba(239,68,68,.2);}.tmr{font-family:Orbitron,sans-serif;font-size:16px;color:#FCD34D;letter-spacing:2px;}</style></head><body>
+<a href="/" id="hubBtn">← ALL GAMES</a>
+<div id="wrap"><div class="gw"><div class="tit">CRYPTO TRIVIA</div><div class="hud"><div class="st"><div class="n" id="sc">0</div><div class="l">SCORE</div></div><div class="st"><div class="n" id="qN">1/10</div><div class="l">QUESTION</div></div><div class="st"><div class="n" id="tm">15</div><div class="l">SECONDS</div></div></div><div class="qBox"><div class="q" id="q"></div></div><div class="opts" id="opts"></div></div></div>
+<div class="death" id="dP"><div class="dCard">
+<div class="rugged" id="rT">RUGGED</div>
+<div class="scoreNum" id="dS">0</div>
+<div class="lbl" id="lT"></div>
+<div class="lbl" id="rTag" style="color:#4ADE80;"></div>
+<div id="nS"><p style="color:rgba(196,181,253,.7);font-size:10px;letter-spacing:1.5px;margin-bottom:8px;">SUBMIT TO LEADERBOARD</p>
+<div style="display:flex;gap:6px;justify-content:center;"><input id="dN" type="text" maxlength="16" placeholder="YOUR NAME"><button id="dSb">SUBMIT</button></div></div>
+<table class="lbT"><thead><tr><th>#</th><th>PLAYER</th><th class="sc">SCORE</th></tr></thead><tbody id="lB"></tbody></table>
+<div id="btnRow"><button class="btn" id="btnShare">SHARE 𝕏</button><button class="btn" id="btnBuy">BUY $MONSHI</button><button class="btn" id="btnRetry" onclick="location.reload()">RETRY</button></div>
+</div></div>
+<div class="kingP">a KING PETTY build</div>
+<script>var SUPABASE_URL='https://cuqhqcmrgpdjlhyqztnc.supabase.co';
+var SUPABASE_KEY='sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
+var BUY_URL='https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
+var playerName=localStorage.getItem('monshi_name')||'';
+var leaderboard=[],playerRank=0,lastScore=0;
+function sbH(){return{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation'};}
+function fetchLB(t){fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score&order=score.desc&limit=10',{headers:sbH()}).then(function(r){return r.json();}).then(function(d){if(Array.isArray(d))leaderboard=d;}).catch(function(){});}
+function submitS(t,sc,cb){if(!playerName)return cb&&cb();fetch(SUPABASE_URL+'/rest/v1/'+t,{method:'POST',headers:sbH(),body:JSON.stringify({name:playerName,score:Math.floor(sc)})}).then(function(){return fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score&order=score.desc&limit=10',{headers:sbH()});}).then(function(r){return r.json();}).then(function(d){if(Array.isArray(d)){leaderboard=d;playerRank=leaderboard.findIndex(function(s){return s.name===playerName&&s.score===Math.floor(sc);})+1;}cb&&cb();}).catch(function(){cb&&cb();});}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function showDeath(GN,GU,T,sc,sub,isWin){
+  lastScore=sc;
+  function render(){
+    document.getElementById('rT').textContent=isWin?'YOU WON':'RUGGED';
+    document.getElementById('rT').className='rugged'+(isWin?' win':'');
+    document.getElementById('dS').textContent=Math.floor(sc);
+    document.getElementById('lT').textContent=sub||'';
+    document.getElementById('rTag').textContent=playerRank>0?'#'+playerRank+' GLOBALLY':'';
+    var tb=document.getElementById('lB');tb.innerHTML='';
+    leaderboard.slice(0,5).forEach(function(s,i){var tr=document.createElement('tr');var isMe=s.name===playerName&&s.score===Math.floor(sc);if(isMe)tr.className='me';var medal=['🥇','🥈','🥉'][i]||'#'+(i+1);tr.innerHTML='<td>'+medal+'</td><td>'+esc(s.name)+'</td><td class="sc">'+s.score+'</td>';tb.appendChild(tr);});
+    document.getElementById('dP').classList.add('show');
+  }
+  if(playerName){submitS(T,sc,render);}else{document.getElementById('nS').style.display='block';render();}
+  document.getElementById('dSb').onclick=function(){var n=document.getElementById('dN').value.trim();playerName=(n||'ANON').toUpperCase().slice(0,16);localStorage.setItem('monshi_name',playerName);document.getElementById('nS').style.display='none';submitS(T,sc,render);};
+  document.getElementById('dN').onkeydown=function(e){if(e.key==='Enter')document.getElementById('dSb').click();};
+  document.getElementById('btnShare').onclick=function(){var tw='I scored '+sc+' on '+GN+' '+GU+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');};
+  document.getElementById('btnBuy').onclick=function(){window.open(BUY_URL,'_blank');};
+}
+var AC=window.AudioContext||window.webkitAudioContext,actx=null,ma=null;
+function initA(){if(actx)return;try{actx=new AC();ma=actx.createGain();ma.gain.value=0.2;ma.connect(actx.destination);}catch(e){}}
+function tone(f,t,v,o,d){if(!actx)return;var st=actx.currentTime+(o||0);var os=actx.createOscillator();var g=actx.createGain();os.type=t||'square';os.frequency.setValueAtTime(f,st);g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(v,st+0.01);g.gain.exponentialRampToValueAtTime(0.001,st+d);os.connect(g);g.connect(ma);os.start(st);os.stop(st+d+0.05);}
+function sfxWin(){[523,659,784,1046].forEach(function(f,i){tone(f,'square',0.18,i*0.06,0.12);});}
+function sfxLose(){[440,330,220].forEach(function(f,i){tone(f,'sawtooth',0.25,i*0.12,0.18);});}
+function sfxClick(){tone(800,'square',0.08,0,0.04);}
+function sfxCoin(){tone(880,'square',0.12,0,0.05);tone(1320,'square',0.1,0.05,0.06);}
+var QS=[
+{q:"What blockchain is MONSHI built on?",a:["Ethereum","Solana","Monad","Base"],c:2},
+{q:"What does HODL mean?",a:["Hold On for Dear Life","Hash On Data Layer","High Order Decentralized Ledger","none"],c:0},
+{q:"What is a 'rug pull'?",a:["DeFi feature","Devs steal funds","Trading strategy","Fork mechanism"],c:1},
+{q:"What does FUD stand for?",a:["Fear Uncertainty Doubt","First User Drop","Fund Under Devs","none"],c:0},
+{q:"Monad uses what chain ID?",a:["1","56","143","137"],c:2},
+{q:"What does '$MONSHI' refer to?",a:["NFT collection","Meme coin on Monad","DEX","Wallet"],c:1},
+{q:"What is 'liquidity' in DeFi?",a:["A bug","Tokens locked in pool for trading","A staking reward","An NFT"],c:1},
+{q:"What is a 'whale'?",a:["Aquatic NFT","Holder with massive bag","Bot trader","DEX"],c:1},
+{q:"GMGN, MEVX, FOMO are what?",a:["Memecoins","Trading platforms","Wallets","Chains"],c:1},
+{q:"What does a green candle mean?",a:["Price went down","Price went up","Volume spike","Buy signal"],c:1},
+{q:"What is 'TVL'?",a:["Total Value Locked","Top Validator Limit","Time-Vested Lock","Trading Volume List"],c:0},
+{q:"What does 'WAGMI' stand for?",a:["MONSHI Items","We're All Gonna Make It","Web3 AGI Mining","none"],c:1},
+{q:"What is 'slippage'?",a:["Bug in code","Price diff between expected and executed","Network fee","Validator delay"],c:1},
+{q:"Memecoin's main value driver?",a:["Whitepaper","Community + meme","Audits","Yield"],c:1},
+{q:"What does 'aping in' mean?",a:["Buying without research","Selling top","Day trading","Staking"],c:0},
+{q:"Symbol for Monad's native token?",a:["ETH","SOL","MON","MAT"],c:2},
+{q:"What is 'gas'?",a:["Network fee for transactions","Liquidity reward","Token type","Validator stake"],c:0},
+{q:"What does 'paper hands' mean?",a:["NFT trader","Sells too early in fear","Diamond holder","Whale"],c:1},
+{q:"What is 'KYC'?",a:["Know Your Customer","Keep Your Coins","Kelly Yield Curve","Kept Your Cap"],c:0},
+{q:"What's a 'dApp'?",a:["Daily app","Decentralized app","Debug app","Default app"],c:1}
+];QS=QS.sort(function(){return Math.random()-0.5;}).slice(0,10);
+var idx=0,sc=0,tm=15,iv;
+function showQ(){if(idx>=QS.length){return done();}var q=QS[idx];document.getElementById("q").textContent=q.q;document.getElementById("qN").textContent=(idx+1)+"/10";var opts=document.getElementById("opts");opts.innerHTML="";q.a.forEach(function(opt,i){var o=document.createElement("div");o.className="opt";o.textContent=String.fromCharCode(65+i)+". "+opt;o.onclick=function(){pick(i);};opts.appendChild(o);});tm=15;document.getElementById("tm").textContent=tm;clearInterval(iv);iv=setInterval(function(){tm--;document.getElementById("tm").textContent=tm;if(tm<=0){clearInterval(iv);pick(-1);}},1000);}
+function pick(i){clearInterval(iv);initA();var q=QS[idx];var opts=document.querySelectorAll(".opt");opts[q.c].classList.add("right");if(i===q.c){sc+=100+tm*5;sfxCoin();}else{if(i>=0)opts[i].classList.add("wrong");sfxLose();}document.getElementById("sc").textContent=sc;setTimeout(function(){idx++;showQ();},1200);}
+function done(){showDeath("CRYPTO TRIVIA","https://monshi-fafo.vercel.app/trivia.html","scores_trivia",sc,"finished 10",sc>=700);}
+showQ();fetchLB("scores_trivia");</script>
+</body></html>

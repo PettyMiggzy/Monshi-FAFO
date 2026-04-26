@@ -1,0 +1,93 @@
+<!DOCTYPE html><html><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>MONSHI TETRIS</title>
+<style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#02000a;overflow:hidden;font-family:'Space Mono',monospace;color:#EDE9FF;}
+body{display:flex;align-items:center;justify-content:center;}
+#wrap{position:relative;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+#hubBtn{position:fixed;top:8px;left:8px;z-index:7;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);}
+.btn{padding:10px 14px;border:none;border-radius:8px;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;}
+#btnRetry{background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;}
+#btnShare{background:linear-gradient(135deg,#1DA1F2,#0d7abf);color:#fff;}
+#btnBuy{background:linear-gradient(135deg,#22C55E,#15803D);color:#fff;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}50%{box-shadow:0 0 0 8px rgba(34,197,94,0);}}
+.death{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,8,.92);z-index:8;}
+.death.show{display:flex;}
+.dCard{background:rgba(90,30,180,.18);border:1.5px solid rgba(150,120,255,.4);border-radius:18px;padding:22px 28px;width:min(440px,90vw);text-align:center;}
+.rugged{font-family:Orbitron,sans-serif;font-size:38px;font-weight:900;color:#FCA5A5;text-shadow:0 0 24px #EF4444;margin-bottom:6px;}
+.rugged.win{color:#4ADE80;text-shadow:0 0 24px #22C55E;}
+.scoreNum{font-family:Orbitron,sans-serif;font-size:24px;color:#EDE9FF;margin:10px 0;}
+.lbl{font-size:9px;color:rgba(167,139,250,.5);letter-spacing:1px;margin-bottom:10px;}
+#nS{margin-bottom:14px;display:none;}
+#nS input{background:rgba(0,0,0,.5);border:1.5px solid rgba(139,92,246,.5);border-radius:8px;padding:8px 12px;color:#fff;font-family:'Space Mono',monospace;font-size:13px;outline:none;text-align:center;letter-spacing:2px;width:160px;}
+#nS button{padding:8px 16px;background:linear-gradient(135deg,#7C3AED,#4ADE80);border:none;border-radius:8px;color:#fff;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;}
+#btnRow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+.lbT{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:11px;}
+.lbT th{color:rgba(139,92,246,.6);text-align:left;padding:3px 6px;border-bottom:1px solid rgba(139,92,246,.2);font-size:9px;letter-spacing:1px;}
+.lbT td{padding:4px 6px;color:rgba(220,210,255,.8);}
+.lbT tr.me td{color:#4ADE80;background:rgba(74,222,128,.08);}
+.lbT .sc{text-align:right;font-family:Orbitron,sans-serif;}
+.kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
+.gw{display:flex;gap:18px;align-items:flex-start;}.tit{font-family:Orbitron,sans-serif;font-size:24px;font-weight:900;letter-spacing:2px;color:#A855F7;text-shadow:0 0 16px rgba(168,85,247,.6);margin-bottom:10px;}.bd{background:rgba(20,5,50,.7);border:2px solid rgba(139,92,246,.4);border-radius:8px;}.side{display:flex;flex-direction:column;gap:14px;width:140px;}.bx{padding:12px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:8px;text-align:center;}.bx .l{font-size:9px;color:rgba(167,139,250,.6);letter-spacing:2px;margin-bottom:6px;}.bx .v{font-family:Orbitron,sans-serif;font-size:24px;color:#fff;font-weight:900;}.nxt{height:80px;display:flex;align-items:center;justify-content:center;}</style></head><body>
+<a href="/" id="hubBtn">← ALL GAMES</a>
+<div id="wrap"><div class="gw"><div><div class="tit">MONSHI TETRIS</div><canvas class="bd" id="bd" width="240" height="480"></canvas></div><div class="side"><div class="bx"><div class="l">SCORE</div><div class="v" id="sc">0</div></div><div class="bx"><div class="l">LINES</div><div class="v" id="ln">0</div></div><div class="bx"><div class="l">LEVEL</div><div class="v" id="lv">1</div></div><div class="bx"><div class="l">NEXT</div><canvas class="nxt" id="nx" width="80" height="80"></canvas></div><div style="font-size:9px;color:rgba(167,139,250,.5);letter-spacing:1.5px;text-align:center;line-height:1.6;">A/D MOVE<br>S DROP<br>W ROTATE<br>SPACE HARD DROP</div></div></div></div>
+<div class="death" id="dP"><div class="dCard">
+<div class="rugged" id="rT">RUGGED</div>
+<div class="scoreNum" id="dS">0</div>
+<div class="lbl" id="lT"></div>
+<div class="lbl" id="rTag" style="color:#4ADE80;"></div>
+<div id="nS"><p style="color:rgba(196,181,253,.7);font-size:10px;letter-spacing:1.5px;margin-bottom:8px;">SUBMIT TO LEADERBOARD</p>
+<div style="display:flex;gap:6px;justify-content:center;"><input id="dN" type="text" maxlength="16" placeholder="YOUR NAME"><button id="dSb">SUBMIT</button></div></div>
+<table class="lbT"><thead><tr><th>#</th><th>PLAYER</th><th class="sc">SCORE</th></tr></thead><tbody id="lB"></tbody></table>
+<div id="btnRow"><button class="btn" id="btnShare">SHARE 𝕏</button><button class="btn" id="btnBuy">BUY $MONSHI</button><button class="btn" id="btnRetry" onclick="location.reload()">RETRY</button></div>
+</div></div>
+<div class="kingP">a KING PETTY build</div>
+<script>var SUPABASE_URL='https://cuqhqcmrgpdjlhyqztnc.supabase.co';
+var SUPABASE_KEY='sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
+var BUY_URL='https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
+var playerName=localStorage.getItem('monshi_name')||'';
+var leaderboard=[],playerRank=0,lastScore=0;
+function sbH(){return{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation'};}
+function fetchLB(t){fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score&order=score.desc&limit=10',{headers:sbH()}).then(function(r){return r.json();}).then(function(d){if(Array.isArray(d))leaderboard=d;}).catch(function(){});}
+function submitS(t,sc,cb){if(!playerName)return cb&&cb();fetch(SUPABASE_URL+'/rest/v1/'+t,{method:'POST',headers:sbH(),body:JSON.stringify({name:playerName,score:Math.floor(sc)})}).then(function(){return fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score&order=score.desc&limit=10',{headers:sbH()});}).then(function(r){return r.json();}).then(function(d){if(Array.isArray(d)){leaderboard=d;playerRank=leaderboard.findIndex(function(s){return s.name===playerName&&s.score===Math.floor(sc);})+1;}cb&&cb();}).catch(function(){cb&&cb();});}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function showDeath(GN,GU,T,sc,sub,isWin){
+  lastScore=sc;
+  function render(){
+    document.getElementById('rT').textContent=isWin?'YOU WON':'RUGGED';
+    document.getElementById('rT').className='rugged'+(isWin?' win':'');
+    document.getElementById('dS').textContent=Math.floor(sc);
+    document.getElementById('lT').textContent=sub||'';
+    document.getElementById('rTag').textContent=playerRank>0?'#'+playerRank+' GLOBALLY':'';
+    var tb=document.getElementById('lB');tb.innerHTML='';
+    leaderboard.slice(0,5).forEach(function(s,i){var tr=document.createElement('tr');var isMe=s.name===playerName&&s.score===Math.floor(sc);if(isMe)tr.className='me';var medal=['🥇','🥈','🥉'][i]||'#'+(i+1);tr.innerHTML='<td>'+medal+'</td><td>'+esc(s.name)+'</td><td class="sc">'+s.score+'</td>';tb.appendChild(tr);});
+    document.getElementById('dP').classList.add('show');
+  }
+  if(playerName){submitS(T,sc,render);}else{document.getElementById('nS').style.display='block';render();}
+  document.getElementById('dSb').onclick=function(){var n=document.getElementById('dN').value.trim();playerName=(n||'ANON').toUpperCase().slice(0,16);localStorage.setItem('monshi_name',playerName);document.getElementById('nS').style.display='none';submitS(T,sc,render);};
+  document.getElementById('dN').onkeydown=function(e){if(e.key==='Enter')document.getElementById('dSb').click();};
+  document.getElementById('btnShare').onclick=function(){var tw='I scored '+sc+' on '+GN+' '+GU+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');};
+  document.getElementById('btnBuy').onclick=function(){window.open(BUY_URL,'_blank');};
+}
+var AC=window.AudioContext||window.webkitAudioContext,actx=null,ma=null;
+function initA(){if(actx)return;try{actx=new AC();ma=actx.createGain();ma.gain.value=0.2;ma.connect(actx.destination);}catch(e){}}
+function tone(f,t,v,o,d){if(!actx)return;var st=actx.currentTime+(o||0);var os=actx.createOscillator();var g=actx.createGain();os.type=t||'square';os.frequency.setValueAtTime(f,st);g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(v,st+0.01);g.gain.exponentialRampToValueAtTime(0.001,st+d);os.connect(g);g.connect(ma);os.start(st);os.stop(st+d+0.05);}
+function sfxWin(){[523,659,784,1046].forEach(function(f,i){tone(f,'square',0.18,i*0.06,0.12);});}
+function sfxLose(){[440,330,220].forEach(function(f,i){tone(f,'sawtooth',0.25,i*0.12,0.18);});}
+function sfxClick(){tone(800,'square',0.08,0,0.04);}
+function sfxCoin(){tone(880,'square',0.12,0,0.05);tone(1320,'square',0.1,0.05,0.06);}
+var c=document.getElementById("bd"),x=c.getContext("2d"),nc=document.getElementById("nx"),nx=nc.getContext("2d");
+var W=10,H=20,S=24;var grid=[];for(var i=0;i<H;i++){var r=[];for(var j=0;j<W;j++)r.push(0);grid.push(r);}
+var SHAPES=[[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[0,1,1],[1,1,0]],[[1,1,0],[0,1,1]],[[1,0,0],[1,1,1]],[[0,0,1],[1,1,1]]];
+var COLORS=["#22C55E","#FCD34D","#A855F7","#3B82F6","#EF4444","#F97316","#EC4899"];
+var cur=null,nxtP=null,score=0,lines=0,level=1,fall=0,gameOver=false;
+function newPiece(){var i=Math.floor(Math.random()*SHAPES.length);return{s:SHAPES[i].map(function(r){return r.slice();}),c:COLORS[i],x:3,y:0};}
+function rotate(p){var rows=p.s.length,cols=p.s[0].length;var n=[];for(var j=0;j<cols;j++){var r=[];for(var i=rows-1;i>=0;i--)r.push(p.s[i][j]);n.push(r);}return n;}
+function valid(p){for(var i=0;i<p.s.length;i++)for(var j=0;j<p.s[i].length;j++){if(!p.s[i][j])continue;var x=p.x+j,y=p.y+i;if(x<0||x>=W||y>=H)return false;if(y>=0&&grid[y][x])return false;}return true;}
+function lock(){for(var i=0;i<cur.s.length;i++)for(var j=0;j<cur.s[i].length;j++)if(cur.s[i][j]){var y=cur.y+i;if(y<0){gameOver=true;return;}grid[y][cur.x+j]=cur.c;}var cleared=0;for(var i=H-1;i>=0;i--){if(grid[i].every(function(c){return c;})){grid.splice(i,1);grid.unshift([0,0,0,0,0,0,0,0,0,0]);cleared++;i++;}}if(cleared){lines+=cleared;score+=[0,40,100,300,1200][cleared]*level;level=Math.floor(lines/10)+1;sfxCoin();}cur=nxtP;nxtP=newPiece();if(!valid(cur))gameOver=true;}
+function draw(){x.fillStyle="#0a0015";x.fillRect(0,0,c.width,c.height);for(var i=0;i<H;i++)for(var j=0;j<W;j++){if(grid[i][j]){x.fillStyle=grid[i][j];x.fillRect(j*S+1,i*S+1,S-2,S-2);}}if(cur){x.fillStyle=cur.c;for(var i=0;i<cur.s.length;i++)for(var j=0;j<cur.s[i].length;j++)if(cur.s[i][j])x.fillRect((cur.x+j)*S+1,(cur.y+i)*S+1,S-2,S-2);}nx.clearRect(0,0,80,80);if(nxtP){nx.fillStyle=nxtP.c;var ox=(80-nxtP.s[0].length*16)/2,oy=(80-nxtP.s.length*16)/2;for(var i=0;i<nxtP.s.length;i++)for(var j=0;j<nxtP.s[i].length;j++)if(nxtP.s[i][j])nx.fillRect(ox+j*16,oy+i*16,14,14);}document.getElementById("sc").textContent=score;document.getElementById("ln").textContent=lines;document.getElementById("lv").textContent=level;}
+cur=newPiece();nxtP=newPiece();
+function tick(){if(gameOver)return;fall++;if(fall>=Math.max(3,30-level*2)){fall=0;cur.y++;if(!valid(cur)){cur.y--;lock();}}draw();if(gameOver){setTimeout(function(){showDeath("MONSHI TETRIS","https://monshi-fafo.vercel.app/tetris.html","scores_tetris",score,lines+" lines L"+level,false);},400);}else requestAnimationFrame(tick);}tick();
+window.addEventListener("keydown",function(e){if(gameOver||!cur)return;initA();var k=e.key.toLowerCase();if(k==="a"||k==="arrowleft"){cur.x--;if(!valid(cur))cur.x++;sfxClick();}else if(k==="d"||k==="arrowright"){cur.x++;if(!valid(cur))cur.x--;sfxClick();}else if(k==="s"||k==="arrowdown"){cur.y++;if(!valid(cur)){cur.y--;lock();}}else if(k==="w"||k==="arrowup"){var n=rotate(cur);var save=cur.s;cur.s=n;if(!valid(cur))cur.s=save;else sfxClick();}else if(e.code==="Space"){while(valid(cur)){cur.y++;score+=2;}cur.y--;lock();e.preventDefault();}draw();});fetchLB("scores_tetris");</script>
+</body></html>
