@@ -466,7 +466,7 @@ if(walletAddr&&window.ethereum){
 rpcCall('eth_chainId',[]);
 
 // ── Holder Leaderboard ─────────────────────────────────
-var HOLDER_API='https://api.nadapp.net/trade/holder/0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
+var HOLDER_API='/api/holders';
 var totalSupply=0;
 
 function fmtBag(amt){
@@ -487,7 +487,7 @@ function tierFor(amt){
 function shortAddr2(a){return a.slice(0,6)+'...'+a.slice(-4);}
 
 function fetchHolders(){
-  fetch(HOLDER_API+'?tableType=holder-table&page=1&limit=20')
+  fetch(HOLDER_API+'?limit=20')
     .then(function(r){return r.json();})
     .then(function(data){
       // Try common response shapes
