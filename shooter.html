@@ -257,6 +257,8 @@ function spawnWave(){
     var typeIdx=Math.floor(Math.random()*(maxType+1));
     spawnEnemy(typeIdx,x,y);
   }
+  waveTarget=count;  // sync target to actual spawn count
+  waveKills=0;       // reset kills for new wave
 }
 function drawEnemy(e){
   ctx.save();
@@ -426,7 +428,7 @@ function update(){
         b.hits.push(e);
         if(e.hp<=0){
           score+=Math.floor(e.pts);waveKills++;
-          if(e.boss){bossActive=false;explode(e.x,e.y,'#FCD34D',40);sfxKill();}
+          if(e.boss){bossActive=false;explode(e.x,e.y,'#FCD34D',40);sfxKill();waveKills=999;}
           else{explode(e.x,e.y,ENEMY_TYPES[e.typeIdx].color,15);sfxKill();}
           dropPickup(e.x,e.y);
           enemies.splice(j,1);
@@ -476,22 +478,18 @@ function update(){
     if(p.life<=0)pickups.splice(i,1);
   }
 
-  // Wave check
-  if(waveKills>=waveTarget&&!bossActive){
-    if(enemies.length===0){
-      wave++;waveKills=0;
-      bossWaveCounter++;
-      if(bossWaveCounter>=4){bossWaveCounter=0;spawnBoss();}
-      else{
-        waveTarget=Math.floor(8+wave*1.5);
-        spawnWave();
-      }
-      sfxWave();
-      // Permanent upgrade every wave
-      if(wave%2===0)P.fireRate=Math.max(6,P.fireRate-1);
-      if(wave%3===0)P.bulletDmg+=0.5;
-      if(wave%5===0){P.maxHp+=20;P.hp=Math.min(P.maxHp,P.hp+30);}
-    }
+  // Wave check - advance when all enemies cleared
+  if(enemies.length===0&&!bossActive&&waveKills>0){
+    wave++;
+    bossWaveCounter++;
+    sfxWave();
+    // Permanent upgrades
+    if(wave%2===0)P.fireRate=Math.max(6,P.fireRate-1);
+    if(wave%3===0)P.bulletDmg+=0.5;
+    if(wave%5===0){P.maxHp+=20;P.hp=Math.min(P.maxHp,P.hp+30);}
+    // Boss every 4 waves
+    if(bossWaveCounter>=4){bossWaveCounter=0;spawnBoss();waveKills=0;waveTarget=1;}
+    else{spawnWave();}
   }
 
   // Particles
@@ -630,8 +628,8 @@ document.getElementById('btnRetry').addEventListener('click',function(){
 function reset(){
   P.x=BW/2;P.y=BH/2;P.hp=100;P.maxHp=100;P.fireRate=18;P.bulletDmg=1;P.fireT=0;P.invuln=0;P.flash=0;
   enemies=[];bullets=[];pickups=[];parts=[];
-  score=0;wave=1;waveKills=0;waveTarget=8;bossActive=false;bossWaveCounter=0;
-  spawnWave();
+  score=0;wave=1;bossActive=false;bossWaveCounter=0;
+  spawnWave();  // this sets waveKills=0, waveTarget=count
   state='playing';
 }
 
