@@ -1,0 +1,8 @@
+{
+  "buildCommand": null,
+  "outputDirectory": null,
+  "framework": null,
+  "rewrites": [
+    { "source": "/profile/:wallet", "destination": "/api/profile?wallet=:wallet" }
+  ]
+}
