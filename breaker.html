@@ -248,7 +248,7 @@ function renderDeath(sc){
 }
 document.getElementById('dSubmit').addEventListener('click',function(){var n=document.getElementById('dNameInput').value.trim();playerName=(n||'ANON').toUpperCase().slice(0,16);localStorage.setItem('monshi_name',playerName);document.getElementById('nameSubmit').style.display='none';submitScore(lastScore);});
 document.getElementById('dNameInput').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('dSubmit').click();});
-document.getElementById('btnShare').addEventListener('click',function(){var tweet='I scored '+lastScore+' on MONSHI BREAKER LVL '+level+'! '+GAME_URL+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tweet),'_blank');});
+document.getElementById('btnShare').addEventListener('click',function(){var tweet='I scored '+lastScore+' on MONSHI BREAKER LVL '+level+'! '+('https://monshi-fafo.vercel.app/api/share?game=MONSHI%20BREAKER&score='+lastScore+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+(typeof playerRank!=='undefined'?playerRank:'')+'&goto='+encodeURIComponent(GAME_URL))+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tweet),'_blank');});
 document.getElementById('btnBuy').addEventListener('click',function(){window.open(BUY_URL,'_blank');});
 document.getElementById('btnRetry').addEventListener('click',function(){document.getElementById('deathPanel').classList.remove('show');reset();});
 fetchLeaderboard();

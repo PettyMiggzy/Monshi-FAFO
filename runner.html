@@ -421,7 +421,7 @@ function fetchPrice(){
 // ── Buttons ───────────────────────────────────────────────
 document.getElementById('btnShare').addEventListener('click',function(){
   var devLine=killedByDev?' Got RUGGED BY THE DEV':'';
-  var tweet='I scored '+String(Math.floor(lastScore)).padStart(6,'0')+' on MONSHI RUNNER LVL '+LEVELS[Math.min(lastLvl,5)].num+' '+LEVELS[Math.min(lastLvl,5)].name+devLine+' Play: '+GAME_URL+' $MONSHI #Monad';
+  var tweet='I scored '+String(Math.floor(lastScore)).padStart(6,'0')+' on MONSHI RUNNER LVL '+LEVELS[Math.min(lastLvl,5)].num+' '+LEVELS[Math.min(lastLvl,5)].name+devLine+' Play: '+('https://monshi-fafo.vercel.app/api/share?game=MONSHI%20RUNNER&score='+lastScore+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+(typeof playerRank!=='undefined'?playerRank:'')+'&goto='+encodeURIComponent(GAME_URL))+' $MONSHI #Monad';
   window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tweet),'_blank');
 });
 document.getElementById('btnBuy').addEventListener('click',function(){window.open(BUY_URL,'_blank');});

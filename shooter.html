@@ -614,7 +614,7 @@ document.getElementById('startLb').style.display='block';
 
 // ── Buttons ──────────────────────────────────────────────
 document.getElementById('btnShare').addEventListener('click',function(){
-  var tweet='I scored '+String(Math.floor(lastScore)).padStart(7,'0')+' on MONSHI SHOOTER reaching WAVE '+lastWave+'! Auto-blasted FUDders with $MONSHI bullets. Play: '+GAME_URL+' $MONSHI #Monad';
+  var tweet='I scored '+String(Math.floor(lastScore)).padStart(7,'0')+' on MONSHI SHOOTER reaching WAVE '+lastWave+'! Auto-blasted FUDders with $MONSHI bullets. Play: '+('https://monshi-fafo.vercel.app/api/share?game=MONSHI%20SHOOTER&score='+lastScore+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+(typeof playerRank!=='undefined'?playerRank:'')+'&goto='+encodeURIComponent(GAME_URL))+' $MONSHI #Monad';
   window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tweet),'_blank');
 });
 document.getElementById('btnBuy').addEventListener('click',function(){window.open(BUY_URL,'_blank');});
