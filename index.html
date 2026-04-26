@@ -141,128 +141,149 @@ function resize(){
 }
 resize(); window.addEventListener('resize',resize);
 
-// ── Music (Web Audio API) ────────────────────────────────
+// ── Audio System ─────────────────────────────────────────
 var AudioCtx=window.AudioContext||window.webkitAudioContext;
-var audioCtx=null, musicOn=false, musicNodes=[], beatInterval=null;
+var audioCtx=null, musicOn=true, musicTimer=null, masterGain=null;
 
 function initAudio(){
-  if(!audioCtx) audioCtx=new AudioCtx();
-  if(audioCtx.state==='suspended') audioCtx.resume();
+  if(audioCtx)return;
+  try{
+    audioCtx=new AudioCtx();
+    masterGain=audioCtx.createGain();
+    masterGain.gain.value=0.25;
+    masterGain.connect(audioCtx.destination);
+  }catch(e){console.log('audio init failed',e);}
 }
 
-// Simple synth note
-function playNote(freq,type,vol,start,dur,dest){
+function tone(freq,type,vol,startOffset,dur){
+  if(!audioCtx)return;
+  var t=audioCtx.currentTime+(startOffset||0);
   var osc=audioCtx.createOscillator();
-  var gain=audioCtx.createGain();
+  var g=audioCtx.createGain();
   osc.type=type||'square';
-  osc.frequency.setValueAtTime(freq,start);
-  gain.gain.setValueAtTime(vol,start);
-  gain.gain.exponentialRampToValueAtTime(0.001,start+dur);
-  osc.connect(gain); gain.connect(dest||audioCtx.destination);
-  osc.start(start); osc.stop(start+dur+0.05);
-  return {osc:osc,gain:gain};
+  osc.frequency.setValueAtTime(freq,t);
+  g.gain.setValueAtTime(0,t);
+  g.gain.linearRampToValueAtTime(vol,t+0.01);
+  g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+  osc.connect(g); g.connect(masterGain);
+  osc.start(t); osc.stop(t+dur+0.05);
 }
 
-// Level-aware background music
-var currentBeat=0, bpm=128;
-function startMusic(){
-  if(!audioCtx||beatInterval)return;
-  var notes=[130,146,164,174,196,220,246,261]; // minor scale
-  var bass=[65,73,82,87];
-  var beat=0;
-  var interval=(60/bpm)*1000/2; // 8th notes
-
-  // Master compressor
-  var comp=audioCtx.createDynamicsCompressor();
-  comp.connect(audioCtx.destination);
-  var masterGain=audioCtx.createGain(); masterGain.gain.value=0.18;
-  masterGain.connect(comp);
-  musicNodes.push(comp,masterGain);
-
-  beatInterval=setInterval(function(){
-    if(!musicOn||!audioCtx)return;
-    var t=audioCtx.currentTime;
-    var lv=Math.min(lvl,5);
-    var spbMulti=1+lv*0.15;
-
-    // Bassline - every 2 beats
-    if(beat%4===0){
-      var bf=bass[Math.floor(beat/4)%bass.length]*(lv>3?2:1);
-      playNote(bf,'sawtooth',0.4,t,0.18,masterGain);
-    }
-    // Hi hats
-    var bufSize=audioCtx.sampleRate*0.05;
-    var buf=audioCtx.createBuffer(1,bufSize,audioCtx.sampleRate);
-    var data=buf.getChannelData(0);
-    for(var i=0;i<bufSize;i++) data[i]=(Math.random()*2-1)*0.3;
-    var src=audioCtx.createBufferSource();
-    src.buffer=buf;
-    var hg=audioCtx.createGain();
-    hg.gain.setValueAtTime(beat%2===0?0.3:0.15,t);
-    hg.gain.exponentialRampToValueAtTime(0.001,t+0.04);
-    src.connect(hg); hg.connect(masterGain); src.start(t);
-    musicNodes.push(src,hg);
-
-    // Melody every 3 beats, level-dependent scale
-    if(beat%3===0){
-      var scaleIdx=(beat/3+lv*2)%notes.length;
-      var mf=notes[Math.floor(scaleIdx)]*(lv>1?2:1);
-      playNote(mf,lv>3?'sawtooth':'square',0.15,t,0.12,masterGain);
-    }
-
-    // Kick drum on 1 and 3
-    if(beat%8===0||beat%8===4){
-      var kick=audioCtx.createOscillator();
-      var kg=audioCtx.createGain();
-      kick.frequency.setValueAtTime(180,t);
-      kick.frequency.exponentialRampToValueAtTime(40,t+0.1);
-      kg.gain.setValueAtTime(0.8,t);
-      kg.gain.exponentialRampToValueAtTime(0.001,t+0.15);
-      kick.connect(kg); kg.connect(masterGain);
-      kick.start(t); kick.stop(t+0.2);
-      musicNodes.push(kick,kg);
-    }
-    beat=(beat+1)%32;
-    currentBeat=beat;
-    // Trim old nodes
-    if(musicNodes.length>200) musicNodes.splice(0,50);
-  },interval);
+function noise(vol,startOffset,dur){
+  if(!audioCtx)return;
+  var t=audioCtx.currentTime+(startOffset||0);
+  var bufSize=Math.floor(audioCtx.sampleRate*dur);
+  var buf=audioCtx.createBuffer(1,bufSize,audioCtx.sampleRate);
+  var d=buf.getChannelData(0);
+  for(var i=0;i<bufSize;i++)d[i]=(Math.random()*2-1)*0.5;
+  var src=audioCtx.createBufferSource();
+  src.buffer=buf;
+  var g=audioCtx.createGain();
+  g.gain.setValueAtTime(vol,t);
+  g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+  src.connect(g); g.connect(masterGain);
+  src.start(t);
 }
 
-function stopMusic(){
-  if(beatInterval){clearInterval(beatInterval);beatInterval=null;}
-}
-
-// SFX
+// ── SFX ──────────────────────────────────────────────────
 function sfxJump(){
   if(!audioCtx)return;
-  playNote(300,'square',0.08,audioCtx.currentTime,0.06);
-  playNote(450,'square',0.06,audioCtx.currentTime+0.04,0.06);
+  tone(420,'square',0.15,0,0.08);
+  tone(620,'square',0.1,0.04,0.06);
 }
 function sfxDie(){
   if(!audioCtx)return;
-  var t=audioCtx.currentTime;
-  [400,300,200,150].forEach(function(f,i){playNote(f,'sawtooth',0.12,t+i*0.08,0.1);});
+  // sad trombone descend
+  tone(440,'sawtooth',0.25,0,0.18);
+  tone(370,'sawtooth',0.25,0.18,0.18);
+  tone(310,'sawtooth',0.25,0.36,0.18);
+  tone(247,'sawtooth',0.3,0.54,0.4);
 }
 function sfxLevelUp(){
   if(!audioCtx)return;
-  var t=audioCtx.currentTime;
-  [261,329,392,523].forEach(function(f,i){playNote(f,'square',0.1,t+i*0.07,0.1);});
+  // ascending arpeggio
+  [261,329,392,523,659].forEach(function(f,i){tone(f,'square',0.18,i*0.06,0.1);});
+  tone(784,'square',0.22,0.36,0.3);
 }
 function sfxDevWarn(){
   if(!audioCtx)return;
-  var t=audioCtx.currentTime;
-  [800,600,800,600].forEach(function(f,i){playNote(f,'square',0.1,t+i*0.1,0.08);});
+  for(var i=0;i<3;i++){tone(880,'square',0.18,i*0.16,0.08);tone(660,'square',0.18,i*0.16+0.08,0.08);}
+}
+function sfxBuyJingle(){
+  if(!audioCtx)return;
+  // Cheery "buy MONSHI" chime
+  tone(523,'square',0.18,0,0.1);
+  tone(659,'square',0.18,0.1,0.1);
+  tone(784,'square',0.18,0.2,0.1);
+  tone(1046,'square',0.22,0.3,0.25);
+  tone(523,'sine',0.12,0.55,0.4);
+  tone(659,'sine',0.12,0.55,0.4);
+}
+
+// ── Music (procedural synthwave) ─────────────────────────
+var musicBeat=0;
+function musicTick(){
+  if(!audioCtx||!musicOn)return;
+  var L_=Math.min(lvl,5);
+  // Bass pattern (root note based on level)
+  var bassRoots=[55,58,62,55,49,73]; // A1 minor scale roots per level
+  var bassFreq=bassRoots[L_]||55;
+  if(musicBeat%4===0){
+    tone(bassFreq,'sawtooth',0.18,0,0.22);
+    tone(bassFreq*0.5,'sine',0.12,0,0.22);
+  }
+  // Kick on 1, 3
+  if(musicBeat%4===0||musicBeat%4===2){
+    var t=audioCtx.currentTime;
+    var kick=audioCtx.createOscillator();
+    var kg=audioCtx.createGain();
+    kick.frequency.setValueAtTime(160,t);
+    kick.frequency.exponentialRampToValueAtTime(40,t+0.08);
+    kg.gain.setValueAtTime(0.55,t);
+    kg.gain.exponentialRampToValueAtTime(0.001,t+0.12);
+    kick.connect(kg);kg.connect(masterGain);
+    kick.start(t);kick.stop(t+0.15);
+  }
+  // Hi-hat
+  noise(musicBeat%2===0?0.06:0.1,0,0.03);
+  // Lead melody (level-aware scale)
+  var scales=[
+    [261,329,392,440,523],  // L1 minor
+    [293,349,440,523,587],  // L2 lift
+    [329,392,440,523,659],  // L3 brighter
+    [293,349,415,466,587],  // L4 minor tense
+    [330,392,494,587,659],  // L5 majestic
+    [277,330,415,466,554]   // L6 dark
+  ];
+  var sc=scales[L_]||scales[0];
+  if(musicBeat%2===0){
+    var note=sc[Math.floor(Math.random()*sc.length)];
+    tone(note,'square',0.07,0,0.14);
+  }
+  musicBeat=(musicBeat+1)%32;
+}
+
+function startMusic(){
+  if(musicTimer)return;
+  if(!audioCtx)initAudio();
+  if(audioCtx&&audioCtx.state==='suspended')audioCtx.resume();
+  // 16th-note grid at 120 BPM = 125ms per step
+  musicTimer=setInterval(musicTick,125);
+}
+function stopMusic(){
+  if(musicTimer){clearInterval(musicTimer);musicTimer=null;}
+  musicBeat=0;
 }
 
 // Music toggle button
 document.getElementById('musicBtn').addEventListener('click',function(){
   initAudio();
   musicOn=!musicOn;
-  this.textContent=musicOn?'🔊 MUSIC ON':'🔇 MUSIC OFF';
-  if(musicOn&&state==='playing')startMusic();
+  this.textContent=musicOn?'MUSIC ON':'MUSIC OFF';
+  if(musicOn){if(state==='playing')startMusic();}
   else stopMusic();
 });
+document.getElementById('musicBtn').textContent=musicOn?'MUSIC ON':'MUSIC OFF';
 
 // ── Levels ──────────────────────────────────────────────
 var LEVELS=[
@@ -296,6 +317,8 @@ function startGame(){
   document.getElementById('nameModal').style.display='none';
   document.getElementById('startLb').style.display='block';
   gameReady=true;
+  initAudio(); // ← user gesture, allowed to start audio now
+  setTimeout(function(){sfxBuyJingle();},200); // play start jingle
   try{fetchLeaderboard();}catch(e){}
   try{fetchPrice();}catch(e){}
 }
@@ -366,7 +389,8 @@ document.getElementById('btnBuy').addEventListener('click',function(){window.ope
 document.getElementById('btnRetry').addEventListener('click',function(){
   document.getElementById('deathPanel').classList.remove('show');
   reset();state='playing';
-  if(musicOn){initAudio();startMusic();}
+  initAudio();
+  if(musicOn)startMusic();
 });
 
 // ── Player ────────────────────────────────────────────────
@@ -555,7 +579,8 @@ function hit(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;}
 // ── Input ─────────────────────────────────────────────────
 function action(){
   if(!gameReady)return;var now=Date.now();if(now-lastAction<80)return;lastAction=now;
-  if(state==='start'){state='playing';if(musicOn){initAudio();startMusic();}}
+  initAudio();
+  if(state==='start'){state='playing';if(musicOn)startMusic();}
   else if(state==='playing'){P.jump();}
 }
 document.addEventListener('keydown',function(e){if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();action();}});
