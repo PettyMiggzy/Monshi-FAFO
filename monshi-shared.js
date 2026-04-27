@@ -1,21 +1,19 @@
-// Monshi Arcade — Shared wallet + tier + score system
-// This script is included in all games for wallet connect, tier perks, and global ranking
-
+// Monshi Arcade — Shared wallet + tier + perks system
 (function(){
   window.MONSHI = window.MONSHI || {};
   
   var CONTRACT = '0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
   var MONAD_HEX = '0x8f';
-  var MONAD_DEC = 143;
   var SUPABASE_URL = 'https://cuqhqcmrgpdjlhyqztnc.supabase.co';
   var SUPABASE_KEY = 'sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
 
+  // 5 tiers - real perks attached
   var TIERS = [
-    { name:'SHRIMP',  emoji:'🦐', min:0,        color:'#F97316', mult:1.0, perks:[] },
-    { name:'CRAB',    emoji:'🦀', min:10000,    color:'#FCD34D', mult:1.5, perks:['1.5x SCORE'] },
-    { name:'DOLPHIN', emoji:'🐬', min:100000,   color:'#60A5FA', mult:2.0, perks:['2x SCORE','+1 LIFE'] },
-    { name:'WHALE',   emoji:'🐋', min:1000000,  color:'#A855F7', mult:2.5, perks:['2.5x SCORE','+2 LIVES','WHALE MODE'] },
-    { name:'ROYALTY', emoji:'👑', min:10000000, color:'#4ADE80', mult:3.0, perks:['3x SCORE','+3 LIVES','GOLD BADGE','ROYAL MODE'] }
+    { name:'SHRIMP',  emoji:'🦐', min:0,        color:'#F97316', mult:1.0, lives:0, perks:'No perks. Just play.' },
+    { name:'CRAB',    emoji:'🦀', min:10000,    color:'#FCD34D', mult:1.5, lives:0, perks:'1.5x score' },
+    { name:'DOLPHIN', emoji:'🐬', min:100000,   color:'#60A5FA', mult:2.0, lives:1, perks:'2x score · +1 life' },
+    { name:'WHALE',   emoji:'🐋', min:1000000,  color:'#A855F7', mult:2.5, lives:2, perks:'2.5x score · +2 lives · WHALE MODE' },
+    { name:'ROYALTY', emoji:'👑', min:10000000, color:'#4ADE80', mult:3.0, lives:3, perks:'3x score · +3 lives · ROYAL MODE · gold leaderboard badge' }
   ];
 
   function tierForBalance(bal){
@@ -30,13 +28,15 @@
 
   // ── Wallet connect ──
   MONSHI.connectWallet = async function(){
-    if(!window.ethereum){alert('Install a Monad-compatible wallet (MetaMask, Phantom, Rabby)');return null;}
+    if(!window.ethereum){
+      alert('Install a wallet (MetaMask, Phantom, Rabby) to unlock perks');
+      return null;
+    }
     try{
       var accs = await window.ethereum.request({method:'eth_requestAccounts'});
       if(!accs||!accs.length)return null;
       MONSHI.wallet = accs[0];
       localStorage.setItem('monshi_wallet', MONSHI.wallet);
-      // Try to switch to Monad
       try{
         await window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:MONAD_HEX}]});
       }catch(e){
@@ -51,6 +51,7 @@
       }
       await MONSHI.fetchBalance();
       MONSHI.updateBadge();
+      MONSHI.showPerksToast();
       window.dispatchEvent(new Event('monshi:connect'));
       return MONSHI.wallet;
     }catch(e){console.log('wallet err',e);return null;}
@@ -58,8 +59,10 @@
 
   MONSHI.disconnect = function(){
     MONSHI.wallet=null;MONSHI.balance=0;MONSHI.tier=TIERS[0];
-    localStorage.removeItem('monshi_wallet');localStorage.removeItem('monshi_balance');
+    localStorage.removeItem('monshi_wallet');
+    localStorage.removeItem('monshi_balance');
     MONSHI.updateBadge();
+    window.dispatchEvent(new Event('monshi:disconnect'));
   };
 
   MONSHI.fetchBalance = async function(){
@@ -75,7 +78,7 @@
     }catch(e){console.log('balance err',e);return 0;}
   };
 
-  // ── Connect button injected on every game ──
+  // ── Connect badge ──
   MONSHI.injectBadge = function(){
     if(document.getElementById('monshiBadge'))return;
     var el = document.createElement('div');
@@ -83,13 +86,11 @@
     el.style.cssText='position:fixed;top:8px;right:8px;z-index:99;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:1.5px;font-weight:700;cursor:pointer;transition:all .2s;';
     el.onclick = function(){
       if(MONSHI.wallet){
-        if(confirm('Disconnect wallet?'))MONSHI.disconnect();
+        if(confirm('Disconnect wallet? You\\'ll lose your tier perks.'))MONSHI.disconnect();
       } else MONSHI.connectWallet();
     };
     document.body.appendChild(el);
     MONSHI.updateBadge();
-    
-    // Re-check balance periodically
     setInterval(function(){if(MONSHI.wallet)MONSHI.fetchBalance().then(MONSHI.updateBadge);},60000);
   };
 
@@ -97,7 +98,7 @@
     var el = document.getElementById('monshiBadge');if(!el)return;
     if(!MONSHI.wallet){
       el.style.cssText='position:fixed;top:8px;right:8px;z-index:99;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:1.5px;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#22C55E,#15803D);color:#fff;padding:8px 14px;border-radius:8px;border:1px solid rgba(74,222,128,.5);box-shadow:0 0 12px rgba(34,197,94,.3);';
-      el.textContent='🔌 CONNECT';
+      el.textContent='🔌 CONNECT FOR PERKS';
     } else {
       var t=MONSHI.tier;
       el.style.cssText='position:fixed;top:8px;right:8px;z-index:99;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:1.5px;font-weight:700;cursor:pointer;background:'+t.color+'22;color:'+t.color+';padding:8px 14px;border-radius:8px;border:1.5px solid '+t.color+';box-shadow:0 0 12px '+t.color+'66;';
@@ -106,30 +107,49 @@
     }
   };
 
-  // ── Score submission with multiplier + wallet ──
-  // Wraps the submitS function. Returns the boosted score.
-  MONSHI.boostedScore = function(rawScore){
-    return Math.floor(rawScore * MONSHI.tier.mult);
+  // ── Show perks toast on connect ──
+  MONSHI.showPerksToast = function(){
+    var t = MONSHI.tier;
+    var toast = document.createElement('div');
+    toast.style.cssText='position:fixed;top:60px;right:8px;z-index:1000;background:rgba(0,0,8,.95);border:2px solid '+t.color+';border-radius:12px;padding:18px 24px;font-family:Orbitron,sans-serif;color:#fff;max-width:300px;animation:monshiSlide .4s ease;box-shadow:0 0 30px '+t.color+'88;';
+    toast.innerHTML = '<div style="font-size:24px;text-align:center;margin-bottom:8px;">'+t.emoji+'</div>'+
+      '<div style="font-size:18px;font-weight:900;letter-spacing:2px;color:'+t.color+';text-align:center;margin-bottom:8px;">'+t.name+' UNLOCKED</div>'+
+      '<div style="font-size:11px;color:rgba(220,210,255,.8);text-align:center;line-height:1.5;letter-spacing:1px;">'+t.perks+'</div>';
+    if(!document.getElementById('monshiKeyframes')){
+      var s=document.createElement('style');s.id='monshiKeyframes';
+      s.textContent='@keyframes monshiSlide{from{transform:translateX(120%);opacity:0;}to{transform:translateX(0);opacity:1;}}';
+      document.head.appendChild(s);
+    }
+    document.body.appendChild(toast);
+    setTimeout(function(){toast.style.transition='opacity .5s';toast.style.opacity='0';setTimeout(function(){toast.remove();},500);},5000);
   };
 
+  // ── Public perks API ──
   MONSHI.getMultiplier = function(){return MONSHI.tier.mult;};
-  MONSHI.getExtraLives = function(){
-    return MONSHI.tier.name==='SHRIMP'?0:MONSHI.tier.name==='CRAB'?0:MONSHI.tier.name==='DOLPHIN'?1:MONSHI.tier.name==='WHALE'?2:3;
+  MONSHI.getExtraLives = function(){return MONSHI.tier.lives;};
+  MONSHI.isWhale = function(){return MONSHI.balance >= 1000000;};
+  MONSHI.isRoyalty = function(){return MONSHI.balance >= 10000000;};
+  MONSHI.boostScore = function(rawScore){return Math.floor(rawScore * MONSHI.tier.mult);};
+  MONSHI.getTierColor = function(){return MONSHI.tier.color;};
+  MONSHI.getTierEmoji = function(){return MONSHI.tier.emoji;};
+  MONSHI.getTierName = function(){return MONSHI.tier.name;};
+
+  // ── Visual: floating multiplier indicator on score events ──
+  MONSHI.popMultiplier = function(x, y, baseScore){
+    if(MONSHI.tier.mult <= 1)return;
+    var pop = document.createElement('div');
+    var boost = Math.floor(baseScore*(MONSHI.tier.mult-1));
+    pop.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;color:'+MONSHI.tier.color+';font-family:Orbitron,sans-serif;font-size:18px;font-weight:900;text-shadow:0 0 8px '+MONSHI.tier.color+';pointer-events:none;z-index:50;animation:monshiPop 1s ease-out forwards;letter-spacing:2px;';
+    pop.textContent='+'+boost+' '+MONSHI.tier.mult+'x';
+    if(!document.getElementById('monshiPopKeyframes')){
+      var s=document.createElement('style');s.id='monshiPopKeyframes';
+      s.textContent='@keyframes monshiPop{0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-60px) scale(1.4);opacity:0;}}';
+      document.head.appendChild(s);
+    }
+    document.body.appendChild(pop);
+    setTimeout(function(){pop.remove();},1000);
   };
 
-  // Patched score submitter (called from game's showDeath)
-  // Adds wallet column when present
-  MONSHI.submitWithWallet = function(table, name, score, cb){
-    var body = {name:name||'ANON', score:Math.floor(score)};
-    if(MONSHI.wallet) body.wallet = MONSHI.wallet;
-    fetch(SUPABASE_URL+'/rest/v1/'+table,{
-      method:'POST',
-      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation'},
-      body:JSON.stringify(body)
-    }).then(function(r){return r.json();}).then(cb).catch(cb);
-  };
-
-  // Auto-init on load
   function init(){
     MONSHI.injectBadge();
     if(MONSHI.wallet) MONSHI.fetchBalance().then(MONSHI.updateBadge);

@@ -65,7 +65,7 @@ function showDeath(GN,GU,T,sc,sub,isWin){
     document.getElementById('lT').textContent=sub||'';
     document.getElementById('rTag').textContent=playerRank>0?'#'+playerRank+' GLOBALLY':'';
     var tb=document.getElementById('lB');tb.innerHTML='';
-    leaderboard.slice(0,5).forEach(function(s,i){var tr=document.createElement('tr');var isMe=s.name===playerName&&s.score===Math.floor(sc);if(isMe)tr.className='me';var medal=['🥇','🥈','🥉'][i]||'#'+(i+1);tr.innerHTML='<td>'+medal+'</td><td>'+esc(s.name)+'</td><td class="sc">'+s.score+'</td>';tb.appendChild(tr);});
+    leaderboard.slice(0,5).forEach(function(s,i){var tr=document.createElement('tr');var isMe=s.name===playerName&&s.score===Math.floor(sc);if(isMe)tr.className='me';var medal=['🥇','🥈','🥉'][i]||'#'+(i+1);var walletBadge='';if(s.wallet){walletBadge=' <span title="holder" style="color:#FCD34D;font-size:9px;">◆</span>';}tr.innerHTML='<td>'+medal+'</td><td>'+esc(s.name)+walletBadge+'</td><td class="sc">'+s.score+'</td>';tb.appendChild(tr);});
     document.getElementById('dP').classList.add('show');
   }
   if(playerName){submitS(T,sc,render);}else{document.getElementById('nS').style.display='block';render();}

@@ -690,6 +690,10 @@ function loop(){
     for(var ci=0;ci<obs.length;ci++){
       var o=obs[ci];
       if(hit(hb,{x:o.x+4,y:GROUND-o.h,w:o.w-8,h:o.h})){
+        // Royalty mode: 1 free death per game (use livesUsed flag)
+        if(window.MONSHI && window.MONSHI.isRoyalty() && !window._royaltySaved){window._royaltySaved=true;P.invuln=120;P.flash=20;return;}
+        // Whale mode: knockback only on first hit
+        if(window.MONSHI && window.MONSHI.isWhale() && !window._whaleSaved && !window._royaltySaved){window._whaleSaved=true;P.invuln=90;P.flash=15;return;}
         state='dead';if(score>best)best=score;lastScore=score;lastLvl=lvl;
         killedByDev=o.isDev;sfxDie();stopMusic();
         if(playerName){submitScore(score,lvl);}
