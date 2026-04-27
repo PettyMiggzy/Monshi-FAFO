@@ -501,17 +501,22 @@ function fetchHolders(){
       }
       
       list.innerHTML='';
+      // DEBUG: log first holder structure to console for easier debugging
+      if(holders[0]) console.log('First holder structure:', JSON.stringify(holders[0], null, 2));
       holders.forEach(function(h,i){
-        // nad.fun API structure: {account_info:{account_id, nickname, image_uri}, balance_info:{balance, percentage}}
         var info=h.account_info||{};
         var binfo=h.balance_info||{};
-        var addr=info.account_id||h.address||h.holder||h.wallet||'';
+        var addr=info.account_id||info.address||h.address||h.holder||h.wallet||'';
         var nickname=info.nickname||'';
         var avatar=info.image_uri||'';
-        var rawBal=binfo.balance||h.balance||h.amount||0;
-        var bal=parseFloat(rawBal);
+        // Try every plausible balance field name
+        var rawBal=binfo.balance||binfo.amount||binfo.token_amount||binfo.formatted_balance||binfo.balance_formatted||binfo.token_balance||binfo.value||binfo.holdings||h.balance||h.amount||0;
+        var bal=parseFloat(rawBal)||0;
+        // Wei -> token (18 decimals) if the number is huge
         if(bal>1e15)bal=bal/1e18;
-        var pct=binfo.percentage||h.percentage||((totalSupply&&bal)?(bal/totalSupply*100):null);
+        // % of supply: try every plausible field
+        var pct=binfo.percentage||binfo.percent||binfo.share||binfo.supply_percentage||h.percentage||h.percent||null;
+        if(pct==null && totalSupply && bal) pct=bal/totalSupply*100;
         if(typeof pct==='string')pct=parseFloat(pct);
         
         var tier=tierFor(bal);
