@@ -80,7 +80,7 @@ h1{font-family:Orbitron,sans-serif;font-size:clamp(40px,8vw,96px);font-weight:90
 <a class="bk" href="/">← ALL GAMES</a>
 
 <h1>600 MON PRIZE</h1>
-<div class="subt">ONE WINNER · TOP SCORE WINS · 72 HR EVENT</div>
+<div class="subt">ONE WINNER · TOP SCORE WINS · 48 HR COMPETITION · 24 HR BUY WINDOW</div>
 
 <div class="hero">
   <div class="heroTitle">🏆 600 MON</div>
@@ -234,7 +234,7 @@ function checkEligibility(){
   
   // Games played check
   var pct = Math.min(100, gameCount/10*100);
-  html += '<div class="check '+(hasGames?'passed':'failed')+'"><div class="ico">'+(hasGames?'✅':'⏳')+'</div><div class="info"><div class="nm">PLAYED 10+ GAMES</div><div class="ds">You\\'ve played: <b style="color:'+(hasGames?'#4ADE80':'#FCD34D')+';">'+gameCount+'/10 games</b></div><div class="gameProgress"><div class="gameProgressBar"><div class="gameProgressFill" style="width:'+pct+'%;"></div></div><div class="gameProgressLabel">'+(hasGames?'COMPLETE':((10-gameCount)+' more to go')) +'</div></div></div></div>';
+  html += '<div class="check '+(hasGames?'passed':'failed')+'"><div class="ico">'+(hasGames?'✅':'⏳')+'</div><div class="info"><div class="nm">PLAYED 10+ GAMES</div><div class="ds">You&#39;ve played: <b style="color:'+(hasGames?'#4ADE80':'#FCD34D')+';">'+gameCount+'/10 games</b></div><div class="gameProgress"><div class="gameProgressBar"><div class="gameProgressFill" style="width:'+pct+'%;"></div></div><div class="gameProgressLabel">'+(hasGames?'COMPLETE':((10-gameCount)+' more to go')) +'</div></div></div></div>';
   
   // Diamond hands check
   if(snap){
