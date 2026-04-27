@@ -214,16 +214,7 @@ body::after{content:"";position:fixed;inset:0;background:radial-gradient(circle 
     </div>
   </div>
 
-  
-  <div class="card" style="margin-bottom:20px;">
-    <div class="panel-title"><span class="live-dot"></span>TOP HOLDERS · LIVE FROM NAD.FUN</div>
-    <div id="holderLb" style="margin-top:14px;">
-      <div style="text-align:center;padding:30px;color:rgba(139,92,246,.5);font-size:11px;letter-spacing:1px;">
-        <span class="loading">loading whales</span>
-      </div>
-    </div>
-    <div style="text-align:center;margin-top:14px;font-size:9px;color:rgba(139,92,246,.4);letter-spacing:1.5px;">UPDATES EVERY 60 SECONDS</div>
-  </div>
+
   <div class="footer">
     BUILT BY KING PETTY × MONSHI.XYZ <br><br>
     LIVE DATA: DEXSCREENER + MONAD RPC · UPDATES EVERY 30 SECONDS
@@ -511,13 +502,16 @@ function fetchHolders(){
       
       list.innerHTML='';
       holders.forEach(function(h,i){
-        // Try to find balance and address fields - varies by API
-        var addr=h.address||h.holder||h.wallet||h.account||h.holderAddress||'';
-        var rawBal=h.balance||h.amount||h.holdings||h.tokenAmount||h.value||0;
-        // Convert from wei-like if huge number
+        // nad.fun API structure: {account_info:{account_id, nickname, image_uri}, balance_info:{balance, percentage}}
+        var info=h.account_info||{};
+        var binfo=h.balance_info||{};
+        var addr=info.account_id||h.address||h.holder||h.wallet||'';
+        var nickname=info.nickname||'';
+        var avatar=info.image_uri||'';
+        var rawBal=binfo.balance||h.balance||h.amount||0;
         var bal=parseFloat(rawBal);
         if(bal>1e15)bal=bal/1e18;
-        var pct=h.percentage||h.percent||h.share||((totalSupply&&bal)?(bal/totalSupply*100):null);
+        var pct=binfo.percentage||h.percentage||((totalSupply&&bal)?(bal/totalSupply*100):null);
         if(typeof pct==='string')pct=parseFloat(pct);
         
         var tier=tierFor(bal);
@@ -530,7 +524,7 @@ function fetchHolders(){
         list.innerHTML+='<a href="'+explorerUrl+'" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:12px;padding:10px 14px;background:'+bg+';border:1px solid '+borderColor+';border-radius:8px;transition:all .2s;color:inherit;">'+
           '<div style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;color:'+(i<3?'#FCD34D':'rgba(167,139,250,.5)')+';width:40px;">'+medal+'</div>'+
           '<div style="flex:1;min-width:0;">'+
-            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:'+(isMe?'#4ADE80':'#EDE9FF')+';">'+shortAddr2(addr)+(isMe?' · YOU 👑':'')+'</div>'+
+            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:'+(isMe?'#4ADE80':'#EDE9FF')+';">'+(nickname||shortAddr2(addr)||"unknown")+(isMe?' · YOU 👑':'')+'</div>'+
             '<div style="margin-top:3px;display:flex;gap:6px;align-items:center;">'+
               '<span style="font-size:9px;padding:2px 6px;border-radius:10px;color:'+tier.color+';border:1px solid '+tier.color+'40;background:'+tier.color+'10;letter-spacing:1px;font-family:Orbitron,sans-serif;font-weight:700;">'+tier.emoji+' '+tier.name+'</span>'+
             '</div>'+
