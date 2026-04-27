@@ -3,6 +3,8 @@
   window.MONSHI = window.MONSHI || {};
   
   var CONTRACT = '0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
+  var NFT_CONTRACT = '0x6a933b14c67399aabccfcc85b3429b730c98a519';
+  var NFT_OPENSEA = 'https://opensea.io/collection/monshi-nft-collection-563194175';
   var MONAD_HEX = '0x8f';
   var SUPABASE_URL = 'https://cuqhqcmrgpdjlhyqztnc.supabase.co';
   var SUPABASE_KEY = 'sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
@@ -25,6 +27,9 @@
   MONSHI.wallet = localStorage.getItem('monshi_wallet') || null;
   MONSHI.balance = parseFloat(localStorage.getItem('monshi_balance')||'0');
   MONSHI.tier = tierForBalance(MONSHI.balance);
+  MONSHI.nftCount = parseInt(localStorage.getItem('monshi_nfts')||'0');
+  MONSHI.NFT_OPENSEA = NFT_OPENSEA;
+  MONSHI.NFT_CONTRACT = NFT_CONTRACT;
 
   // ── Wallet connect ──
   MONSHI.connectWallet = async function(){
@@ -74,8 +79,16 @@
       MONSHI.balance = bal;
       MONSHI.tier = tierForBalance(bal);
       localStorage.setItem('monshi_balance', bal);
-      return bal;
-    }catch(e){console.log('balance err',e);return 0;}
+    }catch(e){console.log('balance err',e);}
+    // Also fetch NFT count
+    try{
+      var nftData = '0x70a08231' + MONSHI.wallet.slice(2).padStart(64,'0');
+      var nftR = await window.ethereum.request({method:'eth_call',params:[{to:NFT_CONTRACT,data:nftData},'latest']});
+      var nftN = Number(BigInt(nftR));
+      MONSHI.nftCount = nftN;
+      localStorage.setItem('monshi_nfts', nftN);
+    }catch(e){console.log('nft err',e);}
+    return MONSHI.balance;
   };
 
   // ── Connect badge ──
@@ -103,18 +116,24 @@
       var t=MONSHI.tier;
       el.style.cssText='position:fixed;top:8px;right:8px;z-index:99;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:1.5px;font-weight:700;cursor:pointer;background:'+t.color+'22;color:'+t.color+';padding:8px 14px;border-radius:8px;border:1.5px solid '+t.color+';box-shadow:0 0 12px '+t.color+'66;';
       var balK=MONSHI.balance>=1e9?(MONSHI.balance/1e9).toFixed(1)+'B':MONSHI.balance>=1e6?(MONSHI.balance/1e6).toFixed(1)+'M':MONSHI.balance>=1e3?(MONSHI.balance/1e3).toFixed(0)+'K':Math.floor(MONSHI.balance);
-      el.innerHTML=t.emoji+' '+t.name+' · '+balK+' · '+t.mult+'x';
+      var nftBadge = MONSHI.hasNFT() ? ' 🎴×'+MONSHI.nftCount : '';
+      var realMult = MONSHI.getMultiplier();
+      el.innerHTML=t.emoji+nftBadge+' · '+balK+' · '+realMult+'x';
     }
   };
 
   // ── Show perks toast on connect ──
   MONSHI.showPerksToast = function(){
     var t = MONSHI.tier;
+    var color = MONSHI.hasNFT() ? '#EC4899' : t.color;
+    var emoji = MONSHI.hasNFT() ? '🎴' : t.emoji;
+    var name = MONSHI.hasNFT() ? 'NFT HOLDER + '+t.name : t.name;
+    var perks = MONSHI.hasNFT() ? (MONSHI.getMultiplier()+'x score · +'+MONSHI.getExtraLives()+' lives · pink badge · NFT auto-unlocks whale mode') : t.perks;
     var toast = document.createElement('div');
-    toast.style.cssText='position:fixed;top:60px;right:8px;z-index:1000;background:rgba(0,0,8,.95);border:2px solid '+t.color+';border-radius:12px;padding:18px 24px;font-family:Orbitron,sans-serif;color:#fff;max-width:300px;animation:monshiSlide .4s ease;box-shadow:0 0 30px '+t.color+'88;';
-    toast.innerHTML = '<div style="font-size:24px;text-align:center;margin-bottom:8px;">'+t.emoji+'</div>'+
-      '<div style="font-size:18px;font-weight:900;letter-spacing:2px;color:'+t.color+';text-align:center;margin-bottom:8px;">'+t.name+' UNLOCKED</div>'+
-      '<div style="font-size:11px;color:rgba(220,210,255,.8);text-align:center;line-height:1.5;letter-spacing:1px;">'+t.perks+'</div>';
+    toast.style.cssText='position:fixed;top:60px;right:8px;z-index:1000;background:rgba(0,0,8,.95);border:2px solid '+color+';border-radius:12px;padding:18px 24px;font-family:Orbitron,sans-serif;color:#fff;max-width:300px;animation:monshiSlide .4s ease;box-shadow:0 0 30px '+color+'88;';
+    toast.innerHTML = '<div style="font-size:24px;text-align:center;margin-bottom:8px;">'+emoji+'</div>'+
+      '<div style="font-size:18px;font-weight:900;letter-spacing:2px;color:'+color+';text-align:center;margin-bottom:8px;">'+name+' UNLOCKED</div>'+
+      '<div style="font-size:11px;color:rgba(220,210,255,.8);text-align:center;line-height:1.5;letter-spacing:1px;">'+perks+'</div>';
     if(!document.getElementById('monshiKeyframes')){
       var s=document.createElement('style');s.id='monshiKeyframes';
       s.textContent='@keyframes monshiSlide{from{transform:translateX(120%);opacity:0;}to{transform:translateX(0);opacity:1;}}';
@@ -124,15 +143,19 @@
     setTimeout(function(){toast.style.transition='opacity .5s';toast.style.opacity='0';setTimeout(function(){toast.remove();},500);},5000);
   };
 
-  // ── Public perks API ──
-  MONSHI.getMultiplier = function(){return MONSHI.tier.mult;};
-  MONSHI.getExtraLives = function(){return MONSHI.tier.lives;};
-  MONSHI.isWhale = function(){return MONSHI.balance >= 1000000;};
-  MONSHI.isRoyalty = function(){return MONSHI.balance >= 10000000;};
-  MONSHI.boostScore = function(rawScore){return Math.floor(rawScore * MONSHI.tier.mult);};
-  MONSHI.getTierColor = function(){return MONSHI.tier.color;};
-  MONSHI.getTierEmoji = function(){return MONSHI.tier.emoji;};
-  MONSHI.getTierName = function(){return MONSHI.tier.name;};
+  // ── Public perks API (NFT BONUSES STACK ON TOP) ──
+  MONSHI.hasNFT = function(){return MONSHI.nftCount > 0;};
+  MONSHI.getNFTCount = function(){return MONSHI.nftCount;};
+  // NFT adds +1.0 to multiplier (so Crab+NFT = 2.5x, Whale+NFT = 3.5x, Royalty+NFT = 4x)
+  MONSHI.getMultiplier = function(){return MONSHI.tier.mult + (MONSHI.hasNFT()?1.0:0);};
+  // NFT adds +2 extra lives on top
+  MONSHI.getExtraLives = function(){return MONSHI.tier.lives + (MONSHI.hasNFT()?2:0);};
+  MONSHI.isWhale = function(){return MONSHI.balance >= 1000000 || MONSHI.hasNFT();}; // NFT auto-unlocks whale mode
+  MONSHI.isRoyalty = function(){return MONSHI.balance >= 10000000 || MONSHI.nftCount >= 3;}; // 3+ NFTs = royal mode
+  MONSHI.boostScore = function(rawScore){return Math.floor(rawScore * MONSHI.getMultiplier());};
+  MONSHI.getTierColor = function(){return MONSHI.hasNFT()?'#EC4899':MONSHI.tier.color;}; // NFT pink
+  MONSHI.getTierEmoji = function(){return MONSHI.hasNFT()?'🎴':MONSHI.tier.emoji;};
+  MONSHI.getTierName = function(){return MONSHI.hasNFT()?(MONSHI.tier.name+' + NFT'):MONSHI.tier.name;};
 
   // ── Visual: floating multiplier indicator on score events ──
   MONSHI.popMultiplier = function(x, y, baseScore){

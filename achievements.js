@@ -25,7 +25,8 @@
       scoresSubmitted: parseInt(localStorage.getItem('mon_scoresSubmitted')||'0'),
       bestRank: parseInt(localStorage.getItem('mon_bestRank')||'9999'),
       wallet: localStorage.getItem('monshi_wallet'),
-      maxBalance: parseFloat(localStorage.getItem('mon_maxBalance')||'0')
+      maxBalance: parseFloat(localStorage.getItem('mon_maxBalance')||'0'),
+      maxNFTs: parseInt(localStorage.getItem('mon_maxNFTs')||'0')
     };
   }
   
@@ -46,6 +47,11 @@
   MONSHI_ACHIEVEMENTS.trackBalance = function(bal){
     var max = parseFloat(localStorage.getItem('mon_maxBalance')||'0');
     if(bal>max) localStorage.setItem('mon_maxBalance', bal);
+    MONSHI_ACHIEVEMENTS.checkUnlocks();
+  };
+  MONSHI_ACHIEVEMENTS.trackNFTs = function(n){
+    var max = parseInt(localStorage.getItem('mon_maxNFTs')||'0');
+    if(n>max) localStorage.setItem('mon_maxNFTs', n);
     MONSHI_ACHIEVEMENTS.checkUnlocks();
   };
   
@@ -90,10 +96,11 @@
   MONSHI_ACHIEVEMENTS.getUnlocked = function(){return JSON.parse(localStorage.getItem('mon_unlocks')||'[]');};
   MONSHI_ACHIEVEMENTS.getAllBadges = function(){return BADGES;};
   
-  // Auto-track wallet balance on load
+  // Auto-track wallet balance + NFT count on load
   setTimeout(function(){
-    if(window.MONSHI && window.MONSHI.balance){
-      MONSHI_ACHIEVEMENTS.trackBalance(window.MONSHI.balance);
+    if(window.MONSHI){
+      if(window.MONSHI.balance) MONSHI_ACHIEVEMENTS.trackBalance(window.MONSHI.balance);
+      if(window.MONSHI.nftCount) MONSHI_ACHIEVEMENTS.trackNFTs(window.MONSHI.nftCount);
     }
   }, 2000);
 })();

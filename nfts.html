@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MONSHI NFT COLLECTION</title>
+<script src="/monshi-shared.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#fff;padding:30px 20px;}
+.wrap{max-width:1100px;margin:0 auto;}
+.bk{display:inline-block;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1.5px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);margin-bottom:24px;}
+h1{font-family:Orbitron,sans-serif;font-size:clamp(40px,7vw,80px);font-weight:900;background:linear-gradient(135deg,#EC4899,#A855F7,#22C55E);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:5px;text-align:center;margin-bottom:6px;}
+.subt{text-align:center;color:rgba(196,181,253,.65);letter-spacing:4px;margin-bottom:30px;font-size:11px;}
+.heroBox{padding:30px;background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(20,5,50,.7));border:2px solid rgba(236,72,153,.4);border-radius:18px;margin-bottom:24px;text-align:center;box-shadow:0 0 40px rgba(236,72,153,.25);}
+.heroEmoji{font-size:64px;margin-bottom:8px;}
+.heroTitle{font-family:Orbitron,sans-serif;font-size:24px;font-weight:900;color:#EC4899;letter-spacing:3px;margin-bottom:6px;text-shadow:0 0 16px rgba(236,72,153,.5);}
+.heroSub{color:rgba(196,181,253,.7);font-size:12px;letter-spacing:2px;line-height:1.6;max-width:580px;margin:0 auto 18px;}
+.statsBar{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:24px;}
+.s{background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:12px;padding:18px;text-align:center;}
+.s .v{font-family:Orbitron,sans-serif;font-size:24px;font-weight:900;color:#fff;}
+.s .l{font-size:9px;color:rgba(167,139,250,.6);letter-spacing:2px;margin-top:4px;}
+.perks{padding:24px;background:rgba(20,5,50,.5);border:1px solid rgba(236,72,153,.3);border-radius:14px;margin-bottom:24px;}
+.perksTitle{font-family:Orbitron,sans-serif;font-size:14px;color:#EC4899;letter-spacing:4px;margin-bottom:18px;text-align:center;text-shadow:0 0 10px rgba(236,72,153,.5);}
+.perksGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;}
+.perk{padding:14px;background:rgba(0,0,0,.3);border:1px solid rgba(236,72,153,.25);border-radius:10px;text-align:center;}
+.perk .pe{font-size:24px;margin-bottom:6px;}
+.perk .pn{font-family:Orbitron,sans-serif;font-size:11px;color:#fff;font-weight:700;letter-spacing:1.5px;margin-bottom:4px;}
+.perk .pd{font-size:10px;color:rgba(196,181,253,.7);line-height:1.4;}
+.bigCta{display:block;width:100%;max-width:400px;margin:0 auto 20px;padding:18px;background:linear-gradient(135deg,#EC4899,#7C3AED);color:#fff;text-decoration:none;font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;letter-spacing:3px;border-radius:12px;text-align:center;animation:pulse 2.5s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(236,72,153,.5);}50%{box-shadow:0 0 0 14px rgba(236,72,153,0);}}
+.bagBox{padding:20px;background:rgba(20,5,50,.6);border:1.5px solid rgba(74,222,128,.3);border-radius:12px;margin-bottom:24px;text-align:center;display:none;}
+.bagBox.show{display:block;}
+.bagTitle{font-family:Orbitron,sans-serif;font-size:11px;color:#4ADE80;letter-spacing:3px;margin-bottom:8px;}
+.bagN{font-family:Orbitron,sans-serif;font-size:36px;font-weight:900;color:#fff;}
+.bagSub{font-size:11px;color:rgba(196,181,253,.6);letter-spacing:1.5px;margin-top:4px;}
+.tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
+.tag{padding:5px 12px;background:rgba(236,72,153,.15);border:1px solid rgba(236,72,153,.4);border-radius:20px;font-family:Orbitron,sans-serif;font-size:9px;color:#EC4899;letter-spacing:1.5px;font-weight:700;}
+.kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="bk" href="/">← ALL GAMES</a>
+<h1>NFT HOLDERS</h1>
+<div class="subt">EXCLUSIVE BONUSES STACKED ON TOP OF YOUR TOKEN TIER</div>
+
+<div class="heroBox">
+  <div class="heroEmoji">🎴</div>
+  <div class="heroTitle">MONSHI NFT COLLECTION</div>
+  <div class="heroSub">278 unique PFPs on Monad. Only 23 wallets hold them. The most exclusive club in the trenches — and now they get massive arcade perks.</div>
+  <a class="bigCta" href="https://opensea.io/collection/monshi-nft-collection-563194175" target="_blank">VIEW ON OPENSEA 🚀</a>
+</div>
+
+<div class="bagBox" id="bagBox">
+  <div class="bagTitle">YOUR NFT BAG</div>
+  <div class="bagN" id="bagN">0</div>
+  <div class="bagSub" id="bagSub">Connect wallet to verify</div>
+  <div class="tags" id="tagsRow"></div>
+</div>
+
+<div class="statsBar">
+  <div class="s"><div class="v">278</div><div class="l">UNIQUE PFPS</div></div>
+  <div class="s"><div class="v">23</div><div class="l">HOLDERS (8.3%)</div></div>
+  <div class="s"><div class="v" style="color:#EC4899;">380 MON</div><div class="l">FLOOR PRICE</div></div>
+  <div class="s"><div class="v" style="color:#4ADE80;">41.8K</div><div class="l">TOTAL VOLUME (MON)</div></div>
+</div>
+
+<div class="perks">
+  <div class="perksTitle">🎁 NFT HOLDER BONUSES (STACK ON TOP OF $MONSHI TIER)</div>
+  <div class="perksGrid">
+    <div class="perk"><div class="pe">⚡</div><div class="pn">+1.0x SCORE</div><div class="pd">On top of your existing tier multiplier</div></div>
+    <div class="perk"><div class="pe">❤️</div><div class="pn">+2 EXTRA LIVES</div><div class="pd">Stacks with token tier lives</div></div>
+    <div class="perk"><div class="pe">🐋</div><div class="pn">WHALE MODE</div><div class="pd">Auto-unlocked even with 0 $MONSHI</div></div>
+    <div class="perk"><div class="pe">💎</div><div class="pn">PINK BADGE</div><div class="pd">Exclusive badge color on every leaderboard</div></div>
+    <div class="perk"><div class="pe">🃏</div><div class="pn">3+ NFTS</div><div class="pd">ROYAL MODE auto-unlocked</div></div>
+    <div class="perk"><div class="pe">🔓</div><div class="pn">ROYAL ROULETTE</div><div class="pd">Unlocks the whale-gated game</div></div>
+  </div>
+</div>
+
+<div style="text-align:center;padding:24px;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.3);border-radius:12px;font-size:11px;color:rgba(196,181,253,.75);letter-spacing:1px;line-height:1.7;">
+  <b style="color:#A855F7;">EXAMPLE STACKING:</b><br>
+  🐋 WHALE (1M+ $MONSHI) = 2.5x score + 2 lives<br>
+  🐋 WHALE + 🎴 NFT = <b style="color:#EC4899;">3.5x score + 4 lives</b><br>
+  👑 ROYALTY (10M+) + 🎴 NFT = <b style="color:#EC4899;">4x score + 5 lives + ALL MODES</b>
+</div>
+</div>
+
+<div class="kingP">a KING PETTY build</div>
+
+<script>
+function updateBag(){
+  if(!window.MONSHI || !MONSHI.wallet) return;
+  document.getElementById('bagBox').classList.add('show');
+  document.getElementById('bagN').textContent = MONSHI.nftCount;
+  if(MONSHI.nftCount === 0){
+    document.getElementById('bagSub').textContent = 'You don\\'t hold any Monshi NFTs yet — go grab one 🎴';
+    document.getElementById('tagsRow').innerHTML = '';
+  } else {
+    var perks = [];
+    perks.push('⚡ +1.0x SCORE');
+    perks.push('❤️ +2 LIVES');
+    perks.push('🐋 WHALE MODE');
+    if(MONSHI.nftCount>=3) perks.push('👑 ROYAL MODE');
+    if(MONSHI.nftCount>=10) perks.push('🎰 NFT WHALE');
+    document.getElementById('bagSub').textContent = 'Active multiplier: '+MONSHI.getMultiplier()+'x · '+MONSHI.getExtraLives()+' bonus lives';
+    document.getElementById('tagsRow').innerHTML = perks.map(function(p){return '<span class="tag">'+p+'</span>';}).join('');
+  }
+}
+setTimeout(function(){
+  updateBag();
+  if(window.MONSHI && !MONSHI.wallet){
+    document.getElementById('bagBox').classList.add('show');
+    document.getElementById('bagSub').textContent = '🔌 Connect wallet (top right) to see your NFT bag';
+  }
+}, 1000);
+window.addEventListener('monshi:connect', function(){setTimeout(updateBag,1500);});
+</script>
+</body>
+</html>
