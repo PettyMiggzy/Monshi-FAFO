@@ -79,9 +79,10 @@ h1{font-family:Orbitron,sans-serif;font-size:clamp(40px,8vw,96px);font-weight:90
 <div class="hero">
   <div class="heroTitle">🏆 600 MON</div>
   <div class="heroSub">PAID DIRECTLY TO WINNER WALLET BY KING PETTY</div>
-  <div class="timerLbl">TIME REMAINING</div>
+  <div class="timerLbl" id="timerLbl">EVENT STARTS IN</div>
   <div class="timer" id="timer">--:--:--</div>
-  <div style="font-size:10px;color:rgba(167,139,250,.6);letter-spacing:2px;margin-top:8px;" id="endDate">Ends loading...</div>
+  <div style="font-size:10px;color:rgba(167,139,250,.6);letter-spacing:2px;margin-top:8px;" id="endDate">Loading...</div>
+  <div id="phaseTag" style="margin-top:14px;display:inline-block;padding:8px 16px;background:rgba(252,211,77,.15);border:1.5px solid #FCD34D;border-radius:20px;font-family:Orbitron,sans-serif;font-size:11px;color:#FCD34D;letter-spacing:2px;font-weight:900;">⏳ BUY WINDOW · COMPETITION HASN'T STARTED</div>
 </div>
 
 <div class="rulesBox">
@@ -135,23 +136,47 @@ var SUPABASE_KEY='sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
 var TABLES=['scores','scores_shooter','scores_racer','scores_flappy','scores_snake','scores_breaker','scores_pump','scores_flip','scores_whack','scores_2048','scores_slots','scores_memory','scores_plinko','scores_rug','scores_wordle','scores_tetris','scores_c4','scores_trivia','scores_mine','scores_bj','scores_whale','scores_trade','scores_pong','scores_heist'];
 
 // Prize end timestamp (72hr from when this was generated)
-var PRIZE_END = 1777545922591;
+var PRIZE_START = 1777373655508;
+var PRIZE_END = 1777546455508;
+var startDate = new Date(PRIZE_START);
 var endDate = new Date(PRIZE_END);
-document.getElementById('endDate').textContent = 'Ends ' + endDate.toUTCString().replace('GMT','UTC');
+function fmtUTC(d){var s=d.toUTCString().replace('GMT','UTC').replace(' 00:00:00 UTC',' UTC');return s;}
+document.getElementById('endDate').innerHTML = 'STARTS: ' + fmtUTC(startDate) + ' &nbsp;·&nbsp; ENDS: ' + fmtUTC(endDate);
 
 function updateTimer(){
-  var diff = PRIZE_END - Date.now();
-  if(diff<=0){
-    document.getElementById('timer').textContent='ENDED';
-    document.getElementById('timer').classList.add('over');
+  var now = Date.now();
+  var lbl = document.getElementById('timerLbl');
+  var tag = document.getElementById('phaseTag');
+  var tm = document.getElementById('timer');
+  var target;
+  if(now < PRIZE_START){
+    target = PRIZE_START - now;
+    lbl.textContent = 'EVENT STARTS IN';
+    tag.innerHTML = '⏳ BUY WINDOW · STACK YOUR BAG NOW';
+    tag.style.background='rgba(252,211,77,.15)';
+    tag.style.borderColor='#FCD34D';
+    tag.style.color='#FCD34D';
+  } else if(now < PRIZE_END){
+    target = PRIZE_END - now;
+    lbl.textContent = '🟢 LIVE · ENDS IN';
+    tag.innerHTML = '🟢 LIVE NOW · GO COOK';
+    tag.style.background='rgba(74,222,128,.15)';
+    tag.style.borderColor='#4ADE80';
+    tag.style.color='#4ADE80';
+    tm.style.color='#4ADE80';
+  } else {
+    tm.textContent='ENDED';
+    tm.classList.add('over');
+    lbl.textContent='EVENT ENDED';
+    tag.innerHTML='🏆 WINNER ANNOUNCING SOON';
     return;
   }
-  var d = Math.floor(diff/86400000);
-  var h = Math.floor((diff%86400000)/3600000);
-  var m = Math.floor((diff%3600000)/60000);
-  var s = Math.floor((diff%60000)/1000);
+  var d = Math.floor(target/86400000);
+  var h = Math.floor((target%86400000)/3600000);
+  var m = Math.floor((target%3600000)/60000);
+  var s = Math.floor((target%60000)/1000);
   var pad = function(n){return String(n).padStart(2,'0');};
-  document.getElementById('timer').textContent = (d>0?d+'d ':'')+pad(h)+':'+pad(m)+':'+pad(s);
+  tm.textContent = (d>0?d+'d ':'')+pad(h)+':'+pad(m)+':'+pad(s);
 }
 updateTimer(); setInterval(updateTimer, 1000);
 
