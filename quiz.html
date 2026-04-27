@@ -2,194 +2,240 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" href="/favicon.png?v=2">
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#A855F7">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MONSHI">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
 <title>WHAT MONSHI ARE YOU?</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#fff;padding:30px 20px;display:flex;align-items:center;justify-content:center;}
-.wrap{max-width:600px;width:100%;}
-.bk{display:inline-block;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1.5px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);margin-bottom:24px;}
-h1{font-family:Orbitron,sans-serif;font-size:clamp(30px,5vw,52px);font-weight:900;background:linear-gradient(135deg,#EC4899,#A855F7,#FCD34D);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:4px;text-align:center;margin-bottom:6px;}
+.wrap{max-width:560px;margin:0 auto;width:100%;}
+.bk{position:fixed;top:8px;left:8px;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1.5px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);}
+h1{font-family:Orbitron,sans-serif;font-size:clamp(28px,6vw,52px);font-weight:900;background:linear-gradient(135deg,#EC4899,#A855F7,#FCD34D);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:4px;text-align:center;margin-bottom:8px;line-height:1.05;}
 .subt{text-align:center;color:rgba(196,181,253,.65);letter-spacing:3px;margin-bottom:30px;font-size:11px;}
-.card{padding:30px 24px;background:rgba(20,5,50,.7);border:1.5px solid rgba(168,85,247,.4);border-radius:18px;box-shadow:0 0 40px rgba(168,85,247,.2);}
-.progress{height:6px;background:rgba(0,0,0,.3);border-radius:3px;overflow:hidden;margin-bottom:24px;}
-.progress-bar{height:100%;background:linear-gradient(90deg,#EC4899,#A855F7);transition:width .4s ease;}
-.qNum{font-family:Orbitron,sans-serif;font-size:11px;color:#EC4899;letter-spacing:3px;margin-bottom:8px;text-align:center;}
-.q{font-family:Orbitron,sans-serif;font-size:18px;color:#fff;text-align:center;margin-bottom:20px;line-height:1.4;letter-spacing:1px;}
+
+/* Intro */
+.intro{padding:32px;background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(20,5,50,.7));border:2px solid rgba(168,85,247,.4);border-radius:18px;text-align:center;}
+.intro p{color:rgba(220,210,255,.85);font-size:13px;line-height:1.7;letter-spacing:1px;margin-bottom:18px;}
+.startBtn{padding:16px 40px;background:linear-gradient(135deg,#EC4899,#7C3AED);color:#fff;border:none;border-radius:12px;font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;letter-spacing:3px;cursor:pointer;animation:pulse 2.5s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(236,72,153,.5);}50%{box-shadow:0 0 0 12px rgba(236,72,153,0);}}
+
+/* Question */
+.qBox{padding:24px;background:rgba(20,5,50,.7);border:1.5px solid rgba(168,85,247,.4);border-radius:18px;}
+.qHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.qNum{font-family:Orbitron,sans-serif;font-size:11px;color:#A855F7;letter-spacing:3px;font-weight:900;}
+.progress{flex:1;height:6px;background:rgba(0,0,0,.4);border-radius:3px;margin-left:14px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,#A855F7,#EC4899);transition:width .4s ease;}
+.qText{font-family:Orbitron,sans-serif;font-size:18px;color:#fff;line-height:1.5;letter-spacing:1px;margin-bottom:20px;text-align:center;}
 .opts{display:flex;flex-direction:column;gap:10px;}
-.opt{padding:14px 18px;background:rgba(0,0,0,.3);border:1.5px solid rgba(168,85,247,.3);border-radius:10px;cursor:pointer;font-family:Orbitron,sans-serif;font-size:13px;letter-spacing:1px;color:#fff;text-align:left;transition:all .2s;}
-.opt:hover{border-color:#EC4899;background:rgba(236,72,153,.15);transform:translateX(4px);}
-/* Result screen */
-.result{text-align:center;}
-.resultEmoji{font-size:80px;margin-bottom:8px;}
-.resultName{font-family:Orbitron,sans-serif;font-size:32px;font-weight:900;color:#EC4899;letter-spacing:3px;margin-bottom:8px;text-shadow:0 0 20px rgba(236,72,153,.6);}
-.resultDesc{color:rgba(196,181,253,.85);font-size:13px;line-height:1.6;margin-bottom:20px;letter-spacing:1px;}
-.resultStats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:24px;}
-.stat{padding:12px 8px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.3);border-radius:8px;text-align:center;}
-.statLabel{font-size:9px;color:rgba(167,139,250,.6);letter-spacing:1.5px;margin-bottom:4px;}
-.statBar{height:6px;background:rgba(0,0,0,.4);border-radius:3px;overflow:hidden;}
-.statFill{height:100%;background:linear-gradient(90deg,#EC4899,#A855F7);}
-.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
-.actBtn{padding:12px 22px;border:none;border-radius:10px;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:2px;color:#fff;text-decoration:none;}
-.bRetry{background:linear-gradient(135deg,#7C3AED,#5B21B6);}
-.bShare{background:linear-gradient(135deg,#1DA1F2,#0d7abf);}
-.bBuy{background:linear-gradient(135deg,#22C55E,#15803D);}
-.bNft{background:linear-gradient(135deg,#EC4899,#7C3AED);}
+.opt{padding:16px 18px;background:rgba(0,0,0,.3);border:1.5px solid rgba(139,92,246,.3);border-radius:10px;cursor:pointer;font-family:'Space Mono',monospace;font-size:13px;color:rgba(220,210,255,.85);transition:all .2s;text-align:left;letter-spacing:.5px;line-height:1.5;}
+.opt:hover{border-color:#EC4899;background:rgba(236,72,153,.1);color:#fff;transform:translateX(4px);}
+
+/* Result */
+.result{padding:30px 24px;background:linear-gradient(135deg,rgba(236,72,153,.18),rgba(20,5,50,.85));border:2px solid #EC4899;border-radius:20px;text-align:center;box-shadow:0 0 40px rgba(236,72,153,.3);}
+.rEyebrow{font-family:Orbitron,sans-serif;font-size:10px;color:rgba(196,181,253,.6);letter-spacing:4px;margin-bottom:8px;}
+.rTraitName{font-family:Orbitron,sans-serif;font-size:clamp(28px,6vw,46px);font-weight:900;color:#EC4899;letter-spacing:3px;margin-bottom:6px;text-shadow:0 0 20px rgba(236,72,153,.6);line-height:1.05;}
+.rTagline{color:#FCD34D;font-size:12px;letter-spacing:2px;margin-bottom:18px;}
+.rDesc{padding:18px;background:rgba(0,0,0,.3);border-radius:12px;font-size:13px;color:rgba(220,210,255,.85);line-height:1.7;margin-bottom:18px;letter-spacing:.5px;}
+.rStats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px;}
+.rStat{padding:10px;background:rgba(0,0,0,.25);border-radius:8px;border:1px solid rgba(168,85,247,.2);}
+.rStat .v{font-family:Orbitron,sans-serif;font-size:18px;font-weight:900;color:#fff;}
+.rStat .l{font-size:8px;color:rgba(167,139,250,.6);letter-spacing:1.5px;margin-top:3px;}
+.rActions{display:flex;flex-direction:column;gap:8px;}
+.rBtn{padding:14px;border:none;border-radius:10px;font-family:Orbitron,sans-serif;font-size:12px;font-weight:900;letter-spacing:2px;cursor:pointer;color:#fff;text-decoration:none;text-align:center;transition:transform .15s;}
+.rBtn:active{transform:scale(.98);}
+.rBtnX{background:linear-gradient(135deg,#1DA1F2,#0d7abf);}
+.rBtnNFT{background:linear-gradient(135deg,#EC4899,#7C3AED);}
+.rBtnRetry{background:rgba(0,0,0,.4);border:1px solid rgba(139,92,246,.3);}
 .kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
 </style>
-<script src="/prize-banner.js" defer></script>
 </head>
 <body>
+<a class="bk" href="/">← ARCADE</a>
 <div class="wrap">
-<a class="bk" href="/">← ALL GAMES</a>
-<h1>WHAT MONSHI<br>ARE YOU?</h1>
-<div class="subt">10 QUESTIONS · GET MATCHED WITH AN NFT TRAIT</div>
-
-<div class="card" id="card"></div>
+<h1>WHAT MONSHI ARE YOU?</h1>
+<div class="subt">10 QUESTIONS · ONE TRAIT · NO TAKE-BACKS</div>
+<div id="content"></div>
 </div>
+
+<script src="/monshi-shared.js"></script>
+<script src="/referral-track.js" defer></script>
+<script src="/prize-banner.js" defer></script>
+<script src="/pwa-install.js" defer></script>
 <div class="kingP">a KING PETTY build</div>
 
 <script>
-// 10 questions, each scoring across 5 personality vectors
-// vectors: degen, cope, chill, galaxy, paper
-var QS = [
-  {q:"It's 3 AM. You're...",a:[
-    {t:"Aping into a 5min old token",degen:3,cope:1},
-    {t:"Studying a whitepaper",galaxy:3,chill:1},
-    {t:"Crying about your bag",cope:3,paper:2},
-    {t:"Sleeping like a normal person",chill:3}
-  ]},
-  {q:"Your bag is down 50%. You...",a:[
-    {t:"Buy MORE to average down",degen:3,galaxy:1},
-    {t:"Sell to cut losses",paper:3,cope:1},
-    {t:"Diamond hands. NGMI = NGMI",chill:2,degen:2},
-    {t:"Refresh the chart 400 times",cope:3,degen:1}
-  ]},
-  {q:"Pick your trader spirit:",a:[
-    {t:"🐋 Whale - patient, calculated",chill:2,galaxy:2},
-    {t:"🐂 Bull - long everything",degen:3},
-    {t:"🐻 Bear - short everything",galaxy:1,cope:2},
-    {t:"🤡 Clown - vibes only",cope:2,degen:2}
-  ]},
-  {q:"How many tabs of charts do you have open?",a:[
-    {t:"1, I'm chill",chill:3},
-    {t:"5-10, normal degen",degen:2,cope:1},
-    {t:"50+, send help",cope:3,degen:2},
-    {t:"None, I'm cooked",cope:2,paper:1}
-  ]},
-  {q:"Your dream Monad project:",a:[
-    {t:"DeFi protocol with 1000% APY",degen:3,cope:1},
-    {t:"Memecoin with cult community",chill:1,degen:2},
-    {t:"L2 zk-rollup with novel cryptography",galaxy:3},
-    {t:"NFT collection with utility",chill:2,galaxy:1}
-  ]},
-  {q:"Someone calls $MONSHI a scam. You...",a:[
-    {t:"Block them, NGMI",degen:2,chill:2},
-    {t:"Argue for 4 hours straight",cope:3},
-    {t:"Show them the games & dashboard",galaxy:2,chill:1},
-    {t:"Sell my bag in panic",paper:3}
-  ]},
-  {q:"Best part about crypto:",a:[
-    {t:"Making money fast",degen:3},
-    {t:"The community / memes",chill:2,degen:1},
-    {t:"The technology",galaxy:3},
-    {t:"Hating on other coins",cope:2,degen:1}
-  ]},
-  {q:"You hit 10x. You...",a:[
-    {t:"Take profit, lock in gains",chill:2,paper:2},
-    {t:"HODL for 100x",degen:3},
-    {t:"Sell half, ride rest",chill:2,galaxy:1},
-    {t:"Tell everyone you know",cope:2,degen:1}
-  ]},
-  {q:"Pick a vibe:",a:[
-    {t:"Caffeine + chart = me",cope:3,degen:1},
-    {t:"Zen monk, watching from afar",chill:3,galaxy:1},
-    {t:"Gambling addict in denial",degen:3,cope:2},
-    {t:"Big brain trader",galaxy:3}
-  ]},
-  {q:"Your Monshi NFT trait would be:",a:[
-    {t:"WHALE TRADER 🐋",chill:3,galaxy:2},
-    {t:"PAPERHANDS 🤲",paper:3,cope:1},
-    {t:"FUNNY PAIN 😂",cope:3,degen:1},
-    {t:"WAGMI SIGNAL 🚀",degen:3,chill:1}
-  ]}
+// 10 questions, each scoring traits 0-3 across multiple dimensions
+// Dimensions: greed, cope, chaos, brain, hope
+var QUESTIONS = [
+  {q:"It's 3am. Chart just dumped 40%. You:",
+    a:[
+      {t:"Buy more, cope harder", s:{greed:3,cope:2,chaos:0,brain:0,hope:2}},
+      {t:"Sell, cry, refresh chart 200x", s:{greed:0,cope:3,chaos:1,brain:0,hope:0}},
+      {t:"Close laptop, sleep, deal tomorrow", s:{greed:0,cope:0,chaos:0,brain:3,hope:1}},
+      {t:"Tweet about how you saw it coming", s:{greed:0,cope:3,chaos:2,brain:1,hope:0}}
+    ]},
+  {q:"Your trading strategy in one word:",
+    a:[
+      {t:"Vibes", s:{greed:1,cope:1,chaos:3,brain:0,hope:2}},
+      {t:"Spreadsheets", s:{greed:0,cope:0,chaos:0,brain:3,hope:1}},
+      {t:"Hopium", s:{greed:2,cope:1,chaos:1,brain:0,hope:3}},
+      {t:"Revenge", s:{greed:2,cope:3,chaos:2,brain:0,hope:0}}
+    ]},
+  {q:"Friend asks how your portfolio is doing:",
+    a:[
+      {t:"Crushing it 💎", s:{greed:1,cope:3,chaos:0,brain:0,hope:2}},
+      {t:"Down bad but it's fine", s:{greed:0,cope:3,chaos:0,brain:1,hope:1}},
+      {t:"Up 4.2%, full disclosure", s:{greed:0,cope:0,chaos:0,brain:3,hope:1}},
+      {t:"Don't ask", s:{greed:0,cope:2,chaos:2,brain:0,hope:0}}
+    ]},
+  {q:"You see a new memecoin trending. You:",
+    a:[
+      {t:"Ape immediately, ask later", s:{greed:3,cope:0,chaos:3,brain:0,hope:2}},
+      {t:"Read the contract, check holders", s:{greed:0,cope:0,chaos:0,brain:3,hope:0}},
+      {t:"Wait for the dip", s:{greed:1,cope:0,chaos:0,brain:2,hope:1}},
+      {t:"Tell yourself you'll buy it later (you won't)", s:{greed:0,cope:2,chaos:0,brain:1,hope:0}}
+    ]},
+  {q:"Your crypto Twitter persona is:",
+    a:[
+      {t:"Permabull, every coin is undervalued", s:{greed:2,cope:1,chaos:1,brain:0,hope:3}},
+      {t:"Doomer, calls every top", s:{greed:0,cope:3,chaos:1,brain:1,hope:0}},
+      {t:"Ghost, just lurking", s:{greed:0,cope:1,chaos:0,brain:2,hope:0}},
+      {t:"Memer, posting cope all day", s:{greed:0,cope:3,chaos:3,brain:0,hope:1}}
+    ]},
+  {q:"You finally make a 10x. First move:",
+    a:[
+      {t:"Hold, looking for 100x", s:{greed:3,cope:0,chaos:2,brain:0,hope:3}},
+      {t:"Sell half, take initial out", s:{greed:1,cope:0,chaos:0,brain:3,hope:1}},
+      {t:"Sell 100%, screenshot bag", s:{greed:0,cope:2,chaos:0,brain:2,hope:0}},
+      {t:"Buy more cause we're going to 50x", s:{greed:3,cope:1,chaos:3,brain:0,hope:3}}
+    ]},
+  {q:"Your security setup:",
+    a:[
+      {t:"Hardware wallet, multisig, paranoid", s:{greed:0,cope:0,chaos:0,brain:3,hope:0}},
+      {t:"MetaMask, password is 'password'", s:{greed:1,cope:1,chaos:3,brain:0,hope:0}},
+      {t:"Seed phrase in Notes app", s:{greed:0,cope:1,chaos:3,brain:0,hope:1}},
+      {t:"Wrote it on a napkin somewhere", s:{greed:0,cope:2,chaos:3,brain:0,hope:1}}
+    ]},
+  {q:"How long do you hold the average bag?",
+    a:[
+      {t:"Until I die", s:{greed:2,cope:1,chaos:0,brain:0,hope:3}},
+      {t:"Until first 2x", s:{greed:0,cope:1,chaos:0,brain:2,hope:0}},
+      {t:"Until I panic", s:{greed:0,cope:3,chaos:2,brain:0,hope:0}},
+      {t:"Until something shinier appears", s:{greed:1,cope:0,chaos:3,brain:0,hope:1}}
+    ]},
+  {q:"Best trade of your life was:",
+    a:[
+      {t:"Researched for weeks, hit perfect", s:{greed:0,cope:0,chaos:0,brain:3,hope:1}},
+      {t:"Random degen play that mooned", s:{greed:2,cope:0,chaos:3,brain:0,hope:2}},
+      {t:"Pure luck, total accident", s:{greed:0,cope:1,chaos:3,brain:0,hope:1}},
+      {t:"What best trade?", s:{greed:0,cope:3,chaos:1,brain:0,hope:0}}
+    ]},
+  {q:"What does success look like?",
+    a:[
+      {t:"Generational wealth, family set", s:{greed:1,cope:0,chaos:0,brain:2,hope:3}},
+      {t:"Lambo on Instagram", s:{greed:3,cope:1,chaos:1,brain:0,hope:2}},
+      {t:"Just breaking even tbh", s:{greed:0,cope:3,chaos:0,brain:1,hope:1}},
+      {t:"Beat my friends scores", s:{greed:1,cope:1,chaos:1,brain:0,hope:1}}
+    ]}
 ];
 
-// Result archetypes
-var RESULTS = {
-  degen: {emoji:'🦍',name:'APE DEGEN',desc:"You don't read whitepapers, you read CHARTS. You bought $MONSHI before this quiz finished loading. Your wallet is a graveyard of 100x dreams. Welcome to the trenches, anon.",trait:'WAGMI SIGNAL'},
-  cope: {emoji:'😂',name:'COPIUM ADDICT',desc:"Down bad but smiling. Your portfolio is red but your soul is rainbow. You've got a 5-page thread defending why your -90% bag is actually undervalued. Pure cope, but funny.",trait:'FUNNY PAIN'},
-  chill: {emoji:'🧘',name:'ZEN HOLDER',desc:"You don't check your bag. The bag checks itself. Bear markets are just sales. You hold $MONSHI like it owes you money. The market shakes, you don't.",trait:'WHALE TRADER'},
-  galaxy: {emoji:'🧠',name:'GALAXY BRAIN',desc:"You read every whitepaper. You DM founders. You actually understand what Monad's parallel execution does. People come to you for picks. You're built different, anon.",trait:'PROTOCOL NERD'},
-  paper: {emoji:'🤲',name:'PAPER HANDS',desc:"You sold the bottom. You bought the top. Your wallet is a museum of L plays. But hey - at least you're still here. Time to make better decisions, starting with $MONSHI.",trait:'PAPERHANDS'}
-};
+// Real Monshi NFT trait results - mapped to dominant dimensions
+var TRAITS = [
+  {name:"WHALE TRADER", emoji:"🐋", tagline:"FROM THE TRENCHES TO THE TOP", desc:"You hold through everything. Conviction over comfort. While others paper-handed at -50%, you doubled down. The chart is just noise to you. Generational wealth or generational learning experience — there's no middle option.", match:{greed:3,brain:2,hope:3}},
+  {name:"PAPERHANDS", emoji:"📃", tagline:"SOLD THE BOTTOM AGAIN", desc:"You see red and panic. You sell at -10%, watch it 10x without you, then rage tweet. Every. Single. Time. But hey — at least you preserved capital. Sort of. The pattern continues.", match:{cope:3,greed:1,hope:0}},
+  {name:"CAFFEINE RAGE", emoji:"☕", tagline:"4 ESPRESSOS DEEP", desc:"Up at 3am refreshing the chart. Everything is a buy signal. Everything is a sell signal. Your portfolio looks like a heart monitor. You're either going to make millions or have a stroke. Possibly both.", match:{chaos:3,cope:2,hope:1}},
+  {name:"PROTOCOL NERD", emoji:"🤓", tagline:"READS WHITEPAPERS FOR FUN", desc:"You actually read the docs. You can name 12 different consensus mechanisms. Your trades are based on tokenomics, not vibes. People mock you until your boring picks 50x while their memes go to zero.", match:{brain:3,greed:0,hope:1}},
+  {name:"WAGMI SIGNAL", emoji:"🚀", tagline:"PERMABULL ENERGY", desc:"It's always going up next week. The chart bottomed. Sentiment is shifting. Bull market starts Tuesday. You've been right exactly twice in 4 years but the vibes are immaculate. Never selling.", match:{hope:3,greed:1,cope:1}},
+  {name:"MOON KNIGHT", emoji:"🌙", tagline:"DARK SIDE OF THE TRADE", desc:"You move in shadows. No tweets. No flexing. Just quiet accumulation while everyone else is panic-posting. When the bag finally hits, only your wallet knows. Mysterious. Effective. Probably ngmi anyway.", match:{brain:2,greed:1,hope:1}},
+  {name:"FUNNY PAIN", emoji:"😂", tagline:"LAUGHS TO KEEP FROM CRYING", desc:"Your portfolio is a joke and you tell it best. Memes about your losses go viral. You've made more in retweets than trades. The community loves you. Your wallet does not. Worth it.", match:{cope:3,chaos:2,hope:0}},
+  {name:"DEGEN", emoji:"🎰", tagline:"NO THOUGHTS, ONLY APE", desc:"You bought the contract address before reading the name. 'Research' means checking the Telegram for 30 seconds. You're early on everything and rugged on most. But that one 1000x makes it all worth it. Right? Right.", match:{chaos:3,greed:3,brain:0}},
+  {name:"DOGE MAXIMALIST", emoji:"🐕", tagline:"MUCH WOW. MANY BAG.", desc:"Memecoins are the only real coin. Bitcoin is for boomers. Ethereum is for nerds. You judge a project by how funny the meme is. So far your strategy has worked. Or you're delusional. Who can say.", match:{hope:3,chaos:2,greed:2}},
+  {name:"GOLD BRAIN", emoji:"🧠", tagline:"BUILT DIFFERENT", desc:"You see things others don't. While others chase pumps, you find inefficiencies. While others tweet, you build. While others lose, you compound. People don't understand your strategy and that's exactly the point.", match:{brain:3,greed:1,hope:2}},
+  {name:"PANIC SMILE", emoji:"😬", tagline:"INTERNALLY SCREAMING", desc:"On the outside: 'wagmi everything is fine.' On the inside: existential crisis. You smile through dumps, smile through rugs, smile through margin calls. The mask never slips. The anxiety never stops.", match:{cope:3,hope:2,brain:0}},
+  {name:"WHALE TRADER (LITE)", emoji:"🦐", tagline:"SHRIMP DREAMS", desc:"You play the same game as the whales but with $50. Every 10x feels like generational wealth. Every -20% feels like rent. The dream stays alive. Someday you'll graduate. Until then, you grind.", match:{hope:2,brain:1,greed:1}}
+];
 
-var idx=0,scores={degen:0,cope:0,chill:0,galaxy:0,paper:0};
+var idx=0, scores={greed:0,cope:0,chaos:0,brain:0,hope:0};
+
+function showIntro(){
+  document.getElementById('content').innerHTML = '<div class="intro">'+
+    '<p>10 brutally honest questions. Find out which Monshi NFT trait actually represents you.<br><br>Share your result. Match it with a real NFT.</p>'+
+    '<button class="startBtn" onclick="startQuiz()">START QUIZ →</button>'+
+    '</div>';
+}
+
+function startQuiz(){
+  idx=0;
+  scores={greed:0,cope:0,chaos:0,brain:0,hope:0};
+  showQ();
+}
 
 function showQ(){
-  if(idx>=QS.length){return showResult();}
-  var q=QS[idx];
-  var card=document.getElementById('card');
-  var pct=(idx/QS.length)*100;
-  card.innerHTML='<div class="progress"><div class="progress-bar" style="width:'+pct+'%;"></div></div>'+
-    '<div class="qNum">QUESTION '+(idx+1)+' / '+QS.length+'</div>'+
-    '<div class="q">'+q.q+'</div>'+
-    '<div class="opts" id="opts"></div>';
-  var optsEl=document.getElementById('opts');
+  if(idx>=QUESTIONS.length){return showResult();}
+  var q = QUESTIONS[idx];
+  var pct = ((idx+1)/QUESTIONS.length)*100;
+  var html = '<div class="qBox">'+
+    '<div class="qHeader"><div class="qNum">QUESTION '+(idx+1)+'/'+QUESTIONS.length+'</div><div class="progress"><div class="progress-fill" style="width:'+pct+'%;"></div></div></div>'+
+    '<div class="qText">'+q.q+'</div>'+
+    '<div class="opts" id="opts"></div>'+
+    '</div>';
+  document.getElementById('content').innerHTML = html;
+  var optsEl = document.getElementById('opts');
   q.a.forEach(function(opt){
-    var d=document.createElement('div');
-    d.className='opt';
-    d.textContent=opt.t;
-    d.onclick=function(){
-      ['degen','cope','chill','galaxy','paper'].forEach(function(k){if(opt[k])scores[k]+=opt[k];});
-      idx++;showQ();
+    var o = document.createElement('div');
+    o.className = 'opt';
+    o.textContent = opt.t;
+    o.onclick = function(){
+      Object.keys(opt.s).forEach(function(k){scores[k] += opt.s[k];});
+      idx++;
+      showQ();
     };
-    optsEl.appendChild(d);
+    optsEl.appendChild(o);
   });
 }
 
 function showResult(){
-  // Find dominant trait
-  var top=Object.keys(scores).reduce(function(a,b){return scores[a]>scores[b]?a:b;});
-  var r=RESULTS[top];
-  var max=Math.max.apply(null,Object.values(scores))||1;
-  var card=document.getElementById('card');
-  card.classList.add('result');
-  card.innerHTML = '<div class="result">'+
-    '<div class="resultEmoji">'+r.emoji+'</div>'+
-    '<div class="resultName">'+r.name+'</div>'+
-    '<div class="resultDesc">'+r.desc+'</div>'+
-    '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#FCD34D;letter-spacing:3px;margin-bottom:14px;">YOUR NFT TRAIT MATCH:</div>'+
-    '<div style="font-family:Orbitron,sans-serif;font-size:18px;color:#EC4899;letter-spacing:3px;margin-bottom:24px;text-shadow:0 0 12px rgba(236,72,153,.5);">🎴 '+r.trait+'</div>'+
-    '<div class="resultStats">'+
-      Object.keys(scores).map(function(k){
-        var pct=Math.round(scores[k]/max*100);
-        return '<div class="stat"><div class="statLabel">'+k.toUpperCase()+'</div><div class="statBar"><div class="statFill" style="width:'+pct+'%;"></div></div></div>';
-      }).join('')+
+  // Find best matching trait
+  var best=null, bestScore=-1;
+  TRAITS.forEach(function(t){
+    var s=0;
+    Object.keys(t.match).forEach(function(k){s += Math.min(scores[k]||0, t.match[k]) * 2;});
+    if(s>bestScore){bestScore=s;best=t;}
+  });
+  
+  var topDim = Object.keys(scores).sort(function(a,b){return scores[b]-scores[a];})[0];
+  
+  var html = '<div class="result">'+
+    '<div class="rEyebrow">YOUR MONSHI TRAIT IS</div>'+
+    '<div style="font-size:64px;margin-bottom:8px;">'+best.emoji+'</div>'+
+    '<div class="rTraitName">'+best.name+'</div>'+
+    '<div class="rTagline">'+best.tagline+'</div>'+
+    '<div class="rDesc">'+best.desc+'</div>'+
+    '<div class="rStats">'+
+      '<div class="rStat"><div class="v">'+(scores.greed+scores.cope)+'</div><div class="l">DEGEN</div></div>'+
+      '<div class="rStat"><div class="v">'+(scores.brain)+'</div><div class="l">GALAXY BRAIN</div></div>'+
+      '<div class="rStat"><div class="v">'+(scores.hope+scores.chaos)+'</div><div class="l">CHAOS</div></div>'+
     '</div>'+
-    '<div class="actions">'+
-      '<button class="actBtn bRetry" onclick="location.reload();">RETAKE</button>'+
-      '<button class="actBtn bShare" id="shareBtn">SHARE 𝕏</button>'+
-      '<a class="actBtn bNft" href="https://opensea.io/collection/monshi-nft-collection-563194175" target="_blank">FIND MY NFT 🎴</a>'+
-      '<a class="actBtn bBuy" href="https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777" target="_blank">BUY $MONSHI</a>'+
+    '<div class="rActions">'+
+      '<a class="rBtn rBtnX" id="shareBtn" target="_blank">SHARE ON 𝕏</a>'+
+      '<a class="rBtn rBtnNFT" href="https://opensea.io/collection/monshi-nft-collection-563194175" target="_blank">FIND THIS NFT 🎴</a>'+
+      '<button class="rBtn rBtnRetry" onclick="startQuiz()">TAKE AGAIN</button>'+
     '</div>'+
   '</div>';
-  document.getElementById('shareBtn').onclick=function(){
-    var tw='I\'m '+r.emoji+' '+r.name+' on the @Monshi_Monpad personality quiz!\n\nMy NFT trait match: 🎴 '+r.trait+'\n\nWhich Monshi are you? 👇\nhttps://monshi.xyz/quiz.html\n\n$MONSHI #Monad';
-    window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');
-  };
+  document.getElementById('content').innerHTML = html;
+  
+  // Wire up share
+  var tweet = "I'm a "+best.emoji+" "+best.name+" on @Monshi_Monpad ARCADE\n\n\""+best.tagline+"\"\n\nWhat trait are you? https://monshi.xyz/quiz.html\n\n$MONSHI #Monad";
+  document.getElementById('shareBtn').href = 'https://twitter.com/intent/tweet?text='+encodeURIComponent(tweet);
 }
 
-showQ();
+showIntro();
 </script>
-<script src="/pwa-install.js" defer></script>
 </body>
 </html>
