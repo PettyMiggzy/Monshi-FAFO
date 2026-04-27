@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>👑 ROYAL ROULETTE — MONSHI ARCADE</title>
+<script src="/monshi-shared.js"></script>
+<script src="/achievements.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#02000a;overflow:hidden;font-family:'Space Mono',monospace;color:#EDE9FF;}
+body{display:flex;align-items:center;justify-content:center;}
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px;}
+#hubBtn{position:fixed;top:8px;left:8px;z-index:7;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);}
+.locked{text-align:center;background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(20,5,50,.7));border:2px solid rgba(168,85,247,.5);border-radius:18px;padding:32px;max-width:480px;box-shadow:0 0 40px rgba(168,85,247,.4);}
+.lockEmoji{font-size:64px;margin-bottom:8px;}
+.lockTitle{font-family:Orbitron,sans-serif;font-size:32px;font-weight:900;color:#A855F7;letter-spacing:3px;margin-bottom:6px;text-shadow:0 0 18px rgba(168,85,247,.6);}
+.lockSub{color:rgba(196,181,253,.7);font-size:12px;letter-spacing:2px;margin-bottom:24px;}
+.tierLine{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:18px;font-family:Orbitron,sans-serif;font-size:14px;letter-spacing:2px;}
+.connectBtn{display:inline-block;padding:14px 30px;background:linear-gradient(135deg,#22C55E,#15803D);border:none;color:#fff;font-family:Orbitron,sans-serif;font-size:13px;font-weight:900;letter-spacing:3px;border-radius:10px;cursor:pointer;animation:pulse 2.5s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}50%{box-shadow:0 0 0 12px rgba(34,197,94,0);}}
+.buyBtn{display:inline-block;margin-top:14px;padding:10px 24px;background:linear-gradient(135deg,#A855F7,#7C3AED);color:#fff;text-decoration:none;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;border-radius:8px;}
+.gw{display:flex;flex-direction:column;align-items:center;gap:18px;}
+.tit{font-family:Orbitron,sans-serif;font-size:32px;font-weight:900;letter-spacing:3px;color:#FCD34D;text-shadow:0 0 20px rgba(252,211,77,.6);}
+.sub{font-size:11px;color:#A855F7;letter-spacing:2px;}
+.hud{display:flex;gap:10px;}
+.st{padding:8px 16px;background:rgba(20,5,50,.6);border:1px solid rgba(168,85,247,.4);border-radius:8px;text-align:center;}
+.st .n{font-family:Orbitron,sans-serif;font-size:22px;color:#fff;}
+.st .l{font-size:8px;color:rgba(167,139,250,.6);letter-spacing:1.5px;}
+.wheel{width:300px;height:300px;border-radius:50%;background:conic-gradient(#22C55E 0 12%,#EF4444 12% 24%,#22C55E 24% 36%,#FCD34D 36% 48%,#22C55E 48% 60%,#A855F7 60% 72%,#22C55E 72% 84%,#EF4444 84% 100%);border:6px solid #FCD34D;box-shadow:0 0 50px rgba(252,211,77,.6),inset 0 0 30px rgba(0,0,0,.5);transition:transform 4s cubic-bezier(.2,.8,.2,1);position:relative;}
+.wheel::after{content:"💎";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:42px;background:#02000a;border:3px solid #FCD34D;border-radius:50%;width:70px;height:70px;display:flex;align-items:center;justify-content:center;}
+.pointer{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:32px;z-index:10;filter:drop-shadow(0 0 8px #FCD34D);}
+.spinBox{position:relative;}
+.bts{display:flex;gap:14px;}
+.bb{padding:16px 30px;border:none;border-radius:10px;font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;letter-spacing:2px;cursor:pointer;color:#fff;}
+.bb:disabled{opacity:.4;cursor:not-allowed;}
+.bSpin{background:linear-gradient(135deg,#FCD34D,#92400E);}
+.msg{font-family:Orbitron,sans-serif;font-size:14px;color:#FCD34D;letter-spacing:2px;height:20px;}
+</style>
+</head>
+<body>
+<a href="/" id="hubBtn">← ALL GAMES</a>
+<div id="wrap"><div id="content"></div></div>
+<script>
+function render(){
+  var c = document.getElementById('content');
+  if(!window.MONSHI || !MONSHI.wallet){
+    c.innerHTML = '<div class="locked"><div class="lockEmoji">🔒</div><div class="lockTitle">ROYAL ROULETTE</div><div class="lockSub">EXCLUSIVE TO $MONSHI HOLDERS</div><div class="tierLine">🐬 DOLPHIN TIER OR HIGHER (100K+)</div><div style="font-size:11px;color:rgba(196,181,253,.6);margin-bottom:20px;line-height:1.6;">Connect your wallet to verify your tier and unlock the spinner. The bigger your bag, the bigger your max bet.</div><button class="connectBtn" onclick="MONSHI.connectWallet().then(function(){setTimeout(render,1000);});">🔌 CONNECT WALLET</button></div>';
+    return;
+  }
+  if(MONSHI.balance < 100000){
+    c.innerHTML = '<div class="locked"><div class="lockEmoji">🦐</div><div class="lockTitle">NEED MORE BAG</div><div class="lockSub">YOU HOLD '+(MONSHI.balance.toLocaleString())+' $MONSHI</div><div class="tierLine">🐬 NEED 100K+ TO PLAY</div><div style="font-size:11px;color:rgba(196,181,253,.6);margin-bottom:20px;line-height:1.6;">Royal Roulette is exclusive to Dolphin tier and above. Stack more $MONSHI to unlock.</div><a class="buyBtn" href="https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777" target="_blank">BUY $MONSHI 🚀</a></div>';
+    return;
+  }
+  // Render game
+  c.innerHTML = '<div class="gw">'+
+    '<div class="tit">👑 ROYAL ROULETTE</div>'+
+    '<div class="sub">'+MONSHI.tier.emoji+' '+MONSHI.tier.name+' EXCLUSIVE · '+MONSHI.tier.mult+'x WIN MULTIPLIER</div>'+
+    '<div class="hud">'+
+      '<div class="st"><div class="n" id="bal">'+(parseInt(localStorage.getItem("rrl_bal")||"500"))+'</div><div class="l">CHIPS</div></div>'+
+      '<div class="st"><div class="n" id="bst">'+(parseInt(localStorage.getItem("rrl_bst")||"0"))+'</div><div class="l">BIGGEST</div></div>'+
+    '</div>'+
+    '<div class="spinBox"><div class="pointer">▼</div><div class="wheel" id="wheel"></div></div>'+
+    '<div class="msg" id="msg">PLACE A BET</div>'+
+    '<div class="bts">'+
+      '<button class="bb bSpin" data-bet="10">10 ON GREEN</button>'+
+      '<button class="bb bSpin" data-bet="50">50 ON GREEN</button>'+
+      '<button class="bb bSpin" data-bet="100">100 ON GREEN</button>'+
+    '</div>'+
+    '<div style="font-size:9px;color:rgba(167,139,250,.5);letter-spacing:1.5px;text-align:center;line-height:1.6;max-width:400px;">GREEN WINS = 1.8x · MULTIPLIED BY YOUR TIER · ANY OTHER COLOR LOSES YOUR BET</div>'+
+  '</div>';
+  bind();
+}
+function bind(){
+  var spinning=false;
+  var rotation=0;
+  document.querySelectorAll('[data-bet]').forEach(function(b){
+    b.onclick=function(){
+      if(spinning)return;
+      var bet=parseInt(b.dataset.bet);
+      var bal=parseInt(localStorage.getItem("rrl_bal")||"500");
+      if(bet>bal){alert("NOT ENOUGH CHIPS");return;}
+      spinning=true;
+      bal-=bet;localStorage.setItem("rrl_bal",bal);document.getElementById("bal").textContent=bal;
+      // Spin
+      var deg=2880+Math.floor(Math.random()*360);
+      rotation+=deg;
+      var w=document.getElementById("wheel");
+      w.style.transform="rotate("+rotation+"deg)";
+      document.getElementById("msg").textContent="SPINNING...";
+      setTimeout(function(){
+        // Determine result based on final rotation
+        var final=rotation%360;
+        var pos=(360-final)%360;
+        var slice=Math.floor(pos/(360/8));
+        var greens=[0,2,4,6];
+        var won=greens.indexOf(slice)>=0;
+        if(won){
+          var winAmt=Math.floor(bet*1.8*(MONSHI.tier.mult));
+          bal+=winAmt;localStorage.setItem("rrl_bal",bal);document.getElementById("bal").textContent=bal;
+          document.getElementById("msg").textContent="🟢 GREEN! +"+winAmt+" ("+MONSHI.tier.mult+"x)";
+          var bst=parseInt(localStorage.getItem("rrl_bst")||"0");
+          if(winAmt>bst){bst=winAmt;localStorage.setItem("rrl_bst",bst);document.getElementById("bst").textContent=bst;}
+        } else {
+          document.getElementById("msg").textContent="❌ LOST. SPIN AGAIN.";
+        }
+        spinning=false;
+        if(bal<10){
+          localStorage.setItem("rrl_bal","500");
+          setTimeout(function(){alert("Out of chips - resetting to 500");document.getElementById("bal").textContent="500";},800);
+        }
+      },4200);
+    };
+  });
+}
+setTimeout(render,500);
+window.addEventListener('monshi:connect',render);
+window.addEventListener('monshi:disconnect',render);
+</script>
+</body>
+</html>

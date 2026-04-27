@@ -501,23 +501,49 @@ function fetchHolders(){
       }
       
       list.innerHTML='';
-      // DEBUG: log first holder structure to console for easier debugging
-      if(holders[0]) console.log('First holder structure:', JSON.stringify(holders[0], null, 2));
+      // Bulletproof parser: deep-scan for balance + percentage no matter the field name
+      function findBalanceFields(obj){
+          var balance=null, percentage=null, addr=null, nickname=null, avatar=null;
+          function walk(o,depth){
+              if(!o || depth>4 || typeof o !== 'object')return;
+              for(var k in o){
+                  var v = o[k];
+                  var lk = k.toLowerCase();
+                  if(typeof v === 'string' || typeof v === 'number'){
+                      var num = parseFloat(v);
+                      // Address: looks like 0x...
+                      if(!addr && typeof v==='string' && /^0x[a-f0-9]{40}$/i.test(v)) addr = v;
+                      if(!nickname && (lk==='nickname'||lk==='name'||lk==='username') && typeof v==='string' && !v.startsWith('0x')) nickname = v;
+                      if(!avatar && (lk==='image_uri'||lk==='avatar'||lk==='image'||lk==='profile_image') && typeof v==='string') avatar = v;
+                      // Balance keywords
+                      if(balance==null && !isNaN(num) && /balance|amount|holding|token_balance|formatted/.test(lk)){
+                          // Skip percentage-like values (between 0 and 100)
+                          if(num>100 || num===0){balance = num;}
+                      }
+                      // Percentage
+                      if(percentage==null && !isNaN(num) && /percent|share|ratio/.test(lk) && num<=100 && num>=0){
+                          percentage = num;
+                      }
+                  } else if(typeof v === 'object'){
+                      walk(v,depth+1);
+                  }
+              }
+          }
+          walk(obj,0);
+          return {balance:balance,percentage:percentage,addr:addr,nickname:nickname,avatar:avatar};
+      }
+      // DEBUG: log first holder structure once
+      if(holders[0] && !window._loggedHolder){window._loggedHolder=true;console.log('First holder:', JSON.stringify(holders[0], null, 2));}
       holders.forEach(function(h,i){
-        var info=h.account_info||{};
-        var binfo=h.balance_info||{};
-        var addr=info.account_id||info.address||h.address||h.holder||h.wallet||'';
-        var nickname=info.nickname||'';
-        var avatar=info.image_uri||'';
-        // Try every plausible balance field name
-        var rawBal=binfo.balance||binfo.amount||binfo.token_amount||binfo.formatted_balance||binfo.balance_formatted||binfo.token_balance||binfo.value||binfo.holdings||h.balance||h.amount||0;
-        var bal=parseFloat(rawBal)||0;
-        // Wei -> token (18 decimals) if the number is huge
-        if(bal>1e15)bal=bal/1e18;
-        // % of supply: try every plausible field
-        var pct=binfo.percentage||binfo.percent||binfo.share||binfo.supply_percentage||h.percentage||h.percent||null;
-        if(pct==null && totalSupply && bal) pct=bal/totalSupply*100;
-        if(typeof pct==='string')pct=parseFloat(pct);
+        var found = findBalanceFields(h);
+        var addr = found.addr || '';
+        var nickname = found.nickname || '';
+        var avatar = found.avatar || '';
+        var bal = found.balance || 0;
+        // Convert from wei (18 decimals) if huge
+        if(bal>1e15)bal = bal/1e18;
+        var pct = found.percentage;
+        if(pct==null && totalSupply && bal) pct = bal/totalSupply*100;
         
         var tier=tierFor(bal);
         var medal=['🥇','🥈','🥉'][i]||'#'+(i+1);
