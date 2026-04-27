@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>MONSHI vs DEV PONG</title>
+<script src="/monshi-shared.js"></script>
+<script src="/achievements.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#02000a;overflow:hidden;font-family:'Space Mono',monospace;color:#EDE9FF;}
+body{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:20px;}
+#hubBtn{position:fixed;top:8px;left:8px;z-index:7;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);}
+.tit{font-family:Orbitron,sans-serif;font-size:28px;font-weight:900;letter-spacing:3px;color:#A855F7;text-shadow:0 0 16px rgba(168,85,247,.5);}
+.score{display:flex;justify-content:space-between;width:min(700px,95vw);font-family:Orbitron,sans-serif;font-size:32px;font-weight:900;letter-spacing:2px;}
+.score .you{color:#22C55E;}
+.score .dev{color:#EF4444;}
+canvas{background:#0a0015;border:2px solid rgba(139,92,246,.4);border-radius:10px;display:block;max-width:95vw;}
+.hint{font-size:10px;color:rgba(167,139,250,.6);letter-spacing:2px;text-align:center;}
+.death{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,8,.92);z-index:8;}
+.death.show{display:flex;}
+.dCard{background:rgba(90,30,180,.18);border:1.5px solid rgba(150,120,255,.4);border-radius:18px;padding:22px 28px;width:min(440px,90vw);text-align:center;}
+.rugged{font-family:Orbitron,sans-serif;font-size:38px;font-weight:900;color:#FCA5A5;text-shadow:0 0 24px #EF4444;margin-bottom:6px;}
+.rugged.win{color:#4ADE80;text-shadow:0 0 24px #22C55E;}
+.scoreNum{font-family:Orbitron,sans-serif;font-size:24px;color:#EDE9FF;margin:10px 0;}
+.lbl{font-size:9px;color:rgba(167,139,250,.5);letter-spacing:1px;margin-bottom:10px;}
+#nS{margin-bottom:14px;display:none;}
+#nS input{background:rgba(0,0,0,.5);border:1.5px solid rgba(139,92,246,.5);border-radius:8px;padding:8px 12px;color:#fff;font-family:'Space Mono',monospace;font-size:13px;outline:none;text-align:center;letter-spacing:2px;width:160px;}
+#nS button{padding:8px 16px;background:linear-gradient(135deg,#7C3AED,#4ADE80);border:none;border-radius:8px;color:#fff;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;}
+.btn{padding:10px 14px;border:none;border-radius:8px;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;}
+#btnRetry{background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;}
+#btnShare{background:linear-gradient(135deg,#1DA1F2,#0d7abf);color:#fff;}
+#btnBuy{background:linear-gradient(135deg,#22C55E,#15803D);color:#fff;}
+#btnRow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+.lbT{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:11px;}
+.lbT th{color:rgba(139,92,246,.6);text-align:left;padding:3px 6px;border-bottom:1px solid rgba(139,92,246,.2);font-size:9px;letter-spacing:1px;}
+.lbT td{padding:4px 6px;color:rgba(220,210,255,.8);}
+.lbT tr.me td{color:#4ADE80;background:rgba(74,222,128,.08);}
+.lbT .sc{text-align:right;font-family:Orbitron,sans-serif;}
+.kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
+</style>
+</head>
+<body>
+<a href="/" id="hubBtn">← ALL GAMES</a>
+<div class="tit">🐱 MONSHI vs DEV 🎩</div>
+<div class="score"><div class="you">YOU <span id="ys">0</span></div><div class="dev"><span id="ds">0</span> DEV</div></div>
+<canvas id="cv" width="700" height="400"></canvas>
+<div class="hint">MOVE MOUSE / SWIPE TO CONTROL · FIRST TO 7 WINS</div>
+
+<div class="death" id="dP"><div class="dCard">
+<div class="rugged" id="rT">RUGGED</div>
+<div class="scoreNum" id="dS">0</div>
+<div class="lbl" id="lT"></div>
+<div class="lbl" id="rTag" style="color:#4ADE80;"></div>
+<div id="nS"><p style="color:rgba(196,181,253,.7);font-size:10px;letter-spacing:1.5px;margin-bottom:8px;">SUBMIT TO LEADERBOARD</p>
+<div style="display:flex;gap:6px;justify-content:center;"><input id="dN" type="text" maxlength="16" placeholder="YOUR NAME"><button id="dSb">SUBMIT</button></div></div>
+<table class="lbT"><thead><tr><th>#</th><th>PLAYER</th><th class="sc">SCORE</th></tr></thead><tbody id="lB"></tbody></table>
+<div id="btnRow"><button class="btn" id="btnShare">SHARE 𝕏</button><button class="btn" id="btnBuy">BUY $MONSHI</button><button class="btn" id="btnRetry" onclick="location.reload()">RETRY</button></div>
+</div></div>
+<div class="kingP">a KING PETTY build</div>
+
+<script>
+var SUPABASE_URL='https://cuqhqcmrgpdjlhyqztnc.supabase.co';
+var SUPABASE_KEY='sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
+var BUY_URL='https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
+var playerName=localStorage.getItem('monshi_name')||'';
+var leaderboard=[],playerRank=0,lastScore=0;
+function sbH(){return{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation'};}
+function fetchLB(t){fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score&order=score.desc&limit=10',{headers:sbH()}).then(function(r){return r.json();}).then(function(d){if(Array.isArray(d))leaderboard=d;}).catch(function(){});}
+function submitS(t,sc,cb){if(!playerName)return cb&&cb();var mult=(window.MONSHI&&window.MONSHI.tier)?window.MONSHI.tier.mult:1;var boosted=Math.floor(sc*mult);var body={name:playerName,score:boosted};if(window.MONSHI&&window.MONSHI.wallet)body.wallet=window.MONSHI.wallet;fetch(SUPABASE_URL+'/rest/v1/'+t,{method:'POST',headers:sbH(),body:JSON.stringify(body)}).then(function(){return fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score,wallet&order=score.desc&limit=10',{headers:sbH()});}).then(function(r){return r.json();}).then(function(d){if(Array.isArray(d)){leaderboard=d;playerRank=leaderboard.findIndex(function(s){return s.name===playerName&&s.score===boosted;})+1;}lastScore=boosted;cb&&cb();}).catch(function(){cb&&cb();});}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function showDeath(GN,GU,T,sc,sub,isWin){
+  lastScore=sc;
+  if(window.MONSHI_ACHIEVEMENTS){MONSHI_ACHIEVEMENTS.trackPlay(T);MONSHI_ACHIEVEMENTS.trackScore(playerRank||0);}
+  function render(){
+    document.getElementById('rT').textContent=isWin?'YOU WON':'RUGGED';
+    document.getElementById('rT').className='rugged'+(isWin?' win':'');
+    document.getElementById('dS').textContent=Math.floor(sc);
+    document.getElementById('lT').textContent=sub||'';
+    document.getElementById('rTag').textContent=playerRank>0?'#'+playerRank+' GLOBALLY':'';
+    var tb=document.getElementById('lB');tb.innerHTML='';
+    leaderboard.slice(0,5).forEach(function(s,i){var tr=document.createElement('tr');var isMe=s.name===playerName&&s.score===Math.floor(sc);if(isMe)tr.className='me';var medal=['🥇','🥈','🥉'][i]||'#'+(i+1);var holderBadge=s.wallet?' <span style="color:#FCD34D;font-size:9px;">◆</span>':'';tr.innerHTML='<td>'+medal+'</td><td>'+esc(s.name)+holderBadge+'</td><td class="sc">'+s.score+'</td>';tb.appendChild(tr);});
+    document.getElementById('dP').classList.add('show');
+  }
+  if(playerName){submitS(T,sc,render);}else{document.getElementById('nS').style.display='block';render();}
+  document.getElementById('dSb').onclick=function(){var n=document.getElementById('dN').value.trim();playerName=(n||'ANON').toUpperCase().slice(0,16);localStorage.setItem('monshi_name',playerName);document.getElementById('nS').style.display='none';submitS(T,sc,render);};
+  document.getElementById('dN').onkeydown=function(e){if(e.key==='Enter')document.getElementById('dSb').click();};
+  document.getElementById('btnShare').onclick=function(){var shareUrl='https://monshi.xyz/api/share?game='+encodeURIComponent(GN)+'&score='+sc+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+(playerRank||0)+'&won='+(isWin?'1':'0');var tw='I scored '+sc+' on '+GN+' on @Monshi_Monpad ARCADE 🚀\\n\\nBeat me 👇\\n'+shareUrl+'\\n\\n$MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');};
+  document.getElementById('btnBuy').onclick=function(){window.open(BUY_URL,'_blank');};
+}
+
+// ── PONG GAME ──
+var c=document.getElementById('cv'),x=c.getContext('2d');
+var W=c.width,H=c.height;
+var pad={w:14,h:80};
+var P={y:H/2-40,score:0};
+var D={y:H/2-40,score:0,spd:3+(window.MONSHI?Math.max(0,2-window.MONSHI.getExtraLives()):2)}; // dev faster if you have no lives perks
+var ball={x:W/2,y:H/2,vx:5,vy:3,r:8};
+var gameOver=false,winner=null;
+var WIN_SCORE=7;
+
+c.addEventListener('mousemove',function(e){var r=c.getBoundingClientRect();P.y=(e.clientY-r.top)*(H/r.height)-pad.h/2;});
+c.addEventListener('touchmove',function(e){e.preventDefault();var t=e.touches[0];var r=c.getBoundingClientRect();P.y=(t.clientY-r.top)*(H/r.height)-pad.h/2;},{passive:false});
+
+function reset(){
+  ball.x=W/2;ball.y=H/2;
+  ball.vx=(Math.random()<.5?-1:1)*5;
+  ball.vy=(Math.random()*4-2);
+}
+
+function update(){
+  if(gameOver)return;
+  // Player paddle bound
+  P.y=Math.max(0,Math.min(H-pad.h,P.y));
+  // Dev AI - tracks ball with some lag
+  var devTarget=ball.y-pad.h/2;
+  if(D.y<devTarget) D.y=Math.min(D.y+D.spd,devTarget);
+  else D.y=Math.max(D.y-D.spd,devTarget);
+  D.y=Math.max(0,Math.min(H-pad.h,D.y));
+  // Ball
+  ball.x+=ball.vx;ball.y+=ball.vy;
+  if(ball.y<ball.r||ball.y>H-ball.r){ball.vy*=-1;}
+  // Player paddle
+  if(ball.x-ball.r<pad.w && ball.y>P.y && ball.y<P.y+pad.h && ball.vx<0){
+    ball.vx=Math.abs(ball.vx)*1.05;
+    ball.vy=(ball.y-(P.y+pad.h/2))*0.15;
+  }
+  // Dev paddle
+  if(ball.x+ball.r>W-pad.w && ball.y>D.y && ball.y<D.y+pad.h && ball.vx>0){
+    ball.vx=-Math.abs(ball.vx)*1.05;
+    ball.vy=(ball.y-(D.y+pad.h/2))*0.15;
+  }
+  // Goals
+  if(ball.x<0){D.score++;reset();}
+  if(ball.x>W){P.score++;reset();}
+  document.getElementById('ys').textContent=P.score;
+  document.getElementById('ds').textContent=D.score;
+  if(P.score>=WIN_SCORE||D.score>=WIN_SCORE){
+    gameOver=true;
+    winner=P.score>D.score?'you':'dev';
+    var sc = winner==='you' ? Math.max(100,500-D.score*60) : 0;
+    setTimeout(function(){
+      showDeath('MONSHI PONG','https://monshi.xyz/pong.html','scores_pong',sc,winner==='you'?'beat the dev '+P.score+'-'+D.score:'lost '+P.score+'-'+D.score, winner==='you');
+    },600);
+  }
+}
+
+function draw(){
+  x.fillStyle='#0a0015';x.fillRect(0,0,W,H);
+  // Net
+  x.strokeStyle='rgba(139,92,246,.3)';x.setLineDash([10,10]);x.lineWidth=2;
+  x.beginPath();x.moveTo(W/2,0);x.lineTo(W/2,H);x.stroke();x.setLineDash([]);
+  // Player paddle (green)
+  x.shadowColor='#22C55E';x.shadowBlur=12;
+  x.fillStyle='#22C55E';x.fillRect(0,P.y,pad.w,pad.h);
+  // Dev paddle (red)
+  x.shadowColor='#EF4444';
+  x.fillStyle='#EF4444';x.fillRect(W-pad.w,D.y,pad.w,pad.h);
+  // Ball
+  x.shadowColor='#A855F7';x.shadowBlur=15;
+  x.fillStyle='#fff';
+  x.beginPath();x.arc(ball.x,ball.y,ball.r,0,Math.PI*2);x.fill();
+  x.shadowBlur=0;
+}
+
+function loop(){
+  update();draw();requestAnimationFrame(loop);
+}
+fetchLB('scores_pong');
+loop();
+</script>
+</body>
+</html>

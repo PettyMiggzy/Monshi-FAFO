@@ -124,7 +124,7 @@ h2{font-family:Orbitron,sans-serif;font-size:clamp(20px,3vw,32px);color:#4ADE80;
     <div class="tagline">A KING PETTY BUILD</div>
     <h1>MONSHI</h1>
     <h2>ARCADE</h2>
-    <div class="tagline">25 GAMES · DASHBOARD · TOURNAMENT · WALLET PERKS · ONE TOKEN</div>
+    <div class="tagline">26 GAMES · DASHBOARD · TOURNAMENT · WALLET PERKS · ONE TOKEN</div>
     <div style="margin-top:20px;"><div class="priceTicker" id="priceTicker"><div class="live-dot"></div>$MONSHI <span style="color:#EDE9FF;">loading...</span></div></div>
     <div class="disclaimer">
       <div class="t">⚠ DISCLAIMER</div>
@@ -173,7 +173,7 @@ h2{font-family:Orbitron,sans-serif;font-size:clamp(20px,3vw,32px);color:#4ADE80;
   </div>
 
   <div class="stats-bar">
-    <div class="s"><div class="v" id="totalGames">25</div><div class="l">GAMES</div></div>
+    <div class="s"><div class="v" id="totalGames">26</div><div class="l">GAMES</div></div>
     <div class="s"><div class="v" id="totalScores">—</div><div class="l">SCORES SUBMITTED</div></div>
     <div class="s"><div class="v" id="totalPlayers">—</div><div class="l">PLAYERS</div></div>
     <div class="s"><div class="v" style="color:#EF4444;" id="streakV">0</div><div class="l">DAILY STREAK</div></div>
@@ -264,6 +264,11 @@ h2{font-family:Orbitron,sans-serif;font-size:clamp(20px,3vw,32px);color:#4ADE80;
     <a href="/whack.html" class="card" style="--glow:rgba(239,68,68,.3);--accent:#F87171;">
       <span class="emoji">🔨</span><span class="tag">REACTION</span>
       <h3>WHACK FUDDERS</h3><p>30 sec blitz. Bonk FUDders, dodge gems.</p>
+      <span class="cta">PLAY</span>
+    </a>
+    <a href="/pong.html" class="card" style="--glow:rgba(239,68,68,.3);--accent:#EF4444;">
+      <span class="emoji">🏓</span><span class="tag">VS THE DEV</span>
+      <h3>MONSHI PONG</h3><p>First to 7 wins. Mouse / swipe to control.</p>
       <span class="cta">PLAY</span>
     </a>
   </div>
@@ -445,6 +450,46 @@ TABLES.forEach(function(t){
     .then(function(d){if(Array.isArray(d)){totalCount+=d.length;d.forEach(function(s){if(s.name)totalPlayers.add(s.name);});document.getElementById('totalScores').textContent=totalCount.toLocaleString();document.getElementById('totalPlayers').textContent=totalPlayers.size;}})
     .catch(function(){});
 });
+</script>
+
+<div id="changelogOverlay" style="display:none;position:fixed;inset:0;z-index:9998;background:rgba(0,0,8,.96);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;">
+  <div style="max-width:540px;width:100%;background:linear-gradient(135deg,rgba(252,211,77,.12),rgba(20,5,50,.85));border:2px solid rgba(252,211,77,.5);border-radius:20px;padding:32px 28px;box-shadow:0 0 60px rgba(252,211,77,.3);">
+    <div style="text-align:center;margin-bottom:8px;">
+      <div style="font-size:36px;margin-bottom:4px;">🎉</div>
+      <div style="font-family:Orbitron,sans-serif;font-size:22px;font-weight:900;color:#FCD34D;letter-spacing:3px;">WHAT\'S NEW</div>
+      <div style="font-size:10px;color:rgba(196,181,253,.6);letter-spacing:2px;margin-top:4px;">v2.0 · April 2026</div>
+    </div>
+    <div style="margin-top:20px;display:flex;flex-direction:column;gap:12px;text-align:left;">
+      <div style="padding:12px;background:rgba(0,0,0,.3);border-radius:10px;border-left:3px solid #4ADE80;">
+        <div style="color:#4ADE80;font-family:Orbitron,sans-serif;font-size:12px;font-weight:900;letter-spacing:1.5px;margin-bottom:4px;">👑 ROYAL ROULETTE</div>
+        <div style="font-size:11px;color:rgba(220,210,255,.8);line-height:1.5;">Token-gated game for Dolphin tier+ holders only.</div>
+      </div>
+      <div style="padding:12px;background:rgba(0,0,0,.3);border-radius:10px;border-left:3px solid #FCD34D;">
+        <div style="color:#FCD34D;font-family:Orbitron,sans-serif;font-size:12px;font-weight:900;letter-spacing:1.5px;margin-bottom:4px;">⚔ WEEKLY TOURNAMENT</div>
+        <div style="font-size:11px;color:rgba(220,210,255,.8);line-height:1.5;">Combined scores reset every Monday UTC. Top wallet wins.</div>
+      </div>
+      <div style="padding:12px;background:rgba(0,0,0,.3);border-radius:10px;border-left:3px solid #A855F7;">
+        <div style="color:#A855F7;font-family:Orbitron,sans-serif;font-size:12px;font-weight:900;letter-spacing:1.5px;margin-bottom:4px;">⚡ DAILY CHALLENGE</div>
+        <div style="font-size:11px;color:rgba(220,210,255,.8);line-height:1.5;">One game per day with its own leaderboard.</div>
+      </div>
+      <div style="padding:12px;background:rgba(0,0,0,.3);border-radius:10px;border-left:3px solid #EF4444;">
+        <div style="color:#EF4444;font-family:Orbitron,sans-serif;font-size:12px;font-weight:900;letter-spacing:1.5px;margin-bottom:4px;">🔥 STREAKS + BADGES</div>
+        <div style="font-size:11px;color:rgba(220,210,255,.8);line-height:1.5;">13 unlockable achievements + daily streak counter.</div>
+      </div>
+      <div style="padding:12px;background:rgba(0,0,0,.3);border-radius:10px;border-left:3px solid #60A5FA;">
+        <div style="color:#60A5FA;font-family:Orbitron,sans-serif;font-size:12px;font-weight:900;letter-spacing:1.5px;margin-bottom:4px;">💎 REAL HOLDER PERKS</div>
+        <div style="font-size:11px;color:rgba(220,210,255,.8);line-height:1.5;">Score multipliers (up to 3x), extra lives, bigger casino banks.</div>
+      </div>
+    </div>
+    <button onclick="document.getElementById(\'changelogOverlay\').style.display=\'none\';localStorage.setItem(\'monshi_changelog_v2\',\'1\');" style="width:100%;margin-top:20px;padding:14px;background:linear-gradient(135deg,#FCD34D,#92400E);color:#fff;border:none;border-radius:10px;font-family:Orbitron,sans-serif;font-size:13px;font-weight:900;letter-spacing:3px;cursor:pointer;">LET\'S GO 🚀</button>
+  </div>
+</div>
+
+<script>
+// Show changelog only if user has been here before AND hasn't seen this version yet
+if(localStorage.getItem('monshi_onboarded') && !localStorage.getItem('monshi_changelog_v2')){
+  setTimeout(function(){document.getElementById('changelogOverlay').style.display='flex';}, 1000);
+}
 </script>
 
 <div id="onboardingOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,8,.96);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;">

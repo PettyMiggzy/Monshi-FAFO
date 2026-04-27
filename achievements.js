@@ -63,6 +63,22 @@
   };
   
   function showUnlockToast(badge){
+    // Play unlock sound
+    try{
+      var ac = window.AudioContext || window.webkitAudioContext;
+      if(ac){
+        var ctx = new ac();
+        [523,659,784,1046,1318].forEach(function(f,i){
+          var o=ctx.createOscillator(),g=ctx.createGain();
+          o.type='square';o.frequency.setValueAtTime(f, ctx.currentTime+i*0.06);
+          g.gain.setValueAtTime(0, ctx.currentTime+i*0.06);
+          g.gain.linearRampToValueAtTime(0.15, ctx.currentTime+i*0.06+0.01);
+          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+i*0.06+0.15);
+          o.connect(g); g.connect(ctx.destination);
+          o.start(ctx.currentTime+i*0.06); o.stop(ctx.currentTime+i*0.06+0.2);
+        });
+      }
+    }catch(e){}
     var t = document.createElement('div');
     t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:1001;background:linear-gradient(135deg,rgba(252,211,77,.95),rgba(180,83,9,.95));color:#fff;padding:16px 28px;border-radius:14px;font-family:Orbitron,sans-serif;font-weight:900;letter-spacing:2px;font-size:14px;box-shadow:0 0 30px rgba(252,211,77,.6);display:flex;gap:14px;align-items:center;animation:achPop .5s ease;';
     t.innerHTML = '<div style="font-size:32px;">'+badge.emoji+'</div><div><div style="font-size:10px;letter-spacing:3px;color:rgba(255,255,255,.8);">ACHIEVEMENT UNLOCKED</div><div style="font-size:14px;">'+badge.name+'</div></div>';
