@@ -474,48 +474,57 @@ var SUPABASE_URL='https://cuqhqcmrgpdjlhyqztnc.supabase.co';
 var SUPABASE_KEY='sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
 var GAME_NAMES={'scores':'RUNNER','scores_shooter':'SHOOTER','scores_racer':'HIGHWAY','scores_flappy':'FLAPPY','scores_snake':'SNAKE','scores_breaker':'BREAKER','scores_pump':'PUMP/DUMP','scores_flip':'FLIP','scores_whack':'WHACK','scores_2048':'2048','scores_slots':'SLOTS','scores_memory':'MEMORY','scores_plinko':'PLINKO','scores_rug':'RUG DETECT','scores_wordle':'WORDLE','scores_tetris':'TETRIS','scores_c4':'CONNECT 4','scores_trivia':'TRIVIA','scores_mine':'SWEEPER','scores_bj':'BLACKJACK','scores_whale':'WHALE','scores_trade':'TRADER'};
 async function loadTicker(){
-  var allItems=[];
-  // Pull recent game scores
+  var items=[];
+  
+  // 1. Recent game plays from all leaderboards
   var gamePromises=Object.keys(GAME_NAMES).map(function(t){
-    return fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score,created_at,wallet&order=created_at.desc&limit=3',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}})
+    return fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score,created_at&order=created_at.desc&limit=2',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}})
       .then(function(r){return r.ok?r.json():[];})
-      .then(function(d){if(Array.isArray(d))d.forEach(function(s){if(s.name&&s.score!=null)allItems.push({type:'score',name:s.name,score:s.score,game:GAME_NAMES[t],ts:new Date(s.created_at).getTime(),wallet:s.wallet});});})
+      .then(function(d){if(Array.isArray(d))d.forEach(function(s){if(s.name&&s.score!=null)items.push({type:'game',name:s.name,score:s.score,game:GAME_NAMES[t],ts:new Date(s.created_at).getTime()});});})
       .catch(function(){});
   });
-  // Pull recent token swaps from /api/buyers
-  var buyPromise = fetch('/api/buyers?window=24').then(function(r){return r.ok?r.json():null;}).then(function(d){
+  
+  // 2. Recent $MONSHI trades from nad.fun via our proxy
+  var tradesPromise = fetch('/api/buyers').then(function(r){return r.ok?r.json():null;}).then(function(d){
     if(!d)return;
-    var swaps=d.swaps||d.data||d.list||(Array.isArray(d)?d:[]);
+    var swaps = d.swaps || d.data || d.list || (Array.isArray(d)?d:[]);
     if(!Array.isArray(swaps))return;
     swaps.slice(0,15).forEach(function(s){
-      var info=s.account_info||{};
-      var swap=s.swap_info||s.trade_info||s;
-      var addr=info.account_id||s.buyer||s.from||swap.buyer||'';
-      var nick=info.nickname||(addr?addr.slice(0,6)+'...'+addr.slice(-4):'anon');
-      var amount=parseFloat(s.amount||swap.amount||swap.token_amount||0);
-      var usdValue=parseFloat(s.value_usd||swap.value_usd||0);
-      var ts=new Date(s.created_at||s.timestamp||swap.created_at||Date.now()).getTime();
-      var isBuy=(s.type==='BUY'||s.is_buy===true||swap.type==='BUY');
-      var amountStr=usdValue>0?'$'+(usdValue<1?usdValue.toFixed(2):Math.floor(usdValue).toLocaleString()):amount>=1e6?(amount/1e6).toFixed(1)+'M':amount>=1e3?(amount/1e3).toFixed(1)+'K':Math.floor(amount);
-      allItems.push({type:isBuy?'buy':'trade',name:nick,amount:amountStr,ts:ts,wallet:addr});
+      var info = s.account_info || {};
+      var swap = s.swap_info || s.trade_info || s;
+      var addr = info.account_id || swap.buyer || s.buyer || '';
+      var nick = info.nickname || (addr ? addr.slice(0,6)+'...'+addr.slice(-4) : '');
+      var ts = new Date(s.created_at || s.timestamp || swap.created_at || Date.now()).getTime();
+      var isBuy = (s.is_buy===true || s.type==='BUY' || swap.is_buy===true || (swap.token_in_amount && parseFloat(swap.token_in_amount) > 0));
+      var amount = parseFloat(s.amount || swap.amount || swap.token_amount || s.token_amount || 0);
+      var usdValue = parseFloat(s.value_usd || swap.value_usd || s.usd || 0);
+      if(!nick) return;
+      items.push({type:'trade', isBuy:isBuy, name:nick, amount:amount, usd:usdValue, ts:ts});
     });
   }).catch(function(){});
-  await Promise.all(gamePromises.concat([buyPromise]));
-  if(!allItems.length)return;
-  allItems.sort(function(a,b){return b.ts-a.ts;});
-  var recent=allItems.slice(0,30);
+  
+  await Promise.all(gamePromises.concat([tradesPromise]));
+  if(!items.length)return;
+  items.sort(function(a,b){return b.ts-a.ts;});
+  var recent=items.slice(0,30);
+  
   var html=recent.concat(recent).map(function(p){
     var time=Math.floor((Date.now()-p.ts)/60000);
-    var timeLabel=time<1?'just now':time<60?time+'m':Math.floor(time/60)+'h';
-    if(p.type==='buy'){
-      return '<span class="ticker-item">🟢 <span class="name" style="color:#4ADE80;">'+esc2(p.name)+'</span> bought <span class="score" style="color:#4ADE80;">'+p.amount+'</span> $MONSHI · '+timeLabel+'</span>';
-    } else if(p.type==='trade'){
-      return '<span class="ticker-item">📊 <span class="name">'+esc2(p.name)+'</span> traded <span class="score">'+p.amount+'</span> $MONSHI · '+timeLabel+'</span>';
+    var timeLabel=time<1?'just now':time<60?time+'m ago':Math.floor(time/60)+'h ago';
+    if(p.type==='game'){
+      return '<span class="ticker-item">🎮 <span class="name">'+esc2(p.name)+'</span> scored <span class="score">'+p.score.toLocaleString()+'</span> on <span class="game">'+p.game+'</span> · '+timeLabel+'</span>';
     } else {
-      var holderBadge=p.wallet?' 🎴':'';
-      return '<span class="ticker-item">🎮 <span class="name">'+esc2(p.name)+holderBadge+'</span> scored <span class="score">'+p.score.toLocaleString()+'</span> on <span class="game">'+p.game+'</span> · '+timeLabel+'</span>';
+      var emoji=p.isBuy?'🟢':'🔴';
+      var verb=p.isBuy?'bought':'sold';
+      var color=p.isBuy?'#4ADE80':'#F87171';
+      var amt;
+      if(p.usd>0) amt='$'+(p.usd>=1000?(p.usd/1000).toFixed(1)+'K':p.usd.toFixed(2));
+      else if(p.amount>0) amt=(p.amount>=1e6?(p.amount/1e6).toFixed(2)+'M':p.amount>=1e3?(p.amount/1e3).toFixed(0)+'K':Math.floor(p.amount))+' MONSHI';
+      else amt='$MONSHI';
+      return '<span class="ticker-item">'+emoji+' <span class="name">'+esc2(p.name)+'</span> '+verb+' <span style="color:'+color+';font-family:Orbitron,sans-serif;font-weight:700;">'+amt+'</span> · '+timeLabel+'</span>';
     }
   }).join('<span style="color:rgba(139,92,246,.3);">·</span>');
+  
   var track=document.getElementById('tickerTrack');
   track.innerHTML='<div class="ticker-content">'+html+'</div>';
   document.getElementById('tickerWrap').style.display='flex';

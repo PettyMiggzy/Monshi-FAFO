@@ -2,161 +2,193 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" href="/favicon.png?v=2">
-<meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#A855F7">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MONSHI">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MONAD ECOSYSTEM — MONSHI ARCADE</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=JetBrains+Mono&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#fff;padding:30px 20px;}
 .wrap{max-width:1200px;margin:0 auto;}
 .bk{display:inline-block;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1.5px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);margin-bottom:24px;}
-h1{font-family:Orbitron,sans-serif;font-size:clamp(36px,6vw,72px);font-weight:900;background:linear-gradient(135deg,#8B5CF6,#A855F7,#22C55E);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:5px;text-align:center;margin-bottom:6px;}
-.subt{text-align:center;color:rgba(196,181,253,.65);letter-spacing:4px;margin-bottom:30px;font-size:11px;}
-.tabs{display:flex;gap:8px;justify-content:center;margin-bottom:24px;flex-wrap:wrap;}
-.tab{padding:10px 16px;background:rgba(20,5,50,.6);border:1.5px solid rgba(139,92,246,.3);border-radius:30px;color:rgba(220,210,255,.7);font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:2px;}
-.tab.active{background:linear-gradient(135deg,#7C3AED,#A855F7);border-color:#A855F7;color:#fff;}
+h1{font-family:Orbitron,sans-serif;font-size:clamp(32px,6vw,64px);font-weight:900;background:linear-gradient(135deg,#A855F7,#22C55E);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:5px;text-align:center;margin-bottom:6px;}
+.subt{text-align:center;color:rgba(196,181,253,.65);letter-spacing:3px;margin-bottom:20px;font-size:11px;}
+.controls{display:flex;justify-content:center;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.ctrl{padding:8px 16px;background:rgba(20,5,50,.6);border:1.5px solid rgba(139,92,246,.3);border-radius:24px;color:rgba(220,210,255,.7);font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:2px;}
+.ctrl.active{background:linear-gradient(135deg,#A855F7,#7C3AED);border-color:#A855F7;color:#fff;}
+
+.statsBar{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;padding:18px;background:rgba(20,5,50,.5);border:1px solid rgba(139,92,246,.2);border-radius:12px;}
+.s{text-align:center;}
+.s .v{font-family:Orbitron,sans-serif;font-size:22px;font-weight:900;color:#fff;}
+.s .l{font-size:9px;color:rgba(167,139,250,.6);letter-spacing:2px;margin-top:4px;}
+
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
-.tok{background:rgba(20,5,50,.6);border:1.5px solid rgba(139,92,246,.25);border-radius:14px;padding:18px;text-decoration:none;color:inherit;transition:all .25s;display:flex;flex-direction:column;gap:10px;}
-.tok:hover{transform:translateY(-3px);border-color:#A855F7;box-shadow:0 8px 20px rgba(139,92,246,.25);}
-.tok.us{border:2px solid #4ADE80;box-shadow:0 0 24px rgba(74,222,128,.3);background:linear-gradient(135deg,rgba(74,222,128,.12),rgba(20,5,50,.6));}
-.tok-head{display:flex;align-items:center;gap:10px;}
-.tok-img{width:44px;height:44px;border-radius:50%;border:2px solid rgba(139,92,246,.4);object-fit:cover;background:#0a0015;}
-.tok.us .tok-img{border-color:#4ADE80;}
-.tok-name{font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;color:#fff;letter-spacing:1px;}
-.tok-sym{font-size:10px;color:rgba(167,139,250,.6);letter-spacing:1.5px;margin-top:2px;}
-.tok-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;font-size:10px;}
-.stat-l{color:rgba(167,139,250,.5);letter-spacing:1px;text-transform:uppercase;}
-.stat-v{font-family:Orbitron,sans-serif;color:#fff;font-weight:700;margin-top:2px;}
-.stat-v.up{color:#4ADE80;}
-.stat-v.down{color:#F87171;}
-.tok-link{margin-top:auto;font-size:10px;color:#A855F7;letter-spacing:1.5px;text-align:center;padding:8px;background:rgba(139,92,246,.1);border-radius:6px;}
-.tok.us .tok-link{color:#4ADE80;background:rgba(74,222,128,.1);}
-.empty{text-align:center;padding:60px 20px;color:rgba(139,92,246,.5);font-size:13px;letter-spacing:2px;}
-.loading::after{content:"...";animation:dots 1.5s infinite;}
-@keyframes dots{0%,33%{content:".";}33%,66%{content:"..";}66%,100%{content:"...";}}
+.card{position:relative;background:rgba(20,5,50,.6);border:1.5px solid rgba(139,92,246,.25);border-radius:14px;padding:16px;text-decoration:none;color:inherit;transition:all .25s;cursor:pointer;overflow:hidden;}
+.card.monshi{background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(20,5,50,.6));border-color:#A855F7;box-shadow:0 0 24px rgba(168,85,247,.3);}
+.card:hover{transform:translateY(-3px);border-color:#fff;box-shadow:0 12px 24px rgba(139,92,246,.3);}
+.cardHead{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.cardImg{width:44px;height:44px;border-radius:10px;background:rgba(139,92,246,.15);display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid rgba(139,92,246,.3);overflow:hidden;flex-shrink:0;}
+.cardImg img{width:100%;height:100%;object-fit:cover;}
+.cardName{font-family:Orbitron,sans-serif;font-size:13px;font-weight:900;color:#fff;letter-spacing:1.5px;line-height:1.2;}
+.cardTicker{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(167,139,250,.6);margin-top:2px;}
+.cardDesc{color:rgba(196,181,253,.7);font-size:11px;line-height:1.5;margin-bottom:10px;letter-spacing:.3px;min-height:32px;}
+.cardStats{display:flex;justify-content:space-between;align-items:center;font-size:10px;letter-spacing:1px;}
+.cardStat{color:rgba(167,139,250,.7);}
+.cardStat b{color:#fff;font-family:Orbitron,sans-serif;font-weight:900;}
+.cardStat.up b{color:#4ADE80;}
+.cardStat.down b{color:#F87171;}
+.cardTags{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap;}
+.cardTag{font-size:8px;padding:2px 7px;background:rgba(139,92,246,.15);border:1px solid rgba(139,92,246,.3);border-radius:10px;color:rgba(196,181,253,.8);letter-spacing:1px;font-family:Orbitron,sans-serif;font-weight:700;}
+.note{margin-top:24px;text-align:center;font-size:10px;color:rgba(167,139,250,.5);letter-spacing:2px;}
 .kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
 </style>
-<script src="/prize-banner.js" defer></script>
 </head>
 <body>
 <div class="wrap">
-<a class="bk" href="/">← ALL GAMES</a>
-<h1>ECOSYSTEM</h1>
-<div class="subt">EVERY MONAD MEMECOIN · LIVE FROM NAD.FUN</div>
+<a class="bk" href="/">← ARCADE</a>
+<h1>MONAD ECOSYSTEM</h1>
+<div class="subt">EVERY MAJOR PROJECT · ONE PAGE · LIVE DATA</div>
 
-<div class="tabs">
-  <div class="tab active" data-sort="mcap">💰 BY MARKET CAP</div>
-  <div class="tab" data-sort="volume">📊 BY VOLUME</div>
-  <div class="tab" data-sort="age">🆕 NEWEST</div>
+<div class="controls">
+  <div class="ctrl active" data-cat="all">ALL</div>
+  <div class="ctrl" data-cat="memes">MEMES</div>
+  <div class="ctrl" data-cat="defi">DEFI</div>
+  <div class="ctrl" data-cat="infra">INFRA</div>
+  <div class="ctrl" data-cat="nft">NFT</div>
+  <div class="ctrl" data-cat="games">GAMES</div>
 </div>
 
-<div id="grid" class="grid"><div class="empty"><span class="loading">loading the ecosystem</span></div></div>
+<div class="statsBar">
+  <div class="s"><div class="v" id="totalProjects">--</div><div class="l">PROJECTS</div></div>
+  <div class="s"><div class="v" style="color:#4ADE80;" id="totalMcap">--</div><div class="l">TOTAL MCAP</div></div>
+  <div class="s"><div class="v" style="color:#FCD34D;" id="totalVol">--</div><div class="l">24H VOLUME</div></div>
+  <div class="s"><div class="v" style="color:#A855F7;">MONAD</div><div class="l">CHAIN 143</div></div>
+</div>
 
-<div style="margin-top:24px;text-align:center;font-size:11px;color:rgba(196,181,253,.6);letter-spacing:1.5px;line-height:1.7;">
-  All projects on Monad. Click any card to view on nad.fun.<br>
-  $MONSHI is highlighted because we're built different 💚
+<div class="grid" id="grid"></div>
+
+<div class="note">DATA FROM DEXSCREENER · UPDATES EVERY 60s · NOT FINANCIAL ADVICE</div>
 </div>
-</div>
+
+<script src="/monshi-shared.js"></script>
+<script src="/referral-track.js" defer></script>
+<script src="/prize-banner.js" defer></script>
+<script src="/pwa-install.js" defer></script>
 <div class="kingP">a KING PETTY build</div>
 
 <script>
-var MONSHI_CA='0xb744f5cdb792d8187640214c4a1c9ace29af7777';
-var allTokens=[],currentSort='mcap';
+// Curated list of major Monad ecosystem projects
+var PROJECTS = [
+  // MEMES
+  {name:'MONSHI', ticker:'$MONSHI', cat:'memes', emoji:'🐱', tags:['MEME','ARCADE','NFTs'], desc:'Built on Monad. Community first. Utility driven.', addr:'0xB744F5CDb792d8187640214C4A1c9aCE29af7777', monshi:true, links:{site:'https://monshi.xyz',buy:'https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777'}},
+  {name:'CHOG', ticker:'$CHOG', cat:'memes', emoji:'😈', tags:['MEME','OG'], desc:'Monad\\'s first meme and community token.', addr:null, links:{}},
+  {name:'BOB', ticker:'$BOB', cat:'memes', emoji:'🥚', tags:['MEME','COMMUNITY'], desc:'The community memecoin of Monad.', addr:null, links:{}},
+  {name:'SHRAMP', ticker:'$SHRAMP', cat:'memes', emoji:'🦐', tags:['MEME','MONANIMAL'], desc:'Stands out from all other Monanimals with bright yellow.', addr:null, links:{}},
+  {name:'MONCOCK', ticker:'$MONCOCK', cat:'memes', emoji:'🐔', tags:['MEME'], desc:'The unofficial mascot. Meme energy peak.', addr:null, links:{}},
+  {name:'EMONAD', ticker:'$EMO', cat:'memes', emoji:'🖤', tags:['MEME'], desc:'i lost it all on day 1', addr:null, links:{}},
+  {name:'NADS', ticker:'$NADS', cat:'memes', emoji:'🧙', tags:['MEME','OG'], desc:'Community-driven Monad memecoin.', addr:null, links:{}},
+  {name:'MONIGGA', ticker:'$MONIGGA', cat:'memes', emoji:'🎽', tags:['MEME'], desc:'The blackest nigga breathing.', addr:null, links:{}},
+  
+  // DEFI / INFRA
+  {name:'NAD.FUN', ticker:'-', cat:'defi', emoji:'🚀', tags:['LAUNCHPAD','DEX'], desc:'The pump.fun of Monad. Token launch + bonding curve trading.', links:{site:'https://nad.fun'}},
+  {name:'MONADEX', ticker:'-', cat:'defi', emoji:'🔄', tags:['DEX','SWAP'], desc:'Decentralized exchange built natively on Monad.', links:{}},
+  
+  // NFT
+  {name:'MONSHI NFT', ticker:'278 supply', cat:'nft', emoji:'🎴', tags:['PFP','OG'], desc:'278 unique Monshi PFPs. Exclusive arcade perks.', links:{site:'https://opensea.io/collection/monshi-nft-collection-563194175'}},
+  
+  // GAMES
+  {name:'MONSHI ARCADE', ticker:'27 games', cat:'games', emoji:'🎮', tags:['ARCADE','LIVE'], desc:'27 games, live dashboard, holder perks. You\\'re here.', links:{site:'/'}, monshi:true},
+  {name:'TCG ARENA', ticker:'-', cat:'games', emoji:'🃏', tags:['CARDS','AI'], desc:'AI-powered trading card game on Monad.', links:{}},
+];
 
-function fmtUsd(n){if(!n)return '$0';if(n<0.01)return '$'+n.toFixed(6);if(n<1e3)return '$'+n.toFixed(2);if(n<1e6)return '$'+(n/1e3).toFixed(1)+'K';if(n<1e9)return '$'+(n/1e6).toFixed(2)+'M';return '$'+(n/1e9).toFixed(2)+'B';}
-function fmtNum(n){if(n<1e3)return Math.floor(n);if(n<1e6)return (n/1e3).toFixed(1)+'K';return (n/1e6).toFixed(2)+'M';}
-function ago(ts){var d=Math.floor((Date.now()-ts)/86400000);if(d<1)return 'today';if(d<30)return d+'d ago';if(d<365)return Math.floor(d/30)+'mo ago';return Math.floor(d/365)+'y ago';}
+var currentCat = 'all';
 
-async function load(){
+async function fetchPriceFor(addr){
+  if(!addr) return null;
   try{
-    // Use the buyers API endpoint pattern - same proxy style
-    var r = await fetch('/api/ecosystem');
-    if(!r.ok) throw new Error('no proxy');
-    var data = await r.json();
-    var tokens = data.tokens||data.data||data.list||(Array.isArray(data)?data:[]);
-    if(!Array.isArray(tokens)||tokens.length===0) throw new Error('empty');
-    allTokens = tokens.map(function(t){
-      var info=t.token_info||t.info||t;
-      var stats=t.market_stats||t.stats||t;
-      return {
-        addr: (info.token_address||info.address||t.address||'').toLowerCase(),
-        name: info.name||info.token_name||'?',
-        symbol: info.symbol||info.ticker||'?',
-        image: info.image_uri||info.image||info.logo,
-        mcap: parseFloat(stats.market_cap||stats.mcap||t.market_cap||0),
-        volume24: parseFloat(stats.volume_24h||stats.volume||t.volume||0),
-        change24: parseFloat(stats.price_change_24h||t.price_change_24h||0),
-        created: new Date(info.created_at||t.created_at||Date.now()).getTime()
-      };
-    });
-    render();
-  }catch(e){
-    console.log('ecosystem load fail',e);
-    // Fallback: show curated list
-    allTokens = [
-      {addr:MONSHI_CA, name:'Monshi', symbol:'MONSHI', image:'/favicon.png', mcap:32300, volume24:75, change24:0, created:Date.now()-150*86400000},
-      {addr:'0xe5898...', name:'Chog', symbol:'CHOG', image:null, mcap:1200000, volume24:24900000, change24:-4.5, created:Date.now()-150*86400000},
-      {addr:'0x...', name:'Bob', symbol:'BOB', image:null, mcap:203000, volume24:447100, change24:14, created:Date.now()-10*86400000},
-      {addr:'0x...', name:'Shramp', symbol:'SHRAMP', image:null, mcap:266000, volume24:1900000, change24:4.4, created:Date.now()-150*86400000},
-      {addr:'0x...', name:'Moncock', symbol:'MONCOCK', image:null, mcap:276100, volume24:12600000, change24:-10.7, created:Date.now()-150*86400000},
-      {addr:'0x...', name:'EmoNad', symbol:'EMO', image:null, mcap:948600, volume24:4800000, change24:-14.3, created:Date.now()-150*86400000},
-      {addr:'0x5b087...', name:'NADS', symbol:'NADS', image:null, mcap:72800, volume24:9000000, change24:-15.9, created:Date.now()-150*86400000},
-      {addr:'0x677fd...', name:'Monigga', symbol:'MONIGGA', image:null, mcap:22200, volume24:482100, change24:-4.5, created:Date.now()-150*86400000}
-    ];
-    render();
-  }
+    var r = await fetch('https://api.dexscreener.com/latest/dex/tokens/'+addr);
+    var d = await r.json();
+    if(d.pairs && d.pairs.length){
+      return d.pairs.sort(function(a,b){return (b.liquidity&&b.liquidity.usd||0)-(a.liquidity&&a.liquidity.usd||0);})[0];
+    }
+  }catch(e){}
+  return null;
 }
 
-function render(){
-  var arr = allTokens.slice();
-  if(currentSort==='mcap') arr.sort(function(a,b){return b.mcap-a.mcap;});
-  else if(currentSort==='volume') arr.sort(function(a,b){return b.volume24-a.volume24;});
-  else if(currentSort==='age') arr.sort(function(a,b){return b.created-a.created;});
-  
-  // Always pin Monshi to top
-  var monshi = arr.find(function(t){return t.addr.toLowerCase()===MONSHI_CA.toLowerCase();});
-  if(monshi){arr = arr.filter(function(t){return t.addr.toLowerCase()!==MONSHI_CA.toLowerCase();}); arr.unshift(monshi);}
-  
+function fmtUsd(n){
+  if(!n||n<0.0001)return '--';
+  if(n<0.01)return '$'+n.toFixed(8);
+  if(n<1)return '$'+n.toFixed(4);
+  if(n<1e3)return '$'+n.toFixed(2);
+  if(n<1e6)return '$'+(n/1e3).toFixed(1)+'K';
+  if(n<1e9)return '$'+(n/1e6).toFixed(2)+'M';
+  return '$'+(n/1e9).toFixed(2)+'B';
+}
+
+async function render(){
   var grid = document.getElementById('grid');
-  if(arr.length===0){grid.innerHTML='<div class="empty">No tokens loaded</div>';return;}
-  grid.innerHTML='';
-  arr.slice(0,40).forEach(function(t){
-    var isUs = t.addr.toLowerCase()===MONSHI_CA.toLowerCase();
-    var url = 'https://nad.fun/tokens/'+t.addr;
-    var img = t.image||'/favicon.png';
-    var changeClass = t.change24>=0?'up':'down';
-    var changeSym = t.change24>=0?'+':'';
-    var html = '<a class="tok'+(isUs?' us':'')+'" href="'+url+'" target="_blank">'+
-      '<div class="tok-head">'+
-        '<img class="tok-img" src="'+img+'" alt="" onerror="this.src=\'/favicon.png\';">'+
-        '<div><div class="tok-name">'+t.name+(isUs?' 💚':'')+'</div><div class="tok-sym">$'+t.symbol+(isUs?' · OUR HOME':'')+'</div></div>'+
+  grid.innerHTML = '';
+  var totalMcap = 0, totalVol = 0, count = 0;
+  
+  var filtered = PROJECTS.filter(function(p){return currentCat==='all' || p.cat===currentCat;});
+  
+  for(var i=0;i<filtered.length;i++){
+    var p = filtered[i];
+    var data = await fetchPriceFor(p.addr);
+    
+    var price = data ? parseFloat(data.priceUsd) : null;
+    var mcap = data ? parseFloat(data.marketCap||data.fdv||0) : null;
+    var vol = data && data.volume ? parseFloat(data.volume.h24||0) : null;
+    var change = data && data.priceChange ? parseFloat(data.priceChange.h24||0) : null;
+    
+    if(mcap) totalMcap += mcap;
+    if(vol) totalVol += vol;
+    count++;
+    
+    var card = document.createElement('a');
+    card.className = 'card' + (p.monshi?' monshi':'');
+    card.href = p.links.buy || p.links.site || '#';
+    if(card.href !== '#' && card.href !== '/') card.target = '_blank';
+    
+    var changeColor = change===null ? '' : change>=0 ? 'up' : 'down';
+    var changeStr = change===null ? '' : (change>=0?'+':'')+change.toFixed(2)+'%';
+    
+    card.innerHTML = 
+      '<div class="cardHead">'+
+        '<div class="cardImg">'+p.emoji+'</div>'+
+        '<div><div class="cardName">'+p.name+'</div><div class="cardTicker">'+p.ticker+'</div></div>'+
       '</div>'+
-      '<div class="tok-stats">'+
-        '<div><div class="stat-l">MCAP</div><div class="stat-v">'+fmtUsd(t.mcap)+'</div></div>'+
-        '<div><div class="stat-l">24h</div><div class="stat-v '+changeClass+'">'+changeSym+t.change24.toFixed(1)+'%</div></div>'+
-        '<div><div class="stat-l">VOL 24h</div><div class="stat-v">'+fmtUsd(t.volume24)+'</div></div>'+
-        '<div><div class="stat-l">AGE</div><div class="stat-v">'+ago(t.created)+'</div></div>'+
+      '<div class="cardDesc">'+p.desc+'</div>'+
+      '<div class="cardStats">'+
+        (price ? '<div class="cardStat"><b>'+fmtUsd(price)+'</b></div>' : '<div class="cardStat" style="opacity:.4;">no price data</div>')+
+        (changeStr ? '<div class="cardStat '+changeColor+'"><b>'+changeStr+'</b></div>' : '<div></div>')+
       '</div>'+
-      '<div class="tok-link">VIEW ON NAD.FUN →</div>'+
-    '</a>';
-    grid.innerHTML += html;
-  });
+      (mcap ? '<div class="cardStats" style="margin-top:6px;"><div class="cardStat">MCAP <b>'+fmtUsd(mcap)+'</b></div><div class="cardStat">VOL <b>'+fmtUsd(vol||0)+'</b></div></div>' : '')+
+      '<div class="cardTags">'+p.tags.map(function(t){return '<span class="cardTag">'+t+'</span>';}).join('')+'</div>';
+    
+    grid.appendChild(card);
+  }
+  
+  document.getElementById('totalProjects').textContent = count;
+  document.getElementById('totalMcap').textContent = totalMcap ? fmtUsd(totalMcap) : '--';
+  document.getElementById('totalVol').textContent = totalVol ? fmtUsd(totalVol) : '--';
 }
 
-document.querySelectorAll('.tab').forEach(function(t){
-  t.onclick=function(){document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});t.classList.add('active');currentSort=t.dataset.sort;render();};
+document.querySelectorAll('.ctrl').forEach(function(c){
+  c.onclick = function(){
+    document.querySelectorAll('.ctrl').forEach(function(x){x.classList.remove('active');});
+    c.classList.add('active');
+    currentCat = c.dataset.cat;
+    render();
+  };
 });
 
-load();
-setInterval(load,60000);
+render();
+setInterval(render, 60000);
 </script>
-<script src="/pwa-install.js" defer></script>
 </body>
 </html>
