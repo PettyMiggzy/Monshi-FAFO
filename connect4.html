@@ -3,6 +3,12 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="shortcut icon" href="/favicon.ico?v=2"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MONSHI">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <title>BULLS VS BEARS</title>
 <style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -94,4 +100,5 @@ for(var c=0;c<C;c++){for(var r=R-1;r>=0;r--)if(!bd[r][c]){bd[r][c]=2;if(check(r,
 for(var c=0;c<C;c++){for(var r=R-1;r>=0;r--)if(!bd[r][c]){bd[r][c]=1;if(check(r,c,1)){bd[r][c]=0;return drop(c,2);}bd[r][c]=0;break;}}
 var cols=[];for(var c=0;c<C;c++)for(var r=R-1;r>=0;r--)if(!bd[r][c]){cols.push(c);break;}if(!cols.length)return;var weighted=[];cols.forEach(function(c){var n=4-Math.abs(c-3);for(var i=0;i<n;i++)weighted.push(c);});drop(weighted[Math.floor(Math.random()*weighted.length)],2);}
 fetchLB("scores_c4");</script>
+<script src="/pwa-install.js" defer></script>
 </body></html>

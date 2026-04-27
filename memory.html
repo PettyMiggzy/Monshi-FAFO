@@ -3,6 +3,12 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="shortcut icon" href="/favicon.ico?v=2"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MONSHI">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <title>MONSHI MEMORY</title>
 <style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -85,4 +91,5 @@ function sfxLose(){[440,330,220].forEach(function(f,i){tone(f,'sawtooth',0.25,i*
 function sfxClick(){tone(800,'square',0.08,0,0.04);}
 function sfxCoin(){tone(880,'square',0.12,0,0.05);tone(1320,'square',0.1,0.05,0.06);}
 var sym=["🐱","💎","🚀","💰","🐂","📈","🌙","🔥"];var deck=sym.concat(sym).sort(function(){return Math.random()-0.5;});var mv=0,tm=0,mt=0,flipped=[],lock=false;var bd=document.getElementById("bd");deck.forEach(function(s,i){var c=document.createElement("div");c.className="crd";c.dataset.s=s;c.dataset.i=i;c.textContent=s;c.onclick=function(){if(lock||c.classList.contains("flip")||c.classList.contains("matched"))return;initA();sfxClick();c.classList.add("flip");flipped.push(c);if(flipped.length===2){mv++;document.getElementById("mv").textContent=mv;lock=true;setTimeout(function(){if(flipped[0].dataset.s===flipped[1].dataset.s){flipped[0].classList.add("matched");flipped[1].classList.add("matched");mt++;sfxCoin();document.getElementById("mt").textContent=mt;if(mt===8){clearInterval(iv);var sc=Math.max(0,1000-mv*20-tm*5);setTimeout(function(){showDeath("MONSHI MEMORY","https://monshi.xyz/memory.html","scores_memory",sc,mv+" moves · "+tm+"s",true);},400);}}else{flipped[0].classList.remove("flip");flipped[1].classList.remove("flip");}flipped=[];lock=false;},700);}};bd.appendChild(c);});var iv=setInterval(function(){tm++;document.getElementById("tm").textContent=tm;},1000);fetchLB("scores_memory");</script>
+<script src="/pwa-install.js" defer></script>
 </body></html>

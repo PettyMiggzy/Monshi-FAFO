@@ -3,6 +3,12 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="shortcut icon" href="/favicon.ico?v=2"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MONSHI">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <title>TRADING SIM</title>
 <style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -93,4 +99,5 @@ draw();fetchLB("scores_trade");
 document.getElementById("bBuy").onclick=function(){var p=prices[prices.length-1];var amt=cash*0.1;var bought=amt/p;cash-=amt;holdings+=bought;initA();sfxClick();nextCandle();draw();checkEnd();};
 document.getElementById("bSell").onclick=function(){var p=prices[prices.length-1];cash+=holdings*p;holdings=0;initA();sfxCoin();nextCandle();draw();checkEnd();};
 function checkEnd(){if(idx>=N){var p=prices[prices.length-1];var final=cash+holdings*p;var pnl=final-startCash;showDeath("TRADING SIM","https://monshi.xyz/trade.html","scores_trade",Math.floor(pnl),"$"+final.toFixed(2)+" final",pnl>0);}}</script>
+<script src="/pwa-install.js" defer></script>
 </body></html>

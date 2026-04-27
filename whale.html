@@ -3,6 +3,12 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="shortcut icon" href="/favicon.ico?v=2"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MONSHI">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <title>WHALE HUNTER</title>
 <style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -97,4 +103,5 @@ function draw(){x.fillStyle="#0a0015";x.fillRect(0,0,W,H);x.strokeStyle="rgba(13
 draw();var iv=setInterval(function(){if(!gameOver){tm--;document.getElementById("tm").textContent=tm;if(tm<=0){gameOver=true;endGame();}}},1000);var bIv=setInterval(bearMove,180);
 function endGame(){clearInterval(iv);clearInterval(bIv);showDeath("WHALE HUNTER","https://monshi.xyz/whale.html","scores_whale",sc,tm<=0?"time up":"got bear-d",sc>=30);}
 fetchLB("scores_whale");</script>
+<script src="/pwa-install.js" defer></script>
 </body></html>

@@ -3,6 +3,12 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="shortcut icon" href="/favicon.ico?v=2"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MONSHI">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <title>CRYPTO TRIVIA</title>
 <style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -111,4 +117,5 @@ function showQ(){if(idx>=QS.length){return done();}var q=QS[idx];document.getEle
 function pick(i){clearInterval(iv);initA();var q=QS[idx];var opts=document.querySelectorAll(".opt");opts[q.c].classList.add("right");if(i===q.c){sc+=100+tm*5;sfxCoin();}else{if(i>=0)opts[i].classList.add("wrong");sfxLose();}document.getElementById("sc").textContent=sc;setTimeout(function(){idx++;showQ();},1200);}
 function done(){showDeath("CRYPTO TRIVIA","https://monshi.xyz/trivia.html","scores_trivia",sc,"finished 10",sc>=700);}
 showQ();fetchLB("scores_trivia");</script>
+<script src="/pwa-install.js" defer></script>
 </body></html>

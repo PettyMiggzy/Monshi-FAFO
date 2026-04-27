@@ -3,6 +3,12 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="shortcut icon" href="/favicon.ico?v=2"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MONSHI">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <title>MONSHI WORDLE</title>
 <style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -85,4 +91,5 @@ function sfxLose(){[440,330,220].forEach(function(f,i){tone(f,'sawtooth',0.25,i*
 function sfxClick(){tone(800,'square',0.08,0,0.04);}
 function sfxCoin(){tone(880,'square',0.12,0,0.05);tone(1320,'square',0.1,0.05,0.06);}
 var WORDS=['MONAD', 'TRADE', 'WHALE', 'MEMES', 'TOKEN', 'TOKEN', 'HOOPS', 'CANDY', 'FLOOR', 'GAINS', 'HODLR'];var ans=WORDS[Math.floor(Math.random()*WORDS.length)];var rows=[],cur=0,cp=0,gameOver=false;var bd=document.getElementById("bd");for(var r=0;r<6;r++){var rEl=document.createElement("div");rEl.className="row";rows.push([]);for(var c=0;c<5;c++){var t=document.createElement("div");t.className="tile";rEl.appendChild(t);rows[r].push(t);}bd.appendChild(rEl);}var kbL=[["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["ENTER","Z","X","C","V","B","N","M","DEL"]];var keys={};kbL.forEach(function(rw){var rEl=document.createElement("div");rEl.className="kbR";rw.forEach(function(k){var b=document.createElement("button");b.className="key"+(k.length>1?" wide":"");b.textContent=k;b.onclick=function(){press(k);};keys[k]=b;rEl.appendChild(b);});document.getElementById("kb").appendChild(rEl);});function press(k){if(gameOver)return;initA();sfxClick();if(k==="DEL"){if(cp>0){cp--;rows[cur][cp].textContent="";rows[cur][cp].classList.remove("filled");}}else if(k==="ENTER"){if(cp!==5){document.getElementById("msg").textContent="NEED 5 LETTERS";return;}var w="";for(var i=0;i<5;i++)w+=rows[cur][i].textContent;evalGuess(w);}else if(/[A-Z]/.test(k)&&cp<5){rows[cur][cp].textContent=k;rows[cur][cp].classList.add("filled");cp++;}}function evalGuess(w){var ansArr=ans.split("");var gArr=w.split("");var states=["absent","absent","absent","absent","absent"];for(var i=0;i<5;i++)if(gArr[i]===ansArr[i]){states[i]="correct";ansArr[i]=null;gArr[i]=null;}for(var i=0;i<5;i++)if(gArr[i]){var idx=ansArr.indexOf(gArr[i]);if(idx>=0){states[i]="present";ansArr[idx]=null;}}for(var i=0;i<5;i++){rows[cur][i].classList.add(states[i]);var k=w[i];var ks=states[i];if(keys[k]){var cur_=keys[k].className;if(ks==="correct"||(ks==="present"&&!cur_.includes("correct"))||(ks==="absent"&&!cur_.includes("correct")&&!cur_.includes("present"))){keys[k].className="key"+(k.length>1?" wide":"")+" "+ks;}}}if(w===ans){gameOver=true;sfxWin();var sc=Math.max(0,(7-cur-1)*100+50);setTimeout(function(){showDeath("MONSHI WORDLE","https://monshi.xyz/wordle.html","scores_wordle",sc,ans+" in "+(cur+1),true);},800);return;}cur++;cp=0;if(cur===6){gameOver=true;sfxLose();setTimeout(function(){showDeath("MONSHI WORDLE","https://monshi.xyz/wordle.html","scores_wordle",0,"answer was "+ans,false);},400);}}window.addEventListener("keydown",function(e){var k=e.key.toUpperCase();if(k==="BACKSPACE")press("DEL");else if(k==="ENTER")press("ENTER");else if(/^[A-Z]$/.test(k))press(k);});fetchLB("scores_wordle");</script>
+<script src="/pwa-install.js" defer></script>
 </body></html>

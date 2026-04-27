@@ -3,6 +3,12 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="shortcut icon" href="/favicon.ico?v=2"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MONSHI">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <title>RUG DETECTOR</title>
 <style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -85,4 +91,5 @@ function sfxLose(){[440,330,220].forEach(function(f,i){tone(f,'sawtooth',0.25,i*
 function sfxClick(){tone(800,'square',0.08,0,0.04);}
 function sfxCoin(){tone(880,'square',0.12,0,0.05);tone(1320,'square',0.1,0.05,0.06);}
 var legit=[["MONSHI","Built on Monad. Community first."],["MAGICETH","ZK proofs · audited"],["BASEAI","AI agents on Base"],["SOLDOG","Solana mascot · 1yr+"],["CHOG","Monad meme original"],["DEGEN","Tipping currency · L3"],["BONK","Solana memecoin · audited"],["MOG","Cult coin · Etherscan ✓"]];var rugs=[["DUMPCOIN","Anon team · 99% supply locked"],["RUG2024","Devs sold · honeypot"],["MOONSHOT","Telegram only · no audit"],["FAKEMON","Site down · no LP"],["EZ100X","Owner can mint · backdoor"],["SCAM","🚩 mint owner privileged"],["FREEMON","Renounced...kidding · -98%"],["RICHME","Liquidity pulled 5min"]];var s=0,lv=3+(window.MONSHI?window.MONSHI.getExtraLives():0),strk=0,tm=3.0,iv=null;function nextRound(){var l=legit[Math.floor(Math.random()*legit.length)],r=rugs[Math.floor(Math.random()*rugs.length)];var lF=Math.random()<0.5;var box=document.getElementById("box");box.innerHTML="";var first=lF?l:r,second=lF?r:l;var t1=document.createElement("div");t1.className="tkn";t1.innerHTML="<div class=\"tn\">"+first[0]+"</div><div class=\"td\">"+first[1]+"</div>";t1.onclick=function(){pick(lF);};box.appendChild(t1);var t2=document.createElement("div");t2.className="tkn";t2.innerHTML="<div class=\"tn\">"+second[0]+"</div><div class=\"td\">"+second[1]+"</div>";t2.onclick=function(){pick(!lF);};box.appendChild(t2);tm=Math.max(1.5,3.0-Math.floor(strk/3)*0.2);if(iv)clearInterval(iv);iv=setInterval(function(){tm-=0.1;document.getElementById("tmr").textContent=tm.toFixed(1)+"s";if(tm<=0){clearInterval(iv);pick(false);}},100);}function pick(correct){if(iv)clearInterval(iv);initA();if(correct){s+=10*(strk+1);strk++;sfxCoin();}else{lv--;strk=0;sfxLose();}document.getElementById("sc").textContent=s;document.getElementById("lv").textContent=lv;document.getElementById("strk").textContent=strk;if(lv<=0){setTimeout(function(){showDeath("RUG DETECTOR","https://monshi.xyz/rug.html","scores_rug",s,"got rugged",false);},400);return;}setTimeout(nextRound,500);}nextRound();fetchLB("scores_rug");</script>
+<script src="/pwa-install.js" defer></script>
 </body></html>

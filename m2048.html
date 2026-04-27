@@ -1,7 +1,13 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
-<link rel="shortcut icon" href="/favicon.ico?v=2"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"><title>MONSHI 2048</title><style>
+<link rel="shortcut icon" href="/favicon.ico?v=2"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MONSHI">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><title>MONSHI 2048</title><style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;background:#02000a;overflow:hidden;font-family:'Space Mono',monospace;color:#EDE9FF;display:flex;align-items:center;justify-content:center;}
@@ -93,4 +99,5 @@ function checkLose(){for(var i=0;i<GZ;i++)for(var j=0;j<GZ;j++){if(!grid[i][j])r
 addEventListener('keydown',function(e){var k=e.key.toLowerCase();if(['arrowleft','a'].indexOf(k)>=0){move('L');e.preventDefault();}else if(['arrowright','d'].indexOf(k)>=0){move('R');e.preventDefault();}else if(['arrowup','w'].indexOf(k)>=0){move('U');e.preventDefault();}else if(['arrowdown','s'].indexOf(k)>=0){move('D');e.preventDefault();}});
 var ts={x:0,y:0};addEventListener('touchstart',function(e){var t=e.touches[0];ts.x=t.clientX;ts.y=t.clientY;});addEventListener('touchend',function(e){var t=e.changedTouches[0];var dx=t.clientX-ts.x,dy=t.clientY-ts.y;if(Math.abs(dx)<30&&Math.abs(dy)<30)return;if(Math.abs(dx)>Math.abs(dy))move(dx>0?'R':'L');else move(dy>0?'D':'U');});
 init();fetchLB('scores_2048');
-</script></body></html>
+</script><script src="/pwa-install.js" defer></script>
+</body></html>

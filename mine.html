@@ -3,6 +3,12 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="shortcut icon" href="/favicon.ico?v=2"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MONSHI">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <title>RUG SWEEPER</title>
 <style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -93,4 +99,5 @@ function render(){grid.innerHTML="";for(var i=0;i<H;i++)for(var j=0;j<W;j++){var
 function updateFlags(){var f=0;for(var i=0;i<H;i++)for(var j=0;j<W;j++)if(flag[i][j])f++;document.getElementById("rg").textContent=M-f;}
 function reveal(i,j){if(gameOver||open[i][j]||flag[i][j])return;initA();open[i][j]=true;sfxClick();if(bd[i][j]===-1){gameOver=true;for(var ii=0;ii<H;ii++)for(var jj=0;jj<W;jj++)if(bd[ii][jj]===-1)open[ii][jj]=true;sfxLose();render();setTimeout(function(){showDeath("RUG SWEEPER","https://monshi.xyz/mine.html","scores_mine",0,"hit a rug",false);},700);return;}if(bd[i][j]===0){for(var di=-1;di<=1;di++)for(var dj=-1;dj<=1;dj++){var ni=i+di,nj=j+dj;if(ni>=0&&ni<H&&nj>=0&&nj<W&&!open[ni][nj])reveal(ni,nj);}}render();var openCnt=0;for(var ii=0;ii<H;ii++)for(var jj=0;jj<W;jj++)if(open[ii][jj])openCnt++;if(openCnt===W*H-M){gameOver=true;won=true;sfxWin();var sc=Math.max(0,1000-tm*5);setTimeout(function(){showDeath("RUG SWEEPER","https://monshi.xyz/mine.html","scores_mine",sc,tm+"s · clean sweep",true);},400);}}
 render();iv=setInterval(function(){if(!gameOver){tm++;document.getElementById("tm").textContent=tm;}},1000);fetchLB("scores_mine");</script>
+<script src="/pwa-install.js" defer></script>
 </body></html>

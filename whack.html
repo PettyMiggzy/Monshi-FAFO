@@ -3,6 +3,12 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="shortcut icon" href="/favicon.ico?v=2"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MONSHI">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <title>WHACK FUDDERS</title>
 <style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -85,4 +91,5 @@ function sfxLose(){[440,330,220].forEach(function(f,i){tone(f,'sawtooth',0.25,i*
 function sfxClick(){tone(800,'square',0.08,0,0.04);}
 function sfxCoin(){tone(880,'square',0.12,0,0.05);tone(1320,'square',0.1,0.05,0.06);}
 var grid=document.getElementById("grid"),s=0,t=30,end=false;for(var i=0;i<9;i++){var h=document.createElement("div");h.className="hole";var m=document.createElement("div");m.className="mole";h.appendChild(m);grid.appendChild(h);}var holes=document.querySelectorAll(".hole");function pop(){if(end)return;var h=holes[Math.floor(Math.random()*holes.length)];var m=h.querySelector(".mole");if(m.classList.contains("up"))return setTimeout(pop,200);var r=Math.random();var typ=r<0.65?"fud":r<0.9?"bear":"gem";m.className="mole "+typ+" up";m.textContent=typ==="fud"?"😡":typ==="bear"?"🐻":"💎";m.dataset.type=typ;setTimeout(function(){m.classList.remove("up");},rnd());}function rnd(){return 700-Math.min(t*15,400)+Math.random()*400;}holes.forEach(function(h){h.onclick=function(){if(end)return;var m=h.querySelector(".mole");if(!m.classList.contains("up"))return;initA();if(m.dataset.type==="fud"){s+=10;sfxClick();}else if(m.dataset.type==="bear"){s+=25;sfxCoin();}else{s-=20;sfxLose();}m.classList.remove("up");document.getElementById("sc").textContent=s;};});var iv=setInterval(function(){t--;document.getElementById("tm").textContent=t;if(t<=0){end=true;clearInterval(iv);clearInterval(spawnIv);showDeath("WHACK A FUDDER","https://monshi.xyz/whack.html","scores_whack",s,"30 second blitz",s>=200);}},1000);var spawnIv=setInterval(pop,700);fetchLB("scores_whack");</script>
+<script src="/pwa-install.js" defer></script>
 </body></html>

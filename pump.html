@@ -3,6 +3,12 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
 <link rel="shortcut icon" href="/favicon.ico?v=2"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MONSHI">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <title>PUMP OR DUMP</title>
 <style>@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -85,4 +91,5 @@ function sfxLose(){[440,330,220].forEach(function(f,i){tone(f,'sawtooth',0.25,i*
 function sfxClick(){tone(800,'square',0.08,0,0.04);}
 function sfxCoin(){tone(880,'square',0.12,0,0.05);tone(1320,'square',0.1,0.05,0.06);}
 var c=document.getElementById("cv"),x=c.getContext("2d"),W=c.width,H=c.height;var ps=[],p=100,s=0,sk=0,lv=3,lk=false;function nC(){var m=(Math.random()-0.5)*8;var o=p,cl=p+m,h=Math.max(o,cl)+Math.random()*3,l=Math.min(o,cl)-Math.random()*3;ps.push({o:o,c:cl,h:h,l:l});p=cl;if(ps.length>20)ps.shift();}for(var i=0;i<15;i++)nC();function dC(){x.fillStyle="#0a0015";x.fillRect(0,0,W,H);if(ps.length<2)return;var mn=Infinity,mx=-Infinity;ps.forEach(function(q){if(q.l<mn)mn=q.l;if(q.h>mx)mx=q.h;});var rg=mx-mn||1,cw=W/ps.length;ps.forEach(function(q,i){var xx=i*cw+cw/2;var oy=H-((q.o-mn)/rg)*(H-30)-15,cy=H-((q.c-mn)/rg)*(H-30)-15,hy=H-((q.h-mn)/rg)*(H-30)-15,ly=H-((q.l-mn)/rg)*(H-30)-15;var cl=q.c>=q.o?"#22C55E":"#EF4444";x.strokeStyle=cl;x.lineWidth=1;x.beginPath();x.moveTo(xx,hy);x.lineTo(xx,ly);x.stroke();x.fillStyle=cl;x.fillRect(xx-cw/3,Math.min(oy,cy),cw*0.66,Math.max(2,Math.abs(cy-oy)));});}dC();function up(){document.getElementById("sc").textContent=s;document.getElementById("sk").textContent=sk;document.getElementById("lv").textContent=lv;}fetchLB("scores_pump");function pick(d){if(lk)return;lk=true;initA();var pp=p;nC();var diff=p-pp;var w=(d==="up"&&diff>0)||(d==="down"&&diff<0);dC();if(w){sk++;s+=10*Math.max(1,Math.floor(sk/3)+1);sfxCoin();document.getElementById("tm").textContent="✅ +"+(10*Math.max(1,Math.floor(sk/3)+1));}else{sk=0;lv--;sfxLose();document.getElementById("tm").textContent="❌ WRONG";}up();if(lv<=0){setTimeout(function(){showDeath("PUMP OR DUMP","https://monshi.xyz/pump.html","scores_pump",s,"streak: "+sk,false);},900);return;}setTimeout(function(){lk=false;document.getElementById("tm").textContent="CALL IT";},900);}document.getElementById("bU").onclick=function(){pick("up");};document.getElementById("bD").onclick=function(){pick("down");};</script>
+<script src="/pwa-install.js" defer></script>
 </body></html>

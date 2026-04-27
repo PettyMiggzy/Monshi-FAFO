@@ -1,0 +1,22 @@
+{
+  "name": "Monshi Arcade",
+  "short_name": "MONSHI",
+  "description": "27 games, live dashboard, holder perks. The Monad arcade.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#02000a",
+  "theme_color": "#A855F7",
+  "orientation": "portrait-primary",
+  "categories": ["games", "entertainment", "finance"],
+  "icons": [
+    {"src": "/favicon.png", "sizes": "32x32", "type": "image/png"},
+    {"src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any maskable"},
+    {"src": "/apple-touch-icon.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "/apple-touch-icon.png", "sizes": "512x512", "type": "image/png"}
+  ],
+  "shortcuts": [
+    {"name": "Dashboard", "url": "/dashboard/", "icons": [{"src": "/favicon.png", "sizes": "32x32"}]},
+    {"name": "Prize Event", "url": "/prize.html", "icons": [{"src": "/favicon.png", "sizes": "32x32"}]},
+    {"name": "Daily Challenge", "url": "/daily.html", "icons": [{"src": "/favicon.png", "sizes": "32x32"}]}
+  ]
+}
