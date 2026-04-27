@@ -7,7 +7,7 @@
 <link rel="shortcut icon" href="/favicon.ico?v=2">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MONSHI ARCADE</title>
-<style>
+<style>@keyframes dailyPulse{0%,100%{box-shadow:0 0 0 0 rgba(252,211,77,.5);}50%{box-shadow:0 0 0 8px rgba(252,211,77,0);}}
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#fff;overflow-x:hidden;position:relative;}
@@ -103,7 +103,9 @@ h2{font-family:Orbitron,sans-serif;font-size:clamp(20px,3vw,32px);color:#4ADE80;
     </div>
     <div class="nav-pills">
       <a class="pill" href="/dashboard/">📊 DASHBOARD</a>
-      <a class="pill" href="/leaderboard.html" style="background:rgba(252,211,77,.1);border-color:rgba(252,211,77,.4);color:#FCD34D;">🏆 GLOBAL RANK</a>
+      <a class="pill" href="/daily.html" style="background:linear-gradient(135deg,rgba(252,211,77,.2),rgba(34,197,94,.2));border-color:rgba(252,211,77,.5);color:#FCD34D;animation:dailyPulse 2.5s infinite;">⚡ DAILY</a>
+      <a class="pill" href="/leaderboard.html" style="background:rgba(252,211,77,.1);border-color:rgba(252,211,77,.4);color:#FCD34D;">🏆 GAMES RANK</a>
+      <a class="pill" href="/buyers.html" style="background:rgba(34,197,94,.1);border-color:rgba(74,222,128,.4);color:#4ADE80;">💰 TOP BUYERS</a>
       <a class="pill" href="https://x.com/Monshi_Monpad" target="_blank">𝕏 @MONSHI_MONPAD</a>
       <a class="pill" href="https://monshi.xyz" target="_blank">🌐 MONSHI.XYZ</a>
       <a class="pill" href="https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777" target="_blank">📈 NAD.FUN</a>
@@ -172,6 +174,7 @@ h2{font-family:Orbitron,sans-serif;font-size:clamp(20px,3vw,32px);color:#4ADE80;
     <div class="s"><div class="v" id="totalGames">24</div><div class="l">GAMES</div></div>
     <div class="s"><div class="v" id="totalScores">—</div><div class="l">SCORES SUBMITTED</div></div>
     <div class="s"><div class="v" id="totalPlayers">—</div><div class="l">PLAYERS</div></div>
+    <div class="s"><div class="v" style="color:#EF4444;" id="streakV">0</div><div class="l">DAILY STREAK</div></div>
     <div class="s"><div class="v" style="color:#4ADE80;">LIVE</div><div class="l">STATUS</div></div>
   </div>
 
@@ -466,6 +469,15 @@ if(!localStorage.getItem('monshi_onboarded')){
     document.getElementById('onboardingOverlay').style.display='flex';
   }, 800);
 }
+
+// Update streak display
+setTimeout(function(){
+  if(window.MONSHI_ACHIEVEMENTS){
+    var s = MONSHI_ACHIEVEMENTS.getStreak();
+    var el = document.getElementById('streakV');
+    if(el) el.textContent = s + (s>=7?' 🔥':'');
+  }
+}, 2000);
 </script>
 </body>
 </html>

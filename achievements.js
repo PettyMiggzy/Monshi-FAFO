@@ -81,3 +81,50 @@
     }
   }, 2000);
 })();
+
+// ── Streak system: count consecutive days played ──
+(function(){
+  if(!window.MONSHI_ACHIEVEMENTS) return;
+  
+  function todayKey(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+  function yesterdayKey(){var d=new Date();d.setDate(d.getDate()-1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+  
+  MONSHI_ACHIEVEMENTS.checkStreak = function(){
+    var today = todayKey();
+    var lastPlay = localStorage.getItem('mon_lastPlay');
+    if(lastPlay === today) return parseInt(localStorage.getItem('mon_streak')||'1');
+    
+    var streak = parseInt(localStorage.getItem('mon_streak')||'0');
+    if(lastPlay === yesterdayKey()){
+      streak++;
+    } else if(!lastPlay){
+      streak = 1;
+    } else {
+      streak = 1; // broke streak, restart
+    }
+    localStorage.setItem('mon_streak', streak);
+    localStorage.setItem('mon_lastPlay', today);
+    
+    var bestStreak = parseInt(localStorage.getItem('mon_bestStreak')||'0');
+    if(streak > bestStreak) localStorage.setItem('mon_bestStreak', streak);
+    
+    if(streak===2 || streak===3 || streak===7 || streak===14 || streak===30){
+      showStreakToast(streak);
+    }
+    return streak;
+  };
+  
+  MONSHI_ACHIEVEMENTS.getStreak = function(){return parseInt(localStorage.getItem('mon_streak')||'0');};
+  MONSHI_ACHIEVEMENTS.getBestStreak = function(){return parseInt(localStorage.getItem('mon_bestStreak')||'0');};
+  
+  function showStreakToast(s){
+    var t = document.createElement('div');
+    t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:1001;background:linear-gradient(135deg,rgba(239,68,68,.95),rgba(239,68,68,.7));color:#fff;padding:14px 26px;border-radius:14px;font-family:Orbitron,sans-serif;font-weight:900;letter-spacing:2px;font-size:13px;box-shadow:0 0 30px rgba(239,68,68,.6);display:flex;gap:12px;align-items:center;animation:achPop .5s ease;';
+    t.innerHTML = '<div style="font-size:28px;">🔥</div><div><div style="font-size:9px;letter-spacing:3px;color:rgba(255,255,255,.8);">DAILY STREAK</div><div style="font-size:14px;">'+s+' DAYS IN A ROW</div></div>';
+    document.body.appendChild(t);
+    setTimeout(function(){t.style.transition='opacity .5s';t.style.opacity='0';setTimeout(function(){t.remove();},500);},3500);
+  }
+  
+  // Auto-track on every page load
+  setTimeout(MONSHI_ACHIEVEMENTS.checkStreak, 1500);
+})();
