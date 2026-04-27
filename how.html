@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HOW IT WORKS — MONSHI ARCADE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#fff;padding:30px 20px;}
+.wrap{max-width:920px;margin:0 auto;}
+.bk{display:inline-block;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1.5px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);margin-bottom:24px;}
+h1{font-family:Orbitron,sans-serif;font-size:clamp(36px,6vw,72px);font-weight:900;background:linear-gradient(135deg,#A855F7,#22C55E,#FCD34D);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:5px;text-align:center;margin-bottom:6px;}
+.subt{text-align:center;color:rgba(196,181,253,.65);letter-spacing:4px;margin-bottom:30px;font-size:11px;}
+
+.toc{padding:18px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:12px;margin-bottom:24px;}
+.tocTitle{font-family:Orbitron,sans-serif;font-size:11px;color:#A855F7;letter-spacing:3px;margin-bottom:10px;}
+.tocList{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px;}
+.tocLink{padding:8px 12px;background:rgba(0,0,0,.3);border-radius:6px;color:rgba(220,210,255,.8);text-decoration:none;font-size:11px;letter-spacing:1px;border-left:2px solid;}
+.tocLink:hover{background:rgba(139,92,246,.15);color:#fff;}
+
+.section{margin-bottom:28px;padding:24px;background:rgba(20,5,50,.5);border:1px solid rgba(139,92,246,.25);border-left:4px solid;border-radius:14px;scroll-margin-top:20px;}
+.sH{font-family:Orbitron,sans-serif;font-size:20px;font-weight:900;letter-spacing:2px;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+.sB{font-size:13px;color:rgba(220,210,255,.85);line-height:1.7;}
+.sB b{color:#fff;}
+.sB ul{margin-left:20px;margin-top:8px;}
+.sB li{margin-bottom:6px;}
+.sB a{color:#4ADE80;text-decoration:none;}
+.sB a:hover{text-shadow:0 0 8px rgba(74,222,128,.5);}
+.sB code{background:rgba(0,0,0,.4);padding:2px 8px;border-radius:4px;font-family:'Space Mono',monospace;font-size:11px;color:#FCD34D;}
+.tierTable{margin-top:14px;width:100%;border-collapse:collapse;font-size:11px;}
+.tierTable th,.tierTable td{padding:10px;text-align:left;border-bottom:1px solid rgba(139,92,246,.2);}
+.tierTable th{font-family:Orbitron,sans-serif;color:#A855F7;letter-spacing:2px;font-size:9px;}
+.tierTable td:first-child{font-family:Orbitron,sans-serif;font-weight:700;letter-spacing:1px;}
+.btn{display:inline-block;margin:14px 8px 0 0;padding:10px 20px;background:linear-gradient(135deg,#7C3AED,#5B21B6);color:#fff;text-decoration:none;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;border-radius:8px;}
+.btn.green{background:linear-gradient(135deg,#22C55E,#15803D);}
+.btn.pink{background:linear-gradient(135deg,#EC4899,#7C3AED);}
+
+.kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="bk" href="/">← ALL GAMES</a>
+<h1>HOW IT WORKS</h1>
+<div class="subt">EVERYTHING YOU NEED TO KNOW</div>
+
+<div class="toc">
+  <div class="tocTitle">📖 JUMP TO SECTION</div>
+  <div class="tocList">
+    <a class="tocLink" href="#intro" style="border-color:#A855F7;">1. What is this</a>
+    <a class="tocLink" href="#play" style="border-color:#22C55E;">2. How to play</a>
+    <a class="tocLink" href="#wallet" style="border-color:#FCD34D;">3. Wallet + perks</a>
+    <a class="tocLink" href="#tiers" style="border-color:#60A5FA;">4. Token tiers</a>
+    <a class="tocLink" href="#nft" style="border-color:#EC4899;">5. NFT bonuses</a>
+    <a class="tocLink" href="#leaderboards" style="border-color:#F97316;">6. Leaderboards</a>
+    <a class="tocLink" href="#daily" style="border-color:#FCD34D;">7. Daily + tournaments</a>
+    <a class="tocLink" href="#refer" style="border-color:#22C55E;">8. Referrals</a>
+    <a class="tocLink" href="#dashboard" style="border-color:#A855F7;">9. Dashboard tools</a>
+    <a class="tocLink" href="#rewards" style="border-color:#EF4444;">10. On-chain rewards</a>
+  </div>
+</div>
+
+<div class="section" id="intro" style="border-left-color:#A855F7;">
+  <div class="sH" style="color:#A855F7;">🎮 1. WHAT IS THIS</div>
+  <div class="sB">
+    <b>MONSHI ARCADE</b> is 27 games + a live $MONSHI dashboard built for the Monad community. Free to play. No tokens required. Built by KING PETTY.
+    <ul>
+      <li>Play any of 27 games right in your browser — phone or desktop</li>
+      <li>Submit scores to global leaderboards</li>
+      <li>Connect your wallet to unlock real perks based on your $MONSHI bag</li>
+      <li>Hold the NFT for stacking bonuses</li>
+      <li>Daily challenges, weekly tournaments, achievements, streaks</li>
+    </ul>
+    <a class="btn" href="/">START PLAYING →</a>
+  </div>
+</div>
+
+<div class="section" id="play" style="border-left-color:#22C55E;">
+  <div class="sH" style="color:#22C55E;">▶ 2. HOW TO PLAY</div>
+  <div class="sB">
+    <b>You don't need anything to start.</b>
+    <ul>
+      <li>Pick any game from the hub</li>
+      <li>Play it — controls are shown on each game</li>
+      <li>When you die or finish, your score appears with a SUBMIT box</li>
+      <li>Type a name (anything — gets remembered) → SUBMIT</li>
+      <li>Your name lands on the leaderboard for that game</li>
+    </ul>
+    <b>Want bigger scores?</b> Connect a wallet (next section).
+  </div>
+</div>
+
+<div class="section" id="wallet" style="border-left-color:#FCD34D;">
+  <div class="sH" style="color:#FCD34D;">🔌 3. WALLET + PERKS</div>
+  <div class="sB">
+    Tap the green <b>CONNECT</b> button (top right corner of any game/page). MetaMask, Phantom, or Rabby works. We auto-add Monad network to your wallet if you don't have it.
+    <br><br>
+    <b>What we check:</b>
+    <ul>
+      <li>Your $MONSHI balance (puts you in a tier)</li>
+      <li>Your Monshi NFT count (stacks bonus on top)</li>
+    </ul>
+    <b>What you get instantly:</b>
+    <ul>
+      <li>Score multiplier — every score is multiplied automatically</li>
+      <li>Extra lives in games that have lives</li>
+      <li>Bigger starting banks for casino games</li>
+      <li>Special game modes for whales</li>
+      <li>Pink badge on every leaderboard if you hold the NFT</li>
+    </ul>
+  </div>
+</div>
+
+<div class="section" id="tiers" style="border-left-color:#60A5FA;">
+  <div class="sH" style="color:#60A5FA;">💎 4. TOKEN TIERS</div>
+  <div class="sB">
+    Your $MONSHI bag determines your tier. Bigger bag = bigger perks.
+    <table class="tierTable">
+      <tr><th>TIER</th><th>HOLD</th><th>SCORE</th><th>LIVES</th><th>UNLOCKS</th></tr>
+      <tr><td>🦐 SHRIMP</td><td>0+</td><td>1.0x</td><td>0</td><td>—</td></tr>
+      <tr><td>🦀 CRAB</td><td>10K+</td><td>1.5x</td><td>0</td><td>casino bonus</td></tr>
+      <tr><td>🐬 DOLPHIN</td><td>100K+</td><td>2.0x</td><td>+1</td><td>Royal Roulette game</td></tr>
+      <tr><td>🐋 WHALE</td><td>1M+</td><td>2.5x</td><td>+2</td><td>WHALE MODE in shooter</td></tr>
+      <tr><td>👑 ROYALTY</td><td>10M+</td><td>3.0x</td><td>+3</td><td>ROYAL MODE + gold badge</td></tr>
+    </table>
+    <a class="btn green" href="https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777" target="_blank">BUY $MONSHI →</a>
+  </div>
+</div>
+
+<div class="section" id="nft" style="border-left-color:#EC4899;">
+  <div class="sH" style="color:#EC4899;">🎴 5. NFT BONUSES</div>
+  <div class="sB">
+    Hold any Monshi NFT? You get <b>extra perks ON TOP OF</b> your token tier:
+    <ul>
+      <li><b>+1.0x score</b> stacked on your tier multiplier</li>
+      <li><b>+2 extra lives</b> stacked on tier lives</li>
+      <li><b>WHALE MODE</b> auto-unlocked even with 0 $MONSHI</li>
+      <li><b>Pink ◆ badge</b> on every leaderboard entry</li>
+      <li>3+ NFTs = <b>ROYAL MODE</b> auto-unlocked</li>
+      <li>Unlocks the <b>NFT-only Monshi Heist</b> game</li>
+    </ul>
+    Example: Whale (2.5x) + NFT = <b style="color:#EC4899;">3.5x score, 4 extra lives</b>
+    <a class="btn pink" href="https://opensea.io/collection/monshi-nft-collection-563194175" target="_blank">BUY ON OPENSEA →</a>
+  </div>
+</div>
+
+<div class="section" id="leaderboards" style="border-left-color:#F97316;">
+  <div class="sH" style="color:#F97316;">🏆 6. LEADERBOARDS</div>
+  <div class="sB">
+    Every game has its own leaderboard. We also have:
+    <ul>
+      <li><b>Global Games Rank</b> — combined scores across all 27 games per wallet</li>
+      <li><b>NFT Holders Rank</b> — exclusive board, only NFT owners</li>
+      <li><b>Top Buyers</b> — ranked by $MONSHI bought (live from nad.fun)</li>
+      <li><b>Top Holders</b> — top 20 wallets by bag size (on dashboard)</li>
+    </ul>
+    Click any wallet to see their full profile across every game.
+    <a class="btn" href="/leaderboard.html">GAMES RANK</a>
+    <a class="btn" href="/nft-leaderboard.html">NFT RANK</a>
+    <a class="btn" href="/buyers.html">BUYERS</a>
+  </div>
+</div>
+
+<div class="section" id="daily" style="border-left-color:#FCD34D;">
+  <div class="sH" style="color:#FCD34D;">⚡ 7. DAILY + TOURNAMENTS</div>
+  <div class="sB">
+    <b>Daily Challenge</b> — One game per day with its own leaderboard. Resets at midnight UTC. The game rotates, so check back daily.
+    <br><br>
+    <b>Weekly Tournament</b> — Combined scores from all games tracked Monday-Sunday UTC. Top wallet at end of week wins (rewards launching soon — for now: bragging rights).
+    <br><br>
+    <b>Daily Streaks</b> — Visit the arcade daily to build a streak. Pops up at 2, 3, 7, 14, 30 day milestones with badges.
+    <br><br>
+    <b>Achievements</b> — 16 unlockable badges (first game, played 5, hit top 3, became Whale, etc.).
+    <a class="btn" href="/daily.html">DAILY</a>
+    <a class="btn" href="/tournament.html">TOURNAMENT</a>
+    <a class="btn" href="/achievements.html">BADGES</a>
+  </div>
+</div>
+
+<div class="section" id="refer" style="border-left-color:#22C55E;">
+  <div class="sH" style="color:#22C55E;">🤝 8. REFERRALS</div>
+  <div class="sB">
+    Each player has a unique referral code. Drop your link in chats / on X / wherever degens hang out. When someone visits via your link, you get credit.
+    <br><br>
+    Top referrers will get featured on the homepage and first dibs on $MONSHI/NFT rewards once those launch.
+    <a class="btn green" href="/refer.html">GET MY LINK →</a>
+  </div>
+</div>
+
+<div class="section" id="dashboard" style="border-left-color:#A855F7;">
+  <div class="sH" style="color:#A855F7;">📊 9. DASHBOARD TOOLS</div>
+  <div class="sB">
+    Live tools for tracking $MONSHI:
+    <ul>
+      <li><b>Dashboard</b> — live price, holders list, your bag, mood emoji</li>
+      <li><b>Bullish Meter</b> — real-time 0-100 sentiment gauge from on-chain factors</li>
+      <li><b>Ecosystem Map</b> — every Monad memecoin in one place, sortable</li>
+      <li><b>Personality Quiz</b> — get matched to your Monshi NFT trait</li>
+    </ul>
+    <a class="btn" href="/dashboard/">DASHBOARD</a>
+    <a class="btn" href="/bullish.html">BULLISH METER</a>
+    <a class="btn" href="/ecosystem.html">ECOSYSTEM</a>
+    <a class="btn" href="/quiz.html">QUIZ</a>
+  </div>
+</div>
+
+<div class="section" id="rewards" style="border-left-color:#EF4444;">
+  <div class="sH" style="color:#EF4444;">🎁 10. ON-CHAIN REWARDS</div>
+  <div class="sB">
+    <b>Right now:</b> No $MONSHI tokens are won. Everything is for glory + bragging rights.
+    <br><br>
+    <b>Coming soon:</b> Once the Monshi launchpad / staking / swap go live, the arcade ties into them. Top leaderboard wallets, tournament winners, daily challenge champions, and top referrers will all be eligible for $MONSHI/NFT rewards verified on-chain.
+    <br><br>
+    Build your stats now — you'll have a head start when rewards activate.
+  </div>
+</div>
+
+<div style="text-align:center;padding:30px;color:rgba(167,139,250,.5);font-size:11px;letter-spacing:2px;border-top:1px solid rgba(139,92,246,.15);margin-top:30px;">
+  Built by <span style="color:#4ADE80;">KING PETTY</span> for the Monshi community<br>
+  $MONSHI on @Monad · CA: <code style="font-size:9px;">0xB744F5CDb792d8187640214C4A1c9aCE29af7777</code>
+</div>
+</div>
+<div class="kingP">a KING PETTY build</div>
+</body>
+</html>

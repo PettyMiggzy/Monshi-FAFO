@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>REFER FRIENDS — MONSHI ARCADE</title>
+<script src="/monshi-shared.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#fff;padding:30px 20px;}
+.wrap{max-width:780px;margin:0 auto;}
+.bk{display:inline-block;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1.5px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);margin-bottom:24px;}
+h1{font-family:Orbitron,sans-serif;font-size:clamp(36px,6vw,72px);font-weight:900;background:linear-gradient(135deg,#22C55E,#FCD34D);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:5px;text-align:center;margin-bottom:6px;}
+.subt{text-align:center;color:rgba(196,181,253,.65);letter-spacing:4px;margin-bottom:30px;font-size:11px;}
+.codeBox{padding:30px;background:linear-gradient(135deg,rgba(34,197,94,.12),rgba(20,5,50,.7));border:2px solid rgba(74,222,128,.4);border-radius:18px;margin-bottom:24px;text-align:center;box-shadow:0 0 40px rgba(74,222,128,.2);}
+.codeLabel{font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:4px;color:#4ADE80;margin-bottom:10px;}
+.code{font-family:Orbitron,sans-serif;font-size:48px;font-weight:900;color:#fff;letter-spacing:6px;margin-bottom:14px;text-shadow:0 0 24px rgba(74,222,128,.6);background:rgba(0,0,0,.3);padding:14px 24px;border-radius:12px;border:1.5px solid rgba(74,222,128,.4);display:inline-block;}
+.linkBox{margin-top:14px;padding:12px;background:rgba(0,0,0,.4);border-radius:10px;font-family:'Space Mono',monospace;font-size:11px;color:rgba(196,181,253,.85);word-break:break-all;cursor:pointer;border:1px solid rgba(139,92,246,.25);}
+.linkBox:hover{border-color:#8B5CF6;}
+.copyMsg{display:inline-block;margin-left:8px;color:#4ADE80;font-size:10px;font-weight:700;letter-spacing:1.5px;opacity:0;transition:opacity .3s;}
+.copyMsg.show{opacity:1;}
+.actions{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap;}
+.actBtn{padding:14px 24px;border:none;border-radius:10px;font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:2px;color:#fff;text-decoration:none;}
+.bShare{background:linear-gradient(135deg,#1DA1F2,#0d7abf);}
+.bTg{background:linear-gradient(135deg,#0088cc,#005580);}
+.bCopy{background:linear-gradient(135deg,#A855F7,#7C3AED);}
+.statsRow{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px;}
+.s{padding:18px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:12px;text-align:center;}
+.s .v{font-family:Orbitron,sans-serif;font-size:22px;font-weight:900;color:#fff;}
+.s .l{font-size:9px;color:rgba(167,139,250,.6);letter-spacing:2px;margin-top:4px;}
+.howBox{padding:24px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.25);border-radius:14px;margin-bottom:18px;}
+.howTitle{font-family:Orbitron,sans-serif;font-size:13px;color:#A855F7;letter-spacing:3px;margin-bottom:18px;}
+.step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid rgba(139,92,246,.1);}
+.step:last-child{border:none;}
+.stepN{font-family:Orbitron,sans-serif;font-size:24px;color:#FCD34D;width:34px;flex-shrink:0;}
+.stepText{flex:1;font-size:12px;color:rgba(220,210,255,.85);line-height:1.6;}
+.stepText b{color:#fff;}
+.referredBy{padding:16px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.3);border-radius:10px;margin-bottom:18px;text-align:center;font-size:12px;color:#4ADE80;letter-spacing:1.5px;}
+.kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="bk" href="/">← ALL GAMES</a>
+<h1>REFER FRIENDS</h1>
+<div class="subt">SPREAD THE ARCADE · BUILD THE LEGEND</div>
+
+<div id="referredByBox"></div>
+
+<div class="codeBox">
+  <div class="codeLabel">YOUR REFERRAL CODE</div>
+  <div class="code" id="refCode">LOADING</div>
+  <div class="linkBox" id="linkBox">monshi.xyz?ref=...</div>
+  <div class="actions">
+    <button class="actBtn bCopy" id="bCopy">COPY LINK</button>
+    <button class="actBtn bShare" id="bShare">SHARE 𝕏</button>
+    <button class="actBtn bTg" id="bTg">SHARE TG</button>
+  </div>
+</div>
+
+<div class="statsRow">
+  <div class="s"><div class="v" id="invCount">0</div><div class="l">YOUR INVITES</div></div>
+  <div class="s"><div class="v" id="topRef">—</div><div class="l">TOP REFERRER</div></div>
+  <div class="s"><div class="v" id="totalUsers">—</div><div class="l">TOTAL ACTIVE</div></div>
+</div>
+
+<div class="howBox">
+  <div class="howTitle">🤝 HOW IT WORKS</div>
+  <div class="step"><div class="stepN">1</div><div class="stepText"><b>Get your link.</b> Each player has a unique referral code. Yours is shown above.</div></div>
+  <div class="step"><div class="stepN">2</div><div class="stepText"><b>Share it.</b> Drop the link in chats, on X, anywhere degens hang out.</div></div>
+  <div class="step"><div class="stepN">3</div><div class="stepText"><b>They play.</b> When someone visits via your link, you get credit.</div></div>
+  <div class="step"><div class="stepN">4</div><div class="stepText"><b>Climb the board.</b> Top referrers will get featured + first dibs on $MONSHI/NFT rewards once those launch.</div></div>
+</div>
+
+<div style="text-align:center;font-size:11px;color:rgba(196,181,253,.5);letter-spacing:1.5px;line-height:1.7;">
+  ⚠ Tracking is local for now (browser-side). Once we launch on-chain rewards,<br>real referral counts will be verified by wallet history.
+</div>
+</div>
+<div class="kingP">a KING PETTY build</div>
+
+<script>
+setTimeout(function(){
+  var code = window.MONSHI ? MONSHI.getRefCode() : 'CODE';
+  var link = window.MONSHI ? MONSHI.getRefLink() : 'https://monshi.xyz';
+  document.getElementById('refCode').textContent = code;
+  document.getElementById('linkBox').textContent = link;
+  
+  var referredBy = localStorage.getItem('monshi_referredBy');
+  if(referredBy){
+    document.getElementById('referredByBox').innerHTML = '<div class="referredBy">🤝 You were invited by <b>'+referredBy+'</b> — thank them by climbing the leaderboards!</div>';
+  }
+  
+  // Track invites: count of unique visitors who came via our link (proxy via localStorage entries we set)
+  // Best we can do client-side: show 0 for now unless server tracks
+  document.getElementById('invCount').textContent = '0';
+  document.getElementById('topRef').textContent = '—';
+  document.getElementById('totalUsers').textContent = '—';
+  
+  document.getElementById('bCopy').onclick = function(){
+    navigator.clipboard.writeText(link).then(function(){
+      var btn = document.getElementById('bCopy');
+      var orig = btn.textContent;
+      btn.textContent = 'COPIED ✓';
+      btn.style.background = 'linear-gradient(135deg,#22C55E,#15803D)';
+      setTimeout(function(){btn.textContent = orig; btn.style.background = '';}, 1800);
+    });
+  };
+  
+  document.getElementById('bShare').onclick = function(){
+    var tw = 'Join the @Monshi_Monpad ARCADE 🚀\\n\\n27 games, daily challenges, holder perks, NFT rewards.\\n\\nMy code: '+code+'\\n👇\\n'+link+'\\n\\n$MONSHI #Monad';
+    window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');
+  };
+  
+  document.getElementById('bTg').onclick = function(){
+    var tw = 'Join the MONSHI ARCADE 🚀\\n\\n27 games, daily challenges, holder perks, NFT rewards.\\n\\n'+link;
+    window.open('https://t.me/share/url?url='+encodeURIComponent(link)+'&text='+encodeURIComponent(tw),'_blank');
+  };
+  
+  document.getElementById('linkBox').onclick = function(){document.getElementById('bCopy').click();};
+}, 500);
+</script>
+</body>
+</html>

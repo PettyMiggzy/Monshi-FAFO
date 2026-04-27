@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BULLISH METER — $MONSHI</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#fff;padding:30px 20px;}
+.wrap{max-width:980px;margin:0 auto;}
+.bk{display:inline-block;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1.5px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);margin-bottom:24px;}
+h1{font-family:Orbitron,sans-serif;font-size:clamp(36px,6vw,72px);font-weight:900;background:linear-gradient(135deg,#22C55E,#FCD34D,#EF4444);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:5px;text-align:center;margin-bottom:6px;}
+.subt{text-align:center;color:rgba(196,181,253,.65);letter-spacing:4px;margin-bottom:30px;font-size:11px;}
+.gaugeBox{padding:40px 20px;background:rgba(20,5,50,.6);border:1.5px solid rgba(139,92,246,.3);border-radius:18px;margin-bottom:24px;text-align:center;}
+.gaugeWrap{position:relative;width:300px;height:200px;margin:0 auto 20px;}
+.gaugeBg{width:300px;height:300px;border-radius:50%;background:conic-gradient(from 225deg,#EF4444 0%,#F97316 25%,#FCD34D 50%,#22C55E 75%,#22C55E 100%);position:absolute;top:0;left:0;clip-path:polygon(0 0,100% 0,100% 67%,0 67%);}
+.gaugeInner{position:absolute;top:30px;left:30px;width:240px;height:240px;border-radius:50%;background:#02000a;clip-path:polygon(0 0,100% 0,100% 67%,0 67%);}
+.gaugeLabels{position:absolute;top:140px;left:0;width:100%;display:flex;justify-content:space-between;padding:0 20px;font-family:Orbitron,sans-serif;font-size:9px;letter-spacing:1px;color:rgba(196,181,253,.5);}
+.gaugeNeedle{position:absolute;left:50%;bottom:50px;width:3px;height:115px;background:#fff;transform-origin:bottom center;transition:transform 1.2s cubic-bezier(.5,1.6,.5,1);box-shadow:0 0 8px rgba(255,255,255,.6);}
+.gaugeCenter{position:absolute;left:50%;bottom:38px;width:24px;height:24px;background:#fff;border-radius:50%;transform:translateX(-50%);box-shadow:0 0 12px rgba(255,255,255,.6);}
+.scoreNum{font-family:Orbitron,sans-serif;font-size:64px;font-weight:900;color:#fff;letter-spacing:2px;}
+.scoreLabel{font-family:Orbitron,sans-serif;font-size:14px;letter-spacing:4px;margin-top:4px;}
+.statsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:24px;}
+.s{padding:18px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:12px;text-align:center;}
+.s .v{font-family:Orbitron,sans-serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:4px;}
+.s .l{font-size:9px;color:rgba(167,139,250,.6);letter-spacing:2px;}
+.s .d{font-size:11px;margin-top:4px;}
+.factorList{padding:22px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:14px;}
+.factorTitle{font-family:Orbitron,sans-serif;font-size:13px;color:#A855F7;letter-spacing:3px;margin-bottom:18px;text-shadow:0 0 10px rgba(168,85,247,.5);}
+.factor{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:rgba(0,0,0,.3);border-radius:8px;margin-bottom:8px;border-left:3px solid;}
+.factor .lbl{font-size:11px;color:rgba(220,210,255,.85);letter-spacing:1px;}
+.factor .val{font-family:Orbitron,sans-serif;font-size:13px;font-weight:900;}
+.shareBtn{display:block;margin:30px auto 0;padding:14px 32px;background:linear-gradient(135deg,#1DA1F2,#0d7abf);color:#fff;text-decoration:none;font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;border-radius:10px;text-align:center;width:fit-content;}
+.kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="bk" href="/">← ALL GAMES</a>
+<h1>BULLISH METER</h1>
+<div class="subt">REAL-TIME $MONSHI MARKET SENTIMENT · UPDATES EVERY 30s</div>
+
+<div class="gaugeBox">
+  <div class="gaugeWrap">
+    <div class="gaugeBg"></div>
+    <div class="gaugeInner"></div>
+    <div class="gaugeNeedle" id="needle"></div>
+    <div class="gaugeCenter"></div>
+    <div class="gaugeLabels"><span>BEAR</span><span>BULL</span></div>
+  </div>
+  <div class="scoreNum" id="scoreN">—</div>
+  <div class="scoreLabel" id="scoreL">CALCULATING...</div>
+</div>
+
+<div class="statsGrid">
+  <div class="s"><div class="v" id="priceV">—</div><div class="l">PRICE</div><div class="d" id="priceD">—</div></div>
+  <div class="s"><div class="v" id="volV">—</div><div class="l">24H VOLUME</div></div>
+  <div class="s"><div class="v" id="bsV">—</div><div class="l">BUY/SELL RATIO</div></div>
+  <div class="s"><div class="v" id="liqV">—</div><div class="l">LIQUIDITY</div></div>
+</div>
+
+<div class="factorList">
+  <div class="factorTitle">📊 CONTRIBUTING FACTORS</div>
+  <div id="factors"></div>
+</div>
+
+<a id="shareBtn" class="shareBtn" href="#">SHARE METER 𝕏</a>
+</div>
+<div class="kingP">a KING PETTY build</div>
+
+<script>
+var CONTRACT='0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
+
+function fmtUsd(n){if(!n)return '$0';if(n<0.0001)return '$'+n.toFixed(10);if(n<0.01)return '$'+n.toFixed(8);if(n<1)return '$'+n.toFixed(4);if(n<1e3)return '$'+n.toFixed(2);if(n<1e6)return '$'+(n/1e3).toFixed(1)+'K';return '$'+(n/1e6).toFixed(2)+'M';}
+
+async function calculate(){
+  try{
+    var r = await fetch('https://api.dexscreener.com/latest/dex/tokens/'+CONTRACT);
+    var d = await r.json();
+    if(!d.pairs||!d.pairs.length)return;
+    var p = d.pairs.sort(function(a,b){return (b.liquidity&&b.liquidity.usd||0)-(a.liquidity&&a.liquidity.usd||0);})[0];
+    
+    var price=parseFloat(p.priceUsd);
+    var ch24=parseFloat((p.priceChange&&p.priceChange.h24)||0);
+    var ch1=parseFloat((p.priceChange&&p.priceChange.h1)||0);
+    var ch5=parseFloat((p.priceChange&&p.priceChange.m5)||0);
+    var vol24=parseFloat((p.volume&&p.volume.h24)||0);
+    var vol1=parseFloat((p.volume&&p.volume.h1)||0);
+    var liq=parseFloat((p.liquidity&&p.liquidity.usd)||0);
+    var t24=p.txns&&p.txns.h24||{};
+    var t1=p.txns&&p.txns.h1||{};
+    var buys24=t24.buys||0,sells24=t24.sells||0;
+    var bsRatio=sells24>0?buys24/sells24:1;
+    var bsRatio1h=t1.sells>0?(t1.buys||0)/t1.sells:1;
+    
+    // Calculate factors (each contributes 0-20 to total score)
+    var factors=[];
+    
+    // 1. 24h price change (-50% to +50% maps to 0-20)
+    var f1=Math.max(0,Math.min(20,(ch24+50)/100*20));
+    factors.push({label:'24h price change',value:(ch24>=0?'+':'')+ch24.toFixed(2)+'%',score:f1,color:ch24>=0?'#4ADE80':'#F87171'});
+    
+    // 2. 1h momentum
+    var f2=Math.max(0,Math.min(20,(ch1+20)/40*20));
+    factors.push({label:'1h momentum',value:(ch1>=0?'+':'')+ch1.toFixed(2)+'%',score:f2,color:ch1>=0?'#4ADE80':'#F87171'});
+    
+    // 3. Buy/sell ratio (0.5 to 2.0 maps to 0-20)
+    var f3=Math.max(0,Math.min(20,(bsRatio-0.5)/1.5*20));
+    factors.push({label:'24h buy/sell ratio',value:bsRatio.toFixed(2),score:f3,color:bsRatio>=1?'#4ADE80':'#F87171'});
+    
+    // 4. Recent buy pressure (1h)
+    var f4=Math.max(0,Math.min(20,(bsRatio1h-0.5)/1.5*20));
+    factors.push({label:'1h buy pressure',value:bsRatio1h.toFixed(2),score:f4,color:bsRatio1h>=1?'#4ADE80':'#F87171'});
+    
+    // 5. Volume strength (more volume + positive price = bullish)
+    var volScore=0;
+    if(vol24>10000) volScore+=10;
+    if(vol1>500 && ch1>0) volScore+=10;
+    var f5=Math.min(20,volScore);
+    factors.push({label:'volume strength',value:fmtUsd(vol24)+' / 24h',score:f5,color:f5>10?'#4ADE80':'#F87171'});
+    
+    var totalScore = Math.round(factors.reduce(function(a,f){return a+f.score;},0));
+    
+    // Update UI
+    var needleAngle = -90 + (totalScore/100)*180;
+    document.getElementById('needle').style.transform='rotate('+needleAngle+'deg)';
+    document.getElementById('scoreN').textContent=totalScore;
+    
+    var label, color;
+    if(totalScore>=80){label='EXTREME BULL 🚀';color='#22C55E';}
+    else if(totalScore>=60){label='BULLISH 📈';color='#84CC16';}
+    else if(totalScore>=40){label='NEUTRAL 👀';color='#FCD34D';}
+    else if(totalScore>=20){label='BEARISH 📉';color='#F97316';}
+    else {label='EXTREME BEAR 💀';color='#EF4444';}
+    document.getElementById('scoreL').textContent=label;
+    document.getElementById('scoreL').style.color=color;
+    document.getElementById('scoreN').style.color=color;
+    document.getElementById('scoreN').style.textShadow='0 0 30px '+color;
+    
+    document.getElementById('priceV').textContent=fmtUsd(price);
+    document.getElementById('priceV').style.color=ch24>=0?'#4ADE80':'#F87171';
+    document.getElementById('priceD').textContent=(ch24>=0?'▲ +':'▼ ')+ch24.toFixed(2)+'% 24h';
+    document.getElementById('priceD').style.color=ch24>=0?'#4ADE80':'#F87171';
+    document.getElementById('volV').textContent=fmtUsd(vol24);
+    document.getElementById('bsV').textContent=buys24+'/'+sells24;
+    document.getElementById('bsV').style.color=bsRatio>=1?'#4ADE80':'#F87171';
+    document.getElementById('liqV').textContent=fmtUsd(liq);
+    
+    var f=document.getElementById('factors');
+    f.innerHTML='';
+    factors.forEach(function(fac){
+      var pct=Math.round(fac.score/20*100);
+      f.innerHTML+='<div class="factor" style="border-left-color:'+fac.color+';">'+
+        '<div><div class="lbl">'+fac.label+'</div><div style="font-size:9px;color:rgba(167,139,250,.5);margin-top:2px;">contribution: '+pct+'/100</div></div>'+
+        '<div class="val" style="color:'+fac.color+';">'+fac.value+'</div>'+
+      '</div>';
+    });
+    
+    document.getElementById('shareBtn').href='https://twitter.com/intent/tweet?text='+encodeURIComponent('$MONSHI BULLISH METER: '+totalScore+'/100 ('+label+')\\n\\nLive sentiment dashboard 👇\\nhttps://monshi.xyz/bullish.html\\n\\n@Monshi_Monpad #Monad');
+  }catch(e){console.log(e);}
+}
+
+calculate();
+setInterval(calculate, 30000);
+</script>
+</body>
+</html>

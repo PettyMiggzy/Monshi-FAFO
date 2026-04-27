@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>WHAT MONSHI ARE YOU?</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#fff;padding:30px 20px;display:flex;align-items:center;justify-content:center;}
+.wrap{max-width:600px;width:100%;}
+.bk{display:inline-block;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1.5px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);margin-bottom:24px;}
+h1{font-family:Orbitron,sans-serif;font-size:clamp(30px,5vw,52px);font-weight:900;background:linear-gradient(135deg,#EC4899,#A855F7,#FCD34D);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:4px;text-align:center;margin-bottom:6px;}
+.subt{text-align:center;color:rgba(196,181,253,.65);letter-spacing:3px;margin-bottom:30px;font-size:11px;}
+.card{padding:30px 24px;background:rgba(20,5,50,.7);border:1.5px solid rgba(168,85,247,.4);border-radius:18px;box-shadow:0 0 40px rgba(168,85,247,.2);}
+.progress{height:6px;background:rgba(0,0,0,.3);border-radius:3px;overflow:hidden;margin-bottom:24px;}
+.progress-bar{height:100%;background:linear-gradient(90deg,#EC4899,#A855F7);transition:width .4s ease;}
+.qNum{font-family:Orbitron,sans-serif;font-size:11px;color:#EC4899;letter-spacing:3px;margin-bottom:8px;text-align:center;}
+.q{font-family:Orbitron,sans-serif;font-size:18px;color:#fff;text-align:center;margin-bottom:20px;line-height:1.4;letter-spacing:1px;}
+.opts{display:flex;flex-direction:column;gap:10px;}
+.opt{padding:14px 18px;background:rgba(0,0,0,.3);border:1.5px solid rgba(168,85,247,.3);border-radius:10px;cursor:pointer;font-family:Orbitron,sans-serif;font-size:13px;letter-spacing:1px;color:#fff;text-align:left;transition:all .2s;}
+.opt:hover{border-color:#EC4899;background:rgba(236,72,153,.15);transform:translateX(4px);}
+/* Result screen */
+.result{text-align:center;}
+.resultEmoji{font-size:80px;margin-bottom:8px;}
+.resultName{font-family:Orbitron,sans-serif;font-size:32px;font-weight:900;color:#EC4899;letter-spacing:3px;margin-bottom:8px;text-shadow:0 0 20px rgba(236,72,153,.6);}
+.resultDesc{color:rgba(196,181,253,.85);font-size:13px;line-height:1.6;margin-bottom:20px;letter-spacing:1px;}
+.resultStats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:24px;}
+.stat{padding:12px 8px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.3);border-radius:8px;text-align:center;}
+.statLabel{font-size:9px;color:rgba(167,139,250,.6);letter-spacing:1.5px;margin-bottom:4px;}
+.statBar{height:6px;background:rgba(0,0,0,.4);border-radius:3px;overflow:hidden;}
+.statFill{height:100%;background:linear-gradient(90deg,#EC4899,#A855F7);}
+.actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.actBtn{padding:12px 22px;border:none;border-radius:10px;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:2px;color:#fff;text-decoration:none;}
+.bRetry{background:linear-gradient(135deg,#7C3AED,#5B21B6);}
+.bShare{background:linear-gradient(135deg,#1DA1F2,#0d7abf);}
+.bBuy{background:linear-gradient(135deg,#22C55E,#15803D);}
+.bNft{background:linear-gradient(135deg,#EC4899,#7C3AED);}
+.kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="bk" href="/">← ALL GAMES</a>
+<h1>WHAT MONSHI<br>ARE YOU?</h1>
+<div class="subt">10 QUESTIONS · GET MATCHED WITH AN NFT TRAIT</div>
+
+<div class="card" id="card"></div>
+</div>
+<div class="kingP">a KING PETTY build</div>
+
+<script>
+// 10 questions, each scoring across 5 personality vectors
+// vectors: degen, cope, chill, galaxy, paper
+var QS = [
+  {q:"It's 3 AM. You're...",a:[
+    {t:"Aping into a 5min old token",degen:3,cope:1},
+    {t:"Studying a whitepaper",galaxy:3,chill:1},
+    {t:"Crying about your bag",cope:3,paper:2},
+    {t:"Sleeping like a normal person",chill:3}
+  ]},
+  {q:"Your bag is down 50%. You...",a:[
+    {t:"Buy MORE to average down",degen:3,galaxy:1},
+    {t:"Sell to cut losses",paper:3,cope:1},
+    {t:"Diamond hands. NGMI = NGMI",chill:2,degen:2},
+    {t:"Refresh the chart 400 times",cope:3,degen:1}
+  ]},
+  {q:"Pick your trader spirit:",a:[
+    {t:"🐋 Whale - patient, calculated",chill:2,galaxy:2},
+    {t:"🐂 Bull - long everything",degen:3},
+    {t:"🐻 Bear - short everything",galaxy:1,cope:2},
+    {t:"🤡 Clown - vibes only",cope:2,degen:2}
+  ]},
+  {q:"How many tabs of charts do you have open?",a:[
+    {t:"1, I'm chill",chill:3},
+    {t:"5-10, normal degen",degen:2,cope:1},
+    {t:"50+, send help",cope:3,degen:2},
+    {t:"None, I'm cooked",cope:2,paper:1}
+  ]},
+  {q:"Your dream Monad project:",a:[
+    {t:"DeFi protocol with 1000% APY",degen:3,cope:1},
+    {t:"Memecoin with cult community",chill:1,degen:2},
+    {t:"L2 zk-rollup with novel cryptography",galaxy:3},
+    {t:"NFT collection with utility",chill:2,galaxy:1}
+  ]},
+  {q:"Someone calls $MONSHI a scam. You...",a:[
+    {t:"Block them, NGMI",degen:2,chill:2},
+    {t:"Argue for 4 hours straight",cope:3},
+    {t:"Show them the games & dashboard",galaxy:2,chill:1},
+    {t:"Sell my bag in panic",paper:3}
+  ]},
+  {q:"Best part about crypto:",a:[
+    {t:"Making money fast",degen:3},
+    {t:"The community / memes",chill:2,degen:1},
+    {t:"The technology",galaxy:3},
+    {t:"Hating on other coins",cope:2,degen:1}
+  ]},
+  {q:"You hit 10x. You...",a:[
+    {t:"Take profit, lock in gains",chill:2,paper:2},
+    {t:"HODL for 100x",degen:3},
+    {t:"Sell half, ride rest",chill:2,galaxy:1},
+    {t:"Tell everyone you know",cope:2,degen:1}
+  ]},
+  {q:"Pick a vibe:",a:[
+    {t:"Caffeine + chart = me",cope:3,degen:1},
+    {t:"Zen monk, watching from afar",chill:3,galaxy:1},
+    {t:"Gambling addict in denial",degen:3,cope:2},
+    {t:"Big brain trader",galaxy:3}
+  ]},
+  {q:"Your Monshi NFT trait would be:",a:[
+    {t:"WHALE TRADER 🐋",chill:3,galaxy:2},
+    {t:"PAPERHANDS 🤲",paper:3,cope:1},
+    {t:"FUNNY PAIN 😂",cope:3,degen:1},
+    {t:"WAGMI SIGNAL 🚀",degen:3,chill:1}
+  ]}
+];
+
+// Result archetypes
+var RESULTS = {
+  degen: {emoji:'🦍',name:'APE DEGEN',desc:"You don't read whitepapers, you read CHARTS. You bought $MONSHI before this quiz finished loading. Your wallet is a graveyard of 100x dreams. Welcome to the trenches, anon.",trait:'WAGMI SIGNAL'},
+  cope: {emoji:'😂',name:'COPIUM ADDICT',desc:"Down bad but smiling. Your portfolio is red but your soul is rainbow. You've got a 5-page thread defending why your -90% bag is actually undervalued. Pure cope, but funny.",trait:'FUNNY PAIN'},
+  chill: {emoji:'🧘',name:'ZEN HOLDER',desc:"You don't check your bag. The bag checks itself. Bear markets are just sales. You hold $MONSHI like it owes you money. The market shakes, you don't.",trait:'WHALE TRADER'},
+  galaxy: {emoji:'🧠',name:'GALAXY BRAIN',desc:"You read every whitepaper. You DM founders. You actually understand what Monad's parallel execution does. People come to you for picks. You're built different, anon.",trait:'PROTOCOL NERD'},
+  paper: {emoji:'🤲',name:'PAPER HANDS',desc:"You sold the bottom. You bought the top. Your wallet is a museum of L plays. But hey - at least you're still here. Time to make better decisions, starting with $MONSHI.",trait:'PAPERHANDS'}
+};
+
+var idx=0,scores={degen:0,cope:0,chill:0,galaxy:0,paper:0};
+
+function showQ(){
+  if(idx>=QS.length){return showResult();}
+  var q=QS[idx];
+  var card=document.getElementById('card');
+  var pct=(idx/QS.length)*100;
+  card.innerHTML='<div class="progress"><div class="progress-bar" style="width:'+pct+'%;"></div></div>'+
+    '<div class="qNum">QUESTION '+(idx+1)+' / '+QS.length+'</div>'+
+    '<div class="q">'+q.q+'</div>'+
+    '<div class="opts" id="opts"></div>';
+  var optsEl=document.getElementById('opts');
+  q.a.forEach(function(opt){
+    var d=document.createElement('div');
+    d.className='opt';
+    d.textContent=opt.t;
+    d.onclick=function(){
+      ['degen','cope','chill','galaxy','paper'].forEach(function(k){if(opt[k])scores[k]+=opt[k];});
+      idx++;showQ();
+    };
+    optsEl.appendChild(d);
+  });
+}
+
+function showResult(){
+  // Find dominant trait
+  var top=Object.keys(scores).reduce(function(a,b){return scores[a]>scores[b]?a:b;});
+  var r=RESULTS[top];
+  var max=Math.max.apply(null,Object.values(scores))||1;
+  var card=document.getElementById('card');
+  card.classList.add('result');
+  card.innerHTML = '<div class="result">'+
+    '<div class="resultEmoji">'+r.emoji+'</div>'+
+    '<div class="resultName">'+r.name+'</div>'+
+    '<div class="resultDesc">'+r.desc+'</div>'+
+    '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#FCD34D;letter-spacing:3px;margin-bottom:14px;">YOUR NFT TRAIT MATCH:</div>'+
+    '<div style="font-family:Orbitron,sans-serif;font-size:18px;color:#EC4899;letter-spacing:3px;margin-bottom:24px;text-shadow:0 0 12px rgba(236,72,153,.5);">🎴 '+r.trait+'</div>'+
+    '<div class="resultStats">'+
+      Object.keys(scores).map(function(k){
+        var pct=Math.round(scores[k]/max*100);
+        return '<div class="stat"><div class="statLabel">'+k.toUpperCase()+'</div><div class="statBar"><div class="statFill" style="width:'+pct+'%;"></div></div></div>';
+      }).join('')+
+    '</div>'+
+    '<div class="actions">'+
+      '<button class="actBtn bRetry" onclick="location.reload();">RETAKE</button>'+
+      '<button class="actBtn bShare" id="shareBtn">SHARE 𝕏</button>'+
+      '<a class="actBtn bNft" href="https://opensea.io/collection/monshi-nft-collection-563194175" target="_blank">FIND MY NFT 🎴</a>'+
+      '<a class="actBtn bBuy" href="https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777" target="_blank">BUY $MONSHI</a>'+
+    '</div>'+
+  '</div>';
+  document.getElementById('shareBtn').onclick=function(){
+    var tw='I\'m '+r.emoji+' '+r.name+' on the @Monshi_Monpad personality quiz!\n\nMy NFT trait match: 🎴 '+r.trait+'\n\nWhich Monshi are you? 👇\nhttps://monshi.xyz/quiz.html\n\n$MONSHI #Monad';
+    window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');
+  };
+}
+
+showQ();
+</script>
+</body>
+</html>

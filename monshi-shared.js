@@ -126,7 +126,7 @@
     el.style.cssText='position:fixed;top:8px;right:8px;z-index:99;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:1.5px;font-weight:700;cursor:pointer;transition:all .2s;';
     el.onclick = function(){
       if(MONSHI.wallet){
-        if(confirm('Disconnect wallet? You\\'ll lose your tier perks.'))MONSHI.disconnect();
+        if(confirm('Disconnect wallet? You\'ll lose your tier perks.'))MONSHI.disconnect();
       } else MONSHI.connectWallet();
     };
     document.body.appendChild(el);
@@ -203,8 +203,38 @@
     setTimeout(function(){pop.remove();},1000);
   };
 
+  // ── Referral system ──
+  MONSHI.getRefCode = function(){
+    var code = localStorage.getItem('monshi_refcode');
+    if(!code){
+      // Generate a 6-char code if user has wallet, else random
+      if(MONSHI.wallet){
+        code = MONSHI.wallet.slice(2,8).toUpperCase();
+      } else {
+        code = Math.random().toString(36).slice(2,8).toUpperCase();
+      }
+      localStorage.setItem('monshi_refcode', code);
+    }
+    return code;
+  };
+  MONSHI.getRefLink = function(){return 'https://monshi.xyz?ref='+MONSHI.getRefCode();};
+  MONSHI.checkInboundRef = function(){
+    var url = new URL(window.location.href);
+    var ref = url.searchParams.get('ref');
+    if(ref && !localStorage.getItem('monshi_referredBy')){
+      localStorage.setItem('monshi_referredBy', ref.toUpperCase().slice(0,8));
+      // Notify visually
+      var t = document.createElement('div');
+      t.style.cssText='position:fixed;top:50px;left:50%;transform:translateX(-50%);z-index:9999;background:linear-gradient(135deg,#22C55E,#15803D);color:#fff;padding:12px 24px;border-radius:10px;font-family:Orbitron,sans-serif;font-weight:900;letter-spacing:2px;font-size:11px;box-shadow:0 0 30px rgba(74,222,128,.5);';
+      t.innerHTML='🤝 INVITED BY '+ref.toUpperCase();
+      document.body.appendChild(t);
+      setTimeout(function(){t.style.transition='opacity .5s';t.style.opacity='0';setTimeout(function(){t.remove();},500);},4000);
+    }
+  };
+
   function init(){
     MONSHI.injectBadge();
+    MONSHI.checkInboundRef();
     if(MONSHI.wallet) MONSHI.fetchBalance().then(function(){
       MONSHI.updateBadge();
       if(MONSHI.hasNFT()) MONSHI.fetchNFTImage();

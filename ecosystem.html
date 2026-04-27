@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MONAD ECOSYSTEM — MONSHI ARCADE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#fff;padding:30px 20px;}
+.wrap{max-width:1200px;margin:0 auto;}
+.bk{display:inline-block;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1.5px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);margin-bottom:24px;}
+h1{font-family:Orbitron,sans-serif;font-size:clamp(36px,6vw,72px);font-weight:900;background:linear-gradient(135deg,#8B5CF6,#A855F7,#22C55E);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:5px;text-align:center;margin-bottom:6px;}
+.subt{text-align:center;color:rgba(196,181,253,.65);letter-spacing:4px;margin-bottom:30px;font-size:11px;}
+.tabs{display:flex;gap:8px;justify-content:center;margin-bottom:24px;flex-wrap:wrap;}
+.tab{padding:10px 16px;background:rgba(20,5,50,.6);border:1.5px solid rgba(139,92,246,.3);border-radius:30px;color:rgba(220,210,255,.7);font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:2px;}
+.tab.active{background:linear-gradient(135deg,#7C3AED,#A855F7);border-color:#A855F7;color:#fff;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
+.tok{background:rgba(20,5,50,.6);border:1.5px solid rgba(139,92,246,.25);border-radius:14px;padding:18px;text-decoration:none;color:inherit;transition:all .25s;display:flex;flex-direction:column;gap:10px;}
+.tok:hover{transform:translateY(-3px);border-color:#A855F7;box-shadow:0 8px 20px rgba(139,92,246,.25);}
+.tok.us{border:2px solid #4ADE80;box-shadow:0 0 24px rgba(74,222,128,.3);background:linear-gradient(135deg,rgba(74,222,128,.12),rgba(20,5,50,.6));}
+.tok-head{display:flex;align-items:center;gap:10px;}
+.tok-img{width:44px;height:44px;border-radius:50%;border:2px solid rgba(139,92,246,.4);object-fit:cover;background:#0a0015;}
+.tok.us .tok-img{border-color:#4ADE80;}
+.tok-name{font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;color:#fff;letter-spacing:1px;}
+.tok-sym{font-size:10px;color:rgba(167,139,250,.6);letter-spacing:1.5px;margin-top:2px;}
+.tok-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;font-size:10px;}
+.stat-l{color:rgba(167,139,250,.5);letter-spacing:1px;text-transform:uppercase;}
+.stat-v{font-family:Orbitron,sans-serif;color:#fff;font-weight:700;margin-top:2px;}
+.stat-v.up{color:#4ADE80;}
+.stat-v.down{color:#F87171;}
+.tok-link{margin-top:auto;font-size:10px;color:#A855F7;letter-spacing:1.5px;text-align:center;padding:8px;background:rgba(139,92,246,.1);border-radius:6px;}
+.tok.us .tok-link{color:#4ADE80;background:rgba(74,222,128,.1);}
+.empty{text-align:center;padding:60px 20px;color:rgba(139,92,246,.5);font-size:13px;letter-spacing:2px;}
+.loading::after{content:"...";animation:dots 1.5s infinite;}
+@keyframes dots{0%,33%{content:".";}33%,66%{content:"..";}66%,100%{content:"...";}}
+.kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="bk" href="/">← ALL GAMES</a>
+<h1>ECOSYSTEM</h1>
+<div class="subt">EVERY MONAD MEMECOIN · LIVE FROM NAD.FUN</div>
+
+<div class="tabs">
+  <div class="tab active" data-sort="mcap">💰 BY MARKET CAP</div>
+  <div class="tab" data-sort="volume">📊 BY VOLUME</div>
+  <div class="tab" data-sort="age">🆕 NEWEST</div>
+</div>
+
+<div id="grid" class="grid"><div class="empty"><span class="loading">loading the ecosystem</span></div></div>
+
+<div style="margin-top:24px;text-align:center;font-size:11px;color:rgba(196,181,253,.6);letter-spacing:1.5px;line-height:1.7;">
+  All projects on Monad. Click any card to view on nad.fun.<br>
+  $MONSHI is highlighted because we're built different 💚
+</div>
+</div>
+<div class="kingP">a KING PETTY build</div>
+
+<script>
+var MONSHI_CA='0xb744f5cdb792d8187640214c4a1c9ace29af7777';
+var allTokens=[],currentSort='mcap';
+
+function fmtUsd(n){if(!n)return '$0';if(n<0.01)return '$'+n.toFixed(6);if(n<1e3)return '$'+n.toFixed(2);if(n<1e6)return '$'+(n/1e3).toFixed(1)+'K';if(n<1e9)return '$'+(n/1e6).toFixed(2)+'M';return '$'+(n/1e9).toFixed(2)+'B';}
+function fmtNum(n){if(n<1e3)return Math.floor(n);if(n<1e6)return (n/1e3).toFixed(1)+'K';return (n/1e6).toFixed(2)+'M';}
+function ago(ts){var d=Math.floor((Date.now()-ts)/86400000);if(d<1)return 'today';if(d<30)return d+'d ago';if(d<365)return Math.floor(d/30)+'mo ago';return Math.floor(d/365)+'y ago';}
+
+async function load(){
+  try{
+    // Use the buyers API endpoint pattern - same proxy style
+    var r = await fetch('/api/ecosystem');
+    if(!r.ok) throw new Error('no proxy');
+    var data = await r.json();
+    var tokens = data.tokens||data.data||data.list||(Array.isArray(data)?data:[]);
+    if(!Array.isArray(tokens)||tokens.length===0) throw new Error('empty');
+    allTokens = tokens.map(function(t){
+      var info=t.token_info||t.info||t;
+      var stats=t.market_stats||t.stats||t;
+      return {
+        addr: (info.token_address||info.address||t.address||'').toLowerCase(),
+        name: info.name||info.token_name||'?',
+        symbol: info.symbol||info.ticker||'?',
+        image: info.image_uri||info.image||info.logo,
+        mcap: parseFloat(stats.market_cap||stats.mcap||t.market_cap||0),
+        volume24: parseFloat(stats.volume_24h||stats.volume||t.volume||0),
+        change24: parseFloat(stats.price_change_24h||t.price_change_24h||0),
+        created: new Date(info.created_at||t.created_at||Date.now()).getTime()
+      };
+    });
+    render();
+  }catch(e){
+    console.log('ecosystem load fail',e);
+    // Fallback: show curated list
+    allTokens = [
+      {addr:MONSHI_CA, name:'Monshi', symbol:'MONSHI', image:'/favicon.png', mcap:32300, volume24:75, change24:0, created:Date.now()-150*86400000},
+      {addr:'0xe5898...', name:'Chog', symbol:'CHOG', image:null, mcap:1200000, volume24:24900000, change24:-4.5, created:Date.now()-150*86400000},
+      {addr:'0x...', name:'Bob', symbol:'BOB', image:null, mcap:203000, volume24:447100, change24:14, created:Date.now()-10*86400000},
+      {addr:'0x...', name:'Shramp', symbol:'SHRAMP', image:null, mcap:266000, volume24:1900000, change24:4.4, created:Date.now()-150*86400000},
+      {addr:'0x...', name:'Moncock', symbol:'MONCOCK', image:null, mcap:276100, volume24:12600000, change24:-10.7, created:Date.now()-150*86400000},
+      {addr:'0x...', name:'EmoNad', symbol:'EMO', image:null, mcap:948600, volume24:4800000, change24:-14.3, created:Date.now()-150*86400000},
+      {addr:'0x5b087...', name:'NADS', symbol:'NADS', image:null, mcap:72800, volume24:9000000, change24:-15.9, created:Date.now()-150*86400000},
+      {addr:'0x677fd...', name:'Monigga', symbol:'MONIGGA', image:null, mcap:22200, volume24:482100, change24:-4.5, created:Date.now()-150*86400000}
+    ];
+    render();
+  }
+}
+
+function render(){
+  var arr = allTokens.slice();
+  if(currentSort==='mcap') arr.sort(function(a,b){return b.mcap-a.mcap;});
+  else if(currentSort==='volume') arr.sort(function(a,b){return b.volume24-a.volume24;});
+  else if(currentSort==='age') arr.sort(function(a,b){return b.created-a.created;});
+  
+  // Always pin Monshi to top
+  var monshi = arr.find(function(t){return t.addr.toLowerCase()===MONSHI_CA.toLowerCase();});
+  if(monshi){arr = arr.filter(function(t){return t.addr.toLowerCase()!==MONSHI_CA.toLowerCase();}); arr.unshift(monshi);}
+  
+  var grid = document.getElementById('grid');
+  if(arr.length===0){grid.innerHTML='<div class="empty">No tokens loaded</div>';return;}
+  grid.innerHTML='';
+  arr.slice(0,40).forEach(function(t){
+    var isUs = t.addr.toLowerCase()===MONSHI_CA.toLowerCase();
+    var url = 'https://nad.fun/tokens/'+t.addr;
+    var img = t.image||'/favicon.png';
+    var changeClass = t.change24>=0?'up':'down';
+    var changeSym = t.change24>=0?'+':'';
+    var html = '<a class="tok'+(isUs?' us':'')+'" href="'+url+'" target="_blank">'+
+      '<div class="tok-head">'+
+        '<img class="tok-img" src="'+img+'" alt="" onerror="this.src=\'/favicon.png\';">'+
+        '<div><div class="tok-name">'+t.name+(isUs?' 💚':'')+'</div><div class="tok-sym">$'+t.symbol+(isUs?' · OUR HOME':'')+'</div></div>'+
+      '</div>'+
+      '<div class="tok-stats">'+
+        '<div><div class="stat-l">MCAP</div><div class="stat-v">'+fmtUsd(t.mcap)+'</div></div>'+
+        '<div><div class="stat-l">24h</div><div class="stat-v '+changeClass+'">'+changeSym+t.change24.toFixed(1)+'%</div></div>'+
+        '<div><div class="stat-l">VOL 24h</div><div class="stat-v">'+fmtUsd(t.volume24)+'</div></div>'+
+        '<div><div class="stat-l">AGE</div><div class="stat-v">'+ago(t.created)+'</div></div>'+
+      '</div>'+
+      '<div class="tok-link">VIEW ON NAD.FUN →</div>'+
+    '</a>';
+    grid.innerHTML += html;
+  });
+}
+
+document.querySelectorAll('.tab').forEach(function(t){
+  t.onclick=function(){document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});t.classList.add('active');currentSort=t.dataset.sort;render();};
+});
+
+load();
+setInterval(load,60000);
+</script>
+</body>
+</html>
