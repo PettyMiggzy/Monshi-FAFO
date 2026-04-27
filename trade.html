@@ -73,7 +73,7 @@ function showDeath(GN,GU,T,sc,sub,isWin){
   if(playerName){submitS(T,sc,render);}else{document.getElementById('nS').style.display='block';render();}
   document.getElementById('dSb').onclick=function(){var n=document.getElementById('dN').value.trim();playerName=(n||'ANON').toUpperCase().slice(0,16);localStorage.setItem('monshi_name',playerName);document.getElementById('nS').style.display='none';submitS(T,sc,render);};
   document.getElementById('dN').onkeydown=function(e){if(e.key==='Enter')document.getElementById('dSb').click();};
-  document.getElementById('btnShare').onclick=function(){var shareUrl='https://monshi-fafo.vercel.app/api/share?game='+encodeURIComponent(GN)+'&score='+sc+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+playerRank+'&goto='+encodeURIComponent(GU);var tw='I scored '+sc+' on '+GN+' on the MONSHI ARCADE 🚀 Can you beat me? '+shareUrl+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');};
+  document.getElementById('btnShare').onclick=function(){var shareUrl='https://monshi.xyz/api/share?game='+encodeURIComponent(GN)+'&score='+sc+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+playerRank+'&goto='+encodeURIComponent(GU);var tw='I scored '+sc+' on '+GN+' on the MONSHI ARCADE 🚀 Can you beat me? '+shareUrl+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');};
   document.getElementById('btnBuy').onclick=function(){window.open(BUY_URL,'_blank');};
 }
 var AC=window.AudioContext||window.webkitAudioContext,actx=null,ma=null;
@@ -91,5 +91,5 @@ function draw(){x.fillStyle="#0a0015";x.fillRect(0,0,W,H);if(prices.length<2)ret
 draw();fetchLB("scores_trade");
 document.getElementById("bBuy").onclick=function(){var p=prices[prices.length-1];var amt=cash*0.1;var bought=amt/p;cash-=amt;holdings+=bought;initA();sfxClick();nextCandle();draw();checkEnd();};
 document.getElementById("bSell").onclick=function(){var p=prices[prices.length-1];cash+=holdings*p;holdings=0;initA();sfxCoin();nextCandle();draw();checkEnd();};
-function checkEnd(){if(idx>=N){var p=prices[prices.length-1];var final=cash+holdings*p;var pnl=final-startCash;showDeath("TRADING SIM","https://monshi-fafo.vercel.app/trade.html","scores_trade",Math.floor(pnl),"$"+final.toFixed(2)+" final",pnl>0);}}</script>
+function checkEnd(){if(idx>=N){var p=prices[prices.length-1];var final=cash+holdings*p;var pnl=final-startCash;showDeath("TRADING SIM","https://monshi.xyz/trade.html","scores_trade",Math.floor(pnl),"$"+final.toFixed(2)+" final",pnl>0);}}</script>
 </body></html>

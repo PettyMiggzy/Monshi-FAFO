@@ -125,7 +125,7 @@ devImg.src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBAUEBAYFB
 var SUPABASE_URL = 'https://cuqhqcmrgpdjlhyqztnc.supabase.co';
 var SUPABASE_KEY = 'sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
 var BUY_URL      = 'https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
-var GAME_URL     = 'https://monshi-fafo.vercel.app';
+var GAME_URL     = 'https://monshi.xyz';
 
 var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
 var BW=800,BH=420,GY=235,GROUND=395,SW=140,SH=160,RF=6,JF=6;
@@ -426,7 +426,7 @@ function fetchPrice(){
 // ── Buttons ───────────────────────────────────────────────
 document.getElementById('btnShare').addEventListener('click',function(){
   var devLine=killedByDev?' Got RUGGED BY THE DEV':'';
-  var tweet='I scored '+String(Math.floor(lastScore)).padStart(6,'0')+' on MONSHI RUNNER LVL '+LEVELS[Math.min(lastLvl,5)].num+' '+LEVELS[Math.min(lastLvl,5)].name+devLine+' Play: '+('https://monshi-fafo.vercel.app/api/share?game=MONSHI%20RUNNER&score='+lastScore+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+(typeof playerRank!=='undefined'?playerRank:'')+'&goto='+encodeURIComponent(GAME_URL))+' $MONSHI #Monad';
+  var tweet='I scored '+String(Math.floor(lastScore)).padStart(6,'0')+' on MONSHI RUNNER LVL '+LEVELS[Math.min(lastLvl,5)].num+' '+LEVELS[Math.min(lastLvl,5)].name+devLine+' Play: '+('https://monshi.xyz/api/share?game=MONSHI%20RUNNER&score='+lastScore+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+(typeof playerRank!=='undefined'?playerRank:'')+'&goto='+encodeURIComponent(GAME_URL))+' $MONSHI #Monad';
   window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tweet),'_blank');
 });
 document.getElementById('btnBuy').addEventListener('click',function(){window.open(BUY_URL,'_blank');});

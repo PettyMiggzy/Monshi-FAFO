@@ -67,7 +67,7 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Sp
 var SUPABASE_URL='https://cuqhqcmrgpdjlhyqztnc.supabase.co';
 var SUPABASE_KEY='sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
 var BUY_URL='https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
-var GAME_URL='https://monshi-fafo.vercel.app/flappy.html';
+var GAME_URL='https://monshi.xyz/flappy.html';
 var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
 var BW=480,BH=720;canvas.width=BW;canvas.height=BH;
 var SCALE=1,OX=0,OY=0;
@@ -234,7 +234,7 @@ function renderDeath(sc){
 }
 document.getElementById('dSubmit').addEventListener('click',function(){var n=document.getElementById('dNameInput').value.trim();playerName=(n||'ANON').toUpperCase().slice(0,16);localStorage.setItem('monshi_name',playerName);document.getElementById('nameSubmit').style.display='none';submitScore(lastScore);});
 document.getElementById('dNameInput').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('dSubmit').click();});
-document.getElementById('btnShare').addEventListener('click',function(){var tweet='I scored '+lastScore+' on FLAPPY MONSHI! Can you beat me? '+('https://monshi-fafo.vercel.app/api/share?game=FLAPPY%20MONSHI&score='+lastScore+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+(typeof playerRank!=='undefined'?playerRank:'')+'&goto='+encodeURIComponent(GAME_URL))+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tweet),'_blank');});
+document.getElementById('btnShare').addEventListener('click',function(){var tweet='I scored '+lastScore+' on FLAPPY MONSHI! Can you beat me? '+('https://monshi.xyz/api/share?game=FLAPPY%20MONSHI&score='+lastScore+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+(typeof playerRank!=='undefined'?playerRank:'')+'&goto='+encodeURIComponent(GAME_URL))+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tweet),'_blank');});
 document.getElementById('btnBuy').addEventListener('click',function(){window.open(BUY_URL,'_blank');});
 document.getElementById('btnRetry').addEventListener('click',function(){document.getElementById('deathPanel').classList.remove('show');reset();});
 fetchLeaderboard();

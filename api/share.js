@@ -11,10 +11,10 @@ export default async function handler(req, res) {
 <title>${title}</title>
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="MONSHI ARCADE — beat my score 👇">
-<meta property="og:url" content="https://monshi-fafo.vercel.app">
+<meta property="og:url" content="https://monshi.xyz">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:site" content="@Monshi_Monpad">
-<meta http-equiv="refresh" content="0;url=https://monshi-fafo.vercel.app">
+<meta http-equiv="refresh" content="0;url=https://monshi.xyz">
 <style>body{background:#02000a;color:#EDE9FF;font-family:sans-serif;text-align:center;padding:60px;}</style>
 </head><body><h1>MONSHI ARCADE</h1><p>Redirecting...</p></body></html>`);
 }

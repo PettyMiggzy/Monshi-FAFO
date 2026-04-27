@@ -91,7 +91,7 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Sp
 var SUPABASE_URL = 'https://cuqhqcmrgpdjlhyqztnc.supabase.co';
 var SUPABASE_KEY = 'sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
 var BUY_URL      = 'https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
-var GAME_URL     = 'https://monshi-fafo.vercel.app/shooter.html';
+var GAME_URL     = 'https://monshi.xyz/shooter.html';
 
 var canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
 var BW=900,BH=600;
@@ -620,7 +620,7 @@ document.getElementById('startLb').style.display='block';
 
 // ── Buttons ──────────────────────────────────────────────
 document.getElementById('btnShare').addEventListener('click',function(){
-  var tweet='I scored '+String(Math.floor(lastScore)).padStart(7,'0')+' on MONSHI SHOOTER reaching WAVE '+lastWave+'! Auto-blasted FUDders with $MONSHI bullets. Play: '+('https://monshi-fafo.vercel.app/api/share?game=MONSHI%20SHOOTER&score='+lastScore+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+(typeof playerRank!=='undefined'?playerRank:'')+'&goto='+encodeURIComponent(GAME_URL))+' $MONSHI #Monad';
+  var tweet='I scored '+String(Math.floor(lastScore)).padStart(7,'0')+' on MONSHI SHOOTER reaching WAVE '+lastWave+'! Auto-blasted FUDders with $MONSHI bullets. Play: '+('https://monshi.xyz/api/share?game=MONSHI%20SHOOTER&score='+lastScore+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+(typeof playerRank!=='undefined'?playerRank:'')+'&goto='+encodeURIComponent(GAME_URL))+' $MONSHI #Monad';
   window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tweet),'_blank');
 });
 document.getElementById('btnBuy').addEventListener('click',function(){window.open(BUY_URL,'_blank');});
