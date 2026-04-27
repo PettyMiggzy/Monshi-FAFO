@@ -519,7 +519,7 @@ function fetchHolders(){
         
         var tier=tierFor(bal);
         var medal=['🥇','🥈','🥉'][i]||'#'+(i+1);
-        var isMe=connectedAddr&&addr&&connectedAddr.toLowerCase()===addr.toLowerCase();
+        var isMe=walletAddr&&addr&&walletAddr.toLowerCase()===addr.toLowerCase();
         var bg=isMe?'rgba(74,222,128,.12)':(i<3?'rgba(252,211,77,.06)':'rgba(139,92,246,.04)');
         var borderColor=isMe?'rgba(74,222,128,.4)':'rgba(139,92,246,.15)';
         
@@ -540,9 +540,10 @@ function fetchHolders(){
       });
     })
     .catch(function(e){
-      console.log('holder fetch error',e);
+      console.error('holder fetch error',e);
+      var msg=(e&&e.name==='TypeError')?'⚠ COULD NOT LOAD HOLDERS — NETWORK ERROR':'⚠ HOLDERS RENDER ERROR — CHECK CONSOLE';
       var list=document.getElementById('holdersList');
-      list.innerHTML='<div style="text-align:center;padding:20px;color:#F87171;font-size:11px;letter-spacing:1.5px;">⚠ COULD NOT LOAD HOLDERS — CORS BLOCKED</div>';
+      list.innerHTML='<div style="text-align:center;padding:20px;color:#F87171;font-size:11px;letter-spacing:1.5px;">'+msg+'</div>';
     });
 }
 
