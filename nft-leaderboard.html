@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NFT HOLDER RANKINGS — MONSHI ARCADE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=JetBrains+Mono&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#fff;padding:30px 20px;}
+.wrap{max-width:1100px;margin:0 auto;}
+.bk{display:inline-block;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1.5px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);margin-bottom:24px;}
+h1{font-family:Orbitron,sans-serif;font-size:clamp(36px,6vw,72px);font-weight:900;background:linear-gradient(135deg,#EC4899,#A855F7);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:5px;text-align:center;margin-bottom:6px;}
+.subt{text-align:center;color:rgba(196,181,253,.65);letter-spacing:4px;margin-bottom:30px;font-size:11px;}
+.tabs{display:flex;gap:8px;justify-content:center;margin-bottom:24px;flex-wrap:wrap;}
+.tab{padding:10px 18px;background:rgba(20,5,50,.6);border:1.5px solid rgba(236,72,153,.3);border-radius:30px;color:rgba(220,210,255,.7);font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:2px;}
+.tab.active{background:linear-gradient(135deg,#EC4899,#7C3AED);border-color:#EC4899;color:#fff;}
+.lbCard{background:rgba(20,5,50,.6);border:1.5px solid rgba(236,72,153,.3);border-radius:14px;padding:22px;}
+.row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:10px;margin-bottom:6px;border:1px solid rgba(236,72,153,.15);background:linear-gradient(90deg,rgba(236,72,153,.04),rgba(0,0,0,.2));text-decoration:none;color:inherit;transition:all .2s;}
+.row:hover{transform:translateX(4px);border-color:#EC4899;}
+.row.gold{background:linear-gradient(90deg,rgba(252,211,77,.15),rgba(20,5,50,.6));border-color:#FCD34D;}
+.row.silver{background:linear-gradient(90deg,rgba(196,196,196,.1),rgba(20,5,50,.6));}
+.row.bronze{background:linear-gradient(90deg,rgba(180,83,9,.12),rgba(20,5,50,.6));}
+.rank{font-family:Orbitron,sans-serif;font-size:22px;font-weight:900;width:50px;text-align:center;color:rgba(167,139,250,.5);}
+.row.gold .rank{color:#FCD34D;}
+.who{flex:1;min-width:0;}
+.who .nm{font-family:'JetBrains Mono',monospace;font-size:13px;color:#fff;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.who .nm .nft-tag{font-size:9px;color:#EC4899;background:rgba(236,72,153,.15);border:1px solid rgba(236,72,153,.4);border-radius:10px;padding:2px 8px;font-family:Orbitron,sans-serif;letter-spacing:1px;font-weight:700;}
+.who .meta{font-size:10px;color:rgba(167,139,250,.6);letter-spacing:1px;}
+.stats{text-align:right;}
+.stats .total{font-family:Orbitron,sans-serif;font-size:20px;font-weight:900;color:#EC4899;}
+.stats .qty{font-size:10px;color:rgba(167,139,250,.5);margin-top:3px;}
+.empty{text-align:center;padding:60px 20px;color:rgba(139,92,246,.5);font-size:13px;letter-spacing:2px;}
+.loading::after{content:"...";animation:dots 1.5s infinite;}
+@keyframes dots{0%,33%{content:".";}33%,66%{content:"..";}66%,100%{content:"...";}}
+.pill{padding:7px 13px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);border-radius:8px;color:rgba(220,210,255,.85);text-decoration:none;font-size:11px;letter-spacing:1.5px;font-weight:700;}
+.pill:hover{background:rgba(139,92,246,.25);color:#fff;}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:36px;flex-wrap:wrap;gap:14px;}
+.brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;}
+.brand-logo{width:48px;height:48px;border-radius:50%;border:2px solid #EC4899;overflow:hidden;}
+.brand-logo img{width:100%;height:100%;object-fit:cover;}
+.brand-text .n{font-family:Orbitron,sans-serif;font-size:18px;font-weight:900;letter-spacing:3px;color:#fff;}
+.brand-text .s{font-size:9px;letter-spacing:3px;color:#EC4899;margin-top:2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="topbar">
+  <a class="brand" href="/">
+    <div class="brand-logo"><img src="/favicon.png" alt=""></div>
+    <div class="brand-text"><div class="n">MONSHI</div><div class="s">NFT HOLDER RANKINGS</div></div>
+  </a>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;">
+    <a class="pill" href="/">🎮 ARCADE</a>
+    <a class="pill" href="/leaderboard.html">🏆 ALL RANKS</a>
+    <a class="pill" href="/nfts.html" style="background:linear-gradient(135deg,#EC4899,#7C3AED);color:#fff;border-color:#EC4899;">🎴 BUY NFT</a>
+  </div>
+</div>
+
+<h1>NFT HOLDERS</h1>
+<div class="subt">EXCLUSIVE LEADERBOARD · ONLY THE 23 OGS</div>
+
+<div class="tabs">
+  <div class="tab active" data-mode="combined">⚔ COMBINED SCORE</div>
+  <div class="tab" data-mode="games">🎮 GAMES PLAYED</div>
+</div>
+
+<div class="lbCard">
+  <div id="lbList" class="empty"><span class="loading">aggregating NFT holder activity</span></div>
+</div>
+
+<div style="margin-top:24px;text-align:center;font-size:11px;color:rgba(196,181,253,.6);letter-spacing:1.5px;line-height:1.7;">
+  This board shows only wallets that have played the arcade AND own at least one Monshi NFT.<br>
+  Don't see your wallet? <a href="/" style="color:#EC4899;">Play a few games</a> to register.
+</div>
+</div>
+
+<script>
+var SUPABASE_URL='https://cuqhqcmrgpdjlhyqztnc.supabase.co';
+var SUPABASE_KEY='sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
+var TABLES=['scores','scores_shooter','scores_racer','scores_flappy','scores_snake','scores_breaker','scores_pump','scores_flip','scores_whack','scores_2048','scores_slots','scores_memory','scores_plinko','scores_rug','scores_wordle','scores_tetris','scores_c4','scores_trivia','scores_mine','scores_bj','scores_whale','scores_trade','scores_pong','scores_heist'];
+var allScores=[],currentMode='combined';
+
+function shortAddr(a){return a.slice(0,6)+'...'+a.slice(-4);}
+
+async function loadAll(){
+  var promises = TABLES.map(function(t){
+    return fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score,wallet,created_at&wallet=not.is.null&limit=1000',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}})
+      .then(function(r){return r.ok?r.json():[];})
+      .then(function(d){if(Array.isArray(d))d.forEach(function(s){if(s.wallet)allScores.push(Object.assign(s,{game:t}));});})
+      .catch(function(){});
+  });
+  await Promise.all(promises);
+  await checkNFTHolders();
+}
+
+// Check each unique wallet for NFT ownership using OpenSea API
+var nftWallets = new Set();
+async function checkNFTHolders(){
+  var uniqueWallets = Array.from(new Set(allScores.map(function(s){return s.wallet.toLowerCase();})));
+  // Try to use OpenSea collection holders endpoint
+  try{
+    var r = await fetch('https://api.opensea.io/api/v2/collection/monshi-nft-collection-563194175/nfts?limit=200');
+    if(r.ok){
+      var data = await r.json();
+      if(data.nfts){
+        data.nfts.forEach(function(nft){
+          if(nft.owners){
+            nft.owners.forEach(function(o){nftWallets.add(o.address.toLowerCase());});
+          }
+        });
+      }
+    }
+  }catch(e){console.log('opensea err',e);}
+  
+  // Fallback: just check on-chain via Monad RPC for each player wallet
+  if(nftWallets.size === 0){
+    for(var i=0;i<uniqueWallets.length;i++){
+      var w = uniqueWallets[i];
+      try{
+        var data = '0x70a08231' + w.slice(2).padStart(64,'0');
+        var r = await fetch('https://rpc.monad.xyz', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({jsonrpc:'2.0',method:'eth_call',params:[{to:'0x6a933b14c67399aabccfcc85b3429b730c98a519',data:data},'latest'],id:1})
+        });
+        var j = await r.json();
+        if(j.result && BigInt(j.result) > 0n) nftWallets.add(w);
+      }catch(e){}
+    }
+  }
+  render();
+}
+
+function render(){
+  var byWallet = {};
+  allScores.forEach(function(s){
+    var w = s.wallet.toLowerCase();
+    if(!nftWallets.has(w)) return;
+    if(!byWallet[w]){byWallet[w]={wallet:w,name:s.name,bestPerGame:{},uniqueGames:new Set()};}
+    byWallet[w].uniqueGames.add(s.game);
+    if(!byWallet[w].bestPerGame[s.game] || s.score > byWallet[w].bestPerGame[s.game]){
+      byWallet[w].bestPerGame[s.game] = s.score;
+    }
+  });
+  var arr = Object.values(byWallet).map(function(p){
+    p.total = Object.values(p.bestPerGame).reduce(function(a,b){return a+b;},0);
+    p.gamesCount = p.uniqueGames.size;
+    return p;
+  });
+  if(currentMode==='combined') arr.sort(function(a,b){return b.total-a.total;});
+  else arr.sort(function(a,b){return b.gamesCount-a.gamesCount;});
+
+  var list = document.getElementById('lbList');
+  if(arr.length===0){
+    list.innerHTML = '<div class="empty">No NFT holders have played yet — be the first 🎴</div>';
+    return;
+  }
+  list.className = '';
+  list.innerHTML = '';
+  arr.forEach(function(p,i){
+    var rowClass = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    var medal = ['🥇','🥈','🥉'][i] || '#'+(i+1);
+    var primaryStat = currentMode==='games' ? p.gamesCount+'/24' : p.total.toLocaleString();
+    var secondaryStat = currentMode==='games' ? p.total.toLocaleString()+' total pts' : p.gamesCount+' games';
+    
+    var a = document.createElement('a');
+    a.className = 'row '+rowClass;
+    a.href = '/api/profile?wallet='+p.wallet;
+    a.target = '_blank';
+    a.innerHTML = '<div class="rank">'+medal+'</div>'+
+      '<div class="who"><div class="nm">'+(p.name||shortAddr(p.wallet))+' <span class="nft-tag">🎴 NFT</span></div><div class="meta">'+shortAddr(p.wallet)+' · '+secondaryStat+'</div></div>'+
+      '<div class="stats"><div class="total">'+primaryStat+'</div><div class="qty">'+(currentMode==='games'?'games':'total')+'</div></div>';
+    list.appendChild(a);
+  });
+}
+
+document.querySelectorAll('.tab').forEach(function(t){
+  t.onclick = function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
+    t.classList.add('active');
+    currentMode = t.dataset.mode;
+    render();
+  };
+});
+
+loadAll();
+</script>
+</body>
+</html>

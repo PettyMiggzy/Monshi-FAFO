@@ -70,6 +70,33 @@
     window.dispatchEvent(new Event('monshi:disconnect'));
   };
 
+  // Fetch the user's first owned NFT's image (uses OpenSea API)
+  MONSHI.fetchNFTImage = async function(){
+    if(!MONSHI.wallet) return null;
+    if(!MONSHI.hasNFT()) return null;
+    var cached = localStorage.getItem('monshi_nft_image');
+    if(cached) return cached;
+    try{
+      // OpenSea v2 API - get owned NFTs by wallet for this collection
+      var r = await fetch('https://api.opensea.io/api/v2/chain/monad/account/'+MONSHI.wallet+'/nfts?collection=monshi-nft-collection-563194175&limit=1');
+      if(!r.ok) throw new Error('opensea '+r.status);
+      var data = await r.json();
+      if(data.nfts && data.nfts[0]){
+        var img = data.nfts[0].image_url || data.nfts[0].display_image_url;
+        if(img){
+          localStorage.setItem('monshi_nft_image', img);
+          localStorage.setItem('monshi_nft_id', data.nfts[0].identifier || '');
+          localStorage.setItem('monshi_nft_name', data.nfts[0].name || '');
+          return img;
+        }
+      }
+    }catch(e){console.log('nft image err',e);}
+    return null;
+  };
+  
+  MONSHI.getNFTImage = function(){return localStorage.getItem('monshi_nft_image')||null;};
+  MONSHI.getNFTName = function(){return localStorage.getItem('monshi_nft_name')||'';};
+  
   MONSHI.fetchBalance = async function(){
     if(!MONSHI.wallet||!window.ethereum)return 0;
     try{
@@ -114,11 +141,14 @@
       el.textContent='🔌 CONNECT FOR PERKS';
     } else {
       var t=MONSHI.tier;
-      el.style.cssText='position:fixed;top:8px;right:8px;z-index:99;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:1.5px;font-weight:700;cursor:pointer;background:'+t.color+'22;color:'+t.color+';padding:8px 14px;border-radius:8px;border:1.5px solid '+t.color+';box-shadow:0 0 12px '+t.color+'66;';
+      var color = MONSHI.hasNFT() ? '#EC4899' : t.color;
+      el.style.cssText='position:fixed;top:8px;right:8px;z-index:99;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:1.5px;font-weight:700;cursor:pointer;background:'+color+'22;color:'+color+';padding:6px 14px 6px 6px;border-radius:24px;border:1.5px solid '+color+';box-shadow:0 0 12px '+color+'66;display:flex;align-items:center;gap:8px;';
       var balK=MONSHI.balance>=1e9?(MONSHI.balance/1e9).toFixed(1)+'B':MONSHI.balance>=1e6?(MONSHI.balance/1e6).toFixed(1)+'M':MONSHI.balance>=1e3?(MONSHI.balance/1e3).toFixed(0)+'K':Math.floor(MONSHI.balance);
-      var nftBadge = MONSHI.hasNFT() ? ' 🎴×'+MONSHI.nftCount : '';
       var realMult = MONSHI.getMultiplier();
-      el.innerHTML=t.emoji+nftBadge+' · '+balK+' · '+realMult+'x';
+      var pfp = MONSHI.getNFTImage();
+      var avatar = pfp ? '<img src="'+pfp+'" style="width:28px;height:28px;border-radius:50%;border:1.5px solid '+color+';object-fit:cover;" alt="">' : '<span style="font-size:18px;line-height:1;">'+(MONSHI.hasNFT()?'🎴':t.emoji)+'</span>';
+      var nftCnt = MONSHI.hasNFT() ? ' 🎴×'+MONSHI.nftCount : '';
+      el.innerHTML = avatar+'<span>'+t.name+nftCnt+' · '+realMult+'x</span>';
     }
   };
 
@@ -175,7 +205,10 @@
 
   function init(){
     MONSHI.injectBadge();
-    if(MONSHI.wallet) MONSHI.fetchBalance().then(MONSHI.updateBadge);
+    if(MONSHI.wallet) MONSHI.fetchBalance().then(function(){
+      MONSHI.updateBadge();
+      if(MONSHI.hasNFT()) MONSHI.fetchNFTImage();
+    });
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
   else init();
