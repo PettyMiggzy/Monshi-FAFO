@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🏆 600 MON PRIZE — MONSHI ARCADE</title>
+<script src="/monshi-shared.js"></script>
+<script src="/prize-banner.js" defer></script>
+<script src="/achievements.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=JetBrains+Mono&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#fff;padding:30px 20px;}
+.wrap{max-width:980px;margin:0 auto;}
+.bk{display:inline-block;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1.5px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);margin-bottom:24px;}
+h1{font-family:Orbitron,sans-serif;font-size:clamp(40px,8vw,96px);font-weight:900;background:linear-gradient(135deg,#FCD34D,#22C55E,#A855F7);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:6px;text-align:center;margin-bottom:6px;animation:prizeGlow 3s ease-in-out infinite alternate;}
+@keyframes prizeGlow{from{filter:drop-shadow(0 0 20px rgba(252,211,77,.5));}to{filter:drop-shadow(0 0 50px rgba(74,222,128,.6));}}
+.subt{text-align:center;color:#FCD34D;letter-spacing:6px;margin-bottom:30px;font-size:14px;font-family:Orbitron,sans-serif;font-weight:700;text-shadow:0 0 12px rgba(252,211,77,.5);}
+.hero{padding:30px;background:linear-gradient(135deg,rgba(252,211,77,.15),rgba(34,197,94,.1),rgba(20,5,50,.7));border:2px solid rgba(252,211,77,.5);border-radius:18px;margin-bottom:24px;text-align:center;box-shadow:0 0 50px rgba(252,211,77,.3);}
+.heroTitle{font-family:Orbitron,sans-serif;font-size:36px;font-weight:900;color:#FCD34D;letter-spacing:3px;margin-bottom:6px;text-shadow:0 0 20px rgba(252,211,77,.6);}
+.heroSub{color:rgba(196,181,253,.8);font-size:13px;letter-spacing:2px;margin-bottom:18px;}
+.timer{font-family:Orbitron,sans-serif;font-size:clamp(28px,6vw,56px);font-weight:900;color:#4ADE80;letter-spacing:3px;text-shadow:0 0 24px rgba(74,222,128,.7);margin:16px 0;}
+.timer.over{color:#EF4444;text-shadow:0 0 24px rgba(239,68,68,.7);}
+.timerLbl{font-size:11px;color:rgba(196,181,253,.6);letter-spacing:3px;}
+
+.rulesBox{padding:24px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:14px;margin-bottom:24px;}
+.rulesTitle{font-family:Orbitron,sans-serif;font-size:14px;color:#A855F7;letter-spacing:4px;margin-bottom:18px;text-align:center;}
+.ruleGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+.rule{padding:16px;background:rgba(0,0,0,.3);border:1px solid rgba(139,92,246,.2);border-radius:10px;}
+.rule .re{font-size:24px;margin-bottom:8px;}
+.rule .rt{font-family:Orbitron,sans-serif;font-size:12px;color:#fff;font-weight:700;letter-spacing:1.5px;margin-bottom:4px;}
+.rule .rd{font-size:11px;color:rgba(196,181,253,.7);line-height:1.4;}
+
+.eligBox{padding:24px;background:rgba(20,5,50,.6);border:1.5px solid rgba(74,222,128,.3);border-radius:14px;margin-bottom:24px;}
+.eligTitle{font-family:Orbitron,sans-serif;font-size:14px;color:#4ADE80;letter-spacing:4px;margin-bottom:18px;text-align:center;text-shadow:0 0 10px rgba(74,222,128,.5);}
+.checks{display:flex;flex-direction:column;gap:10px;}
+.check{display:flex;align-items:center;gap:14px;padding:14px;background:rgba(0,0,0,.3);border-radius:10px;border:1px solid rgba(139,92,246,.15);}
+.check.passed{border-color:rgba(74,222,128,.5);background:rgba(34,197,94,.08);}
+.check.failed{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.05);}
+.check .ico{font-size:24px;width:32px;text-align:center;}
+.check .info{flex:1;}
+.check .nm{font-family:Orbitron,sans-serif;font-size:12px;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:3px;}
+.check .ds{font-size:11px;color:rgba(196,181,253,.7);}
+.check.passed .nm{color:#4ADE80;}
+.check.failed .nm{color:#FCA5A5;}
+.connectCta{display:block;width:100%;margin-top:16px;padding:14px;background:linear-gradient(135deg,#22C55E,#15803D);color:#fff;border:none;border-radius:10px;font-family:Orbitron,sans-serif;font-size:13px;font-weight:900;letter-spacing:3px;cursor:pointer;text-align:center;text-decoration:none;}
+.buyCta{display:inline-block;margin-top:8px;padding:8px 16px;background:linear-gradient(135deg,#22C55E,#15803D);color:#fff;text-decoration:none;font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;border-radius:6px;}
+
+.lbBox{padding:22px;background:rgba(20,5,50,.6);border:1.5px solid rgba(252,211,77,.4);border-radius:14px;margin-bottom:24px;}
+.lbTitle{font-family:Orbitron,sans-serif;font-size:14px;color:#FCD34D;letter-spacing:4px;margin-bottom:18px;text-align:center;text-shadow:0 0 10px rgba(252,211,77,.5);}
+.row{display:flex;align-items:center;gap:14px;padding:12px;border-radius:8px;margin-bottom:5px;border:1px solid rgba(139,92,246,.15);background:rgba(0,0,0,.2);}
+.row.gold{background:linear-gradient(90deg,rgba(252,211,77,.2),rgba(20,5,50,.6));border-color:#FCD34D;box-shadow:0 0 20px rgba(252,211,77,.3);}
+.row.me{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.4);}
+.row.elig-no{opacity:.5;}
+.rank{font-family:Orbitron,sans-serif;font-size:18px;font-weight:900;width:40px;text-align:center;color:rgba(167,139,250,.5);}
+.row.gold .rank{color:#FCD34D;}
+.who{flex:1;font-family:Orbitron,sans-serif;font-size:13px;color:#fff;font-weight:700;letter-spacing:1px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.elig-tag{font-size:9px;padding:2px 6px;border-radius:8px;letter-spacing:1px;}
+.elig-tag.yes{background:rgba(74,222,128,.2);color:#4ADE80;border:1px solid rgba(74,222,128,.4);}
+.elig-tag.no{background:rgba(239,68,68,.15);color:#FCA5A5;border:1px solid rgba(239,68,68,.3);}
+.sc{font-family:Orbitron,sans-serif;font-size:18px;color:#4ADE80;font-weight:900;}
+.empty{text-align:center;padding:40px;color:rgba(139,92,246,.5);font-size:12px;letter-spacing:2px;}
+.disclaimer{padding:14px 18px;background:rgba(252,211,77,.06);border:1px solid rgba(252,211,77,.25);border-radius:10px;font-size:11px;color:rgba(252,211,77,.8);text-align:center;letter-spacing:1px;line-height:1.7;margin-top:24px;}
+.kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
+.gameProgress{margin-top:8px;}
+.gameProgressBar{height:8px;background:rgba(0,0,0,.4);border-radius:4px;overflow:hidden;}
+.gameProgressFill{height:100%;background:linear-gradient(90deg,#22C55E,#4ADE80);transition:width .3s;}
+.gameProgressLabel{font-size:10px;color:rgba(196,181,253,.6);margin-top:4px;letter-spacing:1px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="bk" href="/">← ALL GAMES</a>
+
+<h1>600 MON PRIZE</h1>
+<div class="subt">ONE WINNER · TOP SCORE WINS · 72 HR EVENT</div>
+
+<div class="hero">
+  <div class="heroTitle">🏆 600 MON</div>
+  <div class="heroSub">PAID DIRECTLY TO WINNER WALLET BY KING PETTY</div>
+  <div class="timerLbl">TIME REMAINING</div>
+  <div class="timer" id="timer">--:--:--</div>
+  <div style="font-size:10px;color:rgba(167,139,250,.6);letter-spacing:2px;margin-top:8px;" id="endDate">Ends loading...</div>
+</div>
+
+<div class="rulesBox">
+  <div class="rulesTitle">📋 HOW TO WIN</div>
+  <div class="ruleGrid">
+    <div class="rule">
+      <div class="re">🔌</div>
+      <div class="rt">CONNECT WALLET</div>
+      <div class="rd">Score must be tied to a wallet to qualify.</div>
+    </div>
+    <div class="rule">
+      <div class="re">🐋</div>
+      <div class="rt">HOLD 1M+ $MONSHI</div>
+      <div class="rd">Whale tier or higher. Must hold from now until prize ends. Diamond hands required.</div>
+    </div>
+    <div class="rule">
+      <div class="re">🎮</div>
+      <div class="rt">PLAY 10+ GAMES</div>
+      <div class="rd">Must have submitted a score on at least 10 different games.</div>
+    </div>
+    <div class="rule">
+      <div class="re">🏆</div>
+      <div class="rt">TOP COMBINED SCORE</div>
+      <div class="rd">Sum of best score per game. Highest wallet at deadline wins.</div>
+    </div>
+  </div>
+</div>
+
+<div class="eligBox">
+  <div class="eligTitle">✅ YOUR ELIGIBILITY CHECK</div>
+  <div class="checks" id="checks">
+    <div style="text-align:center;padding:30px;color:rgba(139,92,246,.5);font-size:11px;letter-spacing:2px;">CONNECT WALLET TO CHECK</div>
+  </div>
+</div>
+
+<div class="lbBox">
+  <div class="lbTitle">🏆 LIVE LEADERBOARD</div>
+  <div id="lbList" class="empty">Loading...</div>
+</div>
+
+<div class="disclaimer">
+  ⚠ <b>FAIR PLAY:</b> One wallet per person. Anti-cheat: scores from wallets that suddenly drop below 1M $MONSHI before deadline are disqualified. Tournament prize is paid manually by KING PETTY after deadline. Verify your eligibility regularly.
+</div>
+</div>
+
+<div class="kingP">a KING PETTY build</div>
+
+<script>
+var SUPABASE_URL='https://cuqhqcmrgpdjlhyqztnc.supabase.co';
+var SUPABASE_KEY='sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
+var TABLES=['scores','scores_shooter','scores_racer','scores_flappy','scores_snake','scores_breaker','scores_pump','scores_flip','scores_whack','scores_2048','scores_slots','scores_memory','scores_plinko','scores_rug','scores_wordle','scores_tetris','scores_c4','scores_trivia','scores_mine','scores_bj','scores_whale','scores_trade','scores_pong','scores_heist'];
+
+// Prize end timestamp (72hr from when this was generated)
+var PRIZE_END = 1777545922591;
+var endDate = new Date(PRIZE_END);
+document.getElementById('endDate').textContent = 'Ends ' + endDate.toUTCString().replace('GMT','UTC');
+
+function updateTimer(){
+  var diff = PRIZE_END - Date.now();
+  if(diff<=0){
+    document.getElementById('timer').textContent='ENDED';
+    document.getElementById('timer').classList.add('over');
+    return;
+  }
+  var d = Math.floor(diff/86400000);
+  var h = Math.floor((diff%86400000)/3600000);
+  var m = Math.floor((diff%3600000)/60000);
+  var s = Math.floor((diff%60000)/1000);
+  var pad = function(n){return String(n).padStart(2,'0');};
+  document.getElementById('timer').textContent = (d>0?d+'d ':'')+pad(h)+':'+pad(m)+':'+pad(s);
+}
+updateTimer(); setInterval(updateTimer, 1000);
+
+// Save start balance snapshot when wallet first connects to this page
+function saveSnapshot(){
+  if(!window.MONSHI || !MONSHI.wallet) return;
+  var snapKey = 'monshi_prize_snapshot_'+MONSHI.wallet.toLowerCase();
+  if(!localStorage.getItem(snapKey)){
+    localStorage.setItem(snapKey, JSON.stringify({
+      balance: MONSHI.balance,
+      timestamp: Date.now()
+    }));
+  }
+}
+
+// Eligibility check
+function checkEligibility(){
+  var checks = document.getElementById('checks');
+  if(!window.MONSHI || !MONSHI.wallet){
+    checks.innerHTML = '<div style="text-align:center;padding:20px;"><div style="font-size:11px;color:rgba(196,181,253,.7);margin-bottom:14px;letter-spacing:2px;">CONNECT YOUR WALLET TO SEE IF YOU QUALIFY</div><button class="connectCta" onclick="MONSHI.connectWallet().then(function(){setTimeout(function(){saveSnapshot();checkEligibility();loadLeaderboard();},1500);});">🔌 CONNECT WALLET</button></div>';
+    return;
+  }
+  
+  saveSnapshot();
+  
+  var hasWallet = !!MONSHI.wallet;
+  var holdsEnough = MONSHI.balance >= 1000000;
+  var ownsNFT = MONSHI.hasNFT();
+  
+  // Count unique games played from localStorage
+  var unique = JSON.parse(localStorage.getItem('mon_uniqueGames')||'[]');
+  var gameCount = unique.length;
+  var hasGames = gameCount >= 10;
+  
+  // Check current snapshot
+  var snapKey = 'monshi_prize_snapshot_'+MONSHI.wallet.toLowerCase();
+  var snap = JSON.parse(localStorage.getItem(snapKey)||'null');
+  var heldThroughout = snap && snap.balance >= 1000000 && MONSHI.balance >= 1000000;
+  
+  var balK = MONSHI.balance>=1e6?(MONSHI.balance/1e6).toFixed(2)+'M':MONSHI.balance>=1e3?(MONSHI.balance/1e3).toFixed(0)+'K':Math.floor(MONSHI.balance);
+  
+  var html = '';
+  
+  // Connect check
+  html += '<div class="check passed"><div class="ico">'+(hasWallet?'✅':'❌')+'</div><div class="info"><div class="nm">WALLET CONNECTED</div><div class="ds">'+(hasWallet?MONSHI.wallet.slice(0,6)+'...'+MONSHI.wallet.slice(-4):'')+'</div></div></div>';
+  
+  // Balance check
+  html += '<div class="check '+(holdsEnough?'passed':'failed')+'"><div class="ico">'+(holdsEnough?'✅':'❌')+'</div><div class="info"><div class="nm">HOLDS 1M+ $MONSHI</div><div class="ds">You hold: <b style="color:'+(holdsEnough?'#4ADE80':'#FCA5A5')+';">'+balK+' $MONSHI</b>'+(holdsEnough?' · WHALE TIER':' · NEED '+(((1000000-MONSHI.balance)/1000).toFixed(0))+'K MORE')+'</div>'+(holdsEnough?'':'<a class="buyCta" href="https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777" target="_blank">BUY $MONSHI 🚀</a>')+'</div></div>';
+  
+  // Games played check
+  var pct = Math.min(100, gameCount/10*100);
+  html += '<div class="check '+(hasGames?'passed':'failed')+'"><div class="ico">'+(hasGames?'✅':'⏳')+'</div><div class="info"><div class="nm">PLAYED 10+ GAMES</div><div class="ds">You\\'ve played: <b style="color:'+(hasGames?'#4ADE80':'#FCD34D')+';">'+gameCount+'/10 games</b></div><div class="gameProgress"><div class="gameProgressBar"><div class="gameProgressFill" style="width:'+pct+'%;"></div></div><div class="gameProgressLabel">'+(hasGames?'COMPLETE':((10-gameCount)+' more to go')) +'</div></div></div></div>';
+  
+  // Diamond hands check
+  if(snap){
+    var snapBalK = snap.balance>=1e6?(snap.balance/1e6).toFixed(2)+'M':snap.balance>=1e3?(snap.balance/1e3).toFixed(0)+'K':Math.floor(snap.balance);
+    html += '<div class="check '+(heldThroughout?'passed':'failed')+'"><div class="ico">💎</div><div class="info"><div class="nm">DIAMOND HANDS</div><div class="ds">Snapshot bag: '+snapBalK+' · Current: '+balK+'</div></div></div>';
+  }
+  
+  // Status summary
+  var allPassed = hasWallet && holdsEnough && hasGames;
+  if(allPassed){
+    html = '<div style="text-align:center;padding:14px;background:linear-gradient(135deg,rgba(74,222,128,.2),rgba(34,197,94,.1));border:2px solid #4ADE80;border-radius:10px;margin-bottom:14px;font-family:Orbitron,sans-serif;color:#4ADE80;font-size:13px;font-weight:900;letter-spacing:3px;">✅ YOU QUALIFY · GO GRIND</div>' + html;
+  } else {
+    html = '<div style="text-align:center;padding:14px;background:rgba(252,211,77,.08);border:1px solid rgba(252,211,77,.4);border-radius:10px;margin-bottom:14px;font-family:Orbitron,sans-serif;color:#FCD34D;font-size:11px;letter-spacing:2px;">⏳ KEEP BUILDING — COMPLETE THE CHECKS ABOVE</div>' + html;
+  }
+  
+  checks.innerHTML = html;
+}
+
+// Live leaderboard
+var allScores = [];
+async function loadLeaderboard(){
+  allScores = [];
+  var promises = TABLES.map(function(t){
+    return fetch(SUPABASE_URL+'/rest/v1/'+t+'?select=name,score,wallet,created_at&wallet=not.is.null&limit=500',{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}})
+      .then(function(r){return r.ok?r.json():[];})
+      .then(function(d){if(Array.isArray(d))d.forEach(function(s){if(s.wallet)allScores.push(Object.assign(s,{game:t}));});})
+      .catch(function(){});
+  });
+  await Promise.all(promises);
+  
+  // Aggregate by wallet
+  var byWallet = {};
+  allScores.forEach(function(s){
+    var w = s.wallet.toLowerCase();
+    if(!byWallet[w]){byWallet[w]={wallet:w,name:s.name,bestPerGame:{},uniqueGames:new Set()};}
+    byWallet[w].uniqueGames.add(s.game);
+    if(!byWallet[w].bestPerGame[s.game] || s.score > byWallet[w].bestPerGame[s.game]){
+      byWallet[w].bestPerGame[s.game] = s.score;
+    }
+  });
+  
+  var arr = Object.values(byWallet).map(function(p){
+    p.total = Object.values(p.bestPerGame).reduce(function(a,b){return a+b;},0);
+    p.gamesCount = p.uniqueGames.size;
+    return p;
+  }).sort(function(a,b){return b.total-a.total;});
+  
+  var list = document.getElementById('lbList');
+  if(arr.length===0){list.innerHTML = '<div class="empty">No qualifying scores yet — be the first 🏆</div>';return;}
+  
+  list.className = '';
+  list.innerHTML = '';
+  var myWallet = (window.MONSHI && MONSHI.wallet) ? MONSHI.wallet.toLowerCase() : null;
+  
+  arr.slice(0,20).forEach(function(p,i){
+    var rowClass = i===0?'gold':'';
+    if(p.wallet === myWallet) rowClass += ' me';
+    var eligible = p.gamesCount >= 10;
+    if(!eligible) rowClass += ' elig-no';
+    var medal = ['🥇','🥈','🥉'][i] || '#'+(i+1);
+    var addr = p.wallet.slice(0,6)+'...'+p.wallet.slice(-4);
+    var eligTag = eligible ? '<span class="elig-tag yes">✓ '+p.gamesCount+' GAMES</span>' : '<span class="elig-tag no">'+p.gamesCount+'/10 GAMES</span>';
+    var row = document.createElement('div');
+    row.className = 'row '+rowClass;
+    row.innerHTML = '<div class="rank">'+medal+'</div>'+
+      '<div class="who"><div>'+(p.name||addr)+'</div>'+eligTag+'</div>'+
+      '<div class="sc">'+p.total.toLocaleString()+'</div>';
+    list.appendChild(row);
+  });
+}
+
+// Init
+setTimeout(function(){
+  checkEligibility();
+  loadLeaderboard();
+}, 500);
+window.addEventListener('monshi:connect', function(){setTimeout(function(){saveSnapshot();checkEligibility();loadLeaderboard();},1200);});
+setInterval(loadLeaderboard, 30000);
+</script>
+</body>
+</html>
