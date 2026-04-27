@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>YOUR BADGES — MONSHI ARCADE</title>
+<script src="/monshi-shared.js"></script>
+<script src="/achievements.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#fff;padding:30px 20px;}
+.wrap{max-width:980px;margin:0 auto;}
+.bk{display:inline-block;color:rgba(139,92,246,.7);text-decoration:none;font-size:11px;letter-spacing:1.5px;background:rgba(0,0,0,.5);padding:6px 12px;border-radius:8px;border:1px solid rgba(139,92,246,.2);margin-bottom:24px;}
+h1{font-family:Orbitron,sans-serif;font-size:clamp(36px,6vw,64px);font-weight:900;background:linear-gradient(135deg,#FCD34D,#A855F7);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:5px;text-align:center;margin-bottom:6px;}
+.subt{text-align:center;color:rgba(196,181,253,.65);letter-spacing:4px;margin-bottom:30px;font-size:11px;}
+.statsBar{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:30px;padding:20px;background:rgba(20,5,50,.5);border:1px solid rgba(139,92,246,.2);border-radius:12px;}
+.s{text-align:center;}
+.s .v{font-family:Orbitron,sans-serif;font-size:28px;font-weight:900;color:#fff;}
+.s .l{font-size:9px;color:rgba(167,139,250,.6);letter-spacing:2px;margin-top:4px;}
+.gridBadges{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;}
+.badge{padding:24px 16px;background:rgba(20,5,50,.5);border:1.5px solid rgba(139,92,246,.2);border-radius:14px;text-align:center;transition:all .2s;}
+.badge.has{background:linear-gradient(135deg,rgba(252,211,77,.12),rgba(20,5,50,.6));border-color:rgba(252,211,77,.5);box-shadow:0 0 20px rgba(252,211,77,.2);}
+.badge:not(.has){opacity:.4;filter:grayscale(.6);}
+.bEmoji{font-size:48px;margin-bottom:8px;}
+.badge:not(.has) .bEmoji{filter:grayscale(1);}
+.bName{font-family:Orbitron,sans-serif;font-size:13px;font-weight:900;letter-spacing:2px;margin-bottom:6px;}
+.badge.has .bName{color:#FCD34D;text-shadow:0 0 10px rgba(252,211,77,.5);}
+.badge:not(.has) .bName{color:rgba(167,139,250,.7);}
+.bDesc{font-size:11px;color:rgba(220,210,255,.7);line-height:1.4;}
+.shareBtn{display:block;margin:30px auto 0;padding:14px 32px;background:linear-gradient(135deg,#1DA1F2,#0d7abf);color:#fff;text-decoration:none;font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;border-radius:10px;text-align:center;width:fit-content;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="bk" href="/">← ALL GAMES</a>
+<h1>YOUR BADGES</h1>
+<div class="subt">EARNED BY PLAYING · UNLOCK ALL TO BECOME LEGEND</div>
+
+<div class="statsBar">
+  <div class="s"><div class="v" id="sUnlocked">0</div><div class="l">UNLOCKED</div></div>
+  <div class="s"><div class="v" id="sTotal">13</div><div class="l">TOTAL BADGES</div></div>
+  <div class="s"><div class="v" id="sStreak" style="color:#EF4444;">0</div><div class="l">DAILY STREAK</div></div>
+  <div class="s"><div class="v" id="sBest" style="color:#4ADE80;">0</div><div class="l">BEST RANK</div></div>
+</div>
+
+<div class="gridBadges" id="grid"></div>
+
+<a class="shareBtn" id="shareBtn" href="#">SHARE MY BADGES 𝕏</a>
+</div>
+
+<script>
+setTimeout(function(){
+  if(!window.MONSHI_ACHIEVEMENTS){document.getElementById('grid').innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:rgba(139,92,246,.5);">Loading achievements...</div>';return;}
+  var unlocked = MONSHI_ACHIEVEMENTS.getUnlocked();
+  var all = MONSHI_ACHIEVEMENTS.getAllBadges();
+  document.getElementById('sUnlocked').textContent = unlocked.length;
+  document.getElementById('sTotal').textContent = all.length;
+  document.getElementById('sStreak').textContent = MONSHI_ACHIEVEMENTS.getStreak() + (MONSHI_ACHIEVEMENTS.getStreak()>=7?' 🔥':'');
+  document.getElementById('sBest').textContent = (parseInt(localStorage.getItem('mon_bestRank')||'9999')<9999) ? '#'+localStorage.getItem('mon_bestRank') : '—';
+  var grid = document.getElementById('grid');
+  grid.innerHTML='';
+  all.forEach(function(b){
+    var has = unlocked.indexOf(b.id)>=0;
+    var d = document.createElement('div');
+    d.className = 'badge'+(has?' has':'');
+    d.innerHTML = '<div class="bEmoji">'+b.emoji+'</div><div class="bName">'+b.name+'</div><div class="bDesc">'+b.desc+'</div>';
+    grid.appendChild(d);
+  });
+  document.getElementById('shareBtn').href = 'https://twitter.com/intent/tweet?text='+encodeURIComponent('I unlocked '+unlocked.length+'/'+all.length+' badges on @Monshi_Monpad ARCADE 🚀\\n\\nCan you collect them all?\\nhttps://monshi-fafo.vercel.app\\n\\n$MONSHI #Monad');
+}, 800);
+</script>
+</body>
+</html>
