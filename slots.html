@@ -33,6 +33,7 @@ body{display:flex;align-items:center;justify-content:center;}
 .lbT .sc{text-align:right;font-family:Orbitron,sans-serif;}
 .kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
 .gw{display:flex;flex-direction:column;align-items:center;gap:18px;}.tit{font-family:Orbitron,sans-serif;font-size:34px;font-weight:900;letter-spacing:3px;color:#FCD34D;text-shadow:0 0 20px rgba(252,211,77,.6);}.hud{display:flex;gap:10px;}.st{padding:8px 16px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:8px;text-align:center;}.st .n{font-family:Orbitron,sans-serif;font-size:22px;color:#fff;}.st .l{font-size:8px;color:rgba(167,139,250,.6);letter-spacing:1.5px;}.reels{display:flex;gap:6px;background:linear-gradient(135deg,#92400E,#FCD34D);padding:14px;border-radius:14px;border:3px solid #92400E;box-shadow:0 0 30px rgba(252,211,77,.4);}.reel{width:80px;height:100px;background:#0a0015;border:2px solid #FCD34D;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:54px;overflow:hidden;}.spinning{animation:spin .08s linear infinite;}@keyframes spin{0%{transform:translateY(0);}100%{transform:translateY(-10px);}}.bt{padding:18px 36px;background:linear-gradient(135deg,#22C55E,#15803D);border:none;border-radius:10px;color:#fff;font-family:Orbitron,sans-serif;font-size:18px;font-weight:900;letter-spacing:3px;cursor:pointer;}.bt:disabled{opacity:.5;cursor:not-allowed;}.msg{font-family:Orbitron,sans-serif;font-size:14px;color:#FCD34D;letter-spacing:2px;height:20px;}</style><script src="/monshi-shared.js"></script>
+<script src="/achievements.js"></script>
 </head><body>
 <a href="/" id="hubBtn">← ALL GAMES</a>
 <div id="wrap"><div class="gw"><div class="tit">$MONSHI SLOTS</div><div class="hud"><div class="st"><div class="n" id="bal">100</div><div class="l">CREDITS</div></div><div class="st"><div class="n" id="bst">0</div><div class="l">BIGGEST WIN</div></div></div><div class="reels" id="rs"><div class="reel" id="r0">🐱</div><div class="reel" id="r1">$</div><div class="reel" id="r2">💎</div></div><div class="msg" id="msg">SPIN TO WIN</div><button class="bt" id="bSpin">SPIN -10</button><div style="font-size:10px;color:rgba(167,139,250,.5);letter-spacing:1.5px;line-height:1.6;text-align:center;">3x 🐱 = 500 · 3x 💎 = 250 · 3x 🚀 = 200 · 3x $ = 100<br>3x 🐂 = 80 · 3x 💰 = 50 · 2 MATCHING = 15</div></div></div>
@@ -58,6 +59,7 @@ function submitS(t,sc,cb){if(!playerName)return cb&&cb();var mult=(window.MONSHI
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 function showDeath(GN,GU,T,sc,sub,isWin){
   lastScore=sc;
+  if(window.MONSHI_ACHIEVEMENTS){MONSHI_ACHIEVEMENTS.trackPlay(T);MONSHI_ACHIEVEMENTS.trackScore(playerRank||0);}
   function render(){
     document.getElementById('rT').textContent=isWin?'YOU WON':'RUGGED';
     document.getElementById('rT').className='rugged'+(isWin?' win':'');

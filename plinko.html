@@ -33,6 +33,7 @@ body{display:flex;align-items:center;justify-content:center;}
 .lbT .sc{text-align:right;font-family:Orbitron,sans-serif;}
 .kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
 .gw{display:flex;flex-direction:column;align-items:center;gap:14px;}.tit{font-family:Orbitron,sans-serif;font-size:30px;font-weight:900;letter-spacing:2px;color:#22C55E;text-shadow:0 0 16px rgba(34,197,94,.6);}.hud{display:flex;gap:10px;}.st{padding:8px 14px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:8px;text-align:center;}.st .n{font-family:Orbitron,sans-serif;font-size:20px;color:#fff;}.st .l{font-size:8px;color:rgba(167,139,250,.6);letter-spacing:1.5px;}canvas{background:rgba(20,5,50,.7);border:1.5px solid rgba(139,92,246,.4);border-radius:14px;}.bt{padding:14px 30px;background:linear-gradient(135deg,#22C55E,#15803D);border:none;border-radius:10px;color:#fff;font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;letter-spacing:2px;cursor:pointer;}</style><script src="/monshi-shared.js"></script>
+<script src="/achievements.js"></script>
 </head><body>
 <a href="/" id="hubBtn">← ALL GAMES</a>
 <div id="wrap"><div class="gw"><div class="tit">MONSHI PLINKO</div><div class="hud"><div class="st"><div class="n" id="bal">100</div><div class="l">CREDITS</div></div><div class="st"><div class="n" id="bst">0</div><div class="l">BIGGEST</div></div></div><canvas id="cv" width="380" height="500"></canvas><button class="bt" id="bDrop">DROP -10</button></div></div>
@@ -58,6 +59,7 @@ function submitS(t,sc,cb){if(!playerName)return cb&&cb();var mult=(window.MONSHI
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 function showDeath(GN,GU,T,sc,sub,isWin){
   lastScore=sc;
+  if(window.MONSHI_ACHIEVEMENTS){MONSHI_ACHIEVEMENTS.trackPlay(T);MONSHI_ACHIEVEMENTS.trackScore(playerRank||0);}
   function render(){
     document.getElementById('rT').textContent=isWin?'YOU WON':'RUGGED';
     document.getElementById('rT').className='rugged'+(isWin?' win':'');

@@ -33,6 +33,7 @@ body{display:flex;align-items:center;justify-content:center;}
 .lbT .sc{text-align:right;font-family:Orbitron,sans-serif;}
 .kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
 .gw{display:flex;gap:18px;align-items:flex-start;}.tit{font-family:Orbitron,sans-serif;font-size:24px;font-weight:900;letter-spacing:2px;color:#A855F7;text-shadow:0 0 16px rgba(168,85,247,.6);margin-bottom:10px;}.bd{background:rgba(20,5,50,.7);border:2px solid rgba(139,92,246,.4);border-radius:8px;}.side{display:flex;flex-direction:column;gap:14px;width:140px;}.bx{padding:12px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:8px;text-align:center;}.bx .l{font-size:9px;color:rgba(167,139,250,.6);letter-spacing:2px;margin-bottom:6px;}.bx .v{font-family:Orbitron,sans-serif;font-size:24px;color:#fff;font-weight:900;}.nxt{height:80px;display:flex;align-items:center;justify-content:center;}</style><script src="/monshi-shared.js"></script>
+<script src="/achievements.js"></script>
 </head><body>
 <a href="/" id="hubBtn">← ALL GAMES</a>
 <div id="wrap"><div class="gw"><div><div class="tit">MONSHI TETRIS</div><canvas class="bd" id="bd" width="240" height="480"></canvas></div><div class="side"><div class="bx"><div class="l">SCORE</div><div class="v" id="sc">0</div></div><div class="bx"><div class="l">LINES</div><div class="v" id="ln">0</div></div><div class="bx"><div class="l">LEVEL</div><div class="v" id="lv">1</div></div><div class="bx"><div class="l">NEXT</div><canvas class="nxt" id="nx" width="80" height="80"></canvas></div><div style="font-size:9px;color:rgba(167,139,250,.5);letter-spacing:1.5px;text-align:center;line-height:1.6;">A/D MOVE<br>S DROP<br>W ROTATE<br>SPACE HARD DROP</div></div></div></div>
@@ -58,6 +59,7 @@ function submitS(t,sc,cb){if(!playerName)return cb&&cb();var mult=(window.MONSHI
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 function showDeath(GN,GU,T,sc,sub,isWin){
   lastScore=sc;
+  if(window.MONSHI_ACHIEVEMENTS){MONSHI_ACHIEVEMENTS.trackPlay(T);MONSHI_ACHIEVEMENTS.trackScore(playerRank||0);}
   function render(){
     document.getElementById('rT').textContent=isWin?'YOU WON':'RUGGED';
     document.getElementById('rT').className='rugged'+(isWin?' win':'');

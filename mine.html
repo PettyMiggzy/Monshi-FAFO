@@ -33,6 +33,7 @@ body{display:flex;align-items:center;justify-content:center;}
 .lbT .sc{text-align:right;font-family:Orbitron,sans-serif;}
 .kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
 .gw{display:flex;flex-direction:column;align-items:center;gap:14px;}.tit{font-family:Orbitron,sans-serif;font-size:28px;font-weight:900;letter-spacing:2px;color:#EF4444;text-shadow:0 0 16px rgba(239,68,68,.6);}.hud{display:flex;gap:10px;}.st{padding:8px 14px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:8px;text-align:center;}.st .n{font-family:Orbitron,sans-serif;font-size:20px;color:#fff;}.st .l{font-size:8px;color:rgba(167,139,250,.6);letter-spacing:1.5px;}.bd{display:grid;grid-template-columns:repeat(10,32px);grid-gap:2px;padding:8px;background:rgba(20,5,50,.7);border-radius:8px;}.cl{width:32px;height:32px;background:rgba(139,92,246,.3);border:1px solid rgba(139,92,246,.5);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;color:#fff;}.cl.open{background:rgba(0,0,0,.4);border-color:rgba(139,92,246,.2);cursor:default;}.cl.flag{background:rgba(252,211,77,.3);}.cl.bomb{background:#EF4444;}.n1{color:#3B82F6;}.n2{color:#22C55E;}.n3{color:#EF4444;}.n4{color:#A855F7;}.n5,.n6,.n7,.n8{color:#FCD34D;}</style><script src="/monshi-shared.js"></script>
+<script src="/achievements.js"></script>
 </head><body>
 <a href="/" id="hubBtn">← ALL GAMES</a>
 <div id="wrap"><div class="gw"><div class="tit">RUG SWEEPER</div><div class="hud"><div class="st"><div class="n" id="rg">10</div><div class="l">RUGS LEFT</div></div><div class="st"><div class="n" id="tm">0</div><div class="l">TIME</div></div></div><div class="bd" id="bd"></div><div style="font-size:11px;color:rgba(167,139,250,.6);letter-spacing:1.5px;text-align:center;">CLICK = MINE · LONG-PRESS / RIGHT-CLICK = FLAG 🚩</div></div></div>
@@ -58,6 +59,7 @@ function submitS(t,sc,cb){if(!playerName)return cb&&cb();var mult=(window.MONSHI
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 function showDeath(GN,GU,T,sc,sub,isWin){
   lastScore=sc;
+  if(window.MONSHI_ACHIEVEMENTS){MONSHI_ACHIEVEMENTS.trackPlay(T);MONSHI_ACHIEVEMENTS.trackScore(playerRank||0);}
   function render(){
     document.getElementById('rT').textContent=isWin?'YOU WON':'RUGGED';
     document.getElementById('rT').className='rugged'+(isWin?' win':'');

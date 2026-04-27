@@ -33,6 +33,7 @@ body{display:flex;align-items:center;justify-content:center;}
 .lbT .sc{text-align:right;font-family:Orbitron,sans-serif;}
 .kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
 .gw{display:flex;flex-direction:column;align-items:center;gap:18px;width:min(440px,92vw);}.tit{font-family:Orbitron,sans-serif;font-size:28px;font-weight:900;letter-spacing:2px;color:#EF4444;text-shadow:0 0 16px rgba(239,68,68,.6);}.hud{display:flex;gap:10px;width:100%;}.st{flex:1;padding:8px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:8px;text-align:center;}.st .n{font-family:Orbitron,sans-serif;font-size:20px;color:#fff;}.st .l{font-size:8px;color:rgba(167,139,250,.6);letter-spacing:1.5px;}.tknBox{display:flex;gap:14px;width:100%;}.tkn{flex:1;padding:18px;background:rgba(20,5,50,.7);border:1.5px solid rgba(139,92,246,.4);border-radius:12px;text-align:center;cursor:pointer;transition:all .2s;}.tkn:hover{border-color:#fff;transform:translateY(-3px);}.tkn.legit{border-color:#4ADE80;animation:flsh 0.4s;}.tkn.rug{border-color:#EF4444;animation:flsh 0.4s;}@keyframes flsh{0%{background:rgba(74,222,128,.4);}100%{background:rgba(20,5,50,.7);}}.tn{font-family:Orbitron,sans-serif;font-size:16px;color:#FCD34D;margin-bottom:6px;}.td{font-size:10px;color:rgba(167,139,250,.7);line-height:1.4;}.tmr{font-family:Orbitron,sans-serif;font-size:16px;color:#FCD34D;letter-spacing:2px;}</style><script src="/monshi-shared.js"></script>
+<script src="/achievements.js"></script>
 </head><body>
 <a href="/" id="hubBtn">← ALL GAMES</a>
 <div id="wrap"><div class="gw"><div class="tit">RUG DETECTOR</div><div class="hud"><div class="st"><div class="n" id="sc">0</div><div class="l">SCORE</div></div><div class="st"><div class="n" id="lv">3</div><div class="l">LIVES</div></div><div class="st"><div class="n" id="strk">0</div><div class="l">STREAK</div></div></div><div class="tmr" id="tmr">3.0s</div><div style="font-size:12px;color:#4ADE80;letter-spacing:2px;font-family:Orbitron,sans-serif;">PICK THE LEGIT TOKEN</div><div class="tknBox" id="box"></div></div></div>
@@ -58,6 +59,7 @@ function submitS(t,sc,cb){if(!playerName)return cb&&cb();var mult=(window.MONSHI
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 function showDeath(GN,GU,T,sc,sub,isWin){
   lastScore=sc;
+  if(window.MONSHI_ACHIEVEMENTS){MONSHI_ACHIEVEMENTS.trackPlay(T);MONSHI_ACHIEVEMENTS.trackScore(playerRank||0);}
   function render(){
     document.getElementById('rT').textContent=isWin?'YOU WON':'RUGGED';
     document.getElementById('rT').className='rugged'+(isWin?' win':'');

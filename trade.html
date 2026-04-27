@@ -33,6 +33,7 @@ body{display:flex;align-items:center;justify-content:center;}
 .lbT .sc{text-align:right;font-family:Orbitron,sans-serif;}
 .kingP{position:fixed;bottom:6px;right:10px;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:1.5px;}
 .gw{display:flex;flex-direction:column;align-items:center;gap:14px;width:min(560px,92vw);}.tit{font-family:Orbitron,sans-serif;font-size:28px;font-weight:900;letter-spacing:2px;color:#22C55E;text-shadow:0 0 16px rgba(34,197,94,.5);}.hud{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%;}.st{padding:8px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.3);border-radius:8px;text-align:center;}.st .n{font-family:Orbitron,sans-serif;font-size:18px;color:#fff;}.st .l{font-size:8px;color:rgba(167,139,250,.6);letter-spacing:1.5px;}canvas{width:100%;background:rgba(20,5,50,.6);border:1.5px solid rgba(139,92,246,.3);border-radius:14px;}.bts{display:flex;gap:10px;width:100%;}.bb{flex:1;padding:14px;border:none;border-radius:10px;font-family:Orbitron,sans-serif;font-size:13px;font-weight:900;letter-spacing:2px;cursor:pointer;color:#fff;}.bBuy{background:linear-gradient(135deg,#22C55E,#15803D);}.bSell{background:linear-gradient(135deg,#EF4444,#991B1B);}.bb:disabled{opacity:.4;cursor:not-allowed;}</style><script src="/monshi-shared.js"></script>
+<script src="/achievements.js"></script>
 </head><body>
 <a href="/" id="hubBtn">← ALL GAMES</a>
 <div id="wrap"><div class="gw"><div class="tit">TRADING SIM</div><div class="hud"><div class="st"><div class="n" id="cs">$1000</div><div class="l">CASH</div></div><div class="st"><div class="n" id="hd">0</div><div class="l">$MONSHI</div></div><div class="st"><div class="n" id="pn" style="color:#4ADE80;">$0</div><div class="l">P/L</div></div></div><canvas id="cv" width="600" height="280"></canvas><div style="font-family:Orbitron;font-size:14px;color:#FCD34D;letter-spacing:2px;" id="px">$1.00</div><div class="bts"><button class="bb bBuy" id="bBuy">BUY 10%</button><button class="bb bSell" id="bSell">SELL ALL</button></div><div style="font-size:11px;color:rgba(167,139,250,.6);letter-spacing:1.5px;text-align:center;">100 ROUNDS &middot; GROW YOUR BAG &middot; DON'T BUY THE TOP</div></div></div>
@@ -58,6 +59,7 @@ function submitS(t,sc,cb){if(!playerName)return cb&&cb();var mult=(window.MONSHI
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
 function showDeath(GN,GU,T,sc,sub,isWin){
   lastScore=sc;
+  if(window.MONSHI_ACHIEVEMENTS){MONSHI_ACHIEVEMENTS.trackPlay(T);MONSHI_ACHIEVEMENTS.trackScore(playerRank||0);}
   function render(){
     document.getElementById('rT').textContent=isWin?'YOU WON':'RUGGED';
     document.getElementById('rT').className='rugged'+(isWin?' win':'');
