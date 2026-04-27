@@ -396,7 +396,7 @@ h2{font-family:Orbitron,sans-serif;font-size:clamp(20px,3vw,32px);color:#4ADE80;
 
   <div class="section-title">📣 SHARE <span class="badge">SPREAD THE WORD</span></div>
   <div class="grid">
-    <a href="https://x.com/intent/tweet?text=Just%20found%20%40Monshi_Monpad%20arcade%20on%20Monad%20-%2016%20games%20one%20token%20%F0%9F%9A%80%20https%3A//monshi.xyz%20%24MONSHI%20%23Monad" target="_blank" class="card" style="--glow:rgba(29,161,242,.3);--accent:#1DA1F2;">
+    <a href="https://x.com/intent/tweet?text=Just%20found%20%40Monshi_Monpad%20arcade%20on%20Monad%20-%2027%20games%20one%20token%20%F0%9F%9A%80%20https%3A//monshi.xyz%20%24MONSHI%20%23Monad" target="_blank" class="card" style="--glow:rgba(29,161,242,.3);--accent:#1DA1F2;">
       <span class="emoji">𝕏</span><span class="tag">TELL THE TRENCHES</span>
       <h3>SHARE THE ARCADE</h3><p>Tag a degen. Pump the bag. Recruit the next king.</p>
       <span class="cta">TWEET IT</span>
@@ -499,7 +499,7 @@ TABLES.forEach(function(t){
         <div style="font-size:11px;color:rgba(220,210,255,.8);line-height:1.5;">Score multipliers (up to 3x), extra lives, bigger casino banks.</div>
       </div>
     </div>
-    <button onclick="document.getElementById(\'changelogOverlay\').style.display=\'none\';localStorage.setItem(\'monshi_changelog_v2\',\'1\');" style="width:100%;margin-top:20px;padding:14px;background:linear-gradient(135deg,#FCD34D,#92400E);color:#fff;border:none;border-radius:10px;font-family:Orbitron,sans-serif;font-size:13px;font-weight:900;letter-spacing:3px;cursor:pointer;">LET\'S GO 🚀</button>
+    <button id="closeChangelog" style="width:100%;margin-top:20px;padding:14px;background:linear-gradient(135deg,#FCD34D,#92400E);color:#fff;border:none;border-radius:10px;font-family:Orbitron,sans-serif;font-size:13px;font-weight:900;letter-spacing:3px;cursor:pointer;">LET&#39;S GO 🚀</button>
   </div>
 </div>
 
@@ -508,6 +508,14 @@ TABLES.forEach(function(t){
 if(localStorage.getItem('monshi_onboarded') && !localStorage.getItem('monshi_changelog_v2')){
   setTimeout(function(){document.getElementById('changelogOverlay').style.display='flex';}, 1000);
 }
+// Wire up close button
+document.addEventListener('DOMContentLoaded', function(){
+  var btn = document.getElementById('closeChangelog');
+  if(btn) btn.onclick = function(){
+    document.getElementById('changelogOverlay').style.display='none';
+    localStorage.setItem('monshi_changelog_v2','1');
+  };
+});
 </script>
 
 <div id="onboardingOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,8,.96);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:20px;">
