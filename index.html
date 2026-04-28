@@ -38,6 +38,10 @@ body::after{content:"";position:fixed;inset:0;background:radial-gradient(circle 
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}50%{box-shadow:0 0 0 10px rgba(34,197,94,0);}}
 
 .hero{text-align:center;margin-bottom:50px;position:relative;}
+.monshi-hero-banner{position:relative;width:100%;max-width:900px;margin:0 auto 8px;border-radius:20px;overflow:hidden;border:2px solid rgba(168,85,247,.5);box-shadow:0 0 60px rgba(168,85,247,.4),0 12px 40px rgba(0,0,0,.6);}
+.monshi-hero-img{width:100%;height:auto;display:block;}
+.monshi-hero-overlay{position:absolute;left:0;right:0;bottom:0;padding:24px 18px 20px;background:linear-gradient(to top,rgba(10,4,24,.95) 0%,rgba(10,4,24,.75) 55%,transparent 100%);text-align:center;}
+.monshi-hero-overlay .tagline{color:rgba(220,210,255,.95);font-family:Orbitron,sans-serif;font-size:clamp(10px,2vw,13px);letter-spacing:3px;font-weight:700;text-shadow:0 0 12px rgba(168,85,247,.6),0 2px 6px rgba(0,0,0,.9);margin-bottom:6px;}
 h1{font-family:Orbitron,sans-serif;font-size:clamp(56px,11vw,140px);font-weight:900;background:linear-gradient(135deg,#EDE9FF,#A855F7,#4ADE80);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 80px rgba(139,92,246,.5);letter-spacing:6px;line-height:.9;margin-bottom:6px;animation:glow 3s ease-in-out infinite alternate;}
 @keyframes glow{from{filter:drop-shadow(0 0 20px rgba(139,92,246,.6));}to{filter:drop-shadow(0 0 40px rgba(74,222,128,.5));}}
 h2{font-family:Orbitron,sans-serif;font-size:clamp(20px,3vw,32px);color:#4ADE80;letter-spacing:8px;margin-bottom:18px;text-shadow:0 0 24px rgba(74,222,128,.6);}
@@ -136,13 +140,15 @@ h2{font-family:Orbitron,sans-serif;font-size:clamp(20px,3vw,32px);color:#4ADE80;
     <div class="ticker-track" id="tickerTrack"></div>
   </div>
 
-  <div class="hero">
-    <div class="tagline">A KING PETTY BUILD</div>
-    <h1>MONSHI</h1>
-    <h2>ARCADE</h2>
-    <div class="tagline">27 GAMES · DASHBOARD · TOURNAMENT · NFT PERKS · ONE TOKEN</div>
-    <div style="margin-top:20px;"><div class="priceTicker" id="priceTicker"><div class="live-dot"></div>$MONSHI <span style="color:#EDE9FF;">loading...</span></div></div>
-    <a href="/prize.html" style="display:block;text-decoration:none;margin:24px auto 0;max-width:800px;padding:24px;background:linear-gradient(135deg,rgba(252,211,77,.18),rgba(34,197,94,.12),rgba(20,5,50,.7));border:2px solid #FCD34D;border-radius:16px;text-align:center;box-shadow:0 0 40px rgba(252,211,77,.3);transition:transform .2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+  <div class="monshi-hero-banner">
+    <img src="/public/monshi_hero.jpg" alt="MONSHI ARCADE" class="monshi-hero-img">
+    <div class="monshi-hero-overlay">
+      <div class="tagline">27 GAMES · DASHBOARD · TOURNAMENT · NFT PERKS · ONE TOKEN</div>
+      <div style="margin-top:14px;"><div class="priceTicker" id="priceTicker"><div class="live-dot"></div>$MONSHI <span style="color:#EDE9FF;">loading...</span></div></div>
+    </div>
+  </div>
+  <div class="hero" style="margin-top:18px;">
+    <a href="/prize.html" style="display:block;text-decoration:none;margin:0 auto;max-width:800px;padding:24px;background:linear-gradient(135deg,rgba(252,211,77,.18),rgba(34,197,94,.12),rgba(20,5,50,.7));border:2px solid #FCD34D;border-radius:16px;text-align:center;box-shadow:0 0 40px rgba(252,211,77,.3);transition:transform .2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
       <div style="font-family:Orbitron,sans-serif;font-size:11px;color:#FCD34D;letter-spacing:5px;font-weight:900;margin-bottom:6px;">🏆 LIMITED EVENT</div>
       <div style="font-family:Orbitron,sans-serif;font-size:clamp(28px,5vw,42px);font-weight:900;color:#fff;letter-spacing:3px;margin-bottom:6px;">600 MON PRIZE</div>
       <div style="color:rgba(196,181,253,.8);font-size:12px;letter-spacing:2px;margin-bottom:6px;">TOP SCORE WINS · 48 HOUR EVENT</div>
