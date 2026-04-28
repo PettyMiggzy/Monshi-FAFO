@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
+<link rel="shortcut icon" href="/favicon.ico?v=2">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>$RENE · PUMP OR DUMP</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;background:#0a0418;overflow:hidden;font-family:'Space Mono',monospace;color:#EDE9FF;display:flex;align-items:center;justify-content:center;user-select:none;}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 20% 10%,rgba(168,85,247,.18),transparent 60%),radial-gradient(circle at 80% 90%,rgba(34,197,94,.10),transparent 55%);z-index:-1;pointer-events:none;}
+
+#hubBtn{position:fixed;top:8px;left:8px;z-index:7;color:rgba(168,85,247,.85);text-decoration:none;font-size:11px;letter-spacing:1.5px;background:rgba(0,0,0,.5);padding:7px 12px;border-radius:8px;border:1px solid rgba(168,85,247,.3);font-family:Orbitron,sans-serif;font-weight:700;}
+#hubBtn:hover{color:#fff;border-color:#A855F7;}
+
+.game{display:flex;flex-direction:column;align-items:center;gap:14px;width:min(440px,94vw);padding:20px 0;}
+
+.title{font-family:Orbitron,sans-serif;font-size:24px;font-weight:900;letter-spacing:3px;color:#FCD34D;text-shadow:0 0 18px rgba(252,211,77,.5);text-align:center;}
+.title .sub{display:block;font-size:10px;color:rgba(252,211,77,.6);letter-spacing:2px;margin-top:3px;}
+
+/* HUD */
+.hud{display:flex;gap:8px;width:100%;font-family:Orbitron,sans-serif;}
+.hud-cell{flex:1;padding:9px 6px;background:rgba(20,5,50,.7);border:1px solid rgba(168,85,247,.3);border-radius:9px;text-align:center;}
+.hud-cell .v{font-size:18px;color:#fff;font-weight:900;line-height:1;}
+.hud-cell .l{font-size:8px;color:rgba(167,139,250,.65);letter-spacing:1.5px;margin-top:4px;font-weight:700;}
+.hud-cell.streak .v{color:#FCD34D;}
+.hud-cell.lives .v{color:#F87171;letter-spacing:2px;}
+
+/* Chart canvas */
+.chart-wrap{width:100%;aspect-ratio:1.5/1;background:rgba(0,0,0,.55);border:1.5px solid rgba(168,85,247,.4);border-radius:14px;position:relative;overflow:hidden;box-shadow:0 0 24px rgba(168,85,247,.2);}
+canvas{width:100%;height:100%;display:block;}
+
+/* Timer bar */
+.timer-wrap{position:absolute;top:0;left:0;right:0;height:4px;background:rgba(0,0,0,.3);}
+.timer-bar{height:100%;background:linear-gradient(90deg,#4ADE80,#FCD34D,#F87171);width:100%;transition:width .1s linear;transform-origin:left;}
+
+/* Result flash */
+.flash{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:Orbitron,sans-serif;font-size:42px;font-weight:900;letter-spacing:3px;opacity:0;transition:opacity .15s;pointer-events:none;text-shadow:0 0 30px currentColor;}
+.flash.show{opacity:1;}
+.flash.win{color:#4ADE80;}
+.flash.loss{color:#F87171;}
+
+/* Speed indicator */
+.speed-tag{position:absolute;top:10px;right:10px;font-family:Orbitron,sans-serif;font-size:10px;color:#FCD34D;background:rgba(0,0,0,.6);padding:5px 10px;border-radius:6px;border:1px solid rgba(252,211,77,.4);letter-spacing:1px;display:none;}
+.speed-tag.show{display:block;}
+
+.prompt{font-size:12px;color:rgba(196,181,253,.85);letter-spacing:1.5px;text-align:center;min-height:18px;font-weight:700;}
+.prompt.urgent{color:#F87171;animation:urgent .4s infinite;}
+@keyframes urgent{0%,100%{opacity:1;}50%{opacity:.5;}}
+
+/* Action buttons */
+.actions{display:flex;gap:10px;width:100%;}
+.act{flex:1;padding:18px 8px;border:none;border-radius:12px;font-family:Orbitron,sans-serif;font-size:13px;font-weight:900;cursor:pointer;letter-spacing:1.5px;transition:all .12s;color:#fff;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.act:active{transform:scale(.96);}
+.act.bull{background:linear-gradient(135deg,#22C55E,#15803D);box-shadow:0 0 18px rgba(34,197,94,.35);}
+.act.bear{background:linear-gradient(135deg,#EF4444,#991B1B);box-shadow:0 0 18px rgba(239,68,68,.35);}
+.act .e{font-size:24px;}
+.act:disabled{opacity:.4;cursor:not-allowed;}
+
+.btn-secondary{padding:10px 16px;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);border-radius:10px;color:#EDE9FF;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1.5px;}
+.btn-secondary:hover{background:rgba(168,85,247,.3);}
+
+/* Combo / multiplier badge */
+.mult-badge{position:absolute;top:10px;left:10px;font-family:Orbitron,sans-serif;font-size:10px;color:#A855F7;background:rgba(0,0,0,.6);padding:5px 10px;border-radius:6px;border:1px solid rgba(168,85,247,.4);letter-spacing:1px;}
+
+/* Death panel */
+.death{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,8,.92);z-index:8;backdrop-filter:blur(5px);padding:20px;}
+.death.show{display:flex;}
+.deathCard{background:linear-gradient(135deg,rgba(168,85,247,.18),rgba(20,5,50,.85));border:1.5px solid rgba(168,85,247,.5);border-radius:18px;padding:24px;width:min(440px,94vw);max-height:90vh;overflow-y:auto;text-align:center;box-shadow:0 0 40px rgba(168,85,247,.4);}
+.dPaw{font-size:46px;margin-bottom:6px;animation:pawShake .6s ease;}
+@keyframes pawShake{0%,100%{transform:rotate(0);}20%{transform:rotate(-15deg);}40%{transform:rotate(15deg);}60%{transform:rotate(-10deg);}80%{transform:rotate(10deg);}}
+.rugged{font-family:Orbitron,sans-serif;font-size:30px;font-weight:900;color:#FCA5A5;text-shadow:0 0 22px #EF4444;margin-bottom:6px;letter-spacing:2px;}
+.rugged.win{color:#4ADE80;text-shadow:0 0 22px #22C55E;}
+.scoreNum{font-family:Orbitron,sans-serif;font-size:32px;color:#FCD34D;margin:6px 0;text-shadow:0 0 14px rgba(252,211,77,.5);}
+.lbl{font-size:10px;color:rgba(167,139,250,.65);letter-spacing:1.5px;margin-bottom:12px;}
+#nameSubmit{margin-bottom:14px;display:none;}
+#nameSubmit input{background:rgba(0,0,0,.5);border:1.5px solid rgba(168,85,247,.5);border-radius:8px;padding:9px 12px;color:#fff;font-family:'Space Mono',monospace;font-size:13px;outline:none;text-align:center;letter-spacing:2px;width:160px;}
+#nameSubmit button{margin-left:6px;padding:9px 16px;background:linear-gradient(135deg,#A855F7,#7C3AED);border:none;border-radius:8px;color:#fff;font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;cursor:pointer;letter-spacing:1px;}
+
+#btnRow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+.btn{padding:10px 14px;border:none;border-radius:8px;font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;cursor:pointer;letter-spacing:1.5px;color:#fff;}
+#btnRetry{background:linear-gradient(135deg,#A855F7,#5B21B6);}
+#btnHub{background:linear-gradient(135deg,#374151,#1F2937);}
+#btnShare{background:linear-gradient(135deg,#1DA1F2,#0d7abf);}
+#btnBuy{background:linear-gradient(135deg,#22C55E,#15803D);animation:pls 2s infinite;}
+@keyframes pls{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}50%{box-shadow:0 0 0 8px rgba(34,197,94,0);}}
+
+.lbT{width:100%;border-collapse:collapse;margin:14px 0 6px;font-size:11px;}
+.lbT th{color:rgba(168,85,247,.7);text-align:left;padding:4px 6px;border-bottom:1px solid rgba(168,85,247,.3);font-size:9px;letter-spacing:1.5px;font-family:Orbitron,sans-serif;}
+.lbT td{padding:5px 6px;color:rgba(220,210,255,.8);}
+.lbT tr.me td{color:#FCD34D;background:rgba(252,211,77,.08);}
+.lbT .sc{text-align:right;font-family:Orbitron,sans-serif;font-weight:700;}
+
+.boost-tag{font-size:10px;color:#A855F7;letter-spacing:1.5px;margin-top:4px;font-family:Orbitron,sans-serif;font-weight:700;}
+</style>
+</head>
+<body>
+<a href="/rene-hub.html" id="hubBtn">← RENE HUB</a>
+
+<div class="game">
+  <div class="title">PUMP OR DUMP <span class="sub">CALL THE CANDLE · DON'T GET PAW'D</span></div>
+
+  <div class="hud">
+    <div class="hud-cell"><div class="v" id="hudScore">0</div><div class="l">SCORE</div></div>
+    <div class="hud-cell streak"><div class="v" id="hudStreak">0</div><div class="l">STREAK</div></div>
+    <div class="hud-cell"><div class="v" id="hudRound">1</div><div class="l">ROUND</div></div>
+    <div class="hud-cell lives"><div class="v" id="hudLives">❤❤❤</div><div class="l">LIVES</div></div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="timer-wrap"><div class="timer-bar" id="timerBar"></div></div>
+    <div class="mult-badge" id="multBadge">1.0x</div>
+    <div class="speed-tag" id="speedTag"></div>
+    <canvas id="chart" width="600" height="400"></canvas>
+    <div class="flash" id="flash"></div>
+  </div>
+
+  <div class="prompt" id="prompt">TAP START · STUDY THE CHART</div>
+
+  <div class="actions">
+    <button class="act bull" id="btnBull"><span class="e">🚀</span><span>PUMP</span></button>
+    <button class="act bear" id="btnBear"><span class="e">🐻</span><span>DUMP</span></button>
+  </div>
+
+  <button class="btn-secondary" id="btnStart">▶ START GAME</button>
+</div>
+
+<div class="death" id="deathPanel">
+  <div class="deathCard">
+    <div class="dPaw" id="dPaw">🐾</div>
+    <div class="rugged" id="ruggedTitle">PAW'D</div>
+    <div class="scoreNum" id="dScore">0</div>
+    <div class="lbl" id="lvlTag"></div>
+    <div class="boost-tag" id="boostTag"></div>
+    <div class="lbl" id="rankTag" style="color:#4ADE80;"></div>
+    <div id="nameSubmit">
+      <p style="color:rgba(196,181,253,.7);font-size:10px;letter-spacing:1.5px;margin-bottom:8px;">SUBMIT TO LEADERBOARD</p>
+      <div style="display:flex;gap:6px;justify-content:center;">
+        <input id="dNameInput" type="text" maxlength="16" placeholder="YOUR NAME">
+        <button id="dSubmit">GO</button>
+      </div>
+    </div>
+    <table class="lbT"><thead><tr><th>#</th><th>PLAYER</th><th class="sc">SCORE</th></tr></thead><tbody id="lbBody"></tbody></table>
+    <div id="btnRow">
+      <button class="btn" id="btnShare">SHARE 𝕏</button>
+      <button class="btn" id="btnBuy">BUY $RENE</button>
+      <button class="btn" id="btnRetry">RETRY</button>
+      <button class="btn" id="btnHub">HUB</button>
+    </div>
+  </div>
+</div>
+
+<script src="/monshi-shared.js"></script>
+<script src="/rene-shared.js"></script>
+<script>
+var TABLE = 'scores_rene_pump';
+var BUY_URL = 'https://nad.fun/tokens/0xaCA86430cCCEdbedB35910fC8A5AFEF07dA37777';
+var GAME = 'PUMP OR DUMP';
+var PLAY_URL = 'https://monshi.xyz/rene-pump.html';
+
+// ── Audio ──
+var AC = window.AudioContext||window.webkitAudioContext, actx=null, master=null;
+function initAudio(){if(actx)return;try{actx=new AC();master=actx.createGain();master.gain.value=.25;master.connect(actx.destination);}catch(e){}}
+function tone(f,t,v,o,d){if(!actx)return;var st=actx.currentTime+(o||0);var os=actx.createOscillator();var g=actx.createGain();os.type=t||'square';os.frequency.setValueAtTime(f,st);g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(v,st+.01);g.gain.exponentialRampToValueAtTime(.001,st+d);os.connect(g);g.connect(master);os.start(st);os.stop(st+d+.05);}
+function sfxWin(){[523,659,784,1046].forEach(function(f,i){tone(f,'square',.18,i*.05,.1);});}
+function sfxLose(){[440,330,220].forEach(function(f,i){tone(f,'sawtooth',.22,i*.1,.16);});}
+function sfxClick(){tone(820,'square',.08,0,.04);}
+function sfxFinal(){[523,659,784,1046,1318].forEach(function(f,i){tone(f,'square',.2,i*.08,.15);});}
+
+// ── Chart ──
+var canvas = document.getElementById('chart');
+var ctx = canvas.getContext('2d');
+function fitCanvas(){
+  var dpr = window.devicePixelRatio||1;
+  var rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width*dpr;
+  canvas.height = rect.height*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize', fitCanvas);
+
+function drawChart(candles, revealIdx){
+  fitCanvas();
+  var rect = canvas.getBoundingClientRect();
+  var W = rect.width, H = rect.height;
+  ctx.clearRect(0,0,W,H);
+  // grid
+  ctx.strokeStyle = 'rgba(168,85,247,.08)';
+  ctx.lineWidth = 1;
+  for(var y=0;y<5;y++){ctx.beginPath();ctx.moveTo(0,y*H/4);ctx.lineTo(W,y*H/4);ctx.stroke();}
+
+  if(!candles.length)return;
+  var lows = candles.map(function(c){return c.low;});
+  var highs = candles.map(function(c){return c.high;});
+  var min = Math.min.apply(null,lows), max = Math.max.apply(null,highs);
+  var pad = (max-min)*.15 || 1;
+  min -= pad; max += pad;
+  var pxPerUnit = (H-30)/(max-min);
+  var n = candles.length;
+  var w = W/(n+1);
+  var bw = Math.max(6, w*.55);
+
+  candles.forEach(function(c, i){
+    var cx = w*(i+1) - w/2 + w/2;
+    var x = w*i + w*.5 - bw/2 + w*.25;
+    var yHigh = 15+(max-c.high)*pxPerUnit;
+    var yLow  = 15+(max-c.low)*pxPerUnit;
+    var yOpen = 15+(max-c.open)*pxPerUnit;
+    var yClose= 15+(max-c.close)*pxPerUnit;
+    var up = c.close >= c.open;
+    var color = up ? '#4ADE80' : '#F87171';
+    // hide reveal candle if not yet revealed
+    if(revealIdx!=null && i>revealIdx)return;
+    // fade-in for last revealed candle
+    var alpha = (i===revealIdx) ? 1 : 1;
+    ctx.globalAlpha = alpha;
+
+    // wick
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x+bw/2, yHigh);
+    ctx.lineTo(x+bw/2, yLow);
+    ctx.stroke();
+    // body
+    ctx.fillStyle = up ? color : color;
+    ctx.shadowBlur = 6;
+    ctx.shadowColor = color;
+    var bodyTop = Math.min(yOpen,yClose);
+    var bodyH = Math.max(2, Math.abs(yClose-yOpen));
+    ctx.fillRect(x, bodyTop, bw, bodyH);
+    ctx.shadowBlur = 0;
+  });
+  ctx.globalAlpha = 1;
+}
+
+// ── Game state ──
+var state = {
+  score:0, streak:0, round:1, lives:3,
+  candles:[], answer:null, locked:true,
+  startTime:0, decisionTime:2000, gameOver:false
+};
+var timerInterval=null, autoTimeout=null;
+var leaderboard=[], playerRank=0;
+var playerName = localStorage.getItem('monshi_name')||'';
+
+function genCandle(prev, bias){
+  // bias: -1 dump, 0 neutral, 1 pump
+  var open = prev ? prev.close : 100 + Math.random()*20;
+  var trend = (bias||0) * (1 + Math.random()*2);
+  var noise = (Math.random()-.5) * 4;
+  var close = Math.max(1, open + trend + noise);
+  var high  = Math.max(open,close) + Math.random()*2;
+  var low   = Math.min(open,close) - Math.random()*2;
+  return {open:open, close:close, high:high, low:low};
+}
+
+function genSetup(){
+  // 6-8 candles with a slight trend, then we'll generate the reveal
+  var bias = Math.random()<.5 ? -1 : 1;
+  // 30% fakeout: trend reverses
+  if(Math.random()<.3) bias = -bias;
+  var n = 6 + Math.floor(Math.random()*3);
+  var arr = [], prev=null;
+  for(var i=0;i<n;i++){
+    // last 2 candles get the bias
+    var b = i >= n-2 ? bias : (Math.random()-.5)*1.5;
+    var c = genCandle(prev, b);
+    arr.push(c);
+    prev = c;
+  }
+  // generate reveal candle (not drawn yet)
+  // 70% follows trend, 30% reverses (fakeout chance)
+  var fakeout = Math.random() < (.18 + state.round*.02); // gets harder
+  var revealBias = fakeout ? -bias : bias;
+  var reveal = genCandle(prev, revealBias * (2 + Math.random()*2));
+  // determine answer: did reveal close higher than open?
+  var answer = reveal.close >= prev.close ? 'BULL' : 'BEAR';
+  return {candles: arr, reveal: reveal, answer: answer};
+}
+
+function updateHUD(){
+  document.getElementById('hudScore').textContent = state.score;
+  document.getElementById('hudStreak').textContent = state.streak;
+  document.getElementById('hudRound').textContent = state.round;
+  document.getElementById('hudLives').textContent = '❤'.repeat(state.lives) + '🤍'.repeat(3-state.lives);
+  document.getElementById('multBadge').textContent = (window.RENE ? RENE.getMultiplier().toFixed(1) : '1.0') + 'x';
+}
+
+function setPrompt(text, urgent){
+  var el = document.getElementById('prompt');
+  el.textContent = text;
+  el.className = 'prompt' + (urgent?' urgent':'');
+}
+
+function flash(text, kind){
+  var el = document.getElementById('flash');
+  el.textContent = text;
+  el.className = 'flash show '+kind;
+  setTimeout(function(){el.classList.remove('show');}, 700);
+}
+
+function startRound(){
+  state.locked = false;
+  state.startTime = performance.now();
+  document.getElementById('speedTag').classList.remove('show');
+  var setup = genSetup();
+  state.candles = setup.candles;
+  state.reveal = setup.reveal;
+  state.answer = setup.answer;
+  drawChart(state.candles);
+  // shorten decision time as round increases (clamped)
+  state.decisionTime = Math.max(900, 2000 - state.round*40);
+  setPrompt('CALL IT — 🚀 PUMP OR 🐻 DUMP?');
+  document.getElementById('btnBull').disabled = false;
+  document.getElementById('btnBear').disabled = false;
+
+  // Timer bar
+  var bar = document.getElementById('timerBar');
+  bar.style.transition = 'none';
+  bar.style.width = '100%';
+  void bar.offsetWidth;
+  bar.style.transition = 'width '+state.decisionTime+'ms linear';
+  bar.style.width = '0%';
+
+  clearTimeout(autoTimeout);
+  autoTimeout = setTimeout(function(){if(!state.locked){answer(null);}}, state.decisionTime);
+}
+
+function answer(call){
+  if(state.locked)return;
+  state.locked = true;
+  initAudio();
+  document.getElementById('btnBull').disabled = true;
+  document.getElementById('btnBear').disabled = true;
+  clearTimeout(autoTimeout);
+
+  var elapsed = performance.now() - state.startTime;
+  var correct = call === state.answer;
+
+  // reveal the next candle by appending
+  var revealed = state.candles.concat([state.reveal]);
+  drawChart(revealed);
+
+  if(call===null){
+    // timeout = automatic loss
+    sfxLose();
+    flash('⏱ TIMEOUT', 'loss');
+    setPrompt('TOO SLOW · RENE GAVE THEM THE PAW 🐾', true);
+    state.streak = 0;
+    state.lives--;
+  } else if(correct){
+    sfxWin();
+    // base points + speed bonus + streak bonus
+    var base = 100;
+    var speedFrac = Math.max(0, 1 - elapsed/state.decisionTime);
+    var speedBonus = Math.floor(speedFrac * 100);
+    var streakBonus = state.streak * 25;
+    var raw = base + speedBonus + streakBonus;
+    var earned = window.RENE ? RENE.boostScore(raw) : raw;
+    state.score += earned;
+    state.streak++;
+    flash('+'+earned, 'win');
+    var spdLabel = speedFrac>.8?'INSTANT 🚀':speedFrac>.5?'FAST':speedFrac>.2?'CLEAN':'CLOSE';
+    var st = document.getElementById('speedTag');
+    st.textContent = spdLabel;
+    st.classList.add('show');
+    setPrompt('CORRECT · '+(call==='BULL'?'PUMPED':'DUMPED')+'! +'+earned, false);
+  } else {
+    sfxLose();
+    flash('🐾 WRONG', 'loss');
+    setPrompt('HE GAVE THEM THE PAW · -1 LIFE', true);
+    state.streak = 0;
+    state.lives--;
+  }
+
+  state.round++;
+  updateHUD();
+
+  if(state.lives <= 0){
+    setTimeout(endGame, 900);
+  } else {
+    setTimeout(startRound, 1100);
+  }
+}
+
+function endGame(){
+  state.gameOver = true;
+  sfxFinal();
+  fetchLB().then(function(){
+    showDeath(state.score, state.score>0 && state.streak>=5);
+  });
+}
+
+// ── Buttons ──
+document.getElementById('btnBull').onclick = function(){if(!state.locked){sfxClick();answer('BULL');}};
+document.getElementById('btnBear').onclick = function(){if(!state.locked){sfxClick();answer('BEAR');}};
+document.getElementById('btnStart').onclick = function(){
+  initAudio();
+  this.style.display='none';
+  state = {score:0, streak:0, round:1, lives:3, candles:[], answer:null, locked:true, startTime:0, decisionTime:2000, gameOver:false};
+  updateHUD();
+  startRound();
+};
+document.getElementById('btnRetry').onclick = function(){location.reload();};
+document.getElementById('btnHub').onclick = function(){location.href='/rene-hub.html';};
+
+// ── Leaderboard / submit ──
+function fetchLB(){
+  if(!window.RENE) return Promise.resolve();
+  return RENE.fetchLeaderboard(TABLE, 10).then(function(d){if(Array.isArray(d))leaderboard=d;});
+}
+function submitScore(score, cb){
+  if(!playerName){if(cb)cb();return;}
+  if(!window.RENE){if(cb)cb();return;}
+  RENE.submitScore(TABLE, score).then(function(){
+    return RENE.fetchLeaderboard(TABLE, 10);
+  }).then(function(d){
+    if(Array.isArray(d)){
+      leaderboard = d;
+      playerRank = leaderboard.findIndex(function(s){return s.name===playerName && s.score===Math.floor(score);})+1;
+    }
+    if(cb)cb();
+  }).catch(function(){if(cb)cb();});
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function showDeath(sc, isWin){
+  function render(){
+    document.getElementById('ruggedTitle').textContent = isWin ? 'GG · MONSHI WAY' : 'PAW\'D';
+    document.getElementById('ruggedTitle').className = 'rugged'+(isWin?' win':'');
+    document.getElementById('dPaw').textContent = isWin ? '🚀' : '🐾';
+    document.getElementById('dScore').textContent = sc;
+    document.getElementById('lvlTag').textContent = 'ROUNDS SURVIVED · '+(state.round-1);
+    var mult = window.RENE ? RENE.getMultiplier() : 1;
+    if(mult > 1){
+      document.getElementById('boostTag').textContent = mult.toFixed(1)+'x BOOST APPLIED';
+    } else {
+      document.getElementById('boostTag').textContent = '';
+    }
+    document.getElementById('rankTag').textContent = playerRank>0 ? '#'+playerRank+' GLOBALLY' : '';
+    var tb = document.getElementById('lbBody'); tb.innerHTML='';
+    leaderboard.slice(0,5).forEach(function(s,i){
+      var tr = document.createElement('tr');
+      var isMe = s.name===playerName && s.score===Math.floor(sc);
+      if(isMe) tr.className='me';
+      var medal = ['🥇','🥈','🥉'][i] || '#'+(i+1);
+      tr.innerHTML = '<td>'+medal+'</td><td>'+esc(s.name)+'</td><td class="sc">'+s.score+'</td>';
+      tb.appendChild(tr);
+    });
+    document.getElementById('deathPanel').classList.add('show');
+  }
+  if(playerName){submitScore(sc, render);} else {document.getElementById('nameSubmit').style.display='block'; render();}
+
+  document.getElementById('dSubmit').onclick = function(){
+    var n = document.getElementById('dNameInput').value.trim();
+    playerName = (n||'ANON').toUpperCase().slice(0,16);
+    localStorage.setItem('monshi_name', playerName);
+    document.getElementById('nameSubmit').style.display='none';
+    submitScore(sc, render);
+  };
+  document.getElementById('dNameInput').onkeydown = function(e){if(e.key==='Enter')document.getElementById('dSubmit').click();};
+
+  document.getElementById('btnShare').onclick = function(){
+    var tw = 'I scored '+sc+' on $RENE PUMP OR DUMP — '+(state.round-1)+' rounds before getting paw\'d 🐾 '+PLAY_URL+' $RENE #Monad';
+    window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');
+  };
+  document.getElementById('btnBuy').onclick = function(){window.open(BUY_URL,'_blank');};
+}
+
+// init
+fetchLB();
+updateHUD();
+fitCanvas();
+drawChart([]);
+</script>
+<script src="/pwa-install.js" defer></script>
+</body>
+</html>
