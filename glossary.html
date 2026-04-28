@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<title>SOLIDITY GLOSSARY · Monshi Arcade</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{min-height:100vh;background:#0a0418;font-family:'Space Mono',monospace;color:#EDE9FF;}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 30% 0%,rgba(168,85,247,.18),transparent 60%),radial-gradient(circle at 70% 100%,rgba(252,211,77,.08),transparent 55%);z-index:-1;pointer-events:none;}
+
+.topbar{position:sticky;top:0;background:rgba(10,4,24,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(168,85,247,.25);z-index:10;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+.topbar a{color:rgba(168,85,247,.9);text-decoration:none;font-size:11px;letter-spacing:1.5px;background:rgba(0,0,0,.4);padding:7px 12px;border-radius:8px;border:1px solid rgba(168,85,247,.3);font-family:Orbitron,sans-serif;font-weight:700;}
+.topbar a.play{background:linear-gradient(135deg,#EF4444,#991B1B);border-color:#EF4444;color:#fff;animation:pulseR 2.5s infinite;}
+@keyframes pulseR{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.5);}50%{box-shadow:0 0 0 8px rgba(239,68,68,0);}}
+
+.wrap{max-width:900px;margin:0 auto;padding:24px 14px 80px;}
+
+.title{font-family:Orbitron,sans-serif;font-size:clamp(28px,6vw,42px);font-weight:900;letter-spacing:3px;color:#FCD34D;text-shadow:0 0 22px rgba(252,211,77,.5);text-align:center;margin-bottom:6px;}
+.subtitle{font-size:11px;color:rgba(196,181,253,.65);letter-spacing:2px;text-align:center;margin-bottom:24px;font-weight:700;}
+
+.search-wrap{margin-bottom:18px;}
+.search-wrap input{width:100%;padding:14px 18px;background:rgba(20,5,50,.7);border:1.5px solid rgba(168,85,247,.4);border-radius:12px;color:#fff;font-family:'Space Mono',monospace;font-size:14px;outline:none;}
+.search-wrap input:focus{border-color:#A855F7;box-shadow:0 0 18px rgba(168,85,247,.3);}
+.search-wrap input::placeholder{color:rgba(196,181,253,.4);}
+
+.cat-filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;justify-content:center;}
+.cat-pill{padding:8px 14px;background:rgba(20,5,50,.6);border:1px solid rgba(168,85,247,.3);border-radius:20px;color:rgba(196,181,253,.85);font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:all .15s;}
+.cat-pill.active{background:rgba(168,85,247,.4);border-color:#A855F7;color:#fff;box-shadow:0 0 12px rgba(168,85,247,.4);}
+.cat-pill[data-cat="redflag"].active{background:rgba(239,68,68,.4);border-color:#EF4444;}
+.cat-pill[data-cat="security"].active{background:rgba(34,197,94,.4);border-color:#22C55E;}
+.cat-pill[data-cat="function"].active{background:rgba(252,211,77,.4);border-color:#FCD34D;color:#000;}
+
+.entries{display:grid;grid-template-columns:1fr;gap:10px;}
+@media(min-width:640px){.entries{grid-template-columns:1fr 1fr;}}
+
+.entry{background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(20,5,50,.6));border:1.5px solid rgba(168,85,247,.25);border-radius:12px;padding:16px;transition:all .2s;}
+.entry:hover{border-color:rgba(168,85,247,.5);transform:translateY(-2px);box-shadow:0 6px 22px rgba(168,85,247,.2);}
+.entry.cat-redflag{border-color:rgba(239,68,68,.35);}
+.entry.cat-security{border-color:rgba(34,197,94,.35);}
+.entry.cat-function{border-color:rgba(252,211,77,.3);}
+
+.entry-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:10px;}
+.entry-term{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:900;color:#FCD34D;letter-spacing:.3px;word-break:break-word;}
+.entry-cat{font-size:8px;letter-spacing:2px;padding:3px 7px;border-radius:5px;background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);color:#C4B5FD;font-family:Orbitron,sans-serif;font-weight:700;flex-shrink:0;white-space:nowrap;}
+.entry-cat.redflag{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.5);color:#FCA5A5;}
+.entry-cat.security{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.5);color:#86EFAC;}
+.entry-cat.function{background:rgba(252,211,77,.15);border-color:rgba(252,211,77,.5);color:#FCD34D;}
+.entry-cat.data{background:rgba(99,102,241,.15);border-color:rgba(99,102,241,.5);color:#A5B4FC;}
+.entry-cat.token{background:rgba(236,72,153,.15);border-color:rgba(236,72,153,.5);color:#F9A8D4;}
+
+.entry-short{font-size:13px;color:#fff;line-height:1.45;margin-bottom:8px;font-weight:700;}
+.entry-why{font-size:12px;color:rgba(196,181,253,.85);line-height:1.5;margin-bottom:10px;}
+.entry-looks{font-family:'JetBrains Mono',monospace;font-size:10px;background:#0d1117;color:#c9d1d9;padding:8px 10px;border-radius:6px;border:1px solid rgba(168,85,247,.2);overflow-x:auto;white-space:pre-wrap;line-height:1.45;margin-bottom:8px;}
+.entry-sev{text-align:right;font-size:14px;letter-spacing:4px;}
+
+.empty{text-align:center;padding:50px 20px;color:rgba(196,181,253,.5);font-size:13px;}
+
+.footer{text-align:center;padding:30px 16px 0;color:rgba(167,139,250,.5);font-size:10px;letter-spacing:2px;border-top:1px solid rgba(168,85,247,.15);margin-top:36px;}
+.footer a{color:#A855F7;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/">← MONSHI HUB</a>
+  <a href="/rugscanner.html" class="play">🚨 PLAY RUG SCANNER →</a>
+</div>
+
+<div class="wrap">
+  <div class="title">📖 SOLIDITY GLOSSARY</div>
+  <div class="subtitle">PLAIN-ENGLISH GUIDE · DON'T GET RUGGED</div>
+
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="🔍 Search a term... (mint, blacklist, mapping, etc.)">
+  </div>
+
+  <div class="cat-filters">
+    <button class="cat-pill active" data-cat="all">ALL</button>
+    <button class="cat-pill" data-cat="redflag">🚨 RED FLAGS</button>
+    <button class="cat-pill" data-cat="security">🔐 SECURITY</button>
+    <button class="cat-pill" data-cat="function">⚙️ FUNCTIONS</button>
+    <button class="cat-pill" data-cat="data">📦 DATA</button>
+    <button class="cat-pill" data-cat="token">💸 TOKENS</button>
+  </div>
+
+  <div class="entries" id="entries"></div>
+  <div class="empty" id="emptyMsg" style="display:none;">No terms match. Try clearing the search or filter.</div>
+
+  <div class="footer">
+    Built by MONSHI · Educational use · <a href="/rugscanner.html">Test yourself in Rug Scanner →</a>
+  </div>
+</div>
+
+<script src="/rugscan-data.js"></script>
+<script>
+var currentCat = 'all';
+var currentSearch = '';
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+var catLabels = {redflag:'🚨 RED FLAG', function:'⚙️ FUNCTION', data:'📦 DATA', security:'🔐 SECURITY', token:'💸 TOKEN'};
+
+function render(){
+  var container = document.getElementById('entries');
+  var empty = document.getElementById('emptyMsg');
+  container.innerHTML = '';
+  var entries = Object.keys(RUGSCAN.GLOSSARY).map(function(k){
+    var e = RUGSCAN.GLOSSARY[k];
+    return e;
+  }).filter(function(e){
+    if(currentCat !== 'all' && e.cat !== currentCat) return false;
+    if(currentSearch){
+      var s = currentSearch.toLowerCase();
+      return e.term.toLowerCase().indexOf(s) >= 0 ||
+             e.short.toLowerCase().indexOf(s) >= 0 ||
+             e.why.toLowerCase().indexOf(s) >= 0;
+    }
+    return true;
+  });
+  // Sort: redflags first, then alphabetical within category
+  var catOrder = {redflag:0, security:1, function:2, data:3, token:4};
+  entries.sort(function(a,b){
+    var ca = (catOrder[a.cat]||9), cb = (catOrder[b.cat]||9);
+    if(ca!==cb)return ca-cb;
+    return a.term.localeCompare(b.term);
+  });
+  if(entries.length === 0){
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  entries.forEach(function(e){
+    var div = document.createElement('div');
+    div.className = 'entry cat-'+e.cat;
+    div.innerHTML =
+      '<div class="entry-head">' +
+        '<div class="entry-term">'+esc(e.term)+'</div>' +
+        '<div class="entry-cat '+e.cat+'">'+catLabels[e.cat]+'</div>' +
+      '</div>' +
+      '<div class="entry-short">'+esc(e.short)+'</div>' +
+      '<div class="entry-why">'+esc(e.why)+'</div>' +
+      '<div class="entry-looks">'+esc(e.looks)+'</div>' +
+      '<div class="entry-sev">'+e.sev+'</div>';
+    container.appendChild(div);
+  });
+}
+
+document.querySelectorAll('.cat-pill').forEach(function(p){
+  p.onclick = function(){
+    document.querySelectorAll('.cat-pill').forEach(function(x){x.classList.remove('active');});
+    this.classList.add('active');
+    currentCat = this.getAttribute('data-cat');
+    render();
+  };
+});
+document.getElementById('searchInput').oninput = function(){
+  currentSearch = this.value.trim();
+  render();
+};
+
+render();
+</script>
+</body>
+</html>

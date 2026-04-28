@@ -53,3 +53,18 @@ create index if not exists scores_rene_gym_score_idx on scores_rene_gym(score de
 alter table scores_rene_gym enable row level security;
 create policy "r" on scores_rene_gym for select using (true);
 create policy "i" on scores_rene_gym for insert with check (true);
+
+-- ─────────────────────────────────────────────────────────────────
+-- RUG SCANNER (Solidity reading game) — score table
+-- ─────────────────────────────────────────────────────────────────
+
+create table if not exists scores_rugscan (
+  id bigint generated always as identity primary key,
+  name text not null,
+  score integer not null,
+  created_at timestamptz default now()
+);
+create index if not exists scores_rugscan_score_idx on scores_rugscan(score desc);
+alter table scores_rugscan enable row level security;
+create policy "r" on scores_rugscan for select using (true);
+create policy "i" on scores_rugscan for insert with check (true);
