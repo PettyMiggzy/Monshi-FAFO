@@ -177,6 +177,24 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(circle
 
 <script src="/rugscan-data.js"></script>
 <script>
+// ─── nad.fun official infrastructure (verified, public) ───
+// Reading these tells you how 99% of Monad memecoins actually work
+var NADFUN = {
+  BONDING_CURVE:        {addr:'0xA7283d07812a02AFB7C09B60f8896bCEA3F90aCE', desc:'Core bonding curve logic — the math behind every nad.fun token price'},
+  BONDING_CURVE_ROUTER: {addr:'0x6F6B8F1a20703309951a5127c45B49b1CD981A22', desc:'Router users interact with — buy, sell, create token'},
+  DEX_FACTORY:          {addr:'0x6B5F564339DbAD6b780249827f2198a841FEB7F3', desc:'Creates the Uniswap V3 pool when a token graduates'},
+  DEX_ROUTER:           {addr:'0x0B79d71AE99528D1dB24A4148b5f4F865cc2b137', desc:'Router for graduated tokens (post-bonding curve trading)'},
+  LENS:                 {addr:'0x7e78A8DE94f21804F7a17F4E8BF9EC2c872187ea', desc:'Read-only helper for prices and status checks'}
+};
+
+window.loadNadfunTemplate = function(key){
+  var entry = NADFUN[key];
+  if(!entry)return;
+  document.getElementById('chainSelect').value = '143';
+  document.getElementById('addressInput').value = entry.addr;
+  doScan();
+};
+
 // ─── Chain config ───
 var CHAINS = {
   '1':    {name:'Ethereum', explorer:'https://etherscan.io/address/'},
@@ -346,13 +364,28 @@ async function doScan(){
 
   if(!result.ok){
     var explorerUrl = CHAINS[chainId].explorer + addr;
+    var monadHelp = '';
+    if(chainId === '143'){
+      // Suggest nad.fun template lookup for any unverified Monad token
+      monadHelp = '<br><br>'+
+        '<div style="margin-top:14px;padding:14px;background:rgba(252,211,77,.08);border:1px solid rgba(252,211,77,.4);border-radius:10px;text-align:left;">'+
+        '<div style="font-family:Orbitron,sans-serif;font-size:11px;color:#FCD34D;letter-spacing:2px;font-weight:900;margin-bottom:8px;">💡 LIKELY A NAD.FUN TOKEN</div>'+
+        '<div style="font-size:12px;color:#fff;line-height:1.5;margin-bottom:10px;">Most Monad memecoins are launched via nad.fun and use their bonding curve template. Reading the template tells you how <strong>every nad.fun token</strong> works — same code, same rules.</div>'+
+        '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;">'+
+        '<button class="example-btn" onclick="loadNadfunTemplate(\'BONDING_CURVE\')" style="background:rgba(252,211,77,.15);border-color:rgba(252,211,77,.5);color:#FCD34D;">📜 BONDING CURVE</button>'+
+        '<button class="example-btn" onclick="loadNadfunTemplate(\'BONDING_CURVE_ROUTER\')" style="background:rgba(252,211,77,.15);border-color:rgba(252,211,77,.5);color:#FCD34D;">🔀 ROUTER</button>'+
+        '<button class="example-btn" onclick="loadNadfunTemplate(\'DEX_FACTORY\')" style="background:rgba(252,211,77,.15);border-color:rgba(252,211,77,.5);color:#FCD34D;">🏭 DEX FACTORY</button>'+
+        '<a class="example-btn" href="https://github.com/Naddotfun/contract-v3-abi" target="_blank" style="background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.5);color:#C4B5FD;text-decoration:none;display:inline-block;">📂 ALL CONTRACTS ON GITHUB</a>'+
+        '</div></div>';
+    }
     setStatus(
       '<span class="label">❌ NOT VERIFIED ON SOURCIFY</span>'+
       'Could not find source code for this contract on '+chainName+'. Possible reasons:<br>'+
       '&nbsp;&nbsp;• Contract is unverified (devs hide code on purpose sometimes — <strong>be careful</strong>)<br>'+
       '&nbsp;&nbsp;• Address is wrong or contract doesn\'t exist on this chain<br>'+
       '&nbsp;&nbsp;• Contract verified on block explorer but not Sourcify<br><br>'+
-      '🔍 Check directly: <a href="'+explorerUrl+'" target="_blank" style="color:#FCD34D;">'+chainName+' Explorer →</a>',
+      '🔍 Check directly: <a href="'+explorerUrl+'" target="_blank" style="color:#FCD34D;">'+chainName+' Explorer →</a>'+
+      monadHelp,
       'error'
     );
     return;
