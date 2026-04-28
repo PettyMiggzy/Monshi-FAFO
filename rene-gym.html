@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
+<link rel="shortcut icon" href="/favicon.ico?v=2">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>$RENE · GMONAD GYM</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;background:#0a0418;overflow:hidden;font-family:'Space Mono',monospace;color:#EDE9FF;display:flex;align-items:center;justify-content:center;user-select:none;}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 20% 10%,rgba(252,211,77,.13),transparent 60%),radial-gradient(circle at 80% 90%,rgba(168,85,247,.18),transparent 55%);z-index:-1;pointer-events:none;}
+
+#hubBtn{position:fixed;top:8px;left:8px;z-index:7;color:rgba(168,85,247,.85);text-decoration:none;font-size:11px;letter-spacing:1.5px;background:rgba(0,0,0,.5);padding:7px 12px;border-radius:8px;border:1px solid rgba(168,85,247,.3);font-family:Orbitron,sans-serif;font-weight:700;}
+#hubBtn:hover{color:#fff;border-color:#A855F7;}
+
+.game{display:flex;flex-direction:column;align-items:center;gap:12px;width:min(440px,94vw);padding:18px 0;}
+
+.title{font-family:Orbitron,sans-serif;font-size:24px;font-weight:900;letter-spacing:3px;color:#FCD34D;text-shadow:0 0 18px rgba(252,211,77,.5);text-align:center;}
+.title .sub{display:block;font-size:10px;color:rgba(252,211,77,.6);letter-spacing:2px;margin-top:3px;}
+
+/* HUD */
+.hud{display:flex;gap:8px;width:100%;font-family:Orbitron,sans-serif;}
+.hud-cell{flex:1;padding:8px 4px;background:rgba(20,5,50,.7);border:1px solid rgba(168,85,247,.3);border-radius:9px;text-align:center;}
+.hud-cell .v{font-size:16px;color:#fff;font-weight:900;line-height:1;}
+.hud-cell .l{font-size:8px;color:rgba(167,139,250,.65);letter-spacing:1.3px;margin-top:4px;font-weight:700;}
+.hud-cell.weight .v{color:#FCD34D;}
+.hud-cell.lives .v{color:#F87171;letter-spacing:1px;}
+
+/* Stage */
+.stage{width:100%;aspect-ratio:1/1;background:rgba(0,0,0,.55);border:1.5px solid rgba(168,85,247,.4);border-radius:14px;position:relative;overflow:hidden;box-shadow:0 0 24px rgba(168,85,247,.2);}
+.lifter{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.lifter img{width:100%;height:100%;object-fit:contain;display:block;transition:transform .15s ease;filter:drop-shadow(0 0 14px rgba(168,85,247,.4));}
+.lifter.bump img{transform:scale(1.04);}
+
+.barbell-weight{position:absolute;top:10px;left:50%;transform:translateX(-50%);font-family:Orbitron,sans-serif;font-size:32px;font-weight:900;color:#FCD34D;text-shadow:0 0 16px rgba(252,211,77,.6);letter-spacing:2px;z-index:3;pointer-events:none;}
+
+/* Beat ring */
+.beat-area{position:absolute;left:50%;bottom:14%;transform:translate(-50%,0);width:120px;height:120px;pointer-events:none;}
+.target-ring{position:absolute;inset:0;border:3px solid rgba(252,211,77,.5);border-radius:50%;box-shadow:inset 0 0 20px rgba(252,211,77,.15),0 0 22px rgba(252,211,77,.25);}
+.beat-ring{position:absolute;inset:-60px;border:3px solid #A855F7;border-radius:50%;box-shadow:0 0 24px rgba(168,85,247,.6);opacity:0;}
+.beat-ring.run{animation:beatShrink linear forwards;}
+@keyframes beatShrink{
+  0%{transform:scale(1.7);opacity:0;}
+  10%{opacity:1;}
+  100%{transform:scale(.55);opacity:1;}
+}
+
+/* Hit zone label */
+.hit-label{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;color:#FCD34D;letter-spacing:2px;text-align:center;line-height:1.2;}
+
+/* Result flash */
+.flash{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:Orbitron,sans-serif;font-size:38px;font-weight:900;letter-spacing:3px;opacity:0;transition:opacity .15s;pointer-events:none;text-shadow:0 0 30px currentColor;z-index:5;}
+.flash.show{opacity:1;}
+.flash.perfect{color:#4ADE80;}
+.flash.good{color:#FCD34D;}
+.flash.miss{color:#F87171;}
+
+/* Mult badge */
+.mult-badge{position:absolute;top:10px;left:10px;font-family:Orbitron,sans-serif;font-size:10px;color:#A855F7;background:rgba(0,0,0,.6);padding:5px 10px;border-radius:6px;border:1px solid rgba(168,85,247,.4);letter-spacing:1px;z-index:4;}
+.combo-badge{position:absolute;top:10px;right:10px;font-family:Orbitron,sans-serif;font-size:10px;color:#FCD34D;background:rgba(0,0,0,.6);padding:5px 10px;border-radius:6px;border:1px solid rgba(252,211,77,.4);letter-spacing:1px;z-index:4;display:none;}
+.combo-badge.show{display:block;}
+
+.boss-overlay{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(245,158,11,.25),rgba(0,0,0,.7));z-index:6;}
+.boss-overlay.show{display:flex;}
+.boss-overlay .boss-text{font-family:Orbitron,sans-serif;font-size:24px;font-weight:900;color:#F87171;text-shadow:0 0 24px #EF4444;letter-spacing:3px;text-align:center;animation:bossPulse .8s infinite alternate;}
+@keyframes bossPulse{from{transform:scale(1);}to{transform:scale(1.08);}}
+
+.prompt{font-size:12px;color:rgba(196,181,253,.85);letter-spacing:1.5px;text-align:center;min-height:18px;font-weight:700;}
+
+/* Tap zone (whole stage) */
+.tap-zone{position:absolute;inset:0;cursor:pointer;z-index:5;}
+
+.btn-secondary{padding:14px 24px;background:linear-gradient(135deg,#FCD34D,#F59E0B);border:none;border-radius:10px;color:#000;font-family:Orbitron,sans-serif;font-size:13px;font-weight:900;cursor:pointer;letter-spacing:2px;box-shadow:0 0 18px rgba(252,211,77,.4);}
+.btn-secondary:active{transform:scale(.97);}
+
+/* Death panel */
+.death{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,8,.92);z-index:8;backdrop-filter:blur(5px);padding:20px;}
+.death.show{display:flex;}
+.deathCard{background:linear-gradient(135deg,rgba(168,85,247,.18),rgba(20,5,50,.85));border:1.5px solid rgba(168,85,247,.5);border-radius:18px;padding:20px;width:min(440px,94vw);max-height:90vh;overflow-y:auto;text-align:center;box-shadow:0 0 40px rgba(168,85,247,.4);}
+.dEmoji{font-size:42px;margin-bottom:6px;}
+.rugged{font-family:Orbitron,sans-serif;font-size:28px;font-weight:900;color:#FCA5A5;text-shadow:0 0 22px #EF4444;margin-bottom:6px;letter-spacing:2px;}
+.rugged.win{color:#4ADE80;text-shadow:0 0 22px #22C55E;}
+.scoreNum{font-family:Orbitron,sans-serif;font-size:32px;color:#FCD34D;margin:6px 0;text-shadow:0 0 14px rgba(252,211,77,.5);}
+.lbl{font-size:10px;color:rgba(167,139,250,.65);letter-spacing:1.5px;margin-bottom:12px;}
+#nameSubmit{margin-bottom:14px;display:none;}
+#nameSubmit input{background:rgba(0,0,0,.5);border:1.5px solid rgba(168,85,247,.5);border-radius:8px;padding:9px 12px;color:#fff;font-family:'Space Mono',monospace;font-size:13px;outline:none;text-align:center;letter-spacing:2px;width:160px;}
+#nameSubmit button{margin-left:6px;padding:9px 16px;background:linear-gradient(135deg,#A855F7,#7C3AED);border:none;border-radius:8px;color:#fff;font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;cursor:pointer;letter-spacing:1px;}
+
+#btnRow{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px;}
+.btn{padding:10px 14px;border:none;border-radius:8px;font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;cursor:pointer;letter-spacing:1.5px;color:#fff;}
+#btnRetry{background:linear-gradient(135deg,#A855F7,#5B21B6);}
+#btnHub{background:linear-gradient(135deg,#374151,#1F2937);}
+#btnShare{background:linear-gradient(135deg,#1DA1F2,#0d7abf);}
+#btnBuy{background:linear-gradient(135deg,#22C55E,#15803D);animation:pls 2s infinite;}
+@keyframes pls{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}50%{box-shadow:0 0 0 8px rgba(34,197,94,0);}}
+
+.lbT{width:100%;border-collapse:collapse;margin:14px 0 6px;font-size:11px;}
+.lbT th{color:rgba(168,85,247,.7);text-align:left;padding:4px 6px;border-bottom:1px solid rgba(168,85,247,.3);font-size:9px;letter-spacing:1.5px;font-family:Orbitron,sans-serif;}
+.lbT td{padding:5px 6px;color:rgba(220,210,255,.8);}
+.lbT tr.me td{color:#FCD34D;background:rgba(252,211,77,.08);}
+.lbT .sc{text-align:right;font-family:Orbitron,sans-serif;font-weight:700;}
+.boost-tag{font-size:10px;color:#A855F7;letter-spacing:1.5px;margin-top:4px;font-family:Orbitron,sans-serif;font-weight:700;}
+</style>
+</head>
+<body>
+<a href="/rene-hub.html" id="hubBtn">← RENE HUB</a>
+
+<div class="game">
+  <div class="title">GMONAD GYM <span class="sub">TAP THE BEAT · LIFT THE WEIGHT</span></div>
+
+  <div class="hud">
+    <div class="hud-cell"><div class="v" id="hudScore">0</div><div class="l">SCORE</div></div>
+    <div class="hud-cell"><div class="v" id="hudCombo">0</div><div class="l">COMBO</div></div>
+    <div class="hud-cell weight"><div class="v" id="hudWeight">10lb</div><div class="l">BARBELL</div></div>
+    <div class="hud-cell lives"><div class="v" id="hudLives">❤❤❤</div><div class="l">LIVES</div></div>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="mult-badge" id="multBadge">1.0x</div>
+    <div class="combo-badge" id="comboBadge">x1</div>
+    <div class="barbell-weight" id="barWeight" style="display:none;">10lb</div>
+    <div class="lifter" id="lifter">
+      <img id="reneSprite" src="/public/rene/sprites/deadlift/deadlift_rack.png" alt="Rene" onerror="this.style.display='none';">
+    </div>
+    <div class="beat-area">
+      <div class="target-ring"></div>
+      <div class="beat-ring" id="beatRing"></div>
+      <div class="hit-label" id="hitLabel">TAP<br>HERE</div>
+    </div>
+    <div class="boss-overlay" id="bossOverlay"><div class="boss-text">⚠ TREAT JAR<br>BOSS<br>x3 PERFECT</div></div>
+    <div class="flash" id="flash"></div>
+    <div class="tap-zone" id="tapZone"></div>
+  </div>
+
+  <div class="prompt" id="prompt">TAP START · TIME YOUR LIFTS</div>
+
+  <button class="btn-secondary" id="btnStart">▶ START LIFTING</button>
+</div>
+
+<div class="death" id="deathPanel">
+  <div class="deathCard">
+    <div class="dEmoji" id="dEmoji">🐾</div>
+    <div class="rugged" id="ruggedTitle">RUGGED</div>
+    <div class="scoreNum" id="dScore">0</div>
+    <div class="lbl" id="lvlTag"></div>
+    <div class="boost-tag" id="boostTag"></div>
+    <div class="lbl" id="rankTag" style="color:#4ADE80;"></div>
+    <div id="nameSubmit">
+      <p style="color:rgba(196,181,253,.7);font-size:10px;letter-spacing:1.5px;margin-bottom:8px;">SUBMIT TO LEADERBOARD</p>
+      <div style="display:flex;gap:6px;justify-content:center;">
+        <input id="dNameInput" type="text" maxlength="16" placeholder="YOUR NAME">
+        <button id="dSubmit">GO</button>
+      </div>
+    </div>
+    <table class="lbT"><thead><tr><th>#</th><th>PLAYER</th><th class="sc">SCORE</th></tr></thead><tbody id="lbBody"></tbody></table>
+    <div id="btnRow">
+      <button class="btn" id="btnShare">SHARE 𝕏</button>
+      <button class="btn" id="btnBuy">BUY $RENE</button>
+      <button class="btn" id="btnRetry">RETRY</button>
+      <button class="btn" id="btnHub">HUB</button>
+    </div>
+  </div>
+</div>
+
+<script src="/monshi-shared.js"></script>
+<script src="/rene-shared.js"></script>
+<script>
+var TABLE='scores_rene_gym', BUY_URL='https://nad.fun/tokens/0xaCA86430cCCEdbedB35910fC8A5AFEF07dA37777';
+var GAME='GMONAD GYM', PLAY_URL='https://monshi.xyz/rene-gym.html';
+var SPRITES = {
+  rack:   '/public/rene/sprites/deadlift/deadlift_rack.png',
+  bottom: '/public/rene/sprites/deadlift/deadlift_bottom.png',
+  mid:    '/public/rene/sprites/deadlift/deadlift_mid.png',
+  top:    '/public/rene/sprites/deadlift/deadlift_top.png',
+  fail:   '/public/rene/sprites/treat_jar_fail/jar_eat_v1.png',
+  bossOpen: '/public/rene/sprites/treat_jar_boss/boss_open_mouth.png',
+  bossClose:'/public/rene/sprites/treat_jar_boss/boss_close_mouth.png',
+  bossDrool:'/public/rene/sprites/treat_jar_boss/boss_drool.png'
+};
+
+// Audio
+var AC=window.AudioContext||window.webkitAudioContext, actx=null, master=null;
+function initAudio(){if(actx)return;try{actx=new AC();master=actx.createGain();master.gain.value=.25;master.connect(actx.destination);}catch(e){}}
+function tone(f,t,v,o,d){if(!actx)return;var st=actx.currentTime+(o||0);var os=actx.createOscillator();var g=actx.createGain();os.type=t||'square';os.frequency.setValueAtTime(f,st);g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(v,st+.01);g.gain.exponentialRampToValueAtTime(.001,st+d);os.connect(g);g.connect(master);os.start(st);os.stop(st+d+.05);}
+function sfxPerfect(){tone(880,'square',.2,0,.08);tone(1318,'square',.18,.06,.1);}
+function sfxGood(){tone(660,'square',.18,0,.1);}
+function sfxMiss(){tone(220,'sawtooth',.22,0,.18);}
+function sfxBeat(){tone(440,'triangle',.06,0,.04);}
+function sfxBoss(){[180,140,100].forEach(function(f,i){tone(f,'sawtooth',.25,i*.1,.18);});}
+function sfxFinal(){[523,659,784,1046,1318].forEach(function(f,i){tone(f,'square',.2,i*.07,.14);});}
+
+// State
+var state = {
+  score:0, combo:0, lives:3,
+  beatInterval:1500, // ms between beats — shrinks
+  beatActive:false, beatStart:0, beatPhase:0, // 0=rack 1=bottom 2=mid 3=top
+  liftFrame:0, weightTier:0, // 0=10lb,1=25lb,2=45lb,3=boss
+  bossMode:false, bossPerfectsNeeded:0, bossPerfectsGot:0,
+  paused:true, gameOver:false, beatTimer:null
+};
+var WEIGHTS = ['10lb','25lb','45lb+','BOSS'];
+var leaderboard=[], playerRank=0;
+var playerName = localStorage.getItem('monshi_name')||'';
+
+function updateHUD(){
+  document.getElementById('hudScore').textContent = state.score;
+  document.getElementById('hudCombo').textContent = state.combo;
+  document.getElementById('hudWeight').textContent = WEIGHTS[state.weightTier];
+  document.getElementById('hudLives').textContent = '❤'.repeat(state.lives) + '🤍'.repeat(3-state.lives);
+  document.getElementById('multBadge').textContent = (window.RENE ? RENE.getMultiplier().toFixed(1) : '1.0') + 'x';
+  var cb = document.getElementById('comboBadge');
+  if(state.combo >= 3){cb.textContent = 'x'+state.combo+' COMBO';cb.classList.add('show');}
+  else{cb.classList.remove('show');}
+}
+
+function setSprite(key){
+  document.getElementById('reneSprite').src = SPRITES[key];
+}
+function bumpLifter(){
+  var el = document.getElementById('lifter');
+  el.classList.add('bump');
+  setTimeout(function(){el.classList.remove('bump');}, 150);
+}
+
+function setPrompt(text){document.getElementById('prompt').textContent = text;}
+function flash(text, kind){
+  var el = document.getElementById('flash');
+  el.textContent = text;
+  el.className = 'flash show '+kind;
+  setTimeout(function(){el.classList.remove('show');}, 600);
+}
+
+// Beat scheduling
+function scheduleBeat(){
+  if(state.gameOver || state.paused)return;
+  state.beatActive = true;
+  state.beatStart = performance.now();
+  var dur = state.beatInterval;
+  var ring = document.getElementById('beatRing');
+  ring.style.animation = 'none';
+  void ring.offsetWidth;
+  ring.style.animationDuration = dur+'ms';
+  ring.style.animationName = 'beatShrink';
+  ring.style.animationFillMode = 'forwards';
+  ring.style.animationTimingFunction = 'linear';
+  ring.classList.add('run');
+  // Auto-miss if not tapped within dur+200ms (the ring overshoots target)
+  state.beatTimer = setTimeout(function(){
+    if(state.beatActive){onMiss(true);}
+  }, dur + 250);
+  // Soft beat sfx near impact
+  setTimeout(function(){if(state.beatActive&&!state.gameOver)sfxBeat();}, dur*.85);
+}
+
+function onTap(){
+  if(state.paused || state.gameOver)return;
+  initAudio();
+  if(!state.beatActive){
+    // tap before beat exists → soft miss (no penalty, just visual)
+    flash('TOO EARLY', 'miss');
+    return;
+  }
+  var elapsed = performance.now() - state.beatStart;
+  var dur = state.beatInterval;
+  // Ring hits "perfect" when shrunk to target (~1.0 scale). Animation: 1.7 → 0.55. Target ~1.0 = ~62% of duration.
+  var hitPoint = dur; // tap at duration end = target
+  var diff = Math.abs(elapsed - hitPoint);
+
+  // Window thresholds (ms)
+  var perfectWindow = 130;
+  var goodWindow = 280;
+
+  if(diff <= perfectWindow){onPerfect();}
+  else if(diff <= goodWindow){onGood();}
+  else{onMiss(false);}
+}
+
+function advanceLiftFrame(){
+  state.liftFrame = (state.liftFrame + 1) % 4;
+  var keys = ['rack','bottom','mid','top'];
+  setSprite(keys[state.liftFrame]);
+  bumpLifter();
+}
+
+function onPerfect(){
+  state.beatActive = false;
+  clearTimeout(state.beatTimer);
+  sfxPerfect();
+  state.combo++;
+  // Score: 100 base + combo bonus
+  var raw = 100 + state.combo*15;
+  var earned = window.RENE ? RENE.boostScore(raw) : raw;
+  state.score += earned;
+  flash('+'+earned+' PERFECT', 'perfect');
+  advanceLiftFrame();
+
+  // Boss progression
+  if(state.bossMode){
+    state.bossPerfectsGot++;
+    if(state.bossPerfectsGot >= state.bossPerfectsNeeded){
+      defeatBoss();
+      return;
+    }
+  } else {
+    checkWeightUp();
+  }
+  nextBeat();
+}
+
+function onGood(){
+  state.beatActive = false;
+  clearTimeout(state.beatTimer);
+  sfxGood();
+  state.combo++;
+  var raw = 50 + state.combo*8;
+  var earned = window.RENE ? RENE.boostScore(raw) : raw;
+  state.score += earned;
+  flash('+'+earned+' GOOD', 'good');
+  advanceLiftFrame();
+  if(state.bossMode){
+    // good doesn't count toward boss but doesn't fail either
+  } else {
+    checkWeightUp();
+  }
+  nextBeat();
+}
+
+function onMiss(timeout){
+  state.beatActive = false;
+  clearTimeout(state.beatTimer);
+  sfxMiss();
+  state.combo = 0;
+  state.lives--;
+  flash(timeout ? '⏱ MISS' : '🐾 OFF-BEAT', 'miss');
+  if(state.bossMode){
+    // Boss reset on miss
+    state.bossPerfectsGot = 0;
+    setPrompt('BOSS RESET · NEED '+state.bossPerfectsNeeded+' PERFECT IN A ROW');
+  } else {
+    setPrompt('OFF-BEAT · -1 LIFE');
+  }
+  updateHUD();
+  if(state.lives <= 0){
+    setSprite('fail');
+    setTimeout(endGame, 1100);
+    return;
+  }
+  nextBeat();
+}
+
+function checkWeightUp(){
+  // Tier up every 8 successful lifts (perfect or good)
+  // Use score as proxy actually — tier up at score thresholds
+  var tier = state.weightTier;
+  if(state.score >= 8000) tier = 3;
+  else if(state.score >= 3500) tier = 2;
+  else if(state.score >= 1200) tier = 1;
+  else tier = 0;
+  if(tier !== state.weightTier){
+    state.weightTier = tier;
+    if(tier === 3){enterBoss();return;}
+    // beat speeds up at each tier
+    state.beatInterval = Math.max(700, 1500 - tier*250);
+    setPrompt('WEIGHT UP · '+WEIGHTS[tier]);
+  }
+  updateHUD();
+}
+
+function enterBoss(){
+  state.bossMode = true;
+  state.bossPerfectsNeeded = 3;
+  state.bossPerfectsGot = 0;
+  state.beatInterval = 750;
+  document.getElementById('bossOverlay').classList.add('show');
+  setSprite('bossOpen');
+  sfxBoss();
+  setPrompt('TREAT JAR BOSS · 3 PERFECT IN A ROW');
+  setTimeout(function(){
+    document.getElementById('bossOverlay').classList.remove('show');
+  }, 1400);
+}
+
+function defeatBoss(){
+  state.bossMode = false;
+  state.weightTier = 0;
+  state.score += 5000; // boss bonus
+  state.beatInterval = 1500;
+  flash('BOSS DOWN +5000', 'perfect');
+  sfxFinal();
+  setPrompt('GG · WEIGHT RESETS · GO AGAIN');
+  setSprite('rack');
+  state.liftFrame = 0;
+  updateHUD();
+  nextBeat();
+}
+
+function nextBeat(){
+  updateHUD();
+  if(state.gameOver)return;
+  setTimeout(scheduleBeat, 400);
+}
+
+function endGame(){
+  state.gameOver = true;
+  sfxFinal();
+  fetchLB().then(function(){
+    showDeath(state.score, state.weightTier >= 2 || state.score >= 3000);
+  });
+}
+
+// Tap zone
+document.getElementById('tapZone').addEventListener('click', onTap);
+document.getElementById('tapZone').addEventListener('touchstart', function(e){e.preventDefault();onTap();}, {passive:false});
+
+document.getElementById('btnStart').onclick = function(){
+  initAudio();
+  this.style.display='none';
+  state = {
+    score:0, combo:0, lives:3,
+    beatInterval:1500, beatActive:false, beatStart:0, beatPhase:0,
+    liftFrame:0, weightTier:0,
+    bossMode:false, bossPerfectsNeeded:0, bossPerfectsGot:0,
+    paused:false, gameOver:false, beatTimer:null
+  };
+  setSprite('rack');
+  setPrompt('TAP WHEN THE PURPLE RING HITS THE GOLD CIRCLE');
+  document.getElementById('hitLabel').textContent = 'TAP\nNOW';
+  updateHUD();
+  setTimeout(scheduleBeat, 700);
+};
+
+// Leaderboard
+function fetchLB(){
+  if(!window.RENE) return Promise.resolve();
+  return RENE.fetchLeaderboard(TABLE, 10).then(function(d){if(Array.isArray(d))leaderboard=d;});
+}
+function submitScore(score, cb){
+  if(!playerName){if(cb)cb();return;}
+  if(!window.RENE){if(cb)cb();return;}
+  RENE.submitScore(TABLE, score).then(function(){
+    return RENE.fetchLeaderboard(TABLE, 10);
+  }).then(function(d){
+    if(Array.isArray(d)){
+      leaderboard = d;
+      playerRank = leaderboard.findIndex(function(s){return s.name===playerName && s.score===Math.floor(score);})+1;
+    }
+    if(cb)cb();
+  }).catch(function(){if(cb)cb();});
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function showDeath(sc, isWin){
+  function render(){
+    document.getElementById('ruggedTitle').textContent = isWin ? 'GG · CTO LIFT' : 'JAR ATE YOU';
+    document.getElementById('ruggedTitle').className = 'rugged'+(isWin?' win':'');
+    document.getElementById('dEmoji').textContent = isWin ? '💪' : '🦴';
+    document.getElementById('dScore').textContent = sc;
+    document.getElementById('lvlTag').textContent = 'TIER · '+WEIGHTS[state.weightTier];
+    var mult = window.RENE ? RENE.getMultiplier() : 1;
+    document.getElementById('boostTag').textContent = mult > 1 ? mult.toFixed(1)+'x BOOST APPLIED' : '';
+    document.getElementById('rankTag').textContent = playerRank>0 ? '#'+playerRank+' GLOBALLY' : '';
+    var tb = document.getElementById('lbBody'); tb.innerHTML='';
+    leaderboard.slice(0,5).forEach(function(s,i){
+      var tr = document.createElement('tr');
+      var isMe = s.name===playerName && s.score===Math.floor(sc);
+      if(isMe) tr.className='me';
+      var medal = ['🥇','🥈','🥉'][i] || '#'+(i+1);
+      tr.innerHTML = '<td>'+medal+'</td><td>'+esc(s.name)+'</td><td class="sc">'+s.score+'</td>';
+      tb.appendChild(tr);
+    });
+    document.getElementById('deathPanel').classList.add('show');
+  }
+  if(playerName){submitScore(sc, render);} else {document.getElementById('nameSubmit').style.display='block'; render();}
+
+  document.getElementById('dSubmit').onclick = function(){
+    var n = document.getElementById('dNameInput').value.trim();
+    playerName = (n||'ANON').toUpperCase().slice(0,16);
+    localStorage.setItem('monshi_name', playerName);
+    document.getElementById('nameSubmit').style.display='none';
+    submitScore(sc, render);
+  };
+  document.getElementById('dNameInput').onkeydown = function(e){if(e.key==='Enter')document.getElementById('dSubmit').click();};
+  document.getElementById('btnShare').onclick = function(){
+    var tw = 'I lifted '+sc+' on $RENE GMONAD GYM 💪 — tier '+WEIGHTS[state.weightTier]+'. '+PLAY_URL+' $RENE #Monad';
+    window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');
+  };
+  document.getElementById('btnBuy').onclick = function(){window.open(BUY_URL,'_blank');};
+}
+document.getElementById('btnRetry').onclick = function(){location.reload();};
+document.getElementById('btnHub').onclick = function(){location.href='/rene-hub.html';};
+
+fetchLB();
+updateHUD();
+</script>
+<script src="/pwa-install.js" defer></script>
+</body>
+</html>
