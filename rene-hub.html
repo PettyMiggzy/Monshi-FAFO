@@ -143,15 +143,31 @@ h2{font-family:Orbitron,sans-serif;font-size:clamp(14px,2.5vw,20px);color:#FCD34
     </div>
   </div>
 
+  <!-- $RENE Token Tracker -->
+  <div class="dash" style="border-color:rgba(252,211,77,.3);">
+    <div class="dash-title" style="color:#FCD34D;">📈 $RENE TOKEN TRACKER <span id="trackerStatus" style="font-size:9px;color:rgba(167,139,250,.5);margin-left:8px;">loading...</span></div>
+    <div class="dash-grid">
+      <div class="stat gold"><div class="v" id="trkPrice">--</div><div class="l">PRICE USD</div></div>
+      <div class="stat"><div class="v" id="trkChange">--</div><div class="l">24H CHANGE</div></div>
+      <div class="stat purple"><div class="v" id="trkMC">--</div><div class="l">MARKET CAP</div></div>
+      <div class="stat"><div class="v" id="trkVol">--</div><div class="l">24H VOLUME</div></div>
+      <div class="stat"><div class="v" id="trkLiq">--</div><div class="l">LIQUIDITY</div></div>
+      <div class="stat green"><div class="v" id="trkTxns">--</div><div class="l">24H TXNS</div></div>
+    </div>
+    <div style="margin-top:12px;text-align:center;">
+      <a id="trkLink" href="https://dexscreener.com/monad/0x7d03647462615402e0798fe4488C62aDdB8da52B" target="_blank" rel="noopener" style="color:#FCD34D;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;text-decoration:none;font-weight:700;">VIEW ON DEXSCREENER →</a>
+    </div>
+  </div>
+
   <!-- Games -->
   <div class="section-title">🎮 RENE'S GAMES <span class="badge">3 GAMES · MORE COMING</span></div>
   <div class="grid">
-    <a href="/rene-run.html" class="card disabled" style="--glow:rgba(168,85,247,.4);--accent:#A855F7;" id="cardRun" onclick="return alertSoon(event,'Treat Run');">
+    <a href="/rene-run.html" class="card" style="--glow:rgba(168,85,247,.4);--accent:#A855F7;" id="cardRun">
       <span class="best" id="bestRun" style="display:none;"></span>
-      <span class="emoji">🦴</span><span class="tag">ENDLESS RUNNER · COMING SOON</span>
+      <span class="emoji">🦴</span><span class="tag">ENDLESS RUNNER · LIVE</span>
       <h3>TREAT RUN</h3>
-      <p>Tap to jump. Grab treats. Dodge red candles, vacuums, and the bath. Don't get rugged by the treat jar.</p>
-      <span class="cta">SOON</span>
+      <p>Tap to hop. Grab treats. Dodge red candles, vacuums, and the bath. Don't get rugged.</p>
+      <span class="cta">PLAY</span>
     </a>
     <a href="/rene-pump.html" class="card" style="--glow:rgba(34,197,94,.4);--accent:#22C55E;" id="cardPump">
       <span class="best" id="bestPump" style="display:none;"></span>
@@ -177,6 +193,9 @@ h2{font-family:Orbitron,sans-serif;font-size:clamp(14px,2.5vw,20px);color:#FCD34
   <div class="footer">
     Part of <a href="/">MONSHI ARCADE</a> · $RENE on Monad ·
     <a href="https://reneonmonad.xyz" target="_blank" rel="noopener">reneonmonad.xyz</a>
+    <div style="margin-top:10px;font-size:9px;color:rgba(167,139,250,.45);letter-spacing:2px;">
+      🐟 BUILT BY MONSHI · POWERED BY DEGEN ENERGY
+    </div>
   </div>
 </div>
 
@@ -231,6 +250,55 @@ window.addEventListener('monshi:connect', refreshDashboard);
 window.addEventListener('monshi:disconnect', refreshDashboard);
 window.addEventListener('rene:balance', refreshDashboard);
 setTimeout(refreshDashboard, 400);
+
+// $RENE Token Tracker (Dexscreener)
+function fmtUsd(n){
+  if(n==null||isNaN(n))return '--';
+  if(n>=1e9)return '$'+(n/1e9).toFixed(2)+'B';
+  if(n>=1e6)return '$'+(n/1e6).toFixed(2)+'M';
+  if(n>=1e3)return '$'+(n/1e3).toFixed(1)+'K';
+  if(n<0.01)return '$'+n.toFixed(6);
+  if(n<1)return '$'+n.toFixed(4);
+  return '$'+n.toFixed(2);
+}
+function fmtNum(n){
+  if(n==null||isNaN(n))return '--';
+  if(n>=1e6)return (n/1e6).toFixed(2)+'M';
+  if(n>=1e3)return (n/1e3).toFixed(1)+'K';
+  return Math.floor(n).toString();
+}
+function fetchRenePrice(){
+  var statusEl = document.getElementById('trackerStatus');
+  fetch('https://api.dexscreener.com/latest/dex/tokens/0xaCA86430cCCEdbedB35910fC8A5AFEF07dA37777')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(!d.pairs || d.pairs.length===0){statusEl.textContent='no data';return;}
+      // Pick highest-liquidity pair
+      var pair = d.pairs.sort(function(a,b){return (b.liquidity?.usd||0) - (a.liquidity?.usd||0);})[0];
+      var price = parseFloat(pair.priceUsd);
+      var change = parseFloat(pair.priceChange?.h24 || 0);
+      var mc = pair.marketCap || pair.fdv;
+      var vol = pair.volume?.h24;
+      var liq = pair.liquidity?.usd;
+      var txns = (pair.txns?.h24?.buys || 0) + (pair.txns?.h24?.sells || 0);
+      document.getElementById('trkPrice').textContent = fmtUsd(price);
+      var chEl = document.getElementById('trkChange');
+      chEl.textContent = (change>=0?'+':'')+change.toFixed(2)+'%';
+      chEl.style.color = change>=0?'#4ADE80':'#F87171';
+      document.getElementById('trkMC').textContent = fmtUsd(mc);
+      document.getElementById('trkVol').textContent = fmtUsd(vol);
+      document.getElementById('trkLiq').textContent = fmtUsd(liq);
+      document.getElementById('trkTxns').textContent = fmtNum(txns);
+      document.getElementById('trkLink').href = pair.url || 'https://dexscreener.com/monad/0x7d03647462615402e0798fe4488C62aDdB8da52B';
+      statusEl.textContent = 'live · '+new Date().toLocaleTimeString();
+    })
+    .catch(function(e){
+      statusEl.textContent = 'fetch failed';
+      console.log('rene tracker err', e);
+    });
+}
+fetchRenePrice();
+setInterval(fetchRenePrice, 30000);
 </script>
 <script src="/pwa-install.js" defer></script>
 </body>
