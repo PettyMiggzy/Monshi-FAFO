@@ -6,11 +6,8 @@
   var NFT_CONTRACT = '0x6a933b14c67399aabccfcc85b3429b730c98a519';
   var NFT_OPENSEA = 'https://opensea.io/collection/monshi-nft-collection-563194175';
   var MONAD_HEX = '0x8f';
-  var MONAD_DEC = 143;
   var SUPABASE_URL = 'https://cuqhqcmrgpdjlhyqztnc.supabase.co';
   var SUPABASE_KEY = 'sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
-  var WC_PROJECT_ID = '89d7a1882c0fa9a5bbe0a58accafc100';
-  var RPC_URL = 'https://rpc.monad.xyz';
 
   // 5 tiers - real perks attached
   var TIERS = [
@@ -34,138 +31,6 @@
   MONSHI.NFT_OPENSEA = NFT_OPENSEA;
   MONSHI.NFT_CONTRACT = NFT_CONTRACT;
 
-  // ── WalletConnect integration ──
-  // Loads @walletconnect/ethereum-provider from CDN on first use, then opens
-  // the standard WC modal. Works in PWA, Safari, Chrome, anywhere — uses a
-  // relay server to talk to the user's wallet app.
-  var wcLoading = null;
-  var wcProvider = null;
-
-  function loadWalletConnect(){
-    if(wcLoading) return wcLoading;
-    wcLoading = new Promise(function(resolve, reject){
-      if(window.WalletConnectEthereumProvider){
-        return resolve(window.WalletConnectEthereumProvider);
-      }
-      var s = document.createElement('script');
-      // Use esm.sh which transforms ESM → UMD with predictable globals
-      // Falls back to known-stable v2 build
-      s.src = 'https://cdn.jsdelivr.net/npm/@walletconnect/ethereum-provider@2.13.3/dist/index.umd.js';
-      s.async = true;
-      s.onload = function(){
-        // The UMD bundle exposes the EthereumProvider class under various globals
-        // depending on version. Try them all.
-        var candidates = [
-          window.EthereumProvider,
-          window['@walletconnect/ethereum-provider'],
-          window.WalletConnectEthereumProvider,
-          window.WalletConnect,
-          window.WalletConnectProvider
-        ];
-        var wc = null;
-        for(var i=0;i<candidates.length;i++){
-          var c = candidates[i];
-          if(c && typeof c.init === 'function'){
-            wc = c; break;
-          }
-          // Some versions wrap it under .default
-          if(c && c.default && typeof c.default.init === 'function'){
-            wc = c.default; break;
-          }
-          // Some versions expose EthereumProvider as a class with a static init
-          if(c && c.EthereumProvider && typeof c.EthereumProvider.init === 'function'){
-            wc = c.EthereumProvider; break;
-          }
-        }
-        if(!wc){
-          var globals = Object.keys(window).filter(function(k){return /wallet|ethereum|provider/i.test(k);});
-          reject(new Error('WC SDK loaded but no init() found. Globals seen: ' + globals.slice(0,8).join(',')));
-          return;
-        }
-        window.WalletConnectEthereumProvider = wc;
-        resolve(wc);
-      };
-      s.onerror = function(){reject(new Error('Failed to load WalletConnect SDK from CDN'));};
-      document.head.appendChild(s);
-    });
-    return wcLoading;
-  }
-
-  async function getOrInitWCProvider(){
-    if(wcProvider) return wcProvider;
-    var WC = await loadWalletConnect();
-    wcProvider = await WC.init({
-      projectId: WC_PROJECT_ID,
-      chains: [MONAD_DEC],
-      showQrModal: true,
-      metadata: {
-        name: 'Monshi Arcade',
-        description: '$MONSHI on Monad — arcade, tournament, $RENE CTO',
-        url: window.location.origin,
-        icons: [window.location.origin + '/favicon.png']
-      },
-      rpcMap: { [MONAD_DEC]: RPC_URL }
-    });
-    // Wire account/chain change events
-    wcProvider.on('accountsChanged', function(accs){
-      if(accs && accs.length){
-        MONSHI.wallet = accs[0];
-        localStorage.setItem('monshi_wallet', MONSHI.wallet);
-        window.dispatchEvent(new Event('monshi:connect'));
-      } else {
-        MONSHI.disconnect();
-      }
-    });
-    wcProvider.on('disconnect', function(){MONSHI.disconnect();});
-    return wcProvider;
-  }
-
-  MONSHI.connectViaWalletConnect = async function(){
-    try{
-      var p = await getOrInitWCProvider();
-      // If already connected, just use it
-      if(p.accounts && p.accounts.length){
-        MONSHI.wallet = p.accounts[0];
-      } else {
-        var accs = await p.connect();  // shows QR modal / deeplink
-        // accounts come back via accountsChanged OR p.accounts after resolve
-        if(p.accounts && p.accounts.length){
-          MONSHI.wallet = p.accounts[0];
-        } else if(Array.isArray(accs) && accs.length){
-          MONSHI.wallet = accs[0];
-        } else {
-          throw new Error('No accounts after connect');
-        }
-      }
-      localStorage.setItem('monshi_wallet', MONSHI.wallet);
-      // Use WC provider as window.ethereum for downstream calls
-      // (don't overwrite existing window.ethereum if user has one — only set if missing)
-      if(!window.ethereum) window.ethereum = p;
-      // Force chain switch
-      try{
-        await p.request({method:'wallet_switchEthereumChain',params:[{chainId:MONAD_HEX}]});
-      }catch(e){
-        if(e.code===4902){
-          try{
-            await p.request({method:'wallet_addEthereumChain',params:[{
-              chainId:MONAD_HEX,chainName:'Monad',nativeCurrency:{name:'Monad',symbol:'MON',decimals:18},
-              rpcUrls:[RPC_URL],blockExplorerUrls:['https://monadexplorer.com']
-            }]});
-          }catch(e2){}
-        }
-      }
-      await MONSHI.fetchBalance();
-      MONSHI.updateBadge();
-      MONSHI.showPerksToast();
-      window.dispatchEvent(new Event('monshi:connect'));
-      return MONSHI.wallet;
-    }catch(e){
-      console.log('WC connect err:', e);
-      alert('WalletConnect failed: ' + (e.message || 'unknown error'));
-      return null;
-    }
-  };
-
   // ── Wallet connect ──
   // Detect mobile: no window.ethereum + touch device
   function isMobileNoWallet(){
@@ -174,9 +39,6 @@
   function isInWalletBrowser(){
     // Heuristic: window.ethereum exists AND on mobile = we're in MetaMask/Rabby/etc browser
     return !!window.ethereum && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  }
-  function isPWA(){
-    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   }
 
   // Build a wallet deeplink: each mobile wallet has its own scheme that opens
@@ -199,38 +61,18 @@
     if(old) old.remove();
 
     var deeplinks = getWalletDeeplinks();
-    var pwa = isPWA();
     var modal = document.createElement('div');
     modal.id = 'monshi-wallet-modal';
     modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,8,.92);z-index:99998;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(6px);';
 
     var card = document.createElement('div');
-    card.style.cssText = 'background:linear-gradient(135deg,rgba(168,85,247,.18),rgba(20,5,50,.96));border:1.5px solid rgba(168,85,247,.5);border-top-left-radius:20px;border-top-right-radius:20px;padding:24px 20px 36px;width:100%;max-width:560px;color:#fff;font-family:Orbitron,sans-serif;animation:monshiSlideUp .25s ease;max-height:85vh;overflow-y:auto;';
+    card.style.cssText = 'background:linear-gradient(135deg,rgba(168,85,247,.18),rgba(20,5,50,.96));border:1.5px solid rgba(168,85,247,.5);border-top-left-radius:20px;border-top-right-radius:20px;padding:24px 20px 36px;width:100%;max-width:560px;color:#fff;font-family:Orbitron,sans-serif;animation:monshiSlideUp .25s ease;';
 
     var head = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
       '<div style="font-size:14px;letter-spacing:3px;font-weight:900;color:#FCD34D;">CONNECT WALLET</div>' +
       '<button id="monshi-wallet-close" style="background:rgba(0,0,0,.5);border:1px solid rgba(168,85,247,.4);color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;">✕</button>' +
-      '</div>';
-
-    var subtitle = pwa
-      ? '<div style="font-size:11px;color:rgba(196,181,253,.85);letter-spacing:1px;margin-bottom:18px;line-height:1.55;">📱 PWA detected — tap <b style="color:#FCD34D;">WalletConnect</b> below for the smoothest connect.</div>'
-      : '<div style="font-size:11px;color:rgba(196,181,253,.85);letter-spacing:1px;margin-bottom:18px;line-height:1.55;">Tap WalletConnect for a universal QR/deeplink, or pick a specific wallet to open it directly.</div>';
-
-    // WalletConnect button — featured at top, works in PWA + Safari + anywhere
-    var wcBtn = '<button id="monshi-wc-btn" style="display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(59,153,252,.3),rgba(20,5,50,.6));border:2px solid #3B99FC;border-radius:12px;padding:16px 18px;margin-bottom:14px;color:#fff;font-family:Orbitron,sans-serif;font-size:13px;font-weight:900;letter-spacing:1.5px;cursor:pointer;width:100%;text-align:left;">' +
-      '<span style="font-size:24px;">🔗</span>' +
-      '<span style="display:flex;flex-direction:column;align-items:flex-start;gap:2px;">' +
-      '  <span>WalletConnect</span>' +
-      '  <span style="font-size:9px;color:rgba(196,181,253,.7);letter-spacing:1px;font-weight:600;">RECOMMENDED · works anywhere</span>' +
-      '</span>' +
-      '<span style="margin-left:auto;color:rgba(196,181,253,.6);font-size:11px;">→</span>' +
-      '</button>';
-
-    var divider = '<div style="display:flex;align-items:center;gap:10px;margin:18px 0 12px;color:rgba(196,181,253,.4);font-size:9px;letter-spacing:2px;font-family:Orbitron,sans-serif;">' +
-      '<div style="flex:1;height:1px;background:rgba(168,85,247,.2);"></div>' +
-      '<span>OR DIRECT</span>' +
-      '<div style="flex:1;height:1px;background:rgba(168,85,247,.2);"></div>' +
-      '</div>';
+      '</div>' +
+      '<div style="font-size:11px;color:rgba(196,181,253,.85);letter-spacing:1px;margin-bottom:18px;line-height:1.55;">Tap a wallet to open it. Once inside the wallet\'s browser, this site will load again with connect support.</div>';
 
     var buttons = deeplinks.map(function(w){
       return '<a href="' + w.url + '" style="display:flex;align-items:center;gap:14px;background:rgba(0,0,0,.45);border:1.5px solid rgba(168,85,247,.4);border-radius:12px;padding:14px 18px;margin-bottom:8px;color:#fff;text-decoration:none;font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;">' +
@@ -240,9 +82,9 @@
         '</a>';
     }).join('');
 
-    var hint = '<div style="margin-top:14px;font-size:10px;color:rgba(167,139,250,.55);letter-spacing:1px;line-height:1.6;text-align:center;">Don\'t have a wallet? Install MetaMask, Rabby, or Trust Wallet, then come back.</div>';
+    var hint = '<div style="margin-top:14px;font-size:10px;color:rgba(167,139,250,.55);letter-spacing:1px;line-height:1.6;text-align:center;">Don\'t have one? Install MetaMask or Rabby from the App Store / Google Play first, then come back.</div>';
 
-    card.innerHTML = head + subtitle + wcBtn + divider + buttons + hint;
+    card.innerHTML = head + buttons + hint;
     modal.appendChild(card);
     document.body.appendChild(modal);
 
@@ -256,35 +98,18 @@
 
     document.getElementById('monshi-wallet-close').onclick = function(){modal.remove();};
     modal.onclick = function(e){if(e.target===modal)modal.remove();};
-
-    // WalletConnect button handler — this is the magic for PWA / Safari
-    document.getElementById('monshi-wc-btn').onclick = async function(){
-      // Show loading state
-      this.innerHTML = '<span style="font-size:24px;">⏳</span><span>Loading WalletConnect…</span>';
-      this.disabled = true;
-      // Close picker; WC SDK shows its own modal
-      modal.remove();
-      try{
-        await MONSHI.connectViaWalletConnect();
-      }catch(e){
-        console.error('WC button err:', e);
-      }
-    };
   }
 
   MONSHI.connectWallet = async function(){
     if(!window.ethereum){
-      // PWA mode: deeplinks won't return cleanly. Skip picker, use WC directly.
-      if(isPWA()){
-        return MONSHI.connectViaWalletConnect();
-      }
-      // Mobile Safari/Chrome (not PWA): show wallet picker with WC + deeplinks
+      // Mobile + no injected provider: show deeplink picker
       if(isMobileNoWallet()){
         showMobileWalletPicker();
         return null;
       }
-      // Desktop: try WalletConnect (QR code) since user has no extension
-      return MONSHI.connectViaWalletConnect();
+      // Desktop: just alert
+      alert('Install a wallet (MetaMask, Phantom, Rabby) to unlock perks');
+      return null;
     }
     try{
       var accs = await window.ethereum.request({method:'eth_requestAccounts'});
@@ -315,10 +140,6 @@
     MONSHI.wallet=null;MONSHI.balance=0;MONSHI.tier=TIERS[0];
     localStorage.removeItem('monshi_wallet');
     localStorage.removeItem('monshi_balance');
-    // Also clear WC session if active
-    if(wcProvider && wcProvider.disconnect){
-      try{wcProvider.disconnect();}catch(e){}
-    }
     MONSHI.updateBadge();
     window.dispatchEvent(new Event('monshi:disconnect'));
   };
