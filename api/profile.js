@@ -77,7 +77,7 @@ export default async function handler(req, res) {
   const fmtBal = balance>=1e9?(balance/1e9).toFixed(1)+'B':balance>=1e6?(balance/1e6).toFixed(2)+'M':balance>=1e3?(balance/1e3).toFixed(1)+'K':Math.floor(balance);
   
   const ogParams = new URLSearchParams({game:`${playerName}'S PROFILE`,score:totalScore,name:playerName,sub:`${playedGames.length} games · ${tier.emoji} ${tier.name}`});
-  const ogImage = `https://monshi.xyz/api/og?${ogParams.toString()}`;
+  const ogImage = `https://monshi-fafo.vercel.app/api/og?${ogParams.toString()}`;
   
   const shortW = wallet.slice(0,6)+'...'+wallet.slice(-4);
   
@@ -157,7 +157,7 @@ ${results.map(r=>{
   </div>
   
   <div class="center">
-    <a class="share-btn" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out ${playerName}'s @Monshi_Monpad ARCADE profile — ${totalScore.toLocaleString()} pts across ${playedGames.length} games. https://monshi.xyz/api/profile?wallet=${wallet} $MONSHI #Monad`)}" target="_blank">SHARE PROFILE 𝕏</a>
+    <a class="share-btn" href="https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out ${playerName}'s @Monshi_Monpad ARCADE profile — ${totalScore.toLocaleString()} pts across ${playedGames.length} games. https://monshi-fafo.vercel.app/api/profile?wallet=${wallet} $MONSHI #Monad`)}" target="_blank">SHARE PROFILE 𝕏</a>
   </div>
 </div>
 <script>function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}</script>

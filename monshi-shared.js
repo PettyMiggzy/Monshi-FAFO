@@ -217,7 +217,7 @@
     }
     return code;
   };
-  MONSHI.getRefLink = function(){return 'https://monshi.xyz?ref='+MONSHI.getRefCode();};
+  MONSHI.getRefLink = function(){return 'https://monshi-fafo.vercel.app?ref='+MONSHI.getRefCode();};
   MONSHI.checkInboundRef = function(){
     var url = new URL(window.location.href);
     var ref = url.searchParams.get('ref');
