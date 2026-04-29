@@ -48,14 +48,38 @@
         return resolve(window.WalletConnectEthereumProvider);
       }
       var s = document.createElement('script');
-      // Pinned to a known-stable v2 build
-      s.src = 'https://unpkg.com/@walletconnect/ethereum-provider@2.13.3/dist/index.umd.js';
+      // Use esm.sh which transforms ESM → UMD with predictable globals
+      // Falls back to known-stable v2 build
+      s.src = 'https://cdn.jsdelivr.net/npm/@walletconnect/ethereum-provider@2.13.3/dist/index.umd.js';
       s.async = true;
       s.onload = function(){
-        // The UMD bundle exposes the EthereumProvider class
-        var wc = window.EthereumProvider || window['@walletconnect/ethereum-provider'];
+        // The UMD bundle exposes the EthereumProvider class under various globals
+        // depending on version. Try them all.
+        var candidates = [
+          window.EthereumProvider,
+          window['@walletconnect/ethereum-provider'],
+          window.WalletConnectEthereumProvider,
+          window.WalletConnect,
+          window.WalletConnectProvider
+        ];
+        var wc = null;
+        for(var i=0;i<candidates.length;i++){
+          var c = candidates[i];
+          if(c && typeof c.init === 'function'){
+            wc = c; break;
+          }
+          // Some versions wrap it under .default
+          if(c && c.default && typeof c.default.init === 'function'){
+            wc = c.default; break;
+          }
+          // Some versions expose EthereumProvider as a class with a static init
+          if(c && c.EthereumProvider && typeof c.EthereumProvider.init === 'function'){
+            wc = c.EthereumProvider; break;
+          }
+        }
         if(!wc){
-          reject(new Error('WalletConnect SDK loaded but global not found'));
+          var globals = Object.keys(window).filter(function(k){return /wallet|ethereum|provider/i.test(k);});
+          reject(new Error('WC SDK loaded but no init() found. Globals seen: ' + globals.slice(0,8).join(',')));
           return;
         }
         window.WalletConnectEthereumProvider = wc;
