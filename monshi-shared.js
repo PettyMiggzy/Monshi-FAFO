@@ -32,13 +32,21 @@
   MONSHI.NFT_CONTRACT = NFT_CONTRACT;
 
   // ── Wallet connect ──
-  // Detect mobile: no window.ethereum + touch device
+  function isMobile(){
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }
+  function isPWA(){
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  }
+  function hasInjectedWallet(){
+    // True only if we have a REAL wallet provider (not a stub)
+    return !!(window.ethereum && (window.ethereum.isMetaMask || window.ethereum.isRabby || window.ethereum.isTrust || window.ethereum.isCoinbaseWallet || window.ethereum.request));
+  }
   function isMobileNoWallet(){
-    return !window.ethereum && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    return isMobile() && !hasInjectedWallet();
   }
   function isInWalletBrowser(){
-    // Heuristic: window.ethereum exists AND on mobile = we're in MetaMask/Rabby/etc browser
-    return !!window.ethereum && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    return isMobile() && hasInjectedWallet();
   }
 
   // Build a wallet deeplink: each mobile wallet has its own scheme that opens
@@ -61,6 +69,7 @@
     if(old) old.remove();
 
     var deeplinks = getWalletDeeplinks();
+    var pwa = isPWA();
     var modal = document.createElement('div');
     modal.id = 'monshi-wallet-modal';
     modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,8,.92);z-index:99998;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(6px);';
@@ -71,8 +80,11 @@
     var head = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
       '<div style="font-size:14px;letter-spacing:3px;font-weight:900;color:#FCD34D;">CONNECT WALLET</div>' +
       '<button id="monshi-wallet-close" style="background:rgba(0,0,0,.5);border:1px solid rgba(168,85,247,.4);color:#fff;width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;">✕</button>' +
-      '</div>' +
-      '<div style="font-size:11px;color:rgba(196,181,253,.85);letter-spacing:1px;margin-bottom:18px;line-height:1.55;">Tap a wallet to open it. Once inside the wallet\'s browser, this site will load again with connect support.</div>';
+      '</div>';
+
+    var subtitle = pwa
+      ? '<div style="font-size:11px;color:rgba(252,211,77,.95);letter-spacing:1px;margin-bottom:18px;line-height:1.55;background:rgba(252,211,77,.1);border:1px solid rgba(252,211,77,.4);border-radius:8px;padding:10px 14px;">📱 <b>PWA detected:</b> Tap a wallet below — it\'ll open the app and load this site inside it. Connect there.</div>'
+      : '<div style="font-size:11px;color:rgba(196,181,253,.85);letter-spacing:1px;margin-bottom:18px;line-height:1.55;">Tap your wallet — it\'ll open the app pointed at this site, where connecting works.</div>';
 
     var buttons = deeplinks.map(function(w){
       return '<a href="' + w.url + '" style="display:flex;align-items:center;gap:14px;background:rgba(0,0,0,.45);border:1.5px solid rgba(168,85,247,.4);border-radius:12px;padding:14px 18px;margin-bottom:8px;color:#fff;text-decoration:none;font-family:Orbitron,sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;">' +
@@ -84,7 +96,7 @@
 
     var hint = '<div style="margin-top:14px;font-size:10px;color:rgba(167,139,250,.55);letter-spacing:1px;line-height:1.6;text-align:center;">Don\'t have one? Install MetaMask or Rabby from the App Store / Google Play first, then come back.</div>';
 
-    card.innerHTML = head + buttons + hint;
+    card.innerHTML = head + subtitle + buttons + hint;
     modal.appendChild(card);
     document.body.appendChild(modal);
 
@@ -101,13 +113,19 @@
   }
 
   MONSHI.connectWallet = async function(){
-    if(!window.ethereum){
-      // Mobile + no injected provider: show deeplink picker
-      if(isMobileNoWallet()){
-        showMobileWalletPicker();
-        return null;
-      }
-      // Desktop: just alert
+    // PWA mode: ALWAYS show picker (deeplinks) regardless of window.ethereum
+    // because window.ethereum stub in PWA doesn't actually work
+    if(isPWA() && isMobile()){
+      showMobileWalletPicker();
+      return null;
+    }
+    // Mobile browser without real wallet provider: show picker
+    if(isMobileNoWallet()){
+      showMobileWalletPicker();
+      return null;
+    }
+    // No injected provider on desktop or anywhere else
+    if(!hasInjectedWallet()){
       alert('Install a wallet (MetaMask, Phantom, Rabby) to unlock perks');
       return null;
     }
