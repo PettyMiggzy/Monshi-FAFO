@@ -1,5 +1,5 @@
 // Monshi Arcade Service Worker v2 — bump for WalletConnect rollout
-var CACHE = 'monshi-v2';
+var CACHE = 'monshi-v3';
 var STATIC = [
   '/',
   '/manifest.json',
