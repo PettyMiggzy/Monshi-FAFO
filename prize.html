@@ -11,6 +11,7 @@
 <meta name="apple-mobile-web-app-title" content="MONSHI">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <title>🏆 600 MON PRIZE — MONSHI ARCADE</title>
+<script src="/games-config.js"></script>
 <script src="/monshi-shared.js"></script>
 <script src="/referral-track.js" defer></script>
 <script src="/prize-banner.js" defer></script>
@@ -140,7 +141,7 @@ h1{font-family:Orbitron,sans-serif;font-size:clamp(40px,8vw,96px);font-weight:90
 <script>
 var SUPABASE_URL='https://cuqhqcmrgpdjlhyqztnc.supabase.co';
 var SUPABASE_KEY='sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
-var TABLES=['scores','scores_shooter','scores_racer','scores_flappy','scores_snake','scores_breaker','scores_pump','scores_flip','scores_whack','scores_2048','scores_slots','scores_memory','scores_plinko','scores_rug','scores_wordle','scores_tetris','scores_c4','scores_trivia','scores_mine','scores_bj','scores_whale','scores_trade','scores_pong','scores_heist'];
+var TABLES=window.MONSHI_GAMES.ALL_SCORE_TABLES;
 
 // Prize end timestamp (72hr from when this was generated)
 var PRIZE_START = 1777373655508;

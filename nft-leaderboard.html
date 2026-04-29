@@ -86,7 +86,7 @@ h1{font-family:Orbitron,sans-serif;font-size:clamp(36px,6vw,72px);font-weight:90
 <script>
 var SUPABASE_URL='https://cuqhqcmrgpdjlhyqztnc.supabase.co';
 var SUPABASE_KEY='sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
-var TABLES=['scores','scores_shooter','scores_racer','scores_flappy','scores_snake','scores_breaker','scores_pump','scores_flip','scores_whack','scores_2048','scores_slots','scores_memory','scores_plinko','scores_rug','scores_wordle','scores_tetris','scores_c4','scores_trivia','scores_mine','scores_bj','scores_whale','scores_trade','scores_pong','scores_heist'];
+var TABLES=window.MONSHI_GAMES.ALL_SCORE_TABLES;
 var allScores=[],currentMode='combined';
 
 function shortAddr(a){return a.slice(0,6)+'...'+a.slice(-4);}
@@ -195,5 +195,6 @@ document.querySelectorAll('.tab').forEach(function(t){
 loadAll();
 </script>
 <script src="/pwa-install.js" defer></script>
+<script src="/games-config.js"></script>
 </body>
 </html>
