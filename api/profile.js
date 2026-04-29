@@ -145,7 +145,7 @@ body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;colo
   <div class="stats-row">
     <div class="stat"><div class="v" style="color:#4ADE80;">${totalScore.toLocaleString()}</div><div class="l">TOTAL POINTS</div></div>
     <div class="stat"><div class="v">${playedGames.length}/22</div><div class="l">GAMES PLAYED</div></div>
-    <div class="stat"><div class="v" style="color:${tier.color};">${tier.name==='SHRIMP'?'1.0x':tier.name==='CRAB'?'1.5x':tier.name==='DOLPHIN'?'2.0x':tier.name==='WHALE'?'2.5x':'3.0x'}</div><div class="l">SCORE MULTIPLIER</div></div>
+    <div class="stat"><div class="v" style="color:${tier.color};">${tier.name==='SHRIMP'?'1.0x':tier.name==='CRAB'?'1.5x':tier.name==='DOLPHIN'?'2.0x':tier.name==='WHALE'?'2.5x':'5.0x'}</div><div class="l">SCORE MULTIPLIER</div></div>
   </div>
   
   <div class="section-h">📊 ALL GAMES</div>
