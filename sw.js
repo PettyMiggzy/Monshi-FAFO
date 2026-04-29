@@ -1,5 +1,5 @@
-// Monshi Arcade Service Worker v1
-var CACHE = 'monshi-v1';
+// Monshi Arcade Service Worker v2 — bump for WalletConnect rollout
+var CACHE = 'monshi-v2';
 var STATIC = [
   '/',
   '/manifest.json',
@@ -39,6 +39,20 @@ self.addEventListener('fetch', function(e){
       fetch(e.request).then(function(r){
         var copy = r.clone();
         caches.open(CACHE).then(function(c){c.put(e.request, copy).catch(function(){});});
+        return r;
+      }).catch(function(){return caches.match(e.request);})
+    );
+    return;
+  }
+  
+  // JS files: network-first too (so code updates ship without cache invalidation)
+  if(url.indexOf('.js') > 0 && url.indexOf(self.location.origin) === 0){
+    e.respondWith(
+      fetch(e.request).then(function(r){
+        if(r.status === 200){
+          var copy = r.clone();
+          caches.open(CACHE).then(function(c){c.put(e.request, copy).catch(function(){});});
+        }
         return r;
       }).catch(function(){return caches.match(e.request);})
     );
