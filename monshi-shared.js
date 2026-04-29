@@ -77,19 +77,21 @@
     var cached = localStorage.getItem('monshi_nft_image');
     if(cached) return cached;
     try{
-      // OpenSea v2 API - get owned NFTs by wallet for this collection
-      var r = await fetch('https://api.opensea.io/api/v2/chain/monad/account/'+MONSHI.wallet+'/nfts?collection=monshi-nft-collection-563194175&limit=1');
-      if(!r.ok) throw new Error('opensea '+r.status);
+      // Use server-side /api/nft-check proxy (OpenSea v2 requires API key)
+      var r = await fetch('/api/nft-check?wallet='+MONSHI.wallet);
+      if(!r.ok) throw new Error('nft proxy '+r.status);
       var data = await r.json();
-      if(data.nfts && data.nfts[0]){
-        var img = data.nfts[0].image_url || data.nfts[0].display_image_url;
-        if(img){
-          localStorage.setItem('monshi_nft_image', img);
-          localStorage.setItem('monshi_nft_id', data.nfts[0].identifier || '');
-          localStorage.setItem('monshi_nft_name', data.nfts[0].name || '');
-          return img;
+      if(data.firstImage){
+        localStorage.setItem('monshi_nft_image', data.firstImage);
+        if(data.items && data.items[0]){
+          localStorage.setItem('monshi_nft_id', data.items[0].id || '');
+          localStorage.setItem('monshi_nft_name', data.items[0].name || '');
         }
+        localStorage.setItem('monshi_nft_count', String(data.count||0));
+        return data.firstImage;
       }
+      // No NFTs but call succeeded — cache 0 count
+      localStorage.setItem('monshi_nft_count', '0');
     }catch(e){console.log('nft image err',e);}
     return null;
   };

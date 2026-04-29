@@ -108,7 +108,7 @@ async function checkNFTHolders(){
   var uniqueWallets = Array.from(new Set(allScores.map(function(s){return s.wallet.toLowerCase();})));
   // Try to use OpenSea collection holders endpoint
   try{
-    var r = await fetch('https://api.opensea.io/api/v2/collection/monshi-nft-collection-563194175/nfts?limit=200');
+    var r = await fetch('/api/nft-check?collection=1&limit=200');
     if(r.ok){
       var data = await r.json();
       if(data.nfts){
