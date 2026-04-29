@@ -240,7 +240,7 @@ function renderGauge(score, factors){
   // Number + label
   document.getElementById('scoreN').textContent = score;
   var label, color, emoji, verdict;
-  if(score >= 80){label='MAX BULLISH';color='#22C55E';emoji='🚀';verdict='Bag is COOKING. Whales accumulating, buy pressure stacking. Don\\'t blink.';}
+  if(score >= 80){label='MAX BULLISH';color='#22C55E';emoji='🚀';verdict='Bag is COOKING. Whales accumulating, buy pressure stacking. Don\'t blink.';}
   else if(score >= 65){label='BULLISH';color='#4ADE80';emoji='📈';verdict='Healthy momentum. Good entries available, distribution looking clean.';}
   else if(score >= 50){label='NEUTRAL';color='#FCD34D';emoji='⚖️';verdict='Mixed signals. Watch the next 24h closely. Could break either direction.';}
   else if(score >= 35){label='BEARISH';color='#F97316';emoji='📉';verdict='Sell pressure building. Volume softening. Position cautiously.';}
