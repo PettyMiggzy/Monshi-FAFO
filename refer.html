@@ -85,8 +85,8 @@ function render(){
     return;
   }
   
-  var refLink = 'https://monshi.xyz/?ref='+MONSHI.wallet;
-  var displayLink = 'monshi.xyz/?ref='+MONSHI.wallet.slice(0,6)+'...'+MONSHI.wallet.slice(-4);
+  var refLink = window.location.origin+'/?ref='+MONSHI.wallet;
+  var displayLink = window.location.host+'/?ref='+MONSHI.wallet.slice(0,6)+'...'+MONSHI.wallet.slice(-4);
   
   var html = '<div class="card">'+
     '<div class="cardTitle">🔗 YOUR REFERRAL LINK</div>'+
