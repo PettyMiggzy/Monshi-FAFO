@@ -62,9 +62,12 @@
   };
   RENE.submitScore = function(table, score){
     var name = localStorage.getItem('monshi_name')||'ANON';
+    var wallet = (window.MONSHI && MONSHI.wallet) ? MONSHI.wallet.toLowerCase() : null;
+    var body = {name:name, score:Math.floor(score)};
+    if(wallet) body.wallet = wallet;
     return fetch(SUPABASE_URL+'/rest/v1/'+table,{
       method:'POST',headers:RENE.sbH(),
-      body:JSON.stringify({name:name,score:Math.floor(score)})
+      body:JSON.stringify(body)
     }).catch(function(e){console.log('submit err',e);});
   };
   RENE.fetchBestScore = async function(table){

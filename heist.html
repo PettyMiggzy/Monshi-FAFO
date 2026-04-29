@@ -114,7 +114,7 @@ function showDeath(GN,GU,T,sc,sub,isWin){
   if(playerName){submitS(T,sc,render);}else{document.getElementById('nS').style.display='block';render();}
   document.getElementById('dSb').onclick=function(){var n=document.getElementById('dN').value.trim();playerName=(n||'ANON').toUpperCase().slice(0,16);localStorage.setItem('monshi_name',playerName);document.getElementById('nS').style.display='none';submitS(T,sc,render);};
   document.getElementById('dN').onkeydown=function(e){if(e.key==='Enter')document.getElementById('dSb').click();};
-  document.getElementById('btnShare').onclick=function(){var shareUrl='https://monshi.xyz/api/share?game='+encodeURIComponent(GN)+'&score='+sc+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+(playerRank||0)+'&won='+(isWin?'1':'0');var tw='I scored '+sc+' on '+GN+' on @Monshi_Monpad ARCADE 🎴\\n\\nNFT HOLDERS ONLY - flex required\\n'+shareUrl+'\\n\\n$MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');};
+  document.getElementById('btnShare').onclick=function(){var shareUrl='https://monshi-fafo.vercel.app/api/share?game='+encodeURIComponent(GN)+'&score='+sc+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+(playerRank||0)+'&won='+(isWin?'1':'0');var tw='I scored '+sc+' on '+GN+' on @Monshi_Monpad ARCADE 🎴\\n\\nNFT HOLDERS ONLY - flex required\\n'+shareUrl+'\\n\\n$MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');};
   document.getElementById('btnBuy').onclick=function(){window.open(BUY_URL,'_blank');};
 }
 
@@ -232,7 +232,7 @@ function pick(correct, el, optsEl){
 }
 
 function done(){
-  showDeath('MONSHI HEIST', 'https://monshi.xyz/heist.html', 'scores_heist', sc, '8 rounds done', sc>=600);
+  showDeath('MONSHI HEIST', 'https://monshi-fafo.vercel.app/heist.html', 'scores_heist', sc, '8 rounds done', sc>=600);
 }
 
 setTimeout(render, 600);

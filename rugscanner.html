@@ -201,7 +201,7 @@ body::before{content:"";position:fixed;inset:0;background:radial-gradient(circle
 var TABLE = 'scores_rugscan';
 var SUPABASE_URL = 'https://cuqhqcmrgpdjlhyqztnc.supabase.co';
 var SUPABASE_KEY = 'sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
-var PLAY_URL = 'https://monshi.xyz/rugscanner.html';
+var PLAY_URL = 'https://monshi-fafo.vercel.app/rugscanner.html';
 
 // Audio
 var AC=window.AudioContext||window.webkitAudioContext, actx=null, master=null;
@@ -370,7 +370,10 @@ function fetchLB(){
 }
 function submitScore(score, cb){
   if(!playerName){if(cb)cb();return;}
-  fetch(SUPABASE_URL+'/rest/v1/'+TABLE,{method:'POST',headers:sbHeaders(),body:JSON.stringify({name:playerName,score:Math.floor(score)})})
+  var wallet = (window.MONSHI && MONSHI.wallet) ? MONSHI.wallet.toLowerCase() : null;
+  var body = {name:playerName,score:Math.floor(score)};
+  if(wallet) body.wallet = wallet;
+  fetch(SUPABASE_URL+'/rest/v1/'+TABLE,{method:'POST',headers:sbHeaders(),body:JSON.stringify(body)})
     .then(function(){return fetch(SUPABASE_URL+'/rest/v1/'+TABLE+'?select=name,score&order=score.desc&limit=10',{headers:sbHeaders()});})
     .then(function(r){return r.json();})
     .then(function(d){if(Array.isArray(d)){leaderboard=d;playerRank=leaderboard.findIndex(function(s){return s.name===playerName && s.score===Math.floor(score);})+1;}if(cb)cb();})

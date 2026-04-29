@@ -81,7 +81,7 @@ function showDeath(GN,GU,T,sc,sub,isWin){
   if(playerName){submitS(T,sc,render);}else{document.getElementById('nS').style.display='block';render();}
   document.getElementById('dSb').onclick=function(){var n=document.getElementById('dN').value.trim();playerName=(n||'ANON').toUpperCase().slice(0,16);localStorage.setItem('monshi_name',playerName);document.getElementById('nS').style.display='none';submitS(T,sc,render);};
   document.getElementById('dN').onkeydown=function(e){if(e.key==='Enter')document.getElementById('dSb').click();};
-  document.getElementById('btnShare').onclick=function(){var shareUrl='https://monshi.xyz/api/share?game='+encodeURIComponent(GN)+'&score='+sc+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+playerRank+'&goto='+encodeURIComponent(GU);var tw='I scored '+sc+' on '+GN+' on the MONSHI ARCADE 🚀 Can you beat me? '+shareUrl+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');};
+  document.getElementById('btnShare').onclick=function(){var shareUrl='https://monshi-fafo.vercel.app/api/share?game='+encodeURIComponent(GN)+'&score='+sc+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+playerRank+'&goto='+encodeURIComponent(GU);var tw='I scored '+sc+' on '+GN+' on the MONSHI ARCADE 🚀 Can you beat me? '+shareUrl+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');};
   document.getElementById('btnBuy').onclick=function(){window.open(BUY_URL,'_blank');};
 }
 var AC=window.AudioContext||window.webkitAudioContext,actx=null,ma=null;
@@ -116,7 +116,7 @@ var QS=[
 var idx=0,sc=0,tm=15,iv;
 function showQ(){if(idx>=QS.length){return done();}var q=QS[idx];document.getElementById("q").textContent=q.q;document.getElementById("qN").textContent=(idx+1)+"/10";var opts=document.getElementById("opts");opts.innerHTML="";q.a.forEach(function(opt,i){var o=document.createElement("div");o.className="opt";o.textContent=String.fromCharCode(65+i)+". "+opt;o.onclick=function(){pick(i);};opts.appendChild(o);});tm=15;document.getElementById("tm").textContent=tm;clearInterval(iv);iv=setInterval(function(){tm--;document.getElementById("tm").textContent=tm;if(tm<=0){clearInterval(iv);pick(-1);}},1000);}
 function pick(i){clearInterval(iv);initA();var q=QS[idx];var opts=document.querySelectorAll(".opt");opts[q.c].classList.add("right");if(i===q.c){sc+=100+tm*5;sfxCoin();}else{if(i>=0)opts[i].classList.add("wrong");sfxLose();}document.getElementById("sc").textContent=sc;setTimeout(function(){idx++;showQ();},1200);}
-function done(){showDeath("CRYPTO TRIVIA","https://monshi.xyz/trivia.html","scores_trivia",sc,"finished 10",sc>=700);}
+function done(){showDeath("CRYPTO TRIVIA","https://monshi-fafo.vercel.app/trivia.html","scores_trivia",sc,"finished 10",sc>=700);}
 showQ();fetchLB("scores_trivia");</script>
 <script src="/pwa-install.js" defer></script>
 </body></html>

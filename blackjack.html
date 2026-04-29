@@ -81,7 +81,7 @@ function showDeath(GN,GU,T,sc,sub,isWin){
   if(playerName){submitS(T,sc,render);}else{document.getElementById('nS').style.display='block';render();}
   document.getElementById('dSb').onclick=function(){var n=document.getElementById('dN').value.trim();playerName=(n||'ANON').toUpperCase().slice(0,16);localStorage.setItem('monshi_name',playerName);document.getElementById('nS').style.display='none';submitS(T,sc,render);};
   document.getElementById('dN').onkeydown=function(e){if(e.key==='Enter')document.getElementById('dSb').click();};
-  document.getElementById('btnShare').onclick=function(){var shareUrl='https://monshi.xyz/api/share?game='+encodeURIComponent(GN)+'&score='+sc+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+playerRank+'&goto='+encodeURIComponent(GU);var tw='I scored '+sc+' on '+GN+' on the MONSHI ARCADE 🚀 Can you beat me? '+shareUrl+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');};
+  document.getElementById('btnShare').onclick=function(){var shareUrl='https://monshi-fafo.vercel.app/api/share?game='+encodeURIComponent(GN)+'&score='+sc+'&name='+encodeURIComponent(playerName||'ANON')+'&rank='+playerRank+'&goto='+encodeURIComponent(GU);var tw='I scored '+sc+' on '+GN+' on the MONSHI ARCADE 🚀 Can you beat me? '+shareUrl+' $MONSHI #Monad';window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(tw),'_blank');};
   document.getElementById('btnBuy').onclick=function(){window.open(BUY_URL,'_blank');};
 }
 var AC=window.AudioContext||window.webkitAudioContext,actx=null,ma=null;
@@ -100,7 +100,7 @@ document.getElementById("bDeal").onclick=function(){bg=parseInt(document.getElem
 document.getElementById("bHit").onclick=function(){ph.push(deck.pop());initA();sfxClick();render();if(total(ph)>21)setTimeout(function(){endRound("BUST");},600);};
 function stand(){revealed=true;render();var iv=setInterval(function(){if(total(dh)<17){dh.push(deck.pop());render();}else{clearInterval(iv);setTimeout(function(){var pt=total(ph),dt=total(dh);if(pt>21)endRound("BUST");else if(dt>21||pt>dt)endRound("WIN");else if(pt<dt)endRound("LOSE");else endRound("PUSH");},400);}},500);}
 document.getElementById("bStand").onclick=stand;
-function endRound(r){if(r==="WIN"){bal+=bg;sfxWin();}else if(r==="BUST"||r==="LOSE"){bal-=bg;sfxLose();}render();document.getElementById("bDeal").style.display="";document.getElementById("bHit").style.display="none";document.getElementById("bStand").style.display="none";if(bal<=0){setTimeout(function(){showDeath("DEV BLACKJACK","https://monshi.xyz/blackjack.html","scores_bj",0,"bankrupt",false);bal=100;},800);}}
+function endRound(r){if(r==="WIN"){bal+=bg;sfxWin();}else if(r==="BUST"||r==="LOSE"){bal-=bg;sfxLose();}render();document.getElementById("bDeal").style.display="";document.getElementById("bHit").style.display="none";document.getElementById("bStand").style.display="none";if(bal<=0){setTimeout(function(){showDeath("DEV BLACKJACK","https://monshi-fafo.vercel.app/blackjack.html","scores_bj",0,"bankrupt",false);bal=100;},800);}}
 fetchLB("scores_bj");</script>
 <script src="/pwa-install.js" defer></script>
 </body></html>

@@ -71,7 +71,7 @@ export default function handler(req, res) {
   
   <!-- Footer CTA -->
   <text x="60" y="600" font-family="Arial Black,sans-serif" font-size="22" font-weight="900" fill="#fff" letter-spacing="4">🚀 CAN YOU BEAT ME?</text>
-  <text x="1140" y="600" font-family="Arial Black,sans-serif" font-size="20" font-weight="900" fill="#4ADE80" text-anchor="end" letter-spacing="3">monshi.xyz</text>
+  <text x="1140" y="600" font-family="Arial Black,sans-serif" font-size="20" font-weight="900" fill="#4ADE80" text-anchor="end" letter-spacing="3">monshi-fafo.vercel.app</text>
 </svg>`;
   
   res.setHeader('Content-Type', 'image/svg+xml');
