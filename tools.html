@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONSHI TOOLS — Tier-Gated Utility Suite</title>
+<meta name="theme-color" content="#7F77DD">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=JetBrains+Mono:wght@400;700;800&family=Bangers&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0612;
+  --surface:#150f24;
+  --card:#1f1735;
+  --card-hover:#2a1f48;
+  --border:#2a1f48;
+  --border-hot:#3d2e6a;
+  --purple:#7F77DD;
+  --purple-bright:#A89FFF;
+  --purple-deep:#5A4FB8;
+  --yellow:#FFE566;
+  --green:#4DFFA0;
+  --red:#FF6B6B;
+  --orange:#FF9F4A;
+  --pink:#EC4899;
+  --cream:#F4ECD8;
+  --muted:#8079A8;
+  --display:'Bowlby One',Impact,sans-serif;
+  --meme:'Bangers',cursive;
+  --mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--mono);
+  background:var(--bg);
+  color:#fff;
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.45 0 0 0 0 0.85 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1;opacity:.4;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(circle at 20% 10%,rgba(127,119,221,0.15),transparent 50%),radial-gradient(circle at 80% 70%,rgba(236,72,153,0.07),transparent 55%);
+  pointer-events:none;z-index:0;
+}
+.wrap{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:24px 20px 80px}
+
+/* MOCKUP TAG */
+.mockup-tag{
+  position:fixed;top:14px;left:50%;transform:translateX(-50%);
+  background:var(--yellow);color:#000;
+  padding:6px 18px;border-radius:0 0 12px 12px;
+  font-family:var(--meme);letter-spacing:2px;font-size:13px;
+  z-index:100;box-shadow:0 4px 14px rgba(255,229,102,0.3);
+}
+
+/* TOPBAR */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 22px;background:var(--surface);
+  border:2px solid var(--border);border-radius:18px;
+  margin:32px 0;flex-wrap:wrap;gap:16px;
+}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-mark{
+  width:54px;height:54px;border-radius:14px;
+  background:linear-gradient(135deg,var(--purple),var(--purple-deep));
+  display:flex;align-items:center;justify-content:center;font-size:28px;
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,0.25);
+}
+.brand-text{display:flex;flex-direction:column;line-height:1}
+.brand-text .l1{font-family:var(--display);font-size:22px;letter-spacing:1.5px;color:#fff;margin-bottom:4px}
+.brand-text .l2{font-family:var(--meme);font-size:12px;letter-spacing:3px;color:var(--purple-bright)}
+.connect-cta{
+  padding:11px 22px;background:var(--purple);color:#fff;
+  border:none;border-radius:11px;
+  font-family:var(--mono);font-size:13px;font-weight:800;letter-spacing:1.2px;
+  cursor:pointer;transition:all .2s;
+  box-shadow:0 4px 0 var(--purple-deep);
+}
+.connect-cta:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--purple-deep)}
+
+/* HERO */
+.hero{
+  padding:48px 36px;
+  background:linear-gradient(135deg,var(--card),var(--surface));
+  border:2px solid var(--border);border-radius:24px;
+  position:relative;overflow:hidden;margin-bottom:40px;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,transparent,transparent 80px,rgba(127,119,221,0.04) 80px,rgba(127,119,221,0.04) 81px);
+  pointer-events:none;
+}
+.hero::after{
+  content:'🛠';position:absolute;right:-30px;top:-40px;
+  font-size:280px;opacity:.04;transform:rotate(-15deg);
+  pointer-events:none;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 12px;border:1px solid var(--purple);border-radius:6px;
+  font-size:10px;letter-spacing:3px;color:var(--purple-bright);
+  font-weight:700;margin-bottom:18px;
+}
+.hero h1{
+  font-family:var(--display);
+  font-size:clamp(44px,7vw,76px);line-height:.95;letter-spacing:-1px;
+  color:#fff;margin-bottom:18px;text-transform:uppercase;
+}
+.hero h1 .acc{color:var(--yellow);display:inline-block;transform:rotate(-2deg)}
+.hero p{
+  font-size:15px;color:var(--muted);line-height:1.7;
+  max-width:680px;
+}
+.hero p strong{color:var(--cream)}
+
+/* USER STATUS BAR */
+.status-bar{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;
+  margin-top:28px;
+}
+@media(max-width:680px){.status-bar{grid-template-columns:1fr}}
+.status-cell{
+  background:rgba(127,119,221,0.06);border:1px solid var(--border);
+  border-radius:12px;padding:14px 18px;
+}
+.status-cell .lbl{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:6px}
+.status-cell .val{font-family:var(--display);font-size:22px;color:#fff;line-height:1}
+.status-cell .val .unit{font-size:14px;color:var(--purple-bright);margin-left:4px}
+.status-cell.tier-mid .val{color:var(--yellow)}
+
+/* TIER LADDER */
+.tier-ladder{
+  background:var(--card);border:2px solid var(--border);border-radius:20px;
+  padding:28px;margin-bottom:40px;
+}
+.tier-ladder-head{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  margin-bottom:24px;flex-wrap:wrap;gap:12px;
+}
+.tier-ladder-head h2{
+  font-family:var(--display);font-size:24px;color:#fff;letter-spacing:.5px;text-transform:uppercase;
+}
+.tier-ladder-head .legend{
+  font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:1px;
+}
+.tier-bars{display:flex;flex-direction:column;gap:14px}
+.tier-bar{
+  display:grid;grid-template-columns:120px 1fr 130px;gap:14px;align-items:center;
+}
+@media(max-width:680px){.tier-bar{grid-template-columns:80px 1fr 110px}}
+.tier-name{
+  font-family:var(--display);font-size:14px;letter-spacing:1.5px;text-transform:uppercase;
+}
+.tier-name .icon{display:block;font-size:22px;margin-bottom:4px}
+.tier-name.basic{color:var(--green)}
+.tier-name.mid{color:var(--yellow)}
+.tier-name.whale{color:var(--pink)}
+
+.tier-track{
+  height:32px;background:#0d0820;border:1px solid var(--border);border-radius:8px;
+  overflow:hidden;position:relative;
+}
+.tier-fill{
+  position:absolute;left:0;top:0;bottom:0;border-radius:7px;
+  display:flex;align-items:center;padding-left:14px;
+  font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.5px;color:#000;
+}
+.tier-bar.basic .tier-fill{width:100%;background:linear-gradient(90deg,#4DFFA0,#33cc80);color:#04221a}
+.tier-bar.mid .tier-fill{width:65%;background:linear-gradient(90deg,#FFE566,#FF9F4A);color:#3d2e00}
+.tier-bar.whale .tier-fill{width:30%;background:linear-gradient(90deg,#EC4899,#a32563);color:#fff}
+.tier-req{
+  font-family:var(--mono);font-size:11px;color:var(--cream);text-align:right;
+}
+.tier-req b{display:block;font-family:var(--display);font-size:16px;color:#fff;letter-spacing:0;line-height:1.1}
+
+.tier-status-row{
+  margin-top:24px;padding-top:20px;
+  border-top:1px dashed var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--mono);font-size:12px;flex-wrap:wrap;gap:10px;
+}
+.tier-status-row .you{color:var(--muted)}
+.tier-status-row .you b{color:var(--yellow);font-family:var(--display);font-size:18px;letter-spacing:0;margin-left:8px}
+
+/* TOOL GRID */
+.tools-section{margin-bottom:40px}
+.section-title{
+  font-family:var(--display);font-size:clamp(28px,4vw,40px);
+  text-transform:uppercase;letter-spacing:.5px;color:#fff;
+  margin-bottom:8px;display:flex;align-items:center;gap:14px;
+}
+.section-title .num{
+  font-family:var(--meme);background:var(--yellow);color:#000;
+  padding:4px 12px;border-radius:8px;font-size:22px;letter-spacing:2px;
+  transform:rotate(-3deg);
+}
+.section-sub{color:var(--muted);font-size:14px;margin-bottom:28px;letter-spacing:.5px}
+
+.tool-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;
+}
+
+.tool-card{
+  background:var(--card);border:2px solid var(--border);border-radius:18px;
+  padding:24px;position:relative;overflow:hidden;
+  transition:all .25s ease;
+  display:flex;flex-direction:column;
+  min-height:340px;
+}
+.tool-card:hover{transform:translateY(-4px);border-color:var(--purple-bright);box-shadow:0 12px 30px rgba(127,119,221,0.2)}
+
+.tool-card .tier-tag{
+  position:absolute;top:14px;right:14px;
+  font-family:var(--mono);font-size:9px;letter-spacing:1.5px;font-weight:800;
+  padding:4px 10px;border-radius:6px;
+  text-transform:uppercase;
+}
+.tool-card .tier-tag.basic{background:rgba(77,255,160,0.12);color:var(--green);border:1px solid rgba(77,255,160,0.3)}
+.tool-card .tier-tag.mid{background:rgba(255,229,102,0.12);color:var(--yellow);border:1px solid rgba(255,229,102,0.3)}
+.tool-card .tier-tag.whale{background:rgba(236,72,153,0.15);color:var(--pink);border:1px solid rgba(236,72,153,0.3)}
+
+.tool-icon{
+  width:56px;height:56px;border-radius:14px;
+  background:linear-gradient(135deg,var(--purple),var(--purple-deep));
+  display:flex;align-items:center;justify-content:center;font-size:30px;
+  margin-bottom:16px;box-shadow:inset 0 -3px 0 rgba(0,0,0,0.25);
+}
+.tool-card.basic .tool-icon{background:linear-gradient(135deg,#4DFFA0,#33cc80)}
+.tool-card.mid .tool-icon{background:linear-gradient(135deg,#FFE566,#FF9F4A)}
+.tool-card.whale .tool-icon{background:linear-gradient(135deg,#EC4899,#a32563)}
+
+.tool-card h3{
+  font-family:var(--display);font-size:20px;color:#fff;
+  letter-spacing:.5px;margin-bottom:8px;text-transform:uppercase;
+}
+.tool-card .desc{
+  color:var(--muted);font-size:13px;line-height:1.65;flex:1;
+  margin-bottom:18px;
+}
+.tool-card .feat-list{
+  display:flex;flex-direction:column;gap:6px;margin-bottom:18px;
+}
+.tool-card .feat-row{
+  display:flex;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:11px;color:var(--cream);letter-spacing:.5px;
+}
+.tool-card .feat-row::before{
+  content:'';width:5px;height:5px;border-radius:50%;background:var(--purple-bright);
+  flex-shrink:0;
+}
+.tool-card.basic .feat-row::before{background:var(--green)}
+.tool-card.mid .feat-row::before{background:var(--yellow)}
+.tool-card.whale .feat-row::before{background:var(--pink)}
+
+.tool-cta{
+  width:100%;padding:13px;border:none;border-radius:11px;
+  font-family:var(--display);font-size:13px;letter-spacing:1.5px;
+  cursor:pointer;transition:all .15s;text-transform:uppercase;
+}
+.tool-cta.unlocked{
+  background:linear-gradient(135deg,var(--green),#33cc80);color:#04221a;
+  box-shadow:0 4px 0 #1f7a4a;
+}
+.tool-cta.unlocked:hover{transform:translateY(-2px);box-shadow:0 6px 0 #1f7a4a}
+
+.tool-cta.locked{
+  background:rgba(127,119,221,0.08);color:var(--muted);
+  border:1px solid var(--border);cursor:not-allowed;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.tool-cta.locked .lock{font-size:14px}
+
+.tool-cta.coming{
+  background:rgba(255,159,74,0.1);color:var(--orange);
+  border:1px solid rgba(255,159,74,0.3);
+}
+
+/* MULTISENDER PREVIEW PANEL */
+.multisender-preview{
+  margin-top:48px;
+  background:var(--card);border:2px solid var(--green);
+  border-radius:24px;padding:32px;
+  position:relative;overflow:hidden;
+}
+.multisender-preview::before{
+  content:'';position:absolute;left:0;top:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--green),var(--purple));
+}
+.preview-head{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:22px;flex-wrap:wrap;gap:10px;
+}
+.preview-head h2{
+  font-family:var(--display);font-size:26px;color:#fff;letter-spacing:.5px;
+  display:flex;align-items:center;gap:12px;text-transform:uppercase;
+}
+.preview-head .live{
+  background:rgba(77,255,160,0.1);color:var(--green);
+  padding:6px 12px;border-radius:8px;
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;font-weight:800;
+  border:1px solid rgba(77,255,160,0.3);
+}
+.preview-head .live::before{
+  content:'';display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--green);margin-right:6px;
+  animation:livepulse 1.5s ease infinite;
+}
+@keyframes livepulse{0%,100%{opacity:.6}50%{opacity:1}}
+
+.ms-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:24px}
+@media(max-width:900px){.ms-grid{grid-template-columns:1fr}}
+
+.ms-input-area{
+  background:#0d0820;border:1.5px solid var(--border);border-radius:14px;
+  padding:18px;
+}
+.ms-input-row1{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:10px;font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--muted);font-weight:700;
+}
+.ms-input-row1 .balance{color:var(--cream)}
+.ms-input-row1 .balance b{color:var(--yellow);margin-left:6px;font-family:var(--display);font-size:14px;letter-spacing:0}
+
+.ms-token-row{
+  display:flex;align-items:center;gap:12px;margin-bottom:14px;
+}
+.ms-token-pick{
+  flex:1;padding:12px 16px;background:var(--card);
+  border:1.5px solid var(--border);border-radius:11px;
+  font-family:var(--mono);font-size:13px;font-weight:700;color:var(--cream);
+  display:flex;align-items:center;gap:10px;cursor:pointer;
+}
+.ms-token-pick .ico{
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--purple-deep));
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  box-shadow:inset 0 -2px 0 rgba(0,0,0,0.25);
+}
+.ms-token-pick .arrow{margin-left:auto;color:var(--muted)}
+
+.ms-textarea{
+  width:100%;
+  background:#0a0612;
+  border:1.5px solid var(--border);border-radius:11px;
+  padding:14px;
+  font-family:var(--mono);font-size:12px;line-height:1.65;
+  color:var(--cream);min-height:200px;resize:vertical;outline:none;
+  transition:border-color .2s;
+}
+.ms-textarea:focus{border-color:var(--purple)}
+.ms-textarea::placeholder{color:rgba(128,121,168,0.5)}
+
+.ms-hint{
+  font-family:var(--mono);font-size:10px;color:var(--muted);
+  margin-top:8px;letter-spacing:.5px;line-height:1.5;
+}
+.ms-hint b{color:var(--purple-bright)}
+
+.ms-summary{
+  background:#0d0820;border:1.5px solid var(--border);border-radius:14px;
+  padding:18px;display:flex;flex-direction:column;gap:14px;
+}
+.ms-summary-title{
+  font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--muted);
+  font-weight:700;padding-bottom:12px;border-bottom:1px dashed var(--border);
+}
+.ms-summary-row{display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.ms-summary-row .k{color:var(--muted);font-family:var(--mono);letter-spacing:.5px}
+.ms-summary-row .v{color:#fff;font-family:var(--display);font-size:16px;letter-spacing:0;line-height:1}
+.ms-summary-row .v.green{color:var(--green)}
+.ms-summary-row .v.yellow{color:var(--yellow)}
+.ms-summary-row .v.red{color:var(--red)}
+
+.ms-cta{
+  width:100%;padding:18px;
+  background:linear-gradient(135deg,var(--green),#33cc80);color:#04221a;
+  border:none;border-radius:14px;
+  font-family:var(--display);font-size:18px;letter-spacing:1.5px;cursor:pointer;
+  box-shadow:0 5px 0 #1f7a4a;transition:all .15s;
+  text-transform:uppercase;
+}
+.ms-cta:hover{transform:translateY(-3px);box-shadow:0 8px 0 #1f7a4a}
+.ms-cta:active{transform:translateY(2px);box-shadow:0 3px 0 #1f7a4a}
+
+/* WHY MONSHI TOOLS */
+.why-section{
+  background:var(--card);border:2px solid var(--border);border-radius:20px;
+  padding:36px;margin-top:48px;
+}
+.why-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;
+  margin-top:24px;
+}
+.why-item{padding:18px;background:rgba(127,119,221,0.05);border:1px solid var(--border);border-radius:14px}
+.why-item .ico{font-size:32px;margin-bottom:10px;display:block}
+.why-item h4{font-family:var(--display);font-size:15px;color:#fff;margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase}
+.why-item p{color:var(--muted);font-size:12px;line-height:1.6}
+
+/* FOOTER */
+.foot{
+  text-align:center;padding-top:36px;border-top:2px solid var(--border);
+  color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:1.5px;margin-top:40px;
+}
+.disclaim{
+  background:rgba(255,107,107,0.06);border:1px solid rgba(255,107,107,0.2);
+  border-radius:10px;padding:14px 20px;margin-bottom:20px;
+  color:var(--red);font-size:11px;letter-spacing:1px;line-height:1.6;
+}
+</style>
+</head>
+<body>
+
+<div class="mockup-tag">🎨 UI MOCKUP — NOT FUNCTIONAL — DEMO ONLY</div>
+
+<div class="wrap">
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">🛠</div>
+      <div class="brand-text">
+        <span class="l1">MONSHI TOOLS</span>
+        <span class="l2">TIER-GATED UTILITY SUITE</span>
+      </div>
+    </div>
+    <button class="connect-cta">CONNECT WALLET</button>
+  </header>
+
+  <section class="hero">
+    <span class="hero-eyebrow">⚡ HOLDERS ONLY · TIER-GATED</span>
+    <h1>BUILT FOR THE PACK <span class="acc">NOT THE TOURISTS</span></h1>
+    <p>5 power tools for $MONSHI holders. The bigger your bag, the more you unlock. Free for whales. Premium for paws. <strong>Some of these you won't find anywhere else on Monad.</strong></p>
+
+    <div class="status-bar">
+      <div class="status-cell">
+        <div class="lbl">YOUR BALANCE</div>
+        <div class="val">2.4<span class="unit">M $MONSHI</span></div>
+      </div>
+      <div class="status-cell tier-mid">
+        <div class="lbl">YOUR TIER</div>
+        <div class="val">🦈 SHARK</div>
+      </div>
+      <div class="status-cell">
+        <div class="lbl">TOOLS UNLOCKED</div>
+        <div class="val">5 / 5</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIER LADDER -->
+  <section class="tier-ladder">
+    <div class="tier-ladder-head">
+      <h2>🎚 TIER LADDER</h2>
+      <span class="legend">// hold more · unlock more</span>
+    </div>
+
+    <div class="tier-bars">
+      <div class="tier-bar basic">
+        <div class="tier-name basic"><span class="icon">🐟</span>BASIC</div>
+        <div class="tier-track"><div class="tier-fill">UNLOCKED · 1 TOOL</div></div>
+        <div class="tier-req"><b>100K</b>$MONSHI</div>
+      </div>
+      <div class="tier-bar mid">
+        <div class="tier-name mid"><span class="icon">🦈</span>SHARK</div>
+        <div class="tier-track"><div class="tier-fill">UNLOCKED · 2 TOOLS</div></div>
+        <div class="tier-req"><b>500K</b>$MONSHI</div>
+      </div>
+      <div class="tier-bar whale">
+        <div class="tier-name whale"><span class="icon">🐳</span>WHALE</div>
+        <div class="tier-track"><div class="tier-fill">UNLOCKED · 2 TOOLS</div></div>
+        <div class="tier-req"><b>1M</b>$MONSHI</div>
+      </div>
+    </div>
+
+    <div class="tier-status-row">
+      <span class="you">Your tier: <b>🦈 SHARK · 2.4M $MONSHI</b></span>
+      <span class="you" style="color:var(--green)">✓ ALL 5 TOOLS UNLOCKED</span>
+    </div>
+  </section>
+
+  <!-- TOOLS GRID -->
+  <section class="tools-section">
+    <h2 class="section-title"><span class="num">01</span> THE SUITE</h2>
+    <p class="section-sub">// 5 tools · 3 tiers · zero clones — every one of these has a Monshi-original twist nobody else has</p>
+
+    <div class="tool-grid">
+
+      <!-- 1. MULTISENDER -->
+      <div class="tool-card basic">
+        <span class="tier-tag basic">BASIC · 100K</span>
+        <div class="tool-icon">📤</div>
+        <h3>MULTISENDER</h3>
+        <p class="desc">Send any token to thousands of wallets in one transaction. Built for airdrops, prize payouts, community drops.</p>
+        <div class="feat-list">
+          <div class="feat-row">Up to 5,000 recipients per send</div>
+          <div class="feat-row">CSV upload or paste-and-go</div>
+          <div class="feat-row">Auto-dedup duplicate addresses</div>
+          <div class="feat-row">Gas estimate before send</div>
+        </div>
+        <button class="tool-cta unlocked">USE TOOL →</button>
+      </div>
+
+      <!-- 2. PRE-TRADE SNIFF TEST -->
+      <div class="tool-card mid">
+        <span class="tier-tag mid">SHARK · 500K</span>
+        <div class="tool-icon">🐶</div>
+        <h3>SNIFF TEST</h3>
+        <p class="desc">Simulate any swap BEFORE you commit. Tells you exact tokens out, plus checks if the contract will silently honeypot YOUR specific wallet.</p>
+        <div class="feat-list">
+          <div class="feat-row">Dry-run any swap, zero gas</div>
+          <div class="feat-row">Per-wallet honeypot detection</div>
+          <div class="feat-row">Slippage + tax surface analysis</div>
+          <div class="feat-row">Nobody else has this on Monad</div>
+        </div>
+        <button class="tool-cta unlocked">USE TOOL →</button>
+      </div>
+
+      <!-- 3. WALLET PROFILER -->
+      <div class="tool-card mid">
+        <span class="tier-tag mid">SHARK · 500K</span>
+        <div class="tool-icon">🕵️</div>
+        <h3>WALLET PROFILER</h3>
+        <p class="desc">Paste any wallet, get a full breakdown. Stalk whales. Find sniper bots. See connected wallets in a cluster graph.</p>
+        <div class="feat-list">
+          <div class="feat-row">P&L history + biggest wins/losses</div>
+          <div class="feat-row">"Is this a bot?" detector</div>
+          <div class="feat-row">Connected-wallet cluster graph</div>
+          <div class="feat-row">Track copy targets</div>
+        </div>
+        <button class="tool-cta unlocked">USE TOOL →</button>
+      </div>
+
+      <!-- 4. REFUND THE RUG -->
+      <div class="tool-card whale">
+        <span class="tier-tag whale">WHALE · 1M</span>
+        <div class="tool-icon">📋</div>
+        <h3>RUG TAX REPORT</h3>
+        <p class="desc">Got rugged? Tool scans your wallet, finds the dead bags, generates a formal "Loss Report" PDF you can hand to your accountant.</p>
+        <div class="feat-list">
+          <div class="feat-row">Auto-detects worthless tokens</div>
+          <div class="feat-row">Cost basis + realized loss calc</div>
+          <div class="feat-row">PDF + CSV export for tax filing</div>
+          <div class="feat-row">Nobody does this anywhere</div>
+        </div>
+        <button class="tool-cta unlocked">USE TOOL →</button>
+      </div>
+
+      <!-- 5. AUTO-HEARTBEAT -->
+      <div class="tool-card whale">
+        <span class="tier-tag whale">WHALE · 1M</span>
+        <div class="tool-icon">💓</div>
+        <h3>AUTO HEARTBEAT</h3>
+        <p class="desc">Schedule any on-chain action to fire automatically. DCA buys, recurring transfers, weekly stake claims. Set and forget.</p>
+        <div class="feat-list">
+          <div class="feat-row">Schedule any tx, any token</div>
+          <div class="feat-row">Daily / weekly / monthly</div>
+          <div class="feat-row">Pause + cancel anytime</div>
+          <div class="feat-row">First on Monad</div>
+        </div>
+        <button class="tool-cta unlocked">USE TOOL →</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- LIVE MULTISENDER PREVIEW -->
+  <section class="multisender-preview">
+    <div class="preview-head">
+      <h2>📤 MULTISENDER · LIVE PREVIEW</h2>
+      <span class="live">● ACTIVE TOOL</span>
+    </div>
+
+    <div class="ms-grid">
+      <div>
+        <div class="ms-input-area">
+          <div class="ms-input-row1">
+            <span>SENDING TOKEN</span>
+            <span class="balance">BALANCE: <b>2,400,000</b></span>
+          </div>
+          <div class="ms-token-row">
+            <button class="ms-token-pick">
+              <div class="ico">🐟</div>
+              <span>$MONSHI</span>
+              <span class="arrow">▾</span>
+            </button>
+          </div>
+
+          <div class="ms-input-row1" style="margin-top:8px">
+            <span>RECIPIENTS · ADDRESS, AMOUNT (one per line)</span>
+            <span style="color:var(--purple-bright)">PASTE OR UPLOAD CSV</span>
+          </div>
+          <textarea class="ms-textarea" placeholder="0x9a3f...b820, 1000
+0x7d11...c4a2, 500
+0xff21...7b3c, 1000
+0xab12...3c4f, 750">0x9a3f7c2f8e4d1b6a5c8e2d9f3b820000, 1000
+0x7d11ab8c5f9e4d2a8c1b6e7f4c4a2999, 500
+0xff21d3c4a8e9b1f7c2d6a8e4f7b3c123, 1000
+0xab12c3d4e5f6a7b8c9d0e1f2a3b4c4f5, 750
+0xc066ac5d385419b1a8c43a0e146fa439, 2500</textarea>
+
+          <div class="ms-hint">
+            ⓘ <b>Tip:</b> Paste from Discord/TG roles, Twitter giveaways, or upload a CSV exported from anywhere. Comments and blank lines auto-skipped. Duplicate addresses are merged automatically.
+          </div>
+        </div>
+      </div>
+
+      <div class="ms-summary">
+        <div class="ms-summary-title">SEND SUMMARY</div>
+
+        <div class="ms-summary-row">
+          <span class="k">Recipients</span>
+          <span class="v">5</span>
+        </div>
+        <div class="ms-summary-row">
+          <span class="k">Total to send</span>
+          <span class="v yellow">5,750 $MONSHI</span>
+        </div>
+        <div class="ms-summary-row">
+          <span class="k">Token approval</span>
+          <span class="v green">✓ READY</span>
+        </div>
+        <div class="ms-summary-row">
+          <span class="k">Estimated gas</span>
+          <span class="v">~0.024 MON</span>
+        </div>
+        <div class="ms-summary-row">
+          <span class="k">Batches</span>
+          <span class="v">1</span>
+        </div>
+        <div class="ms-summary-row">
+          <span class="k">Holders only fee</span>
+          <span class="v green">FREE</span>
+        </div>
+
+        <button class="ms-cta">SEND TO 5 WALLETS 📤</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY MONSHI -->
+  <section class="why-section">
+    <h2 class="section-title"><span class="num">02</span> WHY THIS SUITE</h2>
+    <p class="section-sub">// what makes this different from every other "tools" page</p>
+
+    <div class="why-grid">
+      <div class="why-item">
+        <span class="ico">🎯</span>
+        <h4>NOT A COPY</h4>
+        <p>Sniff Test, Wallet Profiler, Rug Tax Report, Auto Heartbeat — none of these exist on Monad. The Suite leads, not chases.</p>
+      </div>
+      <div class="why-item">
+        <span class="ico">🐟</span>
+        <h4>HOLDERS WIN</h4>
+        <p>Every tool free for $MONSHI holders. No fees, no gates beyond your bag. The bigger you hold, the more you unlock.</p>
+      </div>
+      <div class="why-item">
+        <span class="ico">🔓</span>
+        <h4>REAL UTILITY</h4>
+        <p>Real reason to hold a 1M+ bag. Pump pressure built in: utility = demand = floor.</p>
+      </div>
+      <div class="why-item">
+        <span class="ico">⚡</span>
+        <h4>MONAD-NATIVE</h4>
+        <p>Built for Monad's speed. Every tool optimized for sub-second confirmations. Your gas, your win.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="disclaim">
+      ⚠️ THIS IS A UI MOCKUP — TOOLS NOT YET DEPLOYED — DO NOT CONNECT REAL FUNDS<br>
+      Numbers, balances, and wallet states are simulated for visualization purposes only.
+    </div>
+    <p>$MONSHI TOOLS · The pack tools · Powered by holders 🐟</p>
+    <p style="margin-top:8px;opacity:0.6">DESIGN PROOF v1 · NOT FINANCIAL ADVICE</p>
+  </footer>
+
+</div>
+
+<script>
+// Token picker simulation
+document.querySelectorAll('.ms-token-pick').forEach(b => {
+  b.addEventListener('click', () => {
+    b.style.borderColor = '#A89FFF';
+    setTimeout(() => b.style.borderColor = '', 200);
+  });
+});
+
+// Tool cta clicks
+document.querySelectorAll('.tool-cta.unlocked').forEach(b => {
+  b.addEventListener('click', (e) => {
+    const card = e.target.closest('.tool-card');
+    const name = card.querySelector('h3').textContent;
+    if (name === 'MULTISENDER') {
+      document.querySelector('.multisender-preview').scrollIntoView({behavior:'smooth',block:'start'});
+    } else {
+      e.target.textContent = 'COMING SOON ⏳';
+      e.target.style.background = 'rgba(255,159,74,0.1)';
+      e.target.style.color = '#FF9F4A';
+      e.target.style.boxShadow = 'none';
+      setTimeout(() => {
+        e.target.textContent = 'USE TOOL →';
+        e.target.style.cssText = '';
+      }, 1800);
+    }
+  });
+});
+</script>
+</body>
+</html>
