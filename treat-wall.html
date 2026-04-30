@@ -326,7 +326,186 @@ body::after{
 .threshold-cell .v{font-family:var(--display);font-size:18px;color:#fff;margin-top:4px;line-height:1}
 .threshold-cell .v .sub{color:var(--purple-bright);font-size:13px;margin-left:3px}
 
-/* ─── HOW IT WORKS ─── */
+/* ═══════ BONE STAKE — $RENE direct staking ═══════ */
+.bone-section{margin-bottom:48px}
+.bone-header{margin-bottom:28px}
+
+/* KPI strip */
+.bone-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+@media(max-width:900px){.bone-kpi-row{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:540px){.bone-kpi-row{grid-template-columns:1fr}}
+.bone-kpi{
+  background:var(--card);border:2px solid var(--border);border-radius:14px;
+  padding:18px 20px;position:relative;
+}
+.bone-kpi-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:10px}
+.bone-kpi-value{font-family:var(--display);font-size:30px;color:#fff;line-height:1;letter-spacing:0}
+.bone-kpi-value .unit{color:var(--purple-bright);font-size:18px;margin-left:3px}
+.bone-kpi-value.pulse-yellow{color:var(--yellow);animation:pulseyellow 2s ease infinite}
+@keyframes pulseyellow{0%,100%{text-shadow:0 0 0 transparent}50%{text-shadow:0 0 18px rgba(255,229,102,0.5)}}
+.bone-kpi-bar{
+  height:6px;background:#0d0820;border-radius:3px;margin-top:12px;overflow:hidden;
+  border:1px solid var(--border);
+}
+.bone-kpi-bar .fill{height:100%;border-radius:3px;transition:width .3s}
+.bone-kpi-foot{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:8px;letter-spacing:.5px}
+
+/* Bone grid: stake form | active stakes */
+.bone-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:24px}
+@media(max-width:1100px){.bone-grid{grid-template-columns:1fr}}
+
+/* Lock-period selector */
+.lock-label{
+  font-family:var(--mono);font-size:11px;letter-spacing:1.5px;color:var(--muted);font-weight:700;
+  margin-bottom:10px;text-transform:uppercase;
+}
+.lock-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px;
+}
+@media(max-width:540px){.lock-grid{grid-template-columns:repeat(3,1fr)}}
+.lock-btn{
+  background:#0d0820;border:2px solid var(--border);border-radius:12px;
+  padding:14px 8px;cursor:pointer;transition:all .15s;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  position:relative;overflow:hidden;
+}
+.lock-btn:hover{border-color:var(--purple);transform:translateY(-2px)}
+.lock-btn.active{
+  background:linear-gradient(135deg,rgba(127,119,221,0.25),rgba(168,159,255,0.1));
+  border-color:var(--purple-bright);
+  box-shadow:0 0 20px rgba(127,119,221,0.3),inset 0 -3px 0 rgba(0,0,0,0.3);
+}
+.lock-btn.whale{border-color:rgba(255,229,102,0.3)}
+.lock-btn.whale.active{
+  background:linear-gradient(135deg,rgba(255,229,102,0.2),rgba(255,159,74,0.15));
+  border-color:var(--yellow);
+  box-shadow:0 0 22px rgba(255,229,102,0.3),inset 0 -3px 0 rgba(0,0,0,0.3);
+}
+.lock-btn .lock-days{font-family:var(--display);font-size:22px;color:#fff;line-height:1}
+.lock-btn .lock-unit{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);font-weight:700}
+.lock-btn .lock-bones{font-size:10px;letter-spacing:0;line-height:1;margin-top:4px;opacity:.85}
+.lock-btn .lock-mult{
+  font-family:var(--meme);font-size:13px;letter-spacing:1.5px;color:var(--purple-bright);
+  margin-top:4px;
+}
+.lock-btn.whale .lock-mult{color:var(--yellow)}
+.lock-btn.active .lock-mult{color:var(--yellow);transform:scale(1.05)}
+
+/* Projected earnings card */
+.proj-card{
+  background:#0d0820;border:1px solid var(--border);border-radius:14px;
+  padding:18px 20px;margin:18px 0;
+}
+.proj-head{
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--muted);font-weight:700;
+  margin-bottom:14px;
+}
+.proj-head .muted{color:rgba(128,121,168,0.7);text-transform:none;letter-spacing:.5px}
+.proj-rows{display:flex;flex-direction:column;gap:10px}
+.proj-row{
+  display:grid;grid-template-columns:80px 1fr 90px;gap:10px;align-items:center;
+  font-family:var(--mono);font-size:11px;
+}
+.proj-row .period{color:var(--muted);font-weight:700;letter-spacing:1px}
+.proj-bar{
+  height:10px;background:#1f1735;border-radius:5px;overflow:hidden;
+  border:1px solid var(--border);
+}
+.proj-bar .fill{
+  height:100%;background:linear-gradient(90deg,var(--purple-deep),var(--yellow));
+  border-radius:5px;transition:width .8s ease;
+}
+.proj-row .amt{text-align:right;color:var(--cream);font-family:var(--display);font-size:14px;letter-spacing:0}
+.proj-row.glow .amt.accent{color:var(--yellow);text-shadow:0 0 12px rgba(255,229,102,0.4)}
+.proj-row.glow .period{color:var(--yellow)}
+.proj-foot{
+  margin-top:14px;font-family:var(--mono);font-size:10px;color:var(--muted);
+  line-height:1.5;letter-spacing:.5px;
+}
+
+.bone-cta{
+  width:100%;margin-top:24px;padding:18px;
+  background:linear-gradient(135deg,#FFE566,#FF9F4A);color:#000;
+  border:none;border-radius:14px;
+  font-family:var(--display);font-size:18px;letter-spacing:1.5px;cursor:pointer;
+  box-shadow:0 5px 0 #b88828,0 10px 25px rgba(255,229,102,0.25);
+  transition:all .15s;
+}
+.bone-cta:hover{transform:translateY(-3px);box-shadow:0 8px 0 #b88828,0 14px 32px rgba(255,229,102,0.4)}
+.bone-cta:active{transform:translateY(2px);box-shadow:0 3px 0 #b88828}
+
+/* Active stakes list */
+.active-stake-row{
+  display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center;
+  background:rgba(127,119,221,0.05);border:1px solid var(--border);border-radius:12px;
+  padding:16px;margin-bottom:10px;
+  transition:all .15s;
+}
+.active-stake-row:hover{background:rgba(127,119,221,0.1);border-color:var(--purple)}
+.active-stake-row.diamond{
+  background:linear-gradient(90deg,rgba(255,229,102,0.08),rgba(127,119,221,0.05));
+  border-color:rgba(255,229,102,0.25);
+}
+.as-amount{font-family:var(--display);font-size:18px;color:#fff;line-height:1.1}
+.as-amount span{color:var(--yellow);font-size:13px;margin-left:4px}
+.as-meta{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;color:var(--muted);font-weight:700;margin-top:4px}
+.as-progress{display:flex;align-items:center;justify-content:center}
+.ring-svg{width:54px;height:54px}
+.as-right{text-align:right}
+.as-earned{font-family:var(--display);font-size:18px;color:var(--yellow);line-height:1}
+.as-status{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;color:var(--muted);font-weight:700;margin-top:4px}
+
+.action-bar{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.mini-btn{
+  flex:1;padding:11px 14px;border:none;border-radius:10px;
+  font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:1px;
+  cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.mini-btn.claim{
+  background:linear-gradient(135deg,#4DFFA0,#33cc80);color:#000;
+  box-shadow:0 3px 0 #1f7a4a;
+}
+.mini-btn.claim:hover{transform:translateY(-2px);box-shadow:0 5px 0 #1f7a4a}
+.mini-btn.exit{
+  background:rgba(255,107,107,0.1);color:#FF6B6B;
+  border:1px solid rgba(255,107,107,0.3);
+}
+.mini-btn.exit:hover{background:rgba(255,107,107,0.2);border-color:#FF6B6B}
+
+/* Weight distribution */
+.weight-dist{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.weight-row{display:grid;grid-template-columns:90px 1fr;gap:12px;align-items:center}
+.weight-label{
+  font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--cream);font-weight:700;
+}
+.weight-label .lbl-mult{
+  display:inline-block;margin-left:6px;padding:2px 6px;
+  background:var(--surface);border-radius:5px;
+  font-size:9px;color:var(--purple-bright);
+}
+.weight-bar{
+  position:relative;height:22px;background:#0d0820;border-radius:6px;
+  border:1px solid var(--border);overflow:hidden;
+}
+.weight-bar .fill{
+  position:absolute;left:0;top:0;bottom:0;border-radius:6px;
+  transition:width .8s ease;
+}
+.weight-bar .weight-val{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  font-family:var(--mono);font-size:10px;font-weight:800;color:#fff;
+  z-index:2;text-shadow:0 1px 2px rgba(0,0,0,0.6);
+}
+.weight-foot{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:14px;border-top:1px dashed var(--border);
+  font-family:var(--mono);font-size:11px;
+}
+.weight-foot .key{color:var(--muted);letter-spacing:.5px}
+.weight-foot .val{color:var(--cream)}
+
+
 .how-section{margin-bottom:48px}
 .section-title{
   font-family:var(--display);font-size:clamp(28px,4vw,42px);
@@ -524,10 +703,10 @@ body::after{
   <section class="hero">
     <div class="hero-grid">
       <div class="hero-left">
-        <span class="eyebrow">⚡ LIVE · STAKE-FOR-BUYBACK</span>
-        <h1>BUILD <span class="accent">THE WALL</span> THE PACK DEFENDS THE BAG</h1>
+        <span class="eyebrow">⚡ LIVE · TWO STAKING POOLS</span>
+        <h1>BUILD <span class="accent">THE WALL</span> EARN ON IMPATIENT PAWS</h1>
         <p class="blurb">
-          Holders deposit MON into the community vault. When $RENE dips, <strong>3 Pack admins press the button.</strong> The vault buys $RENE on Atlantis at the bottom. You walk away with a heavier bag bought on the floor.
+          Two ways to flex. Stake <strong style="color:var(--purple-bright)">MON</strong> in the Treat Wall — admins fire on the dip, you walk out with a heavier $RENE bag. Or stake <strong style="color:var(--yellow)">$RENE</strong> directly — earn from every impatient holder who pays the 10% early-exit fee.
         </p>
         <p class="blurb" style="margin-bottom:0;">
           <strong style="color:var(--yellow)">Diamond paws coordinate. Paper hands fund.</strong>
@@ -673,6 +852,276 @@ body::after{
           <div class="k">ATLANTIS LIQUIDITY</div>
           <div class="v">$184<span class="sub">K</span></div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       BONE STAKE — $RENE direct staking pool
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="bone-section">
+    <div class="bone-header">
+      <h2 class="section-title" style="margin-bottom:6px"><span class="num" style="background:#FFE566;">02</span> BONE STAKE</h2>
+      <p class="section-sub" style="margin-bottom:0">// Stake $RENE direct. Earn from every paper hand who exits early. Auto-compound. The pack eats together.</p>
+    </div>
+
+    <!-- Bone Stake KPIs -->
+    <div class="bone-kpi-row">
+      <div class="bone-kpi">
+        <div class="bone-kpi-label">TOTAL STAKED</div>
+        <div class="bone-kpi-value">128.4<span class="unit">M</span></div>
+        <div class="bone-kpi-bar"><div class="fill" style="width:34%;background:#FFE566"></div></div>
+        <div class="bone-kpi-foot">12.84% of supply locked</div>
+      </div>
+      <div class="bone-kpi">
+        <div class="bone-kpi-label">YOUR SHARE</div>
+        <div class="bone-kpi-value">0.42<span class="unit">%</span></div>
+        <div class="bone-kpi-bar"><div class="fill" style="width:42%;background:#A89FFF"></div></div>
+        <div class="bone-kpi-foot">540k $RENE staked · 90d term</div>
+      </div>
+      <div class="bone-kpi">
+        <div class="bone-kpi-label">TOTAL FEES COLLECTED</div>
+        <div class="bone-kpi-value">3.2<span class="unit">M</span></div>
+        <div class="bone-kpi-bar"><div class="fill" style="width:28%;background:#4DFFA0"></div></div>
+        <div class="bone-kpi-foot">From 47 early exits</div>
+      </div>
+      <div class="bone-kpi">
+        <div class="bone-kpi-label">YOUR PENDING REWARDS</div>
+        <div class="bone-kpi-value pulse-yellow">8,420</div>
+        <div class="bone-kpi-bar"><div class="fill" style="width:18%;background:#FF9F4A"></div></div>
+        <div class="bone-kpi-foot">Auto-compounding · last 7d</div>
+      </div>
+    </div>
+
+    <!-- Stake panel + Active stakes panel -->
+    <div class="bone-grid">
+
+      <!-- LEFT: Lock-up selector + stake form -->
+      <div class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title">STAKE $RENE <span class="badge" style="background:rgba(255,229,102,0.1);color:#FFE566;border-color:rgba(255,229,102,0.3)">● OPEN</span></h2>
+        </div>
+
+        <!-- LOCK PERIOD SELECTOR -->
+        <div class="lock-label">LOCK PERIOD <span style="color:var(--muted);font-weight:500;text-transform:none;letter-spacing:.5px">(longer = bigger weight)</span></div>
+        <div class="lock-grid">
+          <button class="lock-btn">
+            <div class="lock-days">30</div>
+            <div class="lock-unit">DAYS</div>
+            <div class="lock-bones">🦴</div>
+            <div class="lock-mult">1×</div>
+          </button>
+          <button class="lock-btn">
+            <div class="lock-days">60</div>
+            <div class="lock-unit">DAYS</div>
+            <div class="lock-bones">🦴🦴</div>
+            <div class="lock-mult">1.3×</div>
+          </button>
+          <button class="lock-btn active">
+            <div class="lock-days">90</div>
+            <div class="lock-unit">DAYS</div>
+            <div class="lock-bones">🦴🦴🦴</div>
+            <div class="lock-mult">1.7×</div>
+          </button>
+          <button class="lock-btn">
+            <div class="lock-days">180</div>
+            <div class="lock-unit">DAYS</div>
+            <div class="lock-bones">🦴🦴🦴🦴</div>
+            <div class="lock-mult">2.5×</div>
+          </button>
+          <button class="lock-btn whale">
+            <div class="lock-days">365</div>
+            <div class="lock-unit">DAYS</div>
+            <div class="lock-bones">🦴🦴🦴🦴🦴</div>
+            <div class="lock-mult">5×</div>
+          </button>
+        </div>
+
+        <!-- AMOUNT INPUT -->
+        <div class="deposit-input-wrap" style="margin-top:8px">
+          <div class="row1">
+            <span>STAKE AMOUNT</span>
+            <span class="balance">WALLET: <b>3,420,000 $RENE</b></span>
+          </div>
+          <div class="deposit-input">
+            <input type="text" value="500,000" placeholder="0">
+            <div class="token-pill" style="background:linear-gradient(135deg,#FFE566,#FF9F4A);color:#000">
+              <div class="ico" style="background:#0d0820;color:#FFE566">🦴</div>
+              <span>$RENE</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="percent-row">
+          <button>25%</button>
+          <button class="active">50%</button>
+          <button>75%</button>
+          <button>MAX</button>
+        </div>
+
+        <!-- LIVE PROJECTIONS -->
+        <div class="proj-card">
+          <div class="proj-head">
+            <span>PROJECTED EARNINGS</span>
+            <span class="muted">@ current redemption rate</span>
+          </div>
+          <div class="proj-rows">
+            <div class="proj-row">
+              <span class="period">7 DAYS</span>
+              <div class="proj-bar"><div class="fill" style="width:12%"></div></div>
+              <span class="amt">+1,820</span>
+            </div>
+            <div class="proj-row">
+              <span class="period">30 DAYS</span>
+              <div class="proj-bar"><div class="fill" style="width:34%"></div></div>
+              <span class="amt">+8,140</span>
+            </div>
+            <div class="proj-row">
+              <span class="period">90 DAYS</span>
+              <div class="proj-bar"><div class="fill" style="width:62%"></div></div>
+              <span class="amt">+24,500</span>
+            </div>
+            <div class="proj-row glow">
+              <span class="period">FULL TERM</span>
+              <div class="proj-bar"><div class="fill" style="width:90%"></div></div>
+              <span class="amt accent">+24,500 $RENE</span>
+            </div>
+          </div>
+          <div class="proj-foot">
+            ⓘ Real yield depends on early-exit volume from other stakers. More paper hands = more bones for you.
+          </div>
+        </div>
+
+        <div class="summary-row">
+          <span class="k">Lock period</span>
+          <span class="v">90 DAYS · 1.7× weight</span>
+        </div>
+        <div class="summary-row">
+          <span class="k">Early exit fee</span>
+          <span class="v" style="color:#FF6B6B">10% · always</span>
+        </div>
+        <div class="summary-row">
+          <span class="k">Auto-compound</span>
+          <span class="v" style="color:#4DFFA0">YES · daily</span>
+        </div>
+        <div class="summary-row">
+          <span class="k">Minimum stake</span>
+          <span class="v">100,000 $RENE</span>
+        </div>
+
+        <button class="bone-cta">STAKE 500,000 $RENE 🦴</button>
+      </div>
+
+      <!-- RIGHT: Your active stakes + redemption visualizer -->
+      <div style="display:flex;flex-direction:column;gap:24px">
+
+        <!-- YOUR ACTIVE STAKES -->
+        <div class="panel" style="padding:24px">
+          <div class="panel-head">
+            <h2 class="panel-title" style="font-size:20px">YOUR ACTIVE STAKES</h2>
+          </div>
+
+          <div class="active-stake-row diamond">
+            <div class="as-left">
+              <div class="as-amount">320,000 <span>$RENE</span></div>
+              <div class="as-meta">365 DAYS · 5× WEIGHT</div>
+            </div>
+            <div class="as-progress">
+              <svg class="ring-svg" viewBox="0 0 64 64">
+                <circle cx="32" cy="32" r="28" fill="none" stroke="#2a1f48" stroke-width="5"/>
+                <circle cx="32" cy="32" r="28" fill="none" stroke="#4DFFA0" stroke-width="5"
+                  stroke-dasharray="176" stroke-dashoffset="105" stroke-linecap="round"
+                  transform="rotate(-90 32 32)"/>
+                <text x="32" y="36" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="700" fill="#fff">40%</text>
+              </svg>
+            </div>
+            <div class="as-right">
+              <div class="as-earned">+12,840</div>
+              <div class="as-status">EARNED · 146d left</div>
+            </div>
+          </div>
+
+          <div class="active-stake-row">
+            <div class="as-left">
+              <div class="as-amount">220,000 <span>$RENE</span></div>
+              <div class="as-meta">90 DAYS · 1.7× WEIGHT</div>
+            </div>
+            <div class="as-progress">
+              <svg class="ring-svg" viewBox="0 0 64 64">
+                <circle cx="32" cy="32" r="28" fill="none" stroke="#2a1f48" stroke-width="5"/>
+                <circle cx="32" cy="32" r="28" fill="none" stroke="#A89FFF" stroke-width="5"
+                  stroke-dasharray="176" stroke-dashoffset="50" stroke-linecap="round"
+                  transform="rotate(-90 32 32)"/>
+                <text x="32" y="36" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="700" fill="#fff">71%</text>
+              </svg>
+            </div>
+            <div class="as-right">
+              <div class="as-earned">+4,210</div>
+              <div class="as-status">EARNED · 26d left</div>
+            </div>
+          </div>
+
+          <div class="active-stake-row">
+            <div class="as-left">
+              <div class="as-amount">100,000 <span>$RENE</span></div>
+              <div class="as-meta">30 DAYS · 1× WEIGHT</div>
+            </div>
+            <div class="as-progress">
+              <svg class="ring-svg" viewBox="0 0 64 64">
+                <circle cx="32" cy="32" r="28" fill="none" stroke="#2a1f48" stroke-width="5"/>
+                <circle cx="32" cy="32" r="28" fill="none" stroke="#FFE566" stroke-width="5"
+                  stroke-dasharray="176" stroke-dashoffset="14" stroke-linecap="round"
+                  transform="rotate(-90 32 32)"/>
+                <text x="32" y="36" text-anchor="middle" font-family="JetBrains Mono" font-size="12" font-weight="700" fill="#fff">92%</text>
+              </svg>
+            </div>
+            <div class="as-right">
+              <div class="as-earned" style="color:#4DFFA0">+1,420</div>
+              <div class="as-status" style="color:#4DFFA0">2d UNTIL UNLOCK</div>
+            </div>
+          </div>
+
+          <div class="action-bar">
+            <button class="mini-btn claim">CLAIM 18,470 $RENE 🦴</button>
+            <button class="mini-btn exit">EARLY EXIT (−10% fee)</button>
+          </div>
+        </div>
+
+        <!-- WEIGHT DISTRIBUTION -->
+        <div class="panel" style="padding:24px">
+          <div class="panel-head">
+            <h2 class="panel-title" style="font-size:20px">WEIGHT DISTRIBUTION</h2>
+          </div>
+
+          <div class="weight-dist">
+            <div class="weight-row">
+              <div class="weight-label">365d <span class="lbl-mult">5×</span></div>
+              <div class="weight-bar"><div class="fill" style="width:48%;background:linear-gradient(90deg,#FFE566,#FF9F4A)"></div><span class="weight-val">62%</span></div>
+            </div>
+            <div class="weight-row">
+              <div class="weight-label">180d <span class="lbl-mult">2.5×</span></div>
+              <div class="weight-bar"><div class="fill" style="width:32%;background:linear-gradient(90deg,#A89FFF,#7F77DD)"></div><span class="weight-val">22%</span></div>
+            </div>
+            <div class="weight-row">
+              <div class="weight-label">90d <span class="lbl-mult">1.7×</span></div>
+              <div class="weight-bar"><div class="fill" style="width:18%;background:linear-gradient(90deg,#7F77DD,#5A4FB8)"></div><span class="weight-val">11%</span></div>
+            </div>
+            <div class="weight-row">
+              <div class="weight-label">60d <span class="lbl-mult">1.3×</span></div>
+              <div class="weight-bar"><div class="fill" style="width:8%;background:#4DFFA0"></div><span class="weight-val">3%</span></div>
+            </div>
+            <div class="weight-row">
+              <div class="weight-label">30d <span class="lbl-mult">1×</span></div>
+              <div class="weight-bar"><div class="fill" style="width:4%;background:#8079A8"></div><span class="weight-val">2%</span></div>
+            </div>
+          </div>
+
+          <div class="weight-foot">
+            <span class="key">Highest weighters absorb most fees.</span>
+            <span class="val">Top 365d wallet: <b style="color:#FFE566">8.4% share</b></span>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -971,7 +1420,15 @@ body::after{
 // Tab through percent buttons (cosmetic)
 document.querySelectorAll('.percent-row button').forEach(b => {
   b.addEventListener('click', () => {
-    document.querySelectorAll('.percent-row button').forEach(x => x.classList.remove('active'));
+    b.parentElement.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+
+// Lock-period selector
+document.querySelectorAll('.lock-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.lock-btn').forEach(x => x.classList.remove('active'));
     b.classList.add('active');
   });
 });
