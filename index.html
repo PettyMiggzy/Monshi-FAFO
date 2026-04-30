@@ -36,6 +36,7 @@ body::after{content:"";position:fixed;inset:0;background:radial-gradient(circle 
 .pill:hover{background:rgba(139,92,246,.25);border-color:#8B5CF6;color:#fff;}
 .pill.buy{background:linear-gradient(135deg,#22C55E,#15803D);border-color:#22C55E;color:#fff;animation:pulse 2.5s infinite;}
 @keyframes pulseRug{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.6);}50%{box-shadow:0 0 0 10px rgba(239,68,68,0);}}
+@keyframes comicPulse{0%,100%{box-shadow:0 0 0 0 rgba(196,181,253,.6);}50%{box-shadow:0 0 0 10px rgba(196,181,253,0);}}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}50%{box-shadow:0 0 0 10px rgba(34,197,94,0);}}
 
 .hero{text-align:center;margin-bottom:50px;position:relative;}
@@ -133,6 +134,7 @@ h2{font-family:Orbitron,sans-serif;font-size:clamp(20px,3vw,32px);color:#4ADE80;
       <a class="pill" href="/daily.html" style="background:linear-gradient(135deg,rgba(252,211,77,.2),rgba(34,197,94,.2));border-color:rgba(252,211,77,.5);color:#FCD34D;animation:dailyPulse 2.5s infinite;">⚡ DAILY</a>
       <a class="pill" href="/leaderboard.html" style="background:rgba(252,211,77,.1);border-color:rgba(252,211,77,.4);color:#FCD34D;">🏆 RANKS</a>
       <a class="pill" href="/rene-hub.html" style="background:linear-gradient(135deg,rgba(168,85,247,.25),rgba(252,211,77,.15));border-color:rgba(168,85,247,.6);color:#EDE9FF;font-weight:900;">🐕 $RENE</a>
+      <a class="pill" href="/monshi-comic-1.html" style="background:linear-gradient(135deg,#9D4EDD,#5A4FB8);border-color:#C4B5FD;color:#fff;font-weight:900;animation:comicPulse 2.4s infinite;">📖 COMIC #1 ⚡</a>
       <a class="pill buy" href="https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777" target="_blank">BUY $MONSHI 🚀</a>
       <button class="pill" id="moreToggle" onclick="document.getElementById('morePills').classList.toggle('open');this.textContent=this.textContent==='⋯ MORE'?'✕ CLOSE':'⋯ MORE';" style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.4);color:#C4B5FD;cursor:pointer;font-family:inherit;">⋯ MORE</button>
     </div>
