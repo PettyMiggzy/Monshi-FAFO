@@ -1,0 +1,39 @@
+specVersion: 0.0.5
+description: Monshi Profiler — wallet activity, holdings, and connections on Monad mainnet
+repository: https://github.com/PettyMiggzy/Monshi-FAFO
+schema:
+  file: ./schema.graphql
+
+dataSources:
+  # Generic ERC20 Transfer event listener — picks up ALL token transfers on Monad
+  # (Goldsky lets us use a "templated" data source that auto-tracks any contract
+  #  emitting the standard Transfer event signature)
+  - kind: ethereum/contract
+    name: ERC20Transfers
+    network: monad-mainnet
+    source:
+      abi: ERC20
+      startBlock: 1
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Wallet
+        - Token
+        - Holding
+        - Transfer
+        - WalletDay
+        - Connection
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+      file: ./mappings/transfer.ts
+
+# Note: native MON transfers are NOT picked up by event handlers
+# (they're trace data, not log data). Goldsky Mirror pipeline handles those
+# separately. For v2 we focus on ERC20 only — native MON in/out is layered
+# via direct Monad RPC reads in /api/profiler when needed.

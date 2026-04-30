@@ -1,0 +1,79 @@
+# Monshi Profiler Subgraph Schema
+# Tracks: Transfer events on all ERC20 tokens, plus native MON transfers via tx traces
+# Goal: enable rich wallet analytics — holdings, P&L, connections, activity
+
+type Wallet @entity {
+  id: ID!                          # wallet address (lowercase 0x...)
+  firstSeenAt: BigInt!             # unix timestamp of first activity
+  firstSeenBlock: BigInt!
+  lastActiveAt: BigInt!
+  txCount: BigInt!                 # total transactions sent or received
+  sentCount: BigInt!               # txs as sender
+  receivedCount: BigInt!           # txs as recipient
+  uniqueTokensTouched: BigInt!     # distinct tokens this wallet has held
+  uniqueCounterparties: BigInt!    # distinct wallets exchanged with
+  totalNativeIn: BigInt!           # lifetime MON received
+  totalNativeOut: BigInt!          # lifetime MON sent
+  holdings: [Holding!]! @derivedFrom(field: "wallet")
+  transfersOut: [Transfer!]! @derivedFrom(field: "from")
+  transfersIn: [Transfer!]! @derivedFrom(field: "to")
+}
+
+type Token @entity {
+  id: ID!                          # token contract address (lowercase)
+  symbol: String
+  name: String
+  decimals: Int
+  totalSupply: BigInt
+  firstSeenBlock: BigInt!
+  uniqueHolders: BigInt!
+  totalTransfers: BigInt!
+}
+
+type Holding @entity {
+  id: ID!                          # wallet-token composite: 0xwallet-0xtoken
+  wallet: Wallet!
+  token: Token!
+  balance: BigInt!                 # current raw balance
+  firstAcquiredAt: BigInt!
+  firstAcquiredBlock: BigInt!
+  totalIn: BigInt!                 # lifetime received
+  totalOut: BigInt!                # lifetime sent
+  txCount: BigInt!                 # transfers involving this wallet+token
+}
+
+type Transfer @entity(immutable: true) {
+  id: ID!                          # tx hash + log index
+  txHash: Bytes!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  token: Token!
+  from: Wallet!
+  to: Wallet!
+  amount: BigInt!
+  isNative: Boolean!               # true if native MON transfer (not ERC20)
+}
+
+# Aggregated daily stats per wallet (for activity heatmaps)
+type WalletDay @entity {
+  id: ID!                          # wallet-YYYYMMDD
+  wallet: Wallet!
+  date: BigInt!                    # day timestamp at 00:00 UTC
+  txCount: BigInt!
+  uniqueTokensTouched: BigInt!
+  uniqueCounterparties: BigInt!
+  volumeIn: BigInt!                # total native MON in for day
+  volumeOut: BigInt!
+}
+
+# Track which wallets a given wallet interacts with most (for cluster graph)
+type Connection @entity {
+  id: ID!                          # walletA-walletB (sorted asc)
+  walletA: Wallet!
+  walletB: Wallet!
+  totalTransfers: BigInt!
+  totalAmountAB: BigInt!           # amount A sent to B
+  totalAmountBA: BigInt!           # amount B sent to A
+  firstSeenAt: BigInt!
+  lastSeenAt: BigInt!
+}
