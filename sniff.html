@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SNIFF TEST — Pre-trade honeypot scan</title>
+<meta name="theme-color" content="#A89FFF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#A89FFF;
+  --bg-deep:#8B7FE8;
+  --bg-soft:#C4BCFF;
+  --surface:#FFFFFF;
+  --ink:#1A1340;
+  --ink-soft:#3D2E80;
+  --muted:#6B5FB0;
+  --purple:#7F77DD;
+  --purple-deep:#5A4FB8;
+  --yellow:#FFE566;
+  --green:#4DFFA0;
+  --pink:#EC4899;
+  --orange:#FF9F4A;
+  --red:#FF6B6B;
+  --display:'Bowlby One',Impact,sans-serif;
+  --hand:'Caveat',cursive;
+  --mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--mono);
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(circle at 18% 25%,rgba(255,255,255,0.25),transparent 50%),radial-gradient(circle at 82% 78%,rgba(127,119,221,0.3),transparent 60%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle at 50% 50%,rgba(26,19,64,0.12) 1px,transparent 1.5px);
+  background-size:14px 14px;opacity:.4;
+}
+.wrap{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:24px 20px 80px}
+
+/* TOPBAR */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;background:var(--surface);
+  border:3px solid var(--ink);border-radius:18px;
+  margin:0 0 28px;flex-wrap:wrap;gap:14px;
+  box-shadow:6px 6px 0 var(--ink);
+}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.brand-mark{
+  width:48px;height:48px;border-radius:11px;
+  background:var(--ink);color:var(--bg);
+  border:3px solid var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:22px;
+  box-shadow:3px 3px 0 var(--ink);transform:rotate(-3deg);
+}
+.brand-text{display:flex;flex-direction:column;line-height:1}
+.brand-text .l1{font-family:var(--display);font-size:20px;letter-spacing:1px;color:var(--ink);margin-bottom:2px}
+.brand-text .l2{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--muted);font-weight:700}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.back-link{
+  padding:10px 16px;background:var(--surface);color:var(--ink);
+  border:2.5px solid var(--ink);border-radius:10px;
+  font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:1.5px;
+  text-decoration:none;
+  box-shadow:3px 3px 0 var(--ink);transition:all .15s;
+  text-transform:uppercase;
+}
+.back-link:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.connect-cta{
+  padding:11px 22px;background:var(--ink);color:var(--bg);
+  border:3px solid var(--ink);border-radius:11px;
+  font-family:var(--display);font-size:12px;letter-spacing:1.5px;
+  cursor:pointer;transition:all .15s;
+  box-shadow:4px 4px 0 var(--ink);text-transform:uppercase;
+}
+.connect-cta:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.connect-cta.connected{background:var(--green);color:var(--ink);font-family:var(--mono);font-weight:800}
+
+/* HEADER */
+.page-head{
+  background:var(--surface);
+  border:3px solid var(--ink);border-radius:24px;
+  padding:32px 36px;margin-bottom:24px;
+  box-shadow:8px 8px 0 var(--ink);
+}
+.page-head .eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;background:var(--yellow);color:var(--ink);
+  border:2.5px solid var(--ink);border-radius:8px;
+  font-family:var(--display);font-size:11px;letter-spacing:2px;
+  margin-bottom:14px;text-transform:uppercase;
+  box-shadow:3px 3px 0 var(--ink);transform:rotate(-1deg);
+}
+.page-head h1{
+  font-family:var(--display);
+  font-size:clamp(36px,5.5vw,56px);line-height:1;letter-spacing:0;
+  color:var(--ink);margin-bottom:14px;text-transform:uppercase;
+}
+.page-head h1 .acc{
+  display:inline-block;background:var(--green);color:var(--ink);
+  padding:0 12px;border:3px solid var(--ink);border-radius:8px;
+  transform:rotate(-2deg);box-shadow:4px 4px 0 var(--ink);
+}
+.page-head p{font-size:14px;color:var(--ink-soft);line-height:1.7;max-width:680px}
+.page-head p strong{color:var(--ink);background:var(--yellow);padding:1px 6px;border:2px solid var(--ink);border-radius:4px;display:inline-block;line-height:1.3}
+
+/* TIER BANNER */
+.tier-banner{
+  background:var(--surface);
+  border:3px solid var(--ink);border-radius:18px;
+  padding:18px 22px;margin-bottom:24px;
+  box-shadow:5px 5px 0 var(--ink);
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:14px;
+}
+.tier-banner .lbl{font-family:var(--display);font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.tier-banner .your-status{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.tier-pill{
+  background:var(--bg);color:var(--ink);
+  padding:8px 14px;border:2.5px solid var(--ink);border-radius:10px;
+  font-family:var(--display);font-size:14px;letter-spacing:.5px;
+  box-shadow:3px 3px 0 var(--ink);
+}
+.tier-pill.basic{background:var(--green);color:var(--ink)}
+.tier-pill.shark{background:var(--yellow);color:var(--ink)}
+.tier-pill.whale{background:var(--pink);color:#fff}
+.tier-pill.royalty{background:var(--orange);color:var(--ink)}
+.tier-pill.locked{background:var(--red);color:#fff}
+.usage-bar{
+  background:var(--bg);color:var(--ink);
+  padding:8px 14px;border:2.5px solid var(--ink);border-radius:10px;
+  font-family:var(--mono);font-size:12px;font-weight:800;
+  box-shadow:3px 3px 0 var(--ink);
+}
+
+/* MAIN CARD */
+.card{
+  background:var(--surface);
+  border:3px solid var(--ink);border-radius:20px;
+  padding:28px 32px;margin-bottom:24px;
+  box-shadow:6px 6px 0 var(--ink);
+}
+.card-title{
+  font-family:var(--display);font-size:22px;color:var(--ink);
+  letter-spacing:.5px;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;
+}
+.card-title .num-tag{
+  background:var(--yellow);padding:3px 10px;border:2.5px solid var(--ink);border-radius:8px;
+  font-size:14px;transform:rotate(-2deg);box-shadow:2.5px 2.5px 0 var(--ink);
+}
+
+.field{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.field-label{
+  font-family:var(--display);font-size:11px;letter-spacing:1.5px;color:var(--ink);text-transform:uppercase;
+}
+.field-label .hint{
+  color:var(--muted);font-family:var(--hand);font-size:14px;
+  letter-spacing:0;text-transform:none;margin-left:6px;
+}
+.address-input{
+  padding:14px 18px;background:var(--bg);
+  border:3px solid var(--ink);border-radius:11px;
+  font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink);
+  outline:none;transition:all .15s;
+}
+.address-input:focus{box-shadow:4px 4px 0 var(--ink);transform:translate(-1px,-1px)}
+.address-input::placeholder{color:var(--muted)}
+
+.amount-input{
+  padding:14px 18px;background:var(--bg);
+  border:3px solid var(--ink);border-radius:11px;
+  font-family:var(--mono);font-size:14px;font-weight:700;color:var(--ink);
+  outline:none;transition:all .15s;
+}
+.amount-input:focus{box-shadow:4px 4px 0 var(--ink);transform:translate(-1px,-1px)}
+
+/* MODE TOGGLE */
+.mode-toggle{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;
+}
+@media(max-width:540px){.mode-toggle{grid-template-columns:1fr}}
+.mode-btn{
+  padding:14px;background:var(--surface);
+  border:3px solid var(--ink);border-radius:12px;
+  font-family:var(--display);font-size:13px;letter-spacing:1px;color:var(--ink);
+  cursor:pointer;transition:all .15s;text-transform:uppercase;
+  box-shadow:3px 3px 0 var(--ink);
+  text-align:center;
+}
+.mode-btn .mode-title{display:block;font-size:14px}
+.mode-btn .mode-sub{display:block;font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:4px;letter-spacing:.5px;text-transform:none}
+.mode-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.mode-btn.active{background:var(--yellow)}
+
+/* CTA */
+.cta{
+  width:100%;padding:18px;
+  background:var(--green);color:var(--ink);
+  border:3px solid var(--ink);border-radius:14px;
+  font-family:var(--display);font-size:17px;letter-spacing:1.2px;cursor:pointer;
+  box-shadow:5px 5px 0 var(--ink);transition:all .15s;
+  text-transform:uppercase;
+}
+.cta:hover{transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--ink)}
+.cta:active{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--ink)}
+.cta:disabled{background:#ccc;color:#666;cursor:not-allowed;box-shadow:5px 5px 0 var(--ink)}
+.cta:disabled:hover{transform:none;box-shadow:5px 5px 0 var(--ink)}
+
+/* RESULT */
+.result-card{
+  background:var(--surface);
+  border:3px solid var(--ink);border-radius:20px;
+  padding:28px 32px;margin-bottom:24px;
+  box-shadow:6px 6px 0 var(--ink);display:none;
+}
+.result-card.shown{display:block}
+
+.verdict-banner{
+  padding:24px 28px;
+  border:3px solid var(--ink);border-radius:16px;
+  margin-bottom:24px;
+  display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  box-shadow:5px 5px 0 var(--ink);
+}
+.verdict-banner.safe{background:var(--green)}
+.verdict-banner.honeypot{background:var(--red);color:#fff}
+.verdict-banner.warning{background:var(--orange)}
+.verdict-banner.bad{background:var(--red);color:#fff}
+.verdict-icon{
+  font-size:48px;line-height:1;
+  width:72px;height:72px;border-radius:14px;
+  background:var(--surface);border:3px solid var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  box-shadow:3px 3px 0 var(--ink);
+}
+.verdict-text{flex:1;min-width:200px}
+.verdict-text .v-title{
+  font-family:var(--display);font-size:28px;letter-spacing:.5px;
+  text-transform:uppercase;line-height:1.05;margin-bottom:6px;
+}
+.verdict-text .v-sub{
+  font-family:var(--mono);font-size:13px;font-weight:700;line-height:1.5;
+}
+
+/* DETAIL */
+.detail-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:18px;
+}
+@media(max-width:680px){.detail-grid{grid-template-columns:1fr}}
+
+.detail-block{
+  background:var(--bg);
+  border:3px solid var(--ink);border-radius:14px;
+  padding:18px 22px;
+  box-shadow:4px 4px 0 var(--ink);
+}
+.detail-title{
+  font-family:var(--display);font-size:14px;letter-spacing:1px;color:var(--ink);
+  margin-bottom:12px;text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;
+  padding-bottom:10px;border-bottom:2px dashed var(--ink);
+}
+.detail-title .badge{
+  font-family:var(--mono);font-size:10px;font-weight:800;
+  padding:3px 8px;border:2px solid var(--ink);border-radius:6px;
+  letter-spacing:.5px;text-transform:uppercase;
+}
+.detail-title .badge.ok{background:var(--green);color:var(--ink)}
+.detail-title .badge.fail{background:var(--red);color:#fff}
+.detail-title .badge.skip{background:var(--surface);color:var(--muted)}
+.detail-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:6px 0;font-size:12px;font-family:var(--mono);font-weight:700;
+}
+.detail-row .k{color:var(--ink-soft)}
+.detail-row .v{color:var(--ink);font-family:var(--display);font-size:14px;letter-spacing:0;line-height:1}
+
+.flag-list{
+  margin-top:14px;display:flex;flex-direction:column;gap:6px;
+}
+.flag-row{
+  background:var(--red);color:#fff;
+  padding:8px 12px;border:2px solid var(--ink);border-radius:8px;
+  font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:.5px;
+}
+
+/* ERROR / STATUS */
+.status-box{
+  background:var(--surface);
+  border:3px solid var(--ink);border-radius:14px;
+  padding:18px 22px;display:none;
+  font-family:var(--mono);font-size:12px;font-weight:700;
+  box-shadow:4px 4px 0 var(--ink);
+  margin-bottom:14px;
+}
+.status-box.shown{display:block}
+.status-box.error{background:rgba(255,107,107,0.15);border-color:var(--red)}
+.status-box.pending{background:var(--yellow)}
+.status-box .title{
+  font-family:var(--display);font-size:14px;letter-spacing:1px;text-transform:uppercase;
+  margin-bottom:8px;color:var(--ink);
+}
+.status-box .detail{color:var(--ink-soft);line-height:1.6;font-size:12px}
+.spinner{
+  display:inline-block;width:14px;height:14px;border:2.5px solid var(--ink);
+  border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;
+  margin-right:8px;vertical-align:middle;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* FOOTER */
+.foot{
+  text-align:center;padding-top:36px;
+  color:var(--ink);font-family:var(--mono);font-size:11px;letter-spacing:1.5px;margin-top:40px;font-weight:700;
+}
+.disclaim{
+  background:var(--surface);border:3px solid var(--ink);
+  border-radius:14px;padding:16px 22px;margin-bottom:14px;
+  color:var(--ink);font-size:11px;letter-spacing:1px;line-height:1.6;
+  box-shadow:4px 4px 0 var(--ink);
+}
+.disclaim b{background:var(--yellow);padding:1px 6px;border:2px solid var(--ink);border-radius:4px;display:inline-block;line-height:1.3}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="topbar">
+    <a href="/tools.html" class="brand">
+      <div class="brand-mark">M</div>
+      <div class="brand-text">
+        <span class="l1">SNIFF TEST</span>
+        <span class="l2">MONSHI TOOLS · SHARK TIER</span>
+      </div>
+    </a>
+    <div class="topbar-right">
+      <a href="/tools.html" class="back-link">← TOOLS HUB</a>
+      <button class="connect-cta" id="connectBtn">CONNECT WALLET</button>
+    </div>
+  </header>
+
+  <section class="page-head">
+    <span class="eyebrow">🐶 100K+ $MONSHI · TIERED LIMITS</span>
+    <h1>SNIFF BEFORE <span class="acc">YOU APE</span></h1>
+    <p>Simulate any swap on Monad — buy, sell, or both — without spending gas. Detects honeypots, hidden taxes, and per-wallet blacklists. <strong>Holders only. No fees.</strong></p>
+  </section>
+
+  <!-- TIER BANNER -->
+  <section class="tier-banner" id="tierBanner" style="display:none">
+    <div>
+      <div class="lbl">YOUR ACCESS</div>
+      <div class="your-status">
+        <span class="tier-pill" id="tierPill">CHECKING...</span>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div class="lbl">TODAY'S USAGE</div>
+      <div class="your-status" style="justify-content:flex-end">
+        <span class="usage-bar" id="usageBar">— / —</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATUS BOX -->
+  <div class="status-box" id="statusBox">
+    <div class="title" id="statusTitle">—</div>
+    <div class="detail" id="statusDetail">—</div>
+  </div>
+
+  <!-- STEP 1: TOKEN -->
+  <section class="card">
+    <h2 class="card-title"><span class="num-tag">01</span> TOKEN TO SNIFF</h2>
+
+    <div class="field">
+      <label class="field-label">CONTRACT ADDRESS <span class="hint">(paste any token on Monad)</span></label>
+      <input type="text" class="address-input" id="tokenAddress" placeholder="0x...">
+    </div>
+
+    <div class="field">
+      <label class="field-label">TEST AMOUNT (in MON) <span class="hint">how much MON you'd swap</span></label>
+      <input type="text" class="amount-input" id="amountInput" value="1" placeholder="1">
+    </div>
+  </section>
+
+  <!-- STEP 2: MODE -->
+  <section class="card">
+    <h2 class="card-title"><span class="num-tag">02</span> SNIFF MODE</h2>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" data-mode="both">
+        <span class="mode-title">🐶 BOTH</span>
+        <span class="mode-sub">auto honeypot detect</span>
+      </button>
+      <button class="mode-btn" data-mode="buy">
+        <span class="mode-title">💰 BUY</span>
+        <span class="mode-sub">simulate buy only</span>
+      </button>
+      <button class="mode-btn" data-mode="sell">
+        <span class="mode-title">📤 SELL</span>
+        <span class="mode-sub">simulate sell only</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- STEP 3: SNIFF -->
+  <section class="card">
+    <h2 class="card-title"><span class="num-tag">03</span> RUN SNIFF</h2>
+    <button class="cta" id="sniffBtn">🐶 SNIFF IT</button>
+    <p style="margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.5px">
+      ⓘ Sniffs use Tenderly simulation — zero gas, zero on-chain footprint. Each sniff counts toward your daily limit.
+    </p>
+  </section>
+
+  <!-- RESULT CARD -->
+  <section class="result-card" id="resultCard">
+    <h2 class="card-title">📋 SNIFF REPORT</h2>
+
+    <div class="verdict-banner" id="verdictBanner">
+      <div class="verdict-icon" id="verdictIcon">🐶</div>
+      <div class="verdict-text">
+        <div class="v-title" id="verdictTitle">—</div>
+        <div class="v-sub" id="verdictSub">—</div>
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-block" id="buyBlock">
+        <div class="detail-title">💰 BUY SIMULATION <span class="badge skip" id="buyBadge">—</span></div>
+        <div class="detail-row"><span class="k">Status</span><span class="v" id="buyStatus">—</span></div>
+        <div class="detail-row"><span class="k">Tokens received</span><span class="v" id="buyTokens">—</span></div>
+        <div class="detail-row"><span class="k">Gas used</span><span class="v" id="buyGas">—</span></div>
+      </div>
+      <div class="detail-block" id="sellBlock">
+        <div class="detail-title">📤 SELL SIMULATION <span class="badge skip" id="sellBadge">—</span></div>
+        <div class="detail-row"><span class="k">Status</span><span class="v" id="sellStatus">—</span></div>
+        <div class="detail-row"><span class="k">MON received</span><span class="v" id="sellMon">—</span></div>
+        <div class="detail-row"><span class="k">Gas used</span><span class="v" id="sellGas">—</span></div>
+      </div>
+    </div>
+
+    <div class="flag-list" id="flagList"></div>
+  </section>
+
+  <footer class="foot">
+    <div class="disclaim">
+      ⚠️ <b>HOW THIS WORKS</b>
+      Sniff Test runs your swap in a private fork of Monad mainnet. It executes against current chain state — finds honeypots, hidden taxes, per-wallet blacklists.
+      Zero on-chain footprint. Not a guarantee — contracts can change behavior at any time. Always do your own research.
+    </div>
+    <p>$MONSHI SNIFF TEST · Powered by Tenderly · Free for the pack 🐟</p>
+  </footer>
+
+</div>
+
+<!-- ethers v6 from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+
+<script>
+'use strict';
+
+const MONAD_CHAIN_ID = 143;
+const MONAD_HEX = '0x8f';
+const RPC_URL = 'https://rpc.monad.xyz';
+const EXPLORER = 'https://monadexplorer.com';
+
+let provider = null;
+let signer = null;
+let userAddress = null;
+let mode = 'both';
+
+const $ = (id) => document.getElementById(id);
+
+function shortAddr(a) { return a.slice(0,6)+'…'+a.slice(-4); }
+
+function setStatus(kind, title, detail) {
+  const s = $('statusBox');
+  s.className = 'status-box shown ' + kind;
+  $('statusTitle').innerHTML = (kind==='pending'?'<span class="spinner"></span>':'') + title;
+  $('statusDetail').innerHTML = detail;
+}
+function clearStatus() { $('statusBox').className = 'status-box'; }
+
+// ─── Wallet connect ───
+async function connectWallet() {
+  if (!window.ethereum) { alert('Install MetaMask, Rabby, or another EVM wallet.'); return; }
+  try {
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
+    signer = await provider.getSigner();
+    userAddress = await signer.getAddress();
+
+    const network = await provider.getNetwork();
+    if (Number(network.chainId) !== MONAD_CHAIN_ID) {
+      try {
+        await window.ethereum.request({ method:'wallet_switchEthereumChain', params:[{chainId:MONAD_HEX}] });
+      } catch(e) {
+        if (e.code === 4902) {
+          await window.ethereum.request({
+            method:'wallet_addEthereumChain',
+            params:[{
+              chainId:MONAD_HEX, chainName:'Monad',
+              nativeCurrency:{name:'Monad',symbol:'MON',decimals:18},
+              rpcUrls:[RPC_URL], blockExplorerUrls:[EXPLORER]
+            }]
+          });
+        }
+      }
+    }
+
+    $('connectBtn').textContent = shortAddr(userAddress);
+    $('connectBtn').classList.add('connected');
+    $('tierBanner').style.display = 'flex';
+
+    await checkTier();
+
+    window.ethereum.on('accountsChanged', () => location.reload());
+    window.ethereum.on('chainChanged', () => location.reload());
+  } catch(e) {
+    console.error(e);
+    alert('Connect failed: ' + (e.message || e));
+  }
+}
+
+// ─── Check tier (preview) by hitting the API with mode=both, dryrun ───
+// Simpler approach: call Monad RPC for balance directly here, then API confirms server-side
+async function checkTier() {
+  if (!userAddress) return;
+  try {
+    const data = '0x70a08231' + '0'.repeat(24) + userAddress.toLowerCase().replace(/^0x/,'');
+    const res = await fetch(RPC_URL, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ jsonrpc:'2.0', method:'eth_call', params:[{to:'0xb744f5cdb792d8187640214c4a1c9ace29af7777', data}, 'latest'], id:1 })
+    });
+    const j = await res.json();
+    if (j.error) throw new Error(j.error.message);
+    const bag = BigInt(j.result || '0x0') / (10n ** 18n);
+
+    let tier='locked', limit=0;
+    if (bag >= 10_000_000n) { tier='royalty'; limit='∞'; }
+    else if (bag >= 1_000_000n) { tier='whale'; limit=25; }
+    else if (bag >= 500_000n) { tier='shark'; limit=10; }
+    else if (bag >= 100_000n) { tier='basic'; limit=3; }
+
+    const labels = {
+      royalty:'👑 ROYALTY · UNLIMITED',
+      whale:'🐳 WHALE · 25/day',
+      shark:'🦈 SHARK · 10/day',
+      basic:'🐟 BASIC · 3/day',
+      locked:'🔒 NEED 100K $MONSHI'
+    };
+    const pill = $('tierPill');
+    pill.textContent = labels[tier];
+    pill.className = 'tier-pill ' + tier;
+
+    $('usageBar').textContent = bag.toLocaleString() + ' $MONSHI';
+  } catch(e) {
+    console.error('tier check err', e);
+    $('tierPill').textContent = '⚠ check failed';
+  }
+}
+
+// ─── Mode toggle ───
+document.querySelectorAll('.mode-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.mode-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    mode = b.dataset.mode;
+  });
+});
+
+// ─── Run sniff ───
+$('sniffBtn').addEventListener('click', async () => {
+  if (!userAddress) { alert('Connect wallet first ser'); return; }
+  const tokenAddress = $('tokenAddress').value.trim();
+  const amountStr = $('amountInput').value.trim();
+
+  if (!ethers.isAddress(tokenAddress)) {
+    setStatus('error', '⚠️ INVALID TOKEN', 'Paste a valid contract address (0x... 40 chars).');
+    return;
+  }
+  if (!amountStr || isNaN(Number(amountStr)) || Number(amountStr) <= 0) {
+    setStatus('error', '⚠️ INVALID AMOUNT', 'Enter a positive amount in MON.');
+    return;
+  }
+
+  let amountWei;
+  try {
+    amountWei = ethers.parseUnits(amountStr, 18).toString();
+  } catch {
+    setStatus('error', '⚠️ INVALID AMOUNT', 'Could not parse amount.');
+    return;
+  }
+
+  setStatus('pending', 'SNIFFING...', 'Simulating swap on Monad mainnet fork. Takes 2-8 seconds.');
+  $('resultCard').classList.remove('shown');
+  $('sniffBtn').disabled = true;
+
+  try {
+    const res = await fetch('/api/sniff', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ wallet: userAddress, tokenAddress, mode, amountWei })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      let msg = data.error || 'unknown error';
+      if (data.hint) msg += ' — ' + data.hint;
+      if (data.tier) msg += ` (${data.tier} tier · ${data.used}/${data.limit} used today)`;
+      setStatus('error', '✗ ' + (data.error || 'Sniff failed').toUpperCase(), msg);
+      return;
+    }
+
+    clearStatus();
+    renderResult(data);
+    // Update usage display
+    if (data.limit) $('usageBar').textContent = `${data.used} / ${data.limit} TODAY`;
+  } catch(e) {
+    setStatus('error', '✗ SNIFF FAILED', e.message || 'Network error');
+  } finally {
+    $('sniffBtn').disabled = false;
+  }
+});
+
+function renderResult(data) {
+  const card = $('resultCard');
+  card.classList.add('shown');
+
+  // Verdict banner
+  const banner = $('verdictBanner');
+  const icon = $('verdictIcon');
+  const title = $('verdictTitle');
+  const sub = $('verdictSub');
+
+  switch (data.verdict) {
+    case 'SAFE':
+      banner.className = 'verdict-banner safe';
+      icon.textContent = '✅';
+      title.textContent = 'SAFE TO TRADE';
+      sub.textContent = 'Buy works. Sell works. No honeypot detected. Always still DYOR.';
+      break;
+    case 'HONEYPOT':
+      banner.className = 'verdict-banner honeypot';
+      icon.textContent = '🚨';
+      title.textContent = 'HONEYPOT DETECTED';
+      sub.textContent = 'You can buy this token, but you CANNOT sell it back. Do not ape.';
+      break;
+    case 'CANNOT_BUY':
+      banner.className = 'verdict-banner bad';
+      icon.textContent = '🔒';
+      title.textContent = 'CANNOT BUY';
+      sub.textContent = 'Buy simulation reverts. Token may be paused, restricted, or your wallet blacklisted.';
+      break;
+    case 'BUY_OK':
+      banner.className = 'verdict-banner safe';
+      icon.textContent = '💰';
+      title.textContent = 'BUY WORKS';
+      sub.textContent = 'Buy succeeds. Run "BOTH" mode to also check if you can sell.';
+      break;
+    case 'BUY_FAILS':
+      banner.className = 'verdict-banner bad';
+      icon.textContent = '🚫';
+      title.textContent = 'BUY FAILS';
+      sub.textContent = 'Cannot buy this token. Reverted in simulation.';
+      break;
+    case 'SELL_OK':
+      banner.className = 'verdict-banner safe';
+      icon.textContent = '📤';
+      title.textContent = 'SELL WORKS';
+      sub.textContent = 'You can sell this token successfully.';
+      break;
+    case 'SELL_FAILS':
+      banner.className = 'verdict-banner honeypot';
+      icon.textContent = '🚨';
+      title.textContent = 'SELL FAILS';
+      sub.textContent = 'Cannot sell this token. Likely a honeypot.';
+      break;
+    default:
+      banner.className = 'verdict-banner warning';
+      icon.textContent = '❓';
+      title.textContent = 'INCONCLUSIVE';
+      sub.textContent = 'Could not determine verdict. Try a different amount or mode.';
+  }
+
+  // Buy block
+  if (data.buy) {
+    const badge = $('buyBadge');
+    badge.textContent = data.buy.success ? '✓ OK' : '✗ FAIL';
+    badge.className = 'badge ' + (data.buy.success ? 'ok' : 'fail');
+    $('buyStatus').textContent = data.buy.success ? 'SUCCESS' : (data.buy.revertReason || 'REVERT');
+    $('buyTokens').textContent = data.buy.tokensReceived
+      ? Number(BigInt(data.buy.tokensReceived) / (10n ** 14n)).toLocaleString() + ' (×10⁻⁴)'
+      : '—';
+    $('buyGas').textContent = data.buy.gasUsed ? Number(data.buy.gasUsed).toLocaleString() : '—';
+  } else {
+    $('buyBadge').textContent = 'SKIPPED';
+    $('buyBadge').className = 'badge skip';
+    $('buyStatus').textContent = '—';
+    $('buyTokens').textContent = '—';
+    $('buyGas').textContent = '—';
+  }
+
+  // Sell block
+  if (data.sell) {
+    const badge = $('sellBadge');
+    badge.textContent = data.sell.success ? '✓ OK' : '✗ FAIL';
+    badge.className = 'badge ' + (data.sell.success ? 'ok' : 'fail');
+    $('sellStatus').textContent = data.sell.success ? 'SUCCESS' : (data.sell.revertReason || 'REVERT');
+    $('sellMon').textContent = data.sell.wmonReceived
+      ? Number(BigInt(data.sell.wmonReceived) / (10n ** 14n)).toLocaleString() + ' (×10⁻⁴)'
+      : '—';
+    $('sellGas').textContent = data.sell.gasUsed ? Number(data.sell.gasUsed).toLocaleString() : '—';
+  } else {
+    $('sellBadge').textContent = 'SKIPPED';
+    $('sellBadge').className = 'badge skip';
+    $('sellStatus').textContent = '—';
+    $('sellMon').textContent = '—';
+    $('sellGas').textContent = '—';
+  }
+
+  // Flags
+  const flagList = $('flagList');
+  flagList.innerHTML = '';
+  if (Array.isArray(data.flags) && data.flags.length) {
+    data.flags.forEach(f => {
+      const div = document.createElement('div');
+      div.className = 'flag-row';
+      div.textContent = '🚩 ' + f.replace(/_/g, ' ');
+      flagList.appendChild(div);
+    });
+  }
+
+  // Scroll to result
+  card.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ─── INIT ───
+$('connectBtn').addEventListener('click', connectWallet);
+
+window.addEventListener('load', () => {
+  if (window.ethereum && window.ethereum.selectedAddress) {
+    setTimeout(() => connectWallet(), 200);
+  }
+});
+</script>
+
+</body>
+</html>
