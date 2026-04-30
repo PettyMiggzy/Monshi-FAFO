@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>$MONSHI COMIC #1 — BIRTH OF MONSHI ⚡</title>
+<meta name="description" content="The first official $MONSHI comic. How a Toshi spark fused with Monad's purple-charged energy and birthed the violet chaos cat.">
+<meta name="theme-color" content="#7F77DD">
+<meta property="og:title" content="$MONSHI COMIC #1 — BIRTH OF MONSHI">
+<meta property="og:description" content="Toshi sparked it. Monad supercharged it. A glitch vortex coughed him out. The first official $MONSHI comic.">
+<meta property="og:image" content="https://monshi-fafo.vercel.app/public/monshi_assets/monshi_finger_frame.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Bowlby+One&family=Permanent+Marker&family=Press+Start+2P&family=Special+Elite&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#f4ecd8;
+  --paper-dark:#d8c89c;
+  --ink:#0a0612;
+  --ink-soft:#1f1a2e;
+  --purple:#7F77DD;
+  --purple-bright:#A89FFF;
+  --purple-deep:#5A4FB8;
+  --violet-glow:#C4B5FD;
+  --neon-purple:#9D4EDD;
+  --yellow:#FFE566;
+  --acid-yellow:#FFFF00;
+  --red:#FF1744;
+  --green:#00FF9F;
+  --orange:#FF9F4A;
+  --pink:#FF00E5;
+  --cyan:#00F0FF;
+  --comic:'Bangers',Impact,sans-serif;
+  --display:'Bowlby One',Impact,sans-serif;
+  --hand:'Permanent Marker',cursive;
+  --type:'Special Elite',monospace;
+  --pixel:'Press Start 2P',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--type);
+  background:#0a0612;
+  color:var(--ink);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+/* CRT scanlines */
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0,0,0,0.15) 0px,
+      rgba(0,0,0,0.15) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  pointer-events:none;z-index:50;
+}
+/* purple haze background */
+body::after{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 10%,rgba(157,78,221,0.4),transparent 50%),
+    radial-gradient(ellipse at 80% 80%,rgba(127,119,221,0.35),transparent 60%),
+    radial-gradient(circle at 50% 50%,rgba(255,0,229,0.1),transparent 70%);
+  pointer-events:none;z-index:0;
+}
+.wrap{position:relative;z-index:2;max-width:820px;margin:0 auto;padding:24px 14px 80px}
+
+/* COMIC COVER */
+.comic-cover{
+  background:
+    linear-gradient(135deg,#1a0d2e 0%,#3d0a4d 50%,#1a0d2e 100%);
+  border:5px solid var(--neon-purple);
+  border-radius:18px;
+  padding:36px 28px;
+  text-align:center;
+  margin-bottom:36px;
+  box-shadow:
+    8px 8px 0 var(--purple-deep),
+    inset 0 0 80px rgba(157,78,221,0.5),
+    0 0 60px rgba(157,78,221,0.4);
+  position:relative;
+  overflow:hidden;
+}
+.comic-cover::before{
+  content:'';position:absolute;inset:6px;
+  border:2px dashed rgba(196,181,253,0.4);
+  border-radius:12px;pointer-events:none;
+}
+/* glitch grid lines */
+.comic-cover::after{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(196,181,253,0.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(196,181,253,0.06) 1px,transparent 1px);
+  background-size:24px 24px;
+  pointer-events:none;
+}
+
+.cover-issue{
+  display:inline-block;
+  background:var(--neon-purple);
+  color:#fff;
+  padding:8px 22px;border-radius:8px;
+  font-family:var(--comic);font-size:18px;letter-spacing:4px;
+  transform:rotate(-3deg);
+  box-shadow:4px 4px 0 var(--ink),0 0 20px rgba(157,78,221,0.8);
+  margin-bottom:18px;
+  position:relative;z-index:2;
+}
+.cover-title{
+  font-family:var(--display);
+  font-size:clamp(40px,8vw,82px);
+  line-height:.92;
+  color:#fff;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  margin-bottom:14px;
+  text-shadow:
+    4px 4px 0 var(--neon-purple),
+    8px 8px 0 var(--purple-deep),
+    0 0 30px rgba(196,181,253,0.6);
+  position:relative;z-index:2;
+}
+.cover-title .glitch{
+  display:inline-block;
+  background:linear-gradient(90deg,var(--violet-glow),var(--cyan));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 12px rgba(0,240,255,0.5));
+}
+.cover-subtitle{
+  font-family:var(--hand);
+  font-size:clamp(18px,3vw,26px);
+  color:var(--violet-glow);
+  letter-spacing:1px;
+  position:relative;z-index:2;
+  margin-bottom:6px;
+}
+.cover-meta{
+  display:flex;justify-content:center;gap:24px;margin-top:24px;
+  font-family:var(--type);font-size:11px;color:rgba(196,181,253,0.7);
+  letter-spacing:2px;
+  flex-wrap:wrap;position:relative;z-index:2;
+}
+.cover-meta span{display:flex;align-items:center;gap:6px}
+
+/* COMIC PANEL */
+.panel{
+  background:var(--paper);
+  border:5px solid var(--ink);
+  border-radius:8px;
+  margin-bottom:36px;
+  padding:22px 18px 22px;
+  position:relative;
+  box-shadow:
+    8px 8px 0 var(--ink),
+    0 16px 40px rgba(0,0,0,0.6),
+    inset 0 0 0 1px rgba(13,10,24,0.2);
+  transition:transform .3s ease;
+}
+.panel:hover{transform:translateY(-4px)}
+.panel:nth-child(odd){transform:rotate(-.5deg)}
+.panel:nth-child(even){transform:rotate(.5deg)}
+.panel:nth-child(odd):hover{transform:rotate(-.5deg) translateY(-4px)}
+.panel:nth-child(even):hover{transform:rotate(.5deg) translateY(-4px)}
+
+.panel-num{
+  position:absolute;top:-16px;left:-16px;
+  width:50px;height:50px;border-radius:50%;
+  background:var(--neon-purple);
+  color:#fff;
+  border:4px solid var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:22px;
+  box-shadow:4px 4px 0 var(--ink),0 0 20px rgba(157,78,221,0.6);
+  z-index:5;
+}
+
+/* CAPTION BOX */
+.caption{
+  background:linear-gradient(180deg,var(--yellow),#f0d042);
+  color:#000;
+  border:3.5px solid var(--ink);
+  padding:12px 16px;
+  margin-bottom:14px;
+  font-family:var(--type);font-size:14px;line-height:1.45;
+  box-shadow:4px 4px 0 var(--ink);
+  font-weight:700;letter-spacing:.3px;
+}
+.caption.narrator{background:linear-gradient(180deg,#fff,#f0e8d0)}
+.caption.smoke{
+  background:linear-gradient(180deg,#1f1a2e,#0d0a18);
+  color:var(--violet-glow);
+  border-color:var(--neon-purple);
+  font-family:var(--comic);
+  letter-spacing:3px;font-size:18px;
+  text-align:center;
+  text-shadow:0 0 12px rgba(196,181,253,0.7);
+}
+.caption.glitch{
+  background:linear-gradient(180deg,var(--neon-purple),var(--purple-deep));
+  color:var(--cyan);
+  border-color:var(--cyan);
+  font-family:var(--pixel);
+  font-size:11px;letter-spacing:2px;
+  text-align:center;
+  text-shadow:2px 0 0 var(--pink),-2px 0 0 var(--cyan);
+  padding:14px 14px;
+  text-transform:uppercase;
+  line-height:1.6;
+}
+
+/* PANEL ART (image container) */
+.panel-art{
+  position:relative;
+  background:linear-gradient(135deg,var(--neon-purple),var(--purple-deep));
+  border:4px solid var(--ink);
+  border-radius:4px;
+  overflow:hidden;
+  margin-bottom:14px;
+  min-height:300px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 0 0 2px rgba(0,0,0,0.2),inset 0 0 60px rgba(0,0,0,0.4);
+}
+.panel-art img{
+  width:100%;height:auto;display:block;
+  max-height:520px;object-fit:cover;
+}
+.panel-art.tall img{max-height:640px}
+.panel-art.contain img{
+  max-height:480px;width:auto;object-fit:contain;
+  filter:drop-shadow(0 8px 30px rgba(0,0,0,0.5));
+}
+
+/* SPEECH BUBBLE */
+.bubble{
+  background:#fff;color:#000;
+  border:3.5px solid var(--ink);
+  border-radius:24px;
+  padding:13px 20px;
+  font-family:var(--hand);font-size:19px;line-height:1.3;
+  box-shadow:5px 5px 0 var(--ink);
+  position:relative;
+  max-width:90%;
+  margin:14px auto 0;
+}
+.bubble::after{
+  content:'';position:absolute;left:32px;bottom:-19px;
+  width:0;height:0;
+  border:11px solid transparent;
+  border-top-color:var(--ink);
+}
+.bubble::before{
+  content:'';position:absolute;left:35px;bottom:-13px;
+  width:0;height:0;
+  border:7px solid transparent;
+  border-top-color:#fff;
+  z-index:2;
+}
+.bubble.right::after{left:auto;right:32px}
+.bubble.right::before{left:auto;right:35px}
+.bubble.shout{
+  font-family:var(--comic);font-size:24px;letter-spacing:1.5px;
+  background:var(--yellow);
+  text-transform:uppercase;
+}
+.bubble.electric{
+  background:linear-gradient(135deg,var(--neon-purple),var(--purple-deep));
+  color:var(--cyan);
+  border-color:var(--cyan);
+  font-family:var(--comic);font-size:22px;letter-spacing:1.5px;
+  text-transform:uppercase;
+  box-shadow:5px 5px 0 var(--ink),0 0 25px rgba(0,240,255,0.4);
+  text-shadow:0 0 10px rgba(0,240,255,0.6);
+}
+.bubble.electric::after{border-top-color:var(--cyan)}
+.bubble.electric::before{border-top-color:var(--neon-purple)}
+.bubble.glitch-text{
+  background:#0a0612;color:var(--pink);
+  border-color:var(--pink);
+  font-family:var(--pixel);font-size:13px;letter-spacing:1px;
+  text-transform:uppercase;line-height:1.6;
+  text-shadow:2px 0 0 var(--cyan),-2px 0 0 var(--yellow);
+  padding:14px 18px;
+}
+.bubble.glitch-text::after{border-top-color:var(--pink)}
+.bubble.glitch-text::before{border-top-color:#0a0612}
+.bubble.thought{
+  border-radius:30px;
+  background:#fff;
+  font-style:italic;
+}
+
+/* SOUND EFFECT */
+.sfx{
+  position:absolute;
+  font-family:var(--display);
+  text-transform:uppercase;
+  color:var(--acid-yellow);
+  text-shadow:
+    4px 0 0 var(--ink),-4px 0 0 var(--ink),
+    0 4px 0 var(--ink),0 -4px 0 var(--ink),
+    3px 3px 0 var(--ink),-3px -3px 0 var(--ink),
+    3px -3px 0 var(--ink),-3px 3px 0 var(--ink),
+    9px 9px 0 var(--neon-purple);
+  letter-spacing:2px;
+  pointer-events:none;
+  animation:sfxbounce 1.5s ease infinite;
+  z-index:3;
+}
+@keyframes sfxbounce{
+  0%,100%{transform:scale(1) rotate(-5deg)}
+  50%{transform:scale(1.08) rotate(-3deg)}
+}
+.sfx.tl{top:14px;left:14px;font-size:42px}
+.sfx.tr{top:14px;right:14px;font-size:42px}
+.sfx.bl{bottom:60px;left:14px;font-size:38px}
+.sfx.br{bottom:60px;right:14px;font-size:38px;animation-delay:.3s}
+.sfx.center{top:42%;left:50%;transform:translate(-50%,-50%) rotate(-3deg);font-size:62px}
+.sfx.center:hover{transform:translate(-50%,-50%) rotate(-3deg) scale(1.05)}
+.sfx.green{color:var(--green);text-shadow:
+    4px 0 0 var(--ink),-4px 0 0 var(--ink),
+    0 4px 0 var(--ink),0 -4px 0 var(--ink),
+    3px 3px 0 var(--ink),-3px -3px 0 var(--ink),
+    3px -3px 0 var(--ink),-3px 3px 0 var(--ink),
+    9px 9px 0 #00803f}
+.sfx.purple{color:var(--violet-glow);text-shadow:
+    4px 0 0 var(--ink),-4px 0 0 var(--ink),
+    0 4px 0 var(--ink),0 -4px 0 var(--ink),
+    3px 3px 0 var(--ink),-3px -3px 0 var(--ink),
+    3px -3px 0 var(--ink),-3px 3px 0 var(--ink),
+    9px 9px 0 var(--neon-purple)}
+.sfx.cyan{color:var(--cyan);text-shadow:
+    4px 0 0 var(--ink),-4px 0 0 var(--ink),
+    0 4px 0 var(--ink),0 -4px 0 var(--ink),
+    3px 3px 0 var(--ink),-3px -3px 0 var(--ink),
+    3px -3px 0 var(--ink),-3px 3px 0 var(--ink),
+    9px 9px 0 #008594}
+.sfx.pink{color:var(--pink);text-shadow:
+    4px 0 0 var(--ink),-4px 0 0 var(--ink),
+    0 4px 0 var(--ink),0 -4px 0 var(--ink),
+    3px 3px 0 var(--ink),-3px -3px 0 var(--ink),
+    3px -3px 0 var(--ink),-3px 3px 0 var(--ink),
+    9px 9px 0 #8f0080}
+
+/* DIALOGUE STACK */
+.dialogue-stack{
+  display:flex;flex-direction:column;gap:14px;
+  padding:0 4px;
+}
+
+/* CHAPTER BREAK */
+.chapter-break{
+  text-align:center;margin:48px 0 36px;
+  font-family:var(--display);
+  color:var(--violet-glow);letter-spacing:5px;
+  font-size:14px;
+  display:flex;align-items:center;gap:14px;
+  text-shadow:0 0 12px rgba(196,181,253,0.6);
+}
+.chapter-break::before,.chapter-break::after{
+  content:'';flex:1;height:2px;
+  background:linear-gradient(90deg,transparent,var(--neon-purple),transparent);
+  box-shadow:0 0 10px rgba(157,78,221,0.6);
+}
+
+/* GLITCH PANEL — special panel where Monshi gets birthed */
+.panel.glitch-panel{
+  background:#0a0612;
+  border-color:var(--neon-purple);
+  box-shadow:
+    8px 8px 0 var(--ink),
+    0 0 60px rgba(255,0,229,0.4),
+    inset 0 0 60px rgba(157,78,221,0.4);
+  animation:glitchPulse 4s ease infinite;
+}
+@keyframes glitchPulse{
+  0%,100%{box-shadow:8px 8px 0 var(--ink),0 0 60px rgba(255,0,229,0.4),inset 0 0 60px rgba(157,78,221,0.4)}
+  50%{box-shadow:8px 8px 0 var(--ink),0 0 80px rgba(0,240,255,0.5),inset 0 0 80px rgba(157,78,221,0.6)}
+}
+
+.glitch-panel .caption{
+  background:#0a0612;color:var(--cyan);
+  border-color:var(--cyan);
+  font-family:var(--pixel);font-size:11px;line-height:1.6;
+  text-shadow:2px 0 0 var(--pink),-2px 0 0 var(--cyan);
+}
+.glitch-art{
+  background:radial-gradient(circle at center,var(--neon-purple) 0%,#0a0612 70%);
+  border:4px solid var(--cyan);
+  border-radius:4px;
+  min-height:340px;
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:14px;
+  box-shadow:inset 0 0 80px rgba(255,0,229,0.4);
+}
+.glitch-art::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,240,255,0.1) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,0,229,0.1) 1px,transparent 1px);
+  background-size:20px 20px;
+  animation:gridShift 3s linear infinite;
+}
+@keyframes gridShift{
+  0%{background-position:0 0,0 0}
+  100%{background-position:20px 20px,-20px 20px}
+}
+.glitch-art .vortex{
+  position:relative;z-index:2;
+  font-family:var(--pixel);font-size:14px;
+  color:var(--cyan);
+  text-align:center;
+  padding:30px;
+  text-shadow:3px 0 0 var(--pink),-3px 0 0 var(--cyan),0 0 20px rgba(196,181,253,0.8);
+  line-height:1.8;letter-spacing:2px;
+  animation:flicker .15s infinite;
+}
+@keyframes flicker{
+  0%,100%{opacity:1}
+  50%{opacity:.85}
+}
+.glitch-art .vortex .big{
+  display:block;font-size:34px;margin:14px 0;
+  font-family:var(--display);
+}
+
+/* MONAD LOGO BURST */
+.monad-burst{
+  background:radial-gradient(circle at center,#fff 0%,var(--violet-glow) 30%,var(--neon-purple) 60%,#0a0612 100%);
+  position:relative;overflow:hidden;
+  min-height:340px;
+  display:flex;align-items:center;justify-content:center;
+}
+.monad-burst::before{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,255,255,0.15) 0deg 12deg,transparent 12deg 24deg);
+  animation:rayspin 20s linear infinite;
+}
+@keyframes rayspin{
+  0%{transform:rotate(0deg)}
+  100%{transform:rotate(360deg)}
+}
+.monad-burst .logo{
+  position:relative;z-index:2;
+  font-family:var(--display);
+  font-size:80px;color:#fff;
+  text-shadow:0 0 40px rgba(255,255,255,0.8),0 0 80px rgba(196,181,253,1);
+}
+.monad-burst .label{
+  position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
+  font-family:var(--pixel);font-size:11px;color:var(--cyan);letter-spacing:3px;
+  text-shadow:2px 0 0 var(--pink),-2px 0 0 var(--cyan);
+  z-index:3;
+}
+
+/* END CARD */
+.end-card{
+  background:linear-gradient(135deg,var(--neon-purple) 0%,var(--purple-deep) 50%,#0a0612 100%);
+  border:5px solid var(--violet-glow);
+  border-radius:18px;
+  padding:36px 28px;text-align:center;
+  margin-top:48px;
+  box-shadow:8px 8px 0 var(--ink),0 0 80px rgba(157,78,221,0.6);
+  transform:rotate(.5deg);
+  position:relative;overflow:hidden;
+}
+.end-card::after{
+  content:'';position:absolute;inset:6px;
+  border:2px dashed rgba(255,255,255,0.3);border-radius:12px;
+  pointer-events:none;
+}
+.end-card::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px);
+  background-size:24px 24px;pointer-events:none;
+}
+.end-title{
+  font-family:var(--display);font-size:clamp(40px,8vw,76px);
+  color:#fff;text-transform:uppercase;letter-spacing:1px;line-height:.95;
+  text-shadow:
+    4px 4px 0 var(--neon-purple),
+    8px 8px 0 var(--ink),
+    0 0 30px rgba(196,181,253,0.5);
+  margin-bottom:16px;position:relative;z-index:2;
+}
+.end-sub{
+  font-family:var(--hand);font-size:20px;color:var(--violet-glow);
+  margin-bottom:24px;letter-spacing:1px;position:relative;z-index:2;
+  text-shadow:0 0 10px rgba(196,181,253,0.5);
+}
+.end-cta-row{
+  display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
+  margin-top:18px;position:relative;z-index:2;
+}
+.end-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 28px;
+  background:#0a0612;color:var(--cyan);
+  text-decoration:none;
+  font-family:var(--display);font-size:14px;letter-spacing:2px;
+  border-radius:10px;
+  border:3px solid var(--cyan);
+  box-shadow:
+    4px 4px 0 var(--neon-purple),
+    0 0 20px rgba(0,240,255,0.4);
+  transition:all .15s;text-transform:uppercase;
+  text-shadow:0 0 8px rgba(0,240,255,0.6);
+}
+.end-cta:hover{
+  transform:translate(-2px,-2px);
+  box-shadow:6px 6px 0 var(--neon-purple),0 0 30px rgba(0,240,255,0.6);
+}
+.end-cta.purple{
+  background:var(--neon-purple);color:#fff;
+  border-color:var(--violet-glow);
+  text-shadow:0 0 10px rgba(255,255,255,0.5);
+  box-shadow:4px 4px 0 var(--ink),0 0 20px rgba(157,78,221,0.6);
+}
+.end-cta.purple:hover{
+  box-shadow:6px 6px 0 var(--ink),0 0 30px rgba(157,78,221,0.8);
+}
+
+.next-issue{
+  margin-top:32px;text-align:center;color:var(--violet-glow);
+  font-family:var(--hand);font-size:22px;letter-spacing:1px;
+  text-shadow:0 0 8px rgba(196,181,253,0.5);
+}
+.next-issue b{
+  color:var(--acid-yellow);display:block;font-size:28px;margin-top:8px;
+  font-family:var(--display);letter-spacing:2px;
+  text-shadow:3px 3px 0 var(--neon-purple),0 0 15px rgba(255,229,102,0.5);
+}
+
+/* MONSHI MARK — top corner branding */
+.monshi-mark{
+  position:absolute;top:14px;right:14px;
+  background:var(--neon-purple);
+  color:#fff;
+  padding:4px 10px;border-radius:6px;
+  font-family:var(--pixel);font-size:9px;letter-spacing:1px;
+  border:2px solid var(--ink);
+  box-shadow:2px 2px 0 var(--ink);
+  z-index:4;
+}
+
+/* responsive */
+@media(max-width:540px){
+  .panel{padding:18px 14px 18px}
+  .sfx.center{font-size:42px}
+  .sfx.tl,.sfx.tr,.sfx.bl,.sfx.br{font-size:30px}
+  .panel-num{width:42px;height:42px;font-size:18px;top:-14px;left:-14px}
+  .glitch-art .vortex{font-size:11px;padding:20px}
+  .glitch-art .vortex .big{font-size:24px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ─── COMIC COVER ─── -->
+  <header class="comic-cover">
+    <div class="cover-issue">ISSUE #001</div>
+    <h1 class="cover-title">BIRTH OF<br><span class="glitch">MONSHI</span></h1>
+    <p class="cover-subtitle">"a glitch in the chain. a spark in the dark."</p>
+    <div class="cover-meta">
+      <span>📡 12 PAGES</span>
+      <span>⚡ MONSHI ORIGIN</span>
+      <span>🟪 CHAPTER 1</span>
+    </div>
+  </header>
+
+  <!-- ─── PANEL 1 — Toshi spark ─── -->
+  <div class="panel">
+    <div class="panel-num">1</div>
+    <div class="caption narrator">
+      <strong>BASE CHAIN. THE NIGHT IT HAPPENED.</strong> Toshi the blue cat was doing what blue cats do — vibing. But something in the network was different. A pulse he'd never felt before.
+    </div>
+    <div class="panel-art" style="background:radial-gradient(circle at 30% 40%,#1DA1F2 0%,#0d3b66 60%,#000 100%);min-height:340px">
+      <div style="text-align:center;padding:40px 20px;color:#fff;position:relative;z-index:2">
+        <div style="font-size:120px;line-height:1;filter:drop-shadow(0 0 30px rgba(29,161,242,0.8))">😺</div>
+        <div style="font-family:var(--pixel);font-size:11px;letter-spacing:2px;margin-top:18px;color:#A8E1FF;text-shadow:0 0 10px rgba(168,225,255,0.6)">TOSHI · BASE CHAIN · 03:33 AM</div>
+      </div>
+      <div class="sfx tr cyan" style="font-size:32px">SPARK!</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble thought">huh... what's that purple light?</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 2 — Monad pulse ─── -->
+  <div class="panel">
+    <div class="panel-num">2</div>
+    <div class="caption smoke">
+      ⚡ MEANWHILE — MONAD MAINNET ⚡
+    </div>
+    <div class="panel-art monad-burst">
+      <div class="logo">◆</div>
+      <div class="label">10,000 TPS · PARALLEL EXECUTION · UNBOUND</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble electric right">100x FASTER. 1000x STRONGER.<br>SOMETHING IS COMING.</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 3 — The collision ─── -->
+  <div class="panel glitch-panel">
+    <div class="panel-num">3</div>
+    <div class="caption glitch">
+      ▓▓▓ ANOMALY DETECTED ▓▓▓<br>
+      CROSS-CHAIN ENERGY SIGNATURE · UNKNOWN ORIGIN<br>
+      ▓▓▓ COLLISION IMMINENT ▓▓▓
+    </div>
+    <div class="glitch-art">
+      <div class="vortex">
+        <div>&gt;&gt;&gt; INITIATING FUSION &lt;&lt;&lt;</div>
+        <div class="big">⟨ T O S H I ⟩</div>
+        <div style="font-size:24px;color:var(--violet-glow);margin:8px 0">+</div>
+        <div class="big">⟨ M O N A D ⟩</div>
+        <div style="margin-top:14px">█▓▒░ COMPILING ░▒▓█</div>
+      </div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble glitch-text">SYSTEM: NEW ENTITY REGISTERED<br>0xb744f5cdb7...af7777</div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER BREAK ─── -->
+  <div class="chapter-break">⸺ CHAPTER II · THE EMERGENCE ⸺</div>
+
+  <!-- ─── PANEL 4 — Vortex opens ─── -->
+  <div class="panel">
+    <div class="panel-num">4</div>
+    <div class="caption">
+      The Monad chain <strong>cracked open</strong>. A swirling violet vortex where there should've been nothing. The validators couldn't index it. The block explorers blinked.
+    </div>
+    <div class="panel-art" style="background:radial-gradient(circle at center,#FF00E5 0%,var(--neon-purple) 25%,#1a0d2e 70%,#0a0612 100%);min-height:380px;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,255,255,0.15) 0deg 8deg,transparent 8deg 24deg);animation:rayspin 6s linear infinite"></div>
+      <div style="position:relative;z-index:2;text-align:center;color:#fff;padding:30px">
+        <div style="font-family:var(--display);font-size:60px;text-shadow:0 0 30px rgba(255,0,229,0.9),0 0 60px rgba(196,181,253,1)">⊙</div>
+        <div style="font-family:var(--pixel);font-size:11px;letter-spacing:2px;margin-top:20px;color:var(--cyan);text-shadow:2px 0 0 var(--pink)">GLITCH VORTEX · BLOCK 1,847,332</div>
+      </div>
+      <div class="sfx tl pink" style="font-size:38px">VWOOM!</div>
+      <div class="sfx br cyan" style="font-size:40px">CRACK!</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble shout">WHAT IS THIS?!</div>
+      <div class="bubble right">"the chain... it's <i>breathing</i>..."</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 5 — Hand reaches through ─── -->
+  <div class="panel">
+    <div class="panel-num">5</div>
+    <div class="caption">
+      Out of the swirl — a <strong>paw</strong>. Then a face. Glowing violet fur. Eyes like onchain receipts. He stepped through the rift like he owned it.
+    </div>
+    <div class="panel-art tall">
+      <img src="public/monshi_assets/monshi_finger_frame.jpg" alt="Monshi emerging through the Monad logo">
+      <div class="sfx tl purple" style="font-size:38px">STEP.</div>
+      <div class="sfx tr cyan" style="font-size:36px">STEP.</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble electric">I CAN SEE EVERY BLOCK.<br>EVERY TX. EVERY WALLET.</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 6 — The smirk reveal ─── -->
+  <div class="panel">
+    <div class="panel-num">6</div>
+    <div class="caption smoke">
+      🟪 BLOCK 1,847,333 · MONSHI APPEARS 🟪
+    </div>
+    <div class="panel-art contain" style="background:linear-gradient(135deg,var(--neon-purple) 0%,#1a0d2e 100%)">
+      <img src="public/monshi_assets/monshi_cat_turnaround.jpeg" alt="Monshi character turnaround sheet — front, side, back poses">
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble shout">SO. WHO RUNS THIS PLACE?</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 7 — He looks at the chain ─── -->
+  <div class="panel">
+    <div class="panel-num">7</div>
+    <div class="caption">
+      He scanned the network in 0.4 seconds. Saw the slow chains. The clogged mempools. The gas wars. He <strong>shook his head</strong>.
+    </div>
+    <div class="panel-art" style="background:linear-gradient(180deg,#0a0612,#1a0d2e);min-height:300px;display:flex;align-items:center;justify-content:center">
+      <div style="text-align:center;color:#fff;padding:30px;width:100%">
+        <div style="font-family:var(--pixel);font-size:9px;color:var(--cyan);letter-spacing:1px;margin-bottom:10px;text-shadow:1px 0 0 var(--pink)">SCANNING...</div>
+        <div style="font-family:var(--type);font-size:13px;line-height:2;color:var(--violet-glow);text-align:left;max-width:380px;margin:0 auto;background:rgba(0,0,0,0.4);padding:18px 22px;border:2px dashed var(--neon-purple);border-radius:8px">
+          <div>▸ ETH: <span style="color:#FF1744">15 TPS · $40 GAS · LMAO</span></div>
+          <div>▸ SOL: <span style="color:var(--orange)">FAST · OUTAGES · MEH</span></div>
+          <div>▸ BASE: <span style="color:var(--cyan)">NICE TRY TOSHI</span></div>
+          <div>▸ MONAD: <span style="color:var(--green)">10,000 TPS · HOME 🟪</span></div>
+        </div>
+        <div style="font-family:var(--pixel);font-size:10px;color:var(--acid-yellow);margin-top:14px;letter-spacing:2px;text-shadow:0 0 10px rgba(255,255,0,0.6)">VERDICT: TIME TO COOK</div>
+      </div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble thought">these chains are crawling. let's outpace every one of them.</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 8 — Declaration ─── -->
+  <div class="panel">
+    <div class="panel-num">8</div>
+    <div class="caption">
+      He didn't ask for permission. He didn't run a token sale. He just <strong>spawned his contract</strong> and left the address on every wall.
+    </div>
+    <div class="panel-art" style="background:linear-gradient(135deg,#0a0612,var(--neon-purple) 100%);min-height:280px;display:flex;align-items:center;justify-content:center;padding:30px">
+      <div style="background:var(--acid-yellow);border:4px solid var(--ink);padding:24px 28px;border-radius:10px;box-shadow:6px 6px 0 var(--ink),0 0 30px rgba(255,229,102,0.5);font-family:var(--type);color:#000;max-width:420px;text-align:center;transform:rotate(-2deg)">
+        <div style="font-family:var(--display);font-size:18px;letter-spacing:2px;margin-bottom:14px;text-transform:uppercase">📡 CHAIN BROADCAST</div>
+        <div style="font-family:var(--pixel);font-size:10px;line-height:1.8;letter-spacing:1px;text-align:left;background:#0a0612;color:var(--cyan);padding:12px;border-radius:6px;border:2px dashed var(--neon-purple);text-shadow:1px 0 0 var(--pink)">
+          $MONSHI<br>
+          0xb744f5cdb792...af7777<br>
+          MONAD MAINNET<br>
+          NO PRESALE · NO TEAM · ALL CAT
+        </div>
+      </div>
+      <div class="sfx tl pink" style="font-size:30px">PING!</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble shout right">FIND ME. HOLD ME. I PUMP THE SLOW.</div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER BREAK ─── -->
+  <div class="chapter-break">⸺ CHAPTER III · THE CULT ⸺</div>
+
+  <!-- ─── PANEL 9 — First buyers ─── -->
+  <div class="panel">
+    <div class="panel-num">9</div>
+    <div class="caption">
+      <strong>WHALES SAW IT FIRST.</strong> Then the trenches caught the scent. Then everyone. Within hours, $MONSHI was the only ticker that mattered on Monad.
+    </div>
+    <div class="panel-art" style="background:linear-gradient(180deg,#0a0612,#1a0d2e,#0a0612);min-height:300px;display:flex;align-items:center;justify-content:center;padding:24px">
+      <div style="text-align:center;color:#fff;width:100%;max-width:440px">
+        <svg viewBox="0 0 400 180" style="width:100%;height:auto">
+          <defs>
+            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#A89FFF" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#A89FFF" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line x1="0" y1="40" x2="400" y2="40" stroke="rgba(196,181,253,0.15)" stroke-dasharray="3 3"/>
+          <line x1="0" y1="90" x2="400" y2="90" stroke="rgba(196,181,253,0.15)" stroke-dasharray="3 3"/>
+          <line x1="0" y1="140" x2="400" y2="140" stroke="rgba(196,181,253,0.15)" stroke-dasharray="3 3"/>
+          <path d="M 0 160 L 30 158 L 60 155 L 90 150 L 120 140 L 150 120 L 180 95 L 210 70 L 240 55 L 270 38 L 300 28 L 330 18 L 360 12 L 400 8" fill="none" stroke="#A89FFF" stroke-width="3.5" filter="drop-shadow(0 0 8px #A89FFF)"/>
+          <path d="M 0 160 L 30 158 L 60 155 L 90 150 L 120 140 L 150 120 L 180 95 L 210 70 L 240 55 L 270 38 L 300 28 L 330 18 L 360 12 L 400 8 L 400 180 L 0 180 Z" fill="url(#chartGrad)"/>
+          <circle cx="400" cy="8" r="6" fill="#FFE566"/>
+          <circle cx="400" cy="8" r="12" fill="none" stroke="#FFE566" stroke-width="2" opacity="0.5">
+            <animate attributeName="r" from="6" to="20" dur="1.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.6" to="0" dur="1.5s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+        <div style="font-family:var(--display);font-size:24px;color:var(--green);margin-top:10px;letter-spacing:2px;text-shadow:3px 3px 0 #000,0 0 15px rgba(0,255,159,0.5)">UP ONLY</div>
+        <div style="font-family:var(--pixel);font-size:9px;color:var(--cyan);letter-spacing:2px;margin-top:6px">DAY ONE · BLOCK 1,847,500+</div>
+      </div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble">"yo who is this purple cat?"</div>
+      <div class="bubble right">"doesn't matter. <i>i'm in</i>."</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 10 — Monshi watches the cult form ─── -->
+  <div class="panel">
+    <div class="panel-num">10</div>
+    <div class="caption smoke">
+      🟪 THE PACK ASSEMBLES 🟪
+    </div>
+    <div class="panel-art" style="background:linear-gradient(135deg,var(--neon-purple),#1a0d2e);min-height:320px;display:flex;align-items:center;justify-content:center;padding:24px">
+      <div style="text-align:center;color:#fff;width:100%">
+        <div style="font-family:var(--display);font-size:48px;color:#fff;text-shadow:3px 3px 0 var(--neon-purple),0 0 30px rgba(196,181,253,0.6);margin-bottom:14px">$MONSHI</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:380px;margin:0 auto">
+          <div style="background:rgba(0,0,0,0.4);border:2px dashed var(--violet-glow);padding:10px;border-radius:8px">
+            <div style="font-size:24px">🐟</div>
+            <div style="font-family:var(--pixel);font-size:8px;color:var(--green);letter-spacing:1px;margin-top:4px">SHRIMP</div>
+          </div>
+          <div style="background:rgba(0,0,0,0.4);border:2px dashed var(--violet-glow);padding:10px;border-radius:8px">
+            <div style="font-size:24px">🦀</div>
+            <div style="font-family:var(--pixel);font-size:8px;color:var(--cyan);letter-spacing:1px;margin-top:4px">CRAB</div>
+          </div>
+          <div style="background:rgba(0,0,0,0.4);border:2px dashed var(--violet-glow);padding:10px;border-radius:8px">
+            <div style="font-size:24px">🐬</div>
+            <div style="font-family:var(--pixel);font-size:8px;color:var(--yellow);letter-spacing:1px;margin-top:4px">DOLPHIN</div>
+          </div>
+          <div style="background:rgba(0,0,0,0.4);border:2px dashed var(--violet-glow);padding:10px;border-radius:8px">
+            <div style="font-size:24px">🐳</div>
+            <div style="font-family:var(--pixel);font-size:8px;color:var(--pink);letter-spacing:1px;margin-top:4px">WHALE</div>
+          </div>
+        </div>
+        <div style="font-family:var(--hand);font-size:18px;color:var(--violet-glow);margin-top:18px;letter-spacing:1px">"every bag a tier. every tier a flex."</div>
+      </div>
+      <div class="sfx tr purple" style="font-size:30px">JOIN!</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble electric">HOLD MORE.<br>UNLOCK MORE.<br>BECOME ROYALTY.</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 11 — The arcade rises ─── -->
+  <div class="panel">
+    <div class="panel-num">11</div>
+    <div class="caption">
+      He didn't stop at a token. He built an <strong>arcade</strong>. Then a tournament. Then tools nobody else on Monad had. The chain bent around him.
+    </div>
+    <div class="panel-art" style="background:radial-gradient(circle at center,var(--neon-purple),#0a0612);min-height:340px;display:flex;align-items:center;justify-content:center;padding:20px">
+      <div style="text-align:center;color:#fff">
+        <div style="font-family:var(--display);font-size:38px;color:var(--acid-yellow);text-shadow:3px 3px 0 var(--ink),0 0 25px rgba(255,255,0,0.6);letter-spacing:2px;margin-bottom:18px">MONSHI ARCADE</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:340px;margin:0 auto">
+          <div style="background:rgba(0,0,0,0.5);border:3px solid var(--cyan);padding:14px 8px;border-radius:8px;box-shadow:3px 3px 0 var(--ink)">
+            <div style="font-size:30px">🎮</div>
+            <div style="font-family:var(--pixel);font-size:8px;color:var(--cyan);margin-top:6px;letter-spacing:1px">27 GAMES</div>
+          </div>
+          <div style="background:rgba(0,0,0,0.5);border:3px solid var(--acid-yellow);padding:14px 8px;border-radius:8px;box-shadow:3px 3px 0 var(--ink)">
+            <div style="font-size:30px">🏆</div>
+            <div style="font-family:var(--pixel);font-size:8px;color:var(--acid-yellow);margin-top:6px;letter-spacing:1px">600 MON</div>
+          </div>
+          <div style="background:rgba(0,0,0,0.5);border:3px solid var(--pink);padding:14px 8px;border-radius:8px;box-shadow:3px 3px 0 var(--ink)">
+            <div style="font-size:30px">🛠️</div>
+            <div style="font-family:var(--pixel);font-size:8px;color:var(--pink);margin-top:6px;letter-spacing:1px">TOOLS</div>
+          </div>
+        </div>
+      </div>
+      <div class="sfx bl green" style="font-size:32px">PLAY!</div>
+      <div class="sfx br cyan" style="font-size:30px">WIN!</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble shout">EVERY MONAD MEMECOIN BORROWS MY ENGINE.</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 12 — Closer ─── -->
+  <div class="panel">
+    <div class="panel-num">12</div>
+    <div class="caption narrator">
+      That night, he sat alone on the Monad mainnet. Watching the blocks tick. The chart climb. The pack grow. The other chains were sleeping. He was just <strong>warming up</strong>.
+    </div>
+    <div class="panel-art" style="background:linear-gradient(180deg,#1a0d2e 0%,#0a0612 100%);min-height:340px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;opacity:0.15;background-image:radial-gradient(circle at 20% 30%,#A89FFF 1px,transparent 2px),radial-gradient(circle at 70% 60%,#FFE566 1px,transparent 2px),radial-gradient(circle at 40% 80%,#00F0FF 1px,transparent 2px);background-size:80px 80px,120px 120px,100px 100px"></div>
+      <div style="position:relative;z-index:2;text-align:center;color:#fff;padding:30px">
+        <div style="font-family:var(--display);font-size:64px;color:var(--violet-glow);text-shadow:4px 4px 0 var(--neon-purple),0 0 40px rgba(196,181,253,0.8)">⊙</div>
+        <div style="font-family:var(--display);font-size:22px;color:#fff;margin-top:14px;letter-spacing:3px;text-transform:uppercase;text-shadow:0 0 15px rgba(196,181,253,0.6)">FIRST. FASTEST. ALONE.</div>
+        <div style="font-family:var(--hand);font-size:20px;color:var(--acid-yellow);margin-top:14px;text-shadow:0 0 12px rgba(255,255,0,0.5)">"come and try to catch me, ser."</div>
+      </div>
+      <div class="sfx tr purple" style="font-size:32px">CHILL.</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble shout">$MONSHI ON MONAD.<br>FOREVER. 🟪</div>
+    </div>
+  </div>
+
+  <!-- ─── END CARD ─── -->
+  <div class="end-card">
+    <div class="end-title">END · ISSUE #1</div>
+    <div class="end-sub">"Toshi sparked it.<br>Monad supercharged it.<br>Monshi runs it."</div>
+
+    <div class="end-cta-row">
+      <a href="https://monshi-fafo.vercel.app/" class="end-cta">
+        🎮 ENTER ARCADE
+      </a>
+      <a href="https://monshi-fafo.vercel.app/tools.html" class="end-cta purple">
+        🛠 GET THE TOOLS
+      </a>
+    </div>
+  </div>
+
+  <div class="next-issue">
+    NEXT ISSUE...
+    <b>MONSHI vs THE PAPER HANDS 🧻</b>
+  </div>
+
+</div>
+
+<script>
+// Panel reveal on scroll
+const panels = document.querySelectorAll('.panel');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.animation = 'panelIn .65s ease both';
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+panels.forEach(p => {
+  p.style.opacity = '0';
+  obs.observe(p);
+});
+
+// Inject keyframes
+const s = document.createElement('style');
+s.textContent = `
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(50px) rotate(0deg); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.panel { opacity: 1 !important; }
+.panel:nth-child(odd) { animation-name: panelInOdd !important; }
+.panel:nth-child(even) { animation-name: panelInEven !important; }
+@keyframes panelInOdd {
+  from { opacity: 0; transform: translateY(50px) rotate(-2deg); }
+  to { opacity: 1; transform: translateY(0) rotate(-.5deg); }
+}
+@keyframes panelInEven {
+  from { opacity: 0; transform: translateY(50px) rotate(2deg); }
+  to { opacity: 1; transform: translateY(0) rotate(.5deg); }
+}
+`;
+document.head.appendChild(s);
+</script>
+
+</body>
+</html>
