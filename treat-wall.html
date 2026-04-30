@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>$RENE TREAT WALL — Stake-for-Buyback Firepower</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=JetBrains+Mono:wght@400;700;800&family=Bowlby+One&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0612;
+  --surface:#150f24;
+  --card:#1f1735;
+  --border:#2a1f48;
+  --purple:#7F77DD;
+  --purple-bright:#A89FFF;
+  --purple-deep:#5A4FB8;
+  --yellow:#FFE566;
+  --green:#4DFFA0;
+  --red:#FF6B6B;
+  --orange:#FF9F4A;
+  --cream:#F4ECD8;
+  --muted:#8079A8;
+  --display:'Bowlby One',Impact,sans-serif;
+  --meme:'Bangers',cursive;
+  --mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--mono);
+  background:var(--bg);
+  color:#fff;
+  line-height:1.5;
+  overflow-x:hidden;
+  min-height:100vh;
+  position:relative;
+}
+/* grain overlay */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.45 0 0 0 0 0.85 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1;opacity:.4;
+}
+/* radial glow */
+body::after{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(127,119,221,0.15),transparent 50%),
+    radial-gradient(circle at 85% 70%, rgba(255,229,102,0.07),transparent 55%);
+  pointer-events:none;z-index:0;
+}
+.wrap{position:relative;z-index:2;max-width:1400px;margin:0 auto;padding:24px 20px 80px}
+
+/* ─── TOP BAR ─── */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 22px;background:var(--surface);
+  border:2px solid var(--border);border-radius:18px;
+  margin-bottom:32px;flex-wrap:wrap;gap:16px;
+  box-shadow:0 0 40px rgba(127,119,221,0.12),inset 0 1px 0 rgba(255,255,255,0.04);
+  position:relative;overflow:hidden;
+}
+.topbar::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:6px;
+  background:linear-gradient(180deg,var(--purple),var(--purple-deep));
+}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-mark{
+  width:54px;height:54px;border-radius:14px;
+  background:linear-gradient(135deg,var(--purple),var(--purple-deep));
+  display:flex;align-items:center;justify-content:center;font-size:30px;
+  box-shadow:0 0 24px rgba(127,119,221,0.4),inset 0 -3px 0 rgba(0,0,0,0.25);
+  position:relative;
+}
+.brand-mark::after{
+  content:'';position:absolute;inset:6px;border-radius:9px;
+  border:2px dashed rgba(255,255,255,0.2);
+}
+.brand-text{display:flex;flex-direction:column;line-height:1}
+.brand-text .l1{font-family:var(--display);font-size:24px;letter-spacing:1.5px;color:#fff;margin-bottom:4px}
+.brand-text .l2{font-family:var(--meme);font-size:13px;letter-spacing:3px;color:var(--purple-bright)}
+.network-pill{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 14px;background:rgba(77,255,160,0.08);
+  border:1px solid rgba(77,255,160,0.3);border-radius:10px;
+  font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--green);font-weight:700;
+}
+.network-pill .dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--green);box-shadow:0 0 10px var(--green);
+  animation:livepulse 1.5s ease infinite;
+}
+@keyframes livepulse{0%,100%{opacity:.6}50%{opacity:1}}
+.connect-cta{
+  padding:11px 22px;background:var(--purple);color:#fff;
+  border:none;border-radius:11px;
+  font-family:var(--mono);font-size:13px;font-weight:800;letter-spacing:1.2px;
+  cursor:pointer;transition:all .2s;
+  box-shadow:0 4px 0 var(--purple-deep),0 8px 20px rgba(127,119,221,0.3);
+}
+.connect-cta:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--purple-deep),0 12px 28px rgba(127,119,221,0.45)}
+.connect-cta:active{transform:translateY(2px);box-shadow:0 2px 0 var(--purple-deep)}
+
+/* ─── MOCKUP TAG ─── */
+.mockup-tag{
+  position:fixed;top:14px;left:50%;transform:translateX(-50%);
+  background:var(--yellow);color:#000;
+  padding:6px 18px;border-radius:0 0 12px 12px;
+  font-family:var(--meme);letter-spacing:2px;font-size:13px;
+  z-index:100;box-shadow:0 4px 14px rgba(255,229,102,0.3);
+}
+
+/* ─── HERO ─── */
+.hero{
+  margin:32px 0 40px;padding:48px 36px;
+  background:linear-gradient(135deg,var(--card),var(--surface));
+  border:2px solid var(--border);border-radius:24px;
+  position:relative;overflow:hidden;
+  box-shadow:0 0 60px rgba(127,119,221,0.18);
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(45deg,transparent,transparent 50px,rgba(127,119,221,0.04) 50px,rgba(127,119,221,0.04) 51px);
+  pointer-events:none;
+}
+.hero::after{
+  content:'🦴';position:absolute;right:-30px;top:-40px;
+  font-size:280px;opacity:.04;transform:rotate(-15deg);
+  pointer-events:none;
+}
+.hero-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:48px;align-items:center;position:relative;z-index:1}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr}}
+
+.hero-left .eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 12px;border:1px solid var(--purple);border-radius:6px;
+  font-size:10px;letter-spacing:3px;color:var(--purple-bright);
+  font-weight:700;margin-bottom:18px;
+}
+.hero-left h1{
+  font-family:var(--display);
+  font-size:clamp(48px,7vw,84px);line-height:.95;letter-spacing:-1px;
+  color:#fff;margin-bottom:18px;text-transform:uppercase;
+}
+.hero-left h1 .accent{color:var(--yellow);display:inline-block;transform:rotate(-2deg)}
+.hero-left .blurb{
+  font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:28px;
+  max-width:520px;
+}
+.hero-left .blurb strong{color:var(--cream)}
+
+/* ── HERO RIGHT: Vault visual ── */
+.vault-visual{
+  position:relative;aspect-ratio:1;max-width:340px;margin:0 auto;
+  display:flex;align-items:center;justify-content:center;
+}
+.vault-ring{
+  position:absolute;inset:0;border-radius:50%;
+  border:3px solid var(--border);
+}
+.vault-ring.outer{
+  background:conic-gradient(from -90deg,var(--purple) 0%,var(--purple) 67%,var(--border) 67%,var(--border) 100%);
+  padding:6px;animation:slowspin 60s linear infinite;
+}
+.vault-ring.outer::before{
+  content:'';position:absolute;inset:6px;border-radius:50%;
+  background:var(--card);
+}
+.vault-ring.inner{
+  inset:30px;border:2px dashed rgba(127,119,221,0.4);
+  animation:slowspin 90s linear infinite reverse;
+}
+@keyframes slowspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.vault-core{
+  position:relative;z-index:2;width:60%;aspect-ratio:1;
+  background:linear-gradient(135deg,var(--purple),var(--purple-deep));
+  border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:
+    inset 0 -8px 0 rgba(0,0,0,0.25),
+    inset 0 6px 0 rgba(255,255,255,0.12),
+    0 0 40px rgba(127,119,221,0.5);
+}
+.vault-core .face{font-size:60px;line-height:1;margin-bottom:6px}
+.vault-core .label{font-family:var(--meme);letter-spacing:2px;font-size:14px;color:#fff}
+.vault-tick{
+  position:absolute;font-family:var(--mono);font-size:10px;
+  color:var(--purple-bright);font-weight:700;letter-spacing:1px;
+}
+.vault-tick.t1{top:8px;left:50%;transform:translateX(-50%)}
+.vault-tick.t2{right:8px;top:50%;transform:translateY(-50%)}
+.vault-tick.t3{bottom:8px;left:50%;transform:translateX(-50%)}
+.vault-tick.t4{left:8px;top:50%;transform:translateY(-50%)}
+
+/* ─── KPI BAR ─── */
+.kpi-row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px;
+}
+@media(max-width:768px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+.kpi{
+  background:var(--card);border:2px solid var(--border);border-radius:16px;
+  padding:20px;position:relative;overflow:hidden;
+  transition:all .2s;
+}
+.kpi:hover{transform:translateY(-3px);border-color:var(--purple)}
+.kpi::after{
+  content:'';position:absolute;left:0;top:0;width:100%;height:3px;
+  background:linear-gradient(90deg,var(--accent,var(--purple)),transparent);
+}
+.kpi.k1{--accent:var(--yellow)}
+.kpi.k2{--accent:var(--green)}
+.kpi.k3{--accent:var(--purple-bright)}
+.kpi.k4{--accent:var(--orange)}
+.kpi .label{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:8px}
+.kpi .value{font-family:var(--display);font-size:30px;color:#fff;letter-spacing:0;line-height:1}
+.kpi .value .unit{color:var(--accent,var(--purple));font-size:18px;margin-left:4px}
+.kpi .delta{
+  display:inline-flex;align-items:center;gap:4px;
+  margin-top:8px;font-size:11px;font-weight:700;
+  color:var(--green);font-family:var(--mono);
+}
+.kpi .delta.down{color:var(--red)}
+
+/* ─── DEPOSIT PANEL + STATUS PANEL ─── */
+.action-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;margin-bottom:40px}
+@media(max-width:1100px){.action-grid{grid-template-columns:1fr}}
+
+.panel{
+  background:var(--card);border:2px solid var(--border);border-radius:20px;
+  padding:32px;position:relative;
+  box-shadow:0 0 30px rgba(0,0,0,0.4);
+}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:12px;flex-wrap:wrap}
+.panel-title{
+  font-family:var(--display);font-size:24px;letter-spacing:.5px;color:#fff;
+  display:flex;align-items:center;gap:12px;
+}
+.panel-title .badge{
+  font-family:var(--mono);font-size:9px;letter-spacing:2px;
+  padding:4px 8px;background:rgba(77,255,160,0.1);
+  color:var(--green);border:1px solid rgba(77,255,160,0.3);
+  border-radius:5px;font-weight:700;
+}
+
+/* deposit panel */
+.deposit-input-wrap{
+  background:#0d0820;border:2px solid var(--border);border-radius:14px;
+  padding:18px 20px;margin-bottom:18px;transition:border-color .2s;
+}
+.deposit-input-wrap:focus-within{border-color:var(--purple)}
+.deposit-input-wrap .row1{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:8px;font-size:11px;letter-spacing:1.5px;color:var(--muted);font-weight:700;
+}
+.deposit-input-wrap .balance{color:var(--cream)}
+.deposit-input-wrap .balance b{color:var(--yellow);margin-left:6px}
+.deposit-input{
+  display:flex;align-items:center;gap:14px;
+}
+.deposit-input input{
+  flex:1;background:transparent;border:none;outline:none;
+  font-family:var(--display);font-size:38px;color:#fff;letter-spacing:-.5px;
+  width:100%;
+}
+.deposit-input input::placeholder{color:rgba(244,236,216,0.2)}
+.deposit-input .token-pill{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;background:linear-gradient(135deg,var(--purple),var(--purple-deep));
+  border-radius:11px;font-weight:800;letter-spacing:.5px;
+  box-shadow:0 3px 0 rgba(0,0,0,0.3);
+}
+.deposit-input .token-pill .ico{
+  width:24px;height:24px;border-radius:50%;background:#0d0820;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+}
+.percent-row{display:flex;gap:8px;margin-bottom:24px}
+.percent-row button{
+  flex:1;padding:9px;background:rgba(127,119,221,0.08);
+  border:1px solid var(--border);border-radius:9px;color:var(--muted);
+  font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1px;
+  cursor:pointer;transition:all .15s;
+}
+.percent-row button:hover{background:rgba(127,119,221,0.2);color:var(--purple-bright);border-color:var(--purple)}
+.percent-row button.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+.summary-row{
+  display:flex;justify-content:space-between;
+  padding:11px 0;border-top:1px dashed var(--border);
+  font-size:12px;
+}
+.summary-row:first-of-type{border-top:none}
+.summary-row .k{color:var(--muted);letter-spacing:1px;font-weight:600}
+.summary-row .v{color:#fff;font-family:var(--mono);font-weight:700}
+.summary-row .v.acc{color:var(--yellow)}
+
+.deposit-cta{
+  width:100%;margin-top:24px;padding:18px;
+  background:linear-gradient(135deg,var(--yellow),var(--orange));color:#000;
+  border:none;border-radius:14px;
+  font-family:var(--display);font-size:18px;letter-spacing:1.5px;cursor:pointer;
+  box-shadow:0 5px 0 #b88828,0 10px 25px rgba(255,229,102,0.25);
+  transition:all .15s;
+}
+.deposit-cta:hover{transform:translateY(-3px);box-shadow:0 8px 0 #b88828,0 14px 32px rgba(255,229,102,0.4)}
+.deposit-cta:active{transform:translateY(2px);box-shadow:0 3px 0 #b88828}
+
+/* status panel — gauge */
+.gauge-wrap{
+  background:#0d0820;border:2px solid var(--border);border-radius:14px;
+  padding:24px;text-align:center;margin-bottom:18px;
+}
+.gauge-svg{width:100%;max-width:260px;height:auto;margin:0 auto;display:block}
+.gauge-readout{margin-top:-30px;position:relative}
+.gauge-readout .big{font-family:var(--display);font-size:42px;color:var(--green);letter-spacing:0;line-height:1}
+.gauge-readout .lbl{font-family:var(--mono);font-size:10px;letter-spacing:2.5px;color:var(--muted);font-weight:700;margin-top:4px}
+
+.threshold-info{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.threshold-cell{
+  background:rgba(127,119,221,0.06);border:1px solid var(--border);
+  border-radius:10px;padding:12px 14px;
+}
+.threshold-cell .k{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);font-weight:700}
+.threshold-cell .v{font-family:var(--display);font-size:18px;color:#fff;margin-top:4px;line-height:1}
+.threshold-cell .v .sub{color:var(--purple-bright);font-size:13px;margin-left:3px}
+
+/* ─── HOW IT WORKS ─── */
+.how-section{margin-bottom:48px}
+.section-title{
+  font-family:var(--display);font-size:clamp(28px,4vw,42px);
+  text-transform:uppercase;letter-spacing:.5px;color:#fff;
+  margin-bottom:8px;display:flex;align-items:center;gap:14px;
+}
+.section-title .num{
+  font-family:var(--meme);background:var(--yellow);color:#000;
+  padding:4px 12px;border-radius:8px;font-size:24px;letter-spacing:2px;
+  transform:rotate(-3deg);
+}
+.section-sub{color:var(--muted);font-size:14px;margin-bottom:32px;letter-spacing:.5px}
+
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+@media(max-width:900px){.steps-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:540px){.steps-grid{grid-template-columns:1fr}}
+
+.step{
+  background:var(--card);border:2px solid var(--border);border-radius:18px;
+  padding:24px;position:relative;overflow:hidden;
+  transition:transform .3s ease;
+}
+.step:hover{transform:translateY(-4px) rotate(-1deg);border-color:var(--purple)}
+.step .num-tag{
+  position:absolute;top:-6px;right:-6px;
+  width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--purple-deep));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:24px;color:#fff;
+  box-shadow:0 0 20px rgba(127,119,221,0.4),inset 0 -3px 0 rgba(0,0,0,0.3);
+}
+.step .icon{font-size:38px;margin-bottom:12px;display:block}
+.step h3{font-family:var(--display);font-size:18px;color:#fff;margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase}
+.step p{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* ─── ACTIVITY FEED ─── */
+.activity-section{margin-bottom:48px}
+.activity-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:24px}
+@media(max-width:1100px){.activity-grid{grid-template-columns:1fr}}
+
+.activity-list{
+  background:var(--card);border:2px solid var(--border);border-radius:18px;
+  padding:8px 0;max-height:480px;overflow-y:auto;
+}
+.activity-list::-webkit-scrollbar{width:6px}
+.activity-list::-webkit-scrollbar-thumb{background:var(--purple);border-radius:3px}
+.activity-row{
+  display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;
+  align-items:center;padding:14px 22px;
+  border-bottom:1px solid rgba(127,119,221,0.08);
+  transition:background .15s;
+}
+.activity-row:hover{background:rgba(127,119,221,0.05)}
+.activity-row:last-child{border-bottom:none}
+.activity-icon{
+  width:36px;height:36px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  background:var(--surface);
+}
+.activity-icon.deposit{background:rgba(127,119,221,0.15);color:var(--purple-bright)}
+.activity-icon.fire{background:rgba(255,159,74,0.15);color:var(--orange)}
+.activity-icon.withdraw{background:rgba(77,255,160,0.1);color:var(--green)}
+.activity-icon.heart{background:rgba(255,107,107,0.1);color:var(--red)}
+.activity-text{font-size:13px;line-height:1.4}
+.activity-text .who{color:var(--cream);font-weight:700;font-family:var(--mono)}
+.activity-text .what{color:var(--muted);margin-top:2px;font-size:11px;letter-spacing:.5px}
+.activity-amount{
+  font-family:var(--display);font-size:16px;color:var(--yellow);
+  white-space:nowrap;
+}
+.activity-amount.green{color:var(--green)}
+.activity-amount.red{color:var(--red)}
+.activity-time{
+  font-family:var(--mono);font-size:10px;color:var(--muted);
+  letter-spacing:.5px;white-space:nowrap;
+}
+
+/* TOP STAKERS leaderboard */
+.leaderboard{
+  background:var(--card);border:2px solid var(--border);border-radius:18px;
+  padding:24px;
+}
+.leaderboard h3{
+  font-family:var(--display);font-size:18px;color:#fff;
+  margin-bottom:18px;letter-spacing:.5px;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;
+}
+.lb-row{
+  display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;
+  padding:12px 14px;border-radius:10px;margin-bottom:6px;
+  background:rgba(127,119,221,0.04);
+  transition:all .15s;border:1px solid transparent;
+}
+.lb-row:hover{background:rgba(127,119,221,0.1);border-color:var(--border)}
+.lb-row.gold{background:linear-gradient(90deg,rgba(255,229,102,0.12),transparent);border:1px solid rgba(255,229,102,0.25)}
+.lb-row.silver{background:linear-gradient(90deg,rgba(192,192,192,0.06),transparent);border:1px solid rgba(192,192,192,0.15)}
+.lb-row.bronze{background:linear-gradient(90deg,rgba(205,127,50,0.06),transparent);border:1px solid rgba(205,127,50,0.15)}
+.lb-rank{
+  font-family:var(--display);font-size:18px;width:32px;
+  text-align:center;color:var(--muted);
+}
+.lb-row.gold .lb-rank{color:var(--yellow)}
+.lb-row.silver .lb-rank{color:#c0c0c0}
+.lb-row.bronze .lb-rank{color:#cd7f32}
+.lb-name{font-family:var(--mono);font-size:12px;color:var(--cream);font-weight:700}
+.lb-name .sub{display:block;font-size:9px;color:var(--muted);font-weight:500;letter-spacing:.5px;margin-top:2px}
+.lb-amt{font-family:var(--display);font-size:15px;color:var(--yellow);white-space:nowrap}
+
+/* ─── PRICE PROTECTION GRAPH ─── */
+.protection-section{
+  background:var(--card);border:2px solid var(--border);border-radius:20px;
+  padding:36px;margin-bottom:48px;
+  position:relative;overflow:hidden;
+}
+.protection-section::before{
+  content:'';position:absolute;left:0;top:0;right:0;height:6px;
+  background:linear-gradient(90deg,var(--green),var(--purple),var(--yellow));
+}
+.proto-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:36px;align-items:center}
+@media(max-width:900px){.proto-grid{grid-template-columns:1fr}}
+.proto-left h2{
+  font-family:var(--display);font-size:32px;color:#fff;
+  margin-bottom:14px;line-height:1.05;letter-spacing:.5px;text-transform:uppercase;
+}
+.proto-left h2 .acc{color:var(--green)}
+.proto-left p{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:18px}
+.proto-stats{display:flex;gap:20px;flex-wrap:wrap}
+.proto-stat{
+  background:rgba(77,255,160,0.06);border:1px solid rgba(77,255,160,0.2);
+  border-radius:12px;padding:14px 18px;flex:1;min-width:130px;
+}
+.proto-stat .k{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);font-weight:700}
+.proto-stat .v{font-family:var(--display);font-size:24px;color:var(--green);margin-top:6px;line-height:1}
+.chart-wrap{
+  background:#0d0820;border:1px solid var(--border);border-radius:14px;
+  padding:18px;height:280px;position:relative;
+}
+
+/* ─── FAQ ─── */
+.faq-section{margin-bottom:48px}
+.faq-list{display:flex;flex-direction:column;gap:12px}
+.faq-item{
+  background:var(--card);border:2px solid var(--border);border-radius:14px;
+  padding:20px 24px;cursor:pointer;transition:all .2s;
+}
+.faq-item:hover{border-color:var(--purple)}
+.faq-item summary{
+  font-family:var(--display);font-size:16px;color:#fff;
+  list-style:none;display:flex;justify-content:space-between;align-items:center;
+  letter-spacing:.5px;
+}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{
+  content:'+';color:var(--purple-bright);font-size:24px;font-weight:700;
+  transition:transform .2s;line-height:1;
+}
+.faq-item[open] summary::after{content:'×'}
+.faq-item p{margin-top:14px;color:var(--muted);font-size:13px;line-height:1.7}
+
+/* ─── FOOTER ─── */
+.foot{
+  text-align:center;padding-top:36px;border-top:2px solid var(--border);
+  color:var(--muted);font-family:var(--mono);font-size:11px;letter-spacing:1.5px;
+}
+.foot .disclaim{
+  background:rgba(255,107,107,0.06);border:1px solid rgba(255,107,107,0.2);
+  border-radius:10px;padding:14px 20px;margin-bottom:20px;
+  color:var(--red);font-size:11px;letter-spacing:1px;line-height:1.6;
+}
+</style>
+</head>
+<body>
+
+<div class="mockup-tag">🎨 UI MOCKUP — NOT FUNCTIONAL — DEMO ONLY</div>
+
+<div class="wrap">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">🦴</div>
+      <div class="brand-text">
+        <span class="l1">TREAT WALL</span>
+        <span class="l2">BUYBACK FIREPOWER · v1</span>
+      </div>
+    </div>
+    <div class="network-pill">
+      <span class="dot"></span>
+      <span>MONAD MAINNET</span>
+    </div>
+    <button class="connect-cta">CONNECT WALLET</button>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <span class="eyebrow">⚡ LIVE · STAKE-FOR-BUYBACK</span>
+        <h1>BUILD <span class="accent">THE WALL</span> THE PACK DEFENDS THE BAG</h1>
+        <p class="blurb">
+          Holders deposit MON into the community vault. When $RENE dips, <strong>3 Pack admins press the button.</strong> The vault buys $RENE on Atlantis at the bottom. You walk away with a heavier bag bought on the floor.
+        </p>
+        <p class="blurb" style="margin-bottom:0;">
+          <strong style="color:var(--yellow)">Diamond paws coordinate. Paper hands fund.</strong>
+        </p>
+      </div>
+      <div class="vault-visual">
+        <div class="vault-ring outer"></div>
+        <div class="vault-ring inner"></div>
+        <div class="vault-tick t1">N</div>
+        <div class="vault-tick t2">E</div>
+        <div class="vault-tick t3">S</div>
+        <div class="vault-tick t4">W</div>
+        <div class="vault-core">
+          <div class="face">🦴</div>
+          <div class="label">VAULT 67%</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KPI BAR -->
+  <section class="kpi-row">
+    <div class="kpi k1">
+      <div class="label">VAULT MON</div>
+      <div class="value">12,847<span class="unit">MON</span></div>
+      <div class="delta">▲ +1,234 today</div>
+    </div>
+    <div class="kpi k2">
+      <div class="label">PACK MEMBERS</div>
+      <div class="value">347<span class="unit">WALLETS</span></div>
+      <div class="delta">▲ +12 (24h)</div>
+    </div>
+    <div class="kpi k3">
+      <div class="label">$RENE BOUGHT BACK</div>
+      <div class="value">8.4<span class="unit">M</span></div>
+      <div class="delta">3 buybacks · last 30d</div>
+    </div>
+    <div class="kpi k4">
+      <div class="label">DIP TRIGGER</div>
+      <div class="value">-30<span class="unit">%</span></div>
+      <div class="delta down">CURRENT: -22%</div>
+    </div>
+  </section>
+
+  <!-- ACTION GRID -->
+  <section class="action-grid">
+
+    <!-- DEPOSIT PANEL -->
+    <div class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">DEPOSIT MON <span class="badge">● ACCEPTING</span></h2>
+      </div>
+
+      <div class="deposit-input-wrap">
+        <div class="row1">
+          <span>AMOUNT</span>
+          <span class="balance">WALLET: <b>2.45 MON</b></span>
+        </div>
+        <div class="deposit-input">
+          <input type="text" value="1.00" placeholder="0.00">
+          <div class="token-pill">
+            <div class="ico">🟪</div>
+            <span>MON</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="percent-row">
+        <button>25%</button>
+        <button class="active">50%</button>
+        <button>75%</button>
+        <button>MAX</button>
+      </div>
+
+      <div class="summary-row">
+        <span class="k">Your share of vault</span>
+        <span class="v">0.0078%</span>
+      </div>
+      <div class="summary-row">
+        <span class="k">Lock period (after fire)</span>
+        <span class="v">7 DAYS</span>
+      </div>
+      <div class="summary-row">
+        <span class="k">Withdraw before fire</span>
+        <span class="v acc">FREE · ANY TIME</span>
+      </div>
+      <div class="summary-row">
+        <span class="k">Estimated $RENE on next fire</span>
+        <span class="v acc">~ 412,500 $RENE</span>
+      </div>
+
+      <button class="deposit-cta">DEPOSIT 1.00 MON 🦴</button>
+    </div>
+
+    <!-- STATUS PANEL: gauge + thresholds -->
+    <div class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">VAULT STATUS</h2>
+      </div>
+
+      <div class="gauge-wrap">
+        <svg class="gauge-svg" viewBox="0 0 200 130">
+          <!-- gauge arc background -->
+          <path d="M 20 110 A 80 80 0 0 1 180 110" fill="none" stroke="#2a1f48" stroke-width="14" stroke-linecap="round"/>
+          <!-- gauge fill (67% — angle calc: 67% of 180° from -180 to 0) -->
+          <path d="M 20 110 A 80 80 0 0 1 175 65" fill="none" stroke="url(#gaugegrad)" stroke-width="14" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="gaugegrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#FF6B6B"/>
+              <stop offset="40%" stop-color="#FF9F4A"/>
+              <stop offset="100%" stop-color="#4DFFA0"/>
+            </linearGradient>
+          </defs>
+          <!-- needle -->
+          <g transform="rotate(34 100 110)">
+            <line x1="100" y1="110" x2="100" y2="40" stroke="#FFE566" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="100" cy="110" r="6" fill="#FFE566"/>
+          </g>
+          <!-- ticks -->
+          <text x="20" y="125" font-family="JetBrains Mono" font-size="9" fill="#8079A8" text-anchor="middle">EMPTY</text>
+          <text x="180" y="125" font-family="JetBrains Mono" font-size="9" fill="#8079A8" text-anchor="middle">FULL</text>
+        </svg>
+        <div class="gauge-readout">
+          <div class="big">67%</div>
+          <div class="lbl">VAULT FILL</div>
+        </div>
+      </div>
+
+      <div class="threshold-info">
+        <div class="threshold-cell">
+          <div class="k">DIP THRESHOLD</div>
+          <div class="v">-30<span class="sub">%</span></div>
+        </div>
+        <div class="threshold-cell">
+          <div class="k">TIME SINCE LAST FIRE</div>
+          <div class="v">8d 14h</div>
+        </div>
+        <div class="threshold-cell">
+          <div class="k">ADMINS</div>
+          <div class="v">2 / 3<span class="sub">ARMED</span></div>
+        </div>
+        <div class="threshold-cell">
+          <div class="k">ATLANTIS LIQUIDITY</div>
+          <div class="v">$184<span class="sub">K</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section">
+    <h2 class="section-title"><span class="num">01</span> HOW THE WALL WORKS</h2>
+    <p class="section-sub">// Stake-for-Buyback in four moves. No yield farming. No emissions. Just coordinated firepower.</p>
+
+    <div class="steps-grid">
+      <div class="step">
+        <div class="num-tag">1</div>
+        <div class="icon">💰</div>
+        <h3>DEPOSIT</h3>
+        <p>Drop MON into the community vault. Anyone can join. Withdraw any time before the wall fires — totally free, no penalty.</p>
+      </div>
+      <div class="step">
+        <div class="num-tag">2</div>
+        <div class="icon">📉</div>
+        <h3>WAIT</h3>
+        <p>$RENE chart bleeds. Vault sits armed. 3 Pack admins watch the threshold. Your MON is locked, loaded, ready.</p>
+      </div>
+      <div class="step">
+        <div class="num-tag">3</div>
+        <div class="icon">🔥</div>
+        <h3>FIRE</h3>
+        <p>Admin multisig presses THE BUTTON. The whole vault swaps for $RENE on Atlantis at the dip. One coordinated buy. Massive wick.</p>
+      </div>
+      <div class="step">
+        <div class="num-tag">4</div>
+        <div class="icon">🦴</div>
+        <h3>EAT</h3>
+        <p>You get your share of the bigger $RENE bag, locked 7 days while the chart heals. Then withdraw fatter than you came.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTIVITY + LEADERBOARD -->
+  <section class="activity-section">
+    <h2 class="section-title"><span class="num">02</span> LIVE PACK ACTIVITY</h2>
+    <p class="section-sub">// Real-time deposits, withdrawals, and buyback events. Watch the wall grow.</p>
+
+    <div class="activity-grid">
+      <div class="activity-list">
+
+        <div class="activity-row">
+          <div class="activity-icon deposit">↓</div>
+          <div class="activity-text">
+            <div class="who">0x9a3f…b820</div>
+            <div class="what">DEPOSITED · WALL +1</div>
+          </div>
+          <div class="activity-amount">+250 MON</div>
+          <div class="activity-time">12s</div>
+        </div>
+
+        <div class="activity-row">
+          <div class="activity-icon deposit">↓</div>
+          <div class="activity-text">
+            <div class="who">ZEPHYR.eth</div>
+            <div class="what">DEPOSITED · DIAMOND PAW</div>
+          </div>
+          <div class="activity-amount">+1,200 MON</div>
+          <div class="activity-time">3m</div>
+        </div>
+
+        <div class="activity-row">
+          <div class="activity-icon fire">🔥</div>
+          <div class="activity-text">
+            <div class="who">PACK ADMINS</div>
+            <div class="what">FIRED THE WALL · BOUGHT 3.2M $RENE @ $0.000087</div>
+          </div>
+          <div class="activity-amount">−8,420 MON</div>
+          <div class="activity-time">2h</div>
+        </div>
+
+        <div class="activity-row">
+          <div class="activity-icon withdraw">↑</div>
+          <div class="activity-text">
+            <div class="who">0x7d11…c4a2</div>
+            <div class="what">CLAIMED $RENE · LOCK ENDED</div>
+          </div>
+          <div class="activity-amount green">412k $RENE</div>
+          <div class="activity-time">4h</div>
+        </div>
+
+        <div class="activity-row">
+          <div class="activity-icon deposit">↓</div>
+          <div class="activity-text">
+            <div class="who">DOGEFRENS.eth</div>
+            <div class="what">DEPOSITED · NEW PACK MEMBER</div>
+          </div>
+          <div class="activity-amount">+50 MON</div>
+          <div class="activity-time">5h</div>
+        </div>
+
+        <div class="activity-row">
+          <div class="activity-icon heart">♥</div>
+          <div class="activity-text">
+            <div class="who">RENE_WHALE</div>
+            <div class="what">INCREASED STAKE · COMMITMENT BUFFED</div>
+          </div>
+          <div class="activity-amount">+800 MON</div>
+          <div class="activity-time">7h</div>
+        </div>
+
+        <div class="activity-row">
+          <div class="activity-icon deposit">↓</div>
+          <div class="activity-text">
+            <div class="who">0x3c8e…d901</div>
+            <div class="what">DEPOSITED</div>
+          </div>
+          <div class="activity-amount">+125 MON</div>
+          <div class="activity-time">8h</div>
+        </div>
+
+        <div class="activity-row">
+          <div class="activity-icon withdraw">↑</div>
+          <div class="activity-text">
+            <div class="who">0xff21…7b3c</div>
+            <div class="what">WITHDREW BEFORE FIRE</div>
+          </div>
+          <div class="activity-amount red">−75 MON</div>
+          <div class="activity-time">10h</div>
+        </div>
+
+        <div class="activity-row">
+          <div class="activity-icon deposit">↓</div>
+          <div class="activity-text">
+            <div class="who">PAWMAN.eth</div>
+            <div class="what">DEPOSITED · 3RD TIME THIS WEEK</div>
+          </div>
+          <div class="activity-amount">+340 MON</div>
+          <div class="activity-time">12h</div>
+        </div>
+
+        <div class="activity-row">
+          <div class="activity-icon fire">🔥</div>
+          <div class="activity-text">
+            <div class="who">PACK ADMINS</div>
+            <div class="what">PREVIOUS FIRE · BOUGHT 2.1M $RENE</div>
+          </div>
+          <div class="activity-amount">−5,200 MON</div>
+          <div class="activity-time">2d</div>
+        </div>
+
+      </div>
+
+      <!-- LEADERBOARD -->
+      <div class="leaderboard">
+        <h3>🏆 TOP DIAMOND PAWS</h3>
+
+        <div class="lb-row gold">
+          <div class="lb-rank">1</div>
+          <div class="lb-name">RENE_WHALE<span class="sub">SINCE DAY 1 · 12 FIRES</span></div>
+          <div class="lb-amt">3,400 MON</div>
+        </div>
+        <div class="lb-row silver">
+          <div class="lb-rank">2</div>
+          <div class="lb-name">ZEPHYR.eth<span class="sub">7 FIRES SURVIVED</span></div>
+          <div class="lb-amt">1,890 MON</div>
+        </div>
+        <div class="lb-row bronze">
+          <div class="lb-rank">3</div>
+          <div class="lb-name">PAWMAN.eth<span class="sub">5 FIRES</span></div>
+          <div class="lb-amt">1,120 MON</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">4</div>
+          <div class="lb-name">DOGEFRENS.eth<span class="sub">3 FIRES</span></div>
+          <div class="lb-amt">820 MON</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">5</div>
+          <div class="lb-name">0x9a3f…b820<span class="sub">2 FIRES</span></div>
+          <div class="lb-amt">650 MON</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">6</div>
+          <div class="lb-name">TREATMAXI<span class="sub">2 FIRES</span></div>
+          <div class="lb-amt">560 MON</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">7</div>
+          <div class="lb-name">0x7d11…c4a2<span class="sub">1 FIRE</span></div>
+          <div class="lb-amt">412 MON</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PROTECTION CHART -->
+  <section class="protection-section">
+    <div class="proto-grid">
+      <div class="proto-left">
+        <h2>THE WALL <span class="acc">WORKS</span></h2>
+        <p>3 fires in 30 days. Each one caught the dip and lifted the floor. The chart heals faster when the pack coordinates.</p>
+        <div class="proto-stats">
+          <div class="proto-stat">
+            <div class="k">AVG RECOVERY</div>
+            <div class="v">+18%</div>
+          </div>
+          <div class="proto-stat">
+            <div class="k">FIRES TOTAL</div>
+            <div class="v">12</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-wrap">
+        <svg viewBox="0 0 400 220" style="width:100%;height:100%">
+          <!-- grid lines -->
+          <line x1="0" y1="55" x2="400" y2="55" stroke="#2a1f48" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="0" y1="110" x2="400" y2="110" stroke="#2a1f48" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="0" y1="165" x2="400" y2="165" stroke="#2a1f48" stroke-width="1" stroke-dasharray="4 4"/>
+
+          <!-- price line WITHOUT wall (red, declining) -->
+          <path d="M 0 80 L 40 95 L 80 130 L 120 170 L 160 200 L 200 195 L 240 200 L 280 198 L 320 200 L 360 200 L 400 200"
+                fill="none" stroke="#FF6B6B" stroke-width="2" stroke-dasharray="3 3" opacity="0.5"/>
+          <text x="395" y="195" font-family="JetBrains Mono" font-size="9" fill="#FF6B6B" text-anchor="end">NO WALL</text>
+
+          <!-- price line WITH wall (green, recovering) -->
+          <path d="M 0 80 L 40 95 L 80 130 L 120 170 L 160 200 L 165 130 L 200 110 L 240 95 L 280 80 L 320 60 L 360 45 L 400 40"
+                fill="none" stroke="#4DFFA0" stroke-width="3"/>
+          <text x="380" y="35" font-family="JetBrains Mono" font-size="9" fill="#4DFFA0" text-anchor="end" font-weight="700">WITH WALL</text>
+
+          <!-- fire markers -->
+          <g>
+            <circle cx="160" cy="200" r="9" fill="#FF9F4A" opacity="0.3"/>
+            <circle cx="160" cy="200" r="5" fill="#FF9F4A"/>
+            <text x="160" y="216" font-family="Bangers" font-size="11" fill="#FF9F4A" text-anchor="middle">🔥 FIRE</text>
+          </g>
+          <g>
+            <circle cx="200" cy="110" r="9" fill="#4DFFA0" opacity="0.3"/>
+            <circle cx="200" cy="110" r="5" fill="#4DFFA0"/>
+          </g>
+        </svg>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <h2 class="section-title"><span class="num">03</span> FAQ</h2>
+    <p class="section-sub">// Real questions. Real answers.</p>
+
+    <div class="faq-list">
+
+      <details class="faq-item" open>
+        <summary>What happens if the admins never fire?</summary>
+        <p>If the wall doesn't fire within 90 days, your MON unlocks automatically. Withdraw anytime, any reason. No questions, no fees. The wall serves the pack — not the other way around.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Why MON deposits, not $RENE?</summary>
+        <p>The vault buys $RENE on the dip — meaning we need MON sitting ready to deploy when the chart drops. Depositing $RENE would defeat the purpose: we need fresh buy pressure, not recycled tokens.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Who controls the trigger?</summary>
+        <p>3 Pack admins on a multisig. 2 of 3 must sign to fire. Admin wallets are public, on-chain, doxxed within the community. Decisions are visible. No single point of failure.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>What happens to my MON when the wall fires?</summary>
+        <p>The vault swaps everything for $RENE on Atlantis in one big buy. You get your proportional share of the freshly-bought $RENE bag, locked for 7 days while the chart heals. Then withdraw at the new average.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Is there an audit?</summary>
+        <p>Custom contract launching in stages. Initial pool capped at 5,000 MON until proven. Full audit funded by the team after traction. Use only what you're willing to risk during the early phase.</p>
+      </details>
+
+      <details class="faq-item">
+        <summary>Can I deposit small amounts?</summary>
+        <p>Minimum deposit is 0.5 MON to keep the gas math sane. No maximum during open phase. Cap is on the vault total, not per-wallet.</p>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="foot">
+    <div class="disclaim">
+      ⚠️ THIS IS A UI MOCKUP — CONTRACTS NOT YET DEPLOYED — DO NOT SEND FUNDS<br>
+      Numbers, wallets, and activity are simulated for visualization purposes only.
+    </div>
+    <p>$RENE TREAT WALL · Built on Monad · Powered by Diamond Paws 🦴</p>
+    <p style="margin-top:8px;opacity:0.6">DESIGN PROOF v1 · NOT FINANCIAL ADVICE · NOT GAMBLING ADVICE</p>
+  </footer>
+
+</div>
+
+<script>
+// Tab through percent buttons (cosmetic)
+document.querySelectorAll('.percent-row button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.percent-row button').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+  });
+});
+
+// Show new "live" deposit every 8s for the demo feel
+const list = document.querySelector('.activity-list');
+const fakeNames = ['0x4f2a…99ed','SHIBAFREN.eth','0xab12…3c4f','PAWS_UP','FRENCHIE.eth','0x88ee…22a1','TREATGOD'];
+const fakeAmounts = [50, 75, 120, 200, 340, 500, 850];
+function addFakeRow() {
+  const name = fakeNames[Math.floor(Math.random()*fakeNames.length)];
+  const amt = fakeAmounts[Math.floor(Math.random()*fakeAmounts.length)];
+  const row = document.createElement('div');
+  row.className = 'activity-row';
+  row.style.animation = 'fadein .4s ease';
+  row.innerHTML = `
+    <div class="activity-icon deposit">↓</div>
+    <div class="activity-text">
+      <div class="who">${name}</div>
+      <div class="what">DEPOSITED · WALL +1</div>
+    </div>
+    <div class="activity-amount">+${amt} MON</div>
+    <div class="activity-time">just now</div>
+  `;
+  list.insertBefore(row, list.firstChild);
+  if (list.children.length > 14) list.lastChild.remove();
+}
+setInterval(addFakeRow, 8500);
+
+// Inject fadein keyframe
+const sheet = document.createElement('style');
+sheet.textContent = '@keyframes fadein{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}';
+document.head.appendChild(sheet);
+</script>
+</body>
+</html>
