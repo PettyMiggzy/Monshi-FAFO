@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>$RENE COMIC #1 — ORIGIN OF THE TREAT WALL 🦴</title>
+<meta name="description" content="The first official $RENE comic. How the Chief Treat Officer built the wall that defends the bag.">
+<meta name="theme-color" content="#7F77DD">
+<meta property="og:title" content="$RENE COMIC #1 — ORIGIN OF THE TREAT WALL">
+<meta property="og:description" content="How Rene became Chief Treat Officer and built the wall that defends the bag. The first official $RENE comic.">
+<meta property="og:image" content="https://arcade.reneonmonad.xyz/public/rene/art/rene_arcade_hero.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Bowlby+One&family=Permanent+Marker&family=Special+Elite&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#f4ecd8;
+  --paper-dark:#e8d8b0;
+  --ink:#0d0a18;
+  --ink-soft:#1f1a2e;
+  --purple:#7F77DD;
+  --purple-deep:#5A4FB8;
+  --yellow:#FFE566;
+  --red:#FF4444;
+  --green:#4DFFA0;
+  --orange:#FF9F4A;
+  --bubble:#fff;
+  --comic:'Bangers',Impact,sans-serif;
+  --display:'Bowlby One',Impact,sans-serif;
+  --hand:'Permanent Marker',cursive;
+  --type:'Special Elite',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--type);
+  background:#0a0612;
+  color:var(--ink);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+/* halftone dot pattern background */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    radial-gradient(circle at 50% 50%,#1f1a2e 1px,transparent 1.5px);
+  background-size:8px 8px;
+  opacity:.4;pointer-events:none;z-index:0;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(circle at 50% 30%,rgba(127,119,221,0.15),transparent 60%);
+  pointer-events:none;z-index:0;
+}
+.wrap{position:relative;z-index:2;max-width:780px;margin:0 auto;padding:24px 16px 80px}
+
+/* ─── COMIC TITLE BAR ─── */
+.comic-cover{
+  background:linear-gradient(135deg,#1f1735,#0d0820);
+  border:4px solid #FFE566;
+  border-radius:16px;
+  padding:28px 24px;
+  text-align:center;
+  margin-bottom:32px;
+  box-shadow:8px 8px 0 #7F77DD,0 0 60px rgba(127,119,221,0.3);
+  transform:rotate(-1deg);
+  position:relative;
+}
+.comic-cover::before{
+  content:'';position:absolute;inset:6px;border:2px dashed rgba(255,229,102,0.3);border-radius:10px;pointer-events:none;
+}
+.cover-issue{
+  display:inline-block;background:#FFE566;color:#000;
+  padding:6px 18px;border-radius:8px;
+  font-family:var(--comic);font-size:16px;letter-spacing:3px;
+  transform:rotate(-3deg);box-shadow:3px 3px 0 #b88828;
+  margin-bottom:16px;
+}
+.cover-title{
+  font-family:var(--display);font-size:clamp(36px,7vw,68px);line-height:.95;
+  color:#fff;text-transform:uppercase;letter-spacing:1px;
+  text-shadow:4px 4px 0 #7F77DD,8px 8px 0 rgba(127,119,221,0.3);
+  margin-bottom:14px;
+}
+.cover-subtitle{
+  font-family:var(--hand);font-size:clamp(16px,3vw,22px);
+  color:#A89FFF;letter-spacing:1px;
+}
+.cover-meta{
+  display:flex;justify-content:center;gap:20px;margin-top:20px;
+  font-family:var(--type);font-size:11px;color:#8079A8;letter-spacing:2px;
+  flex-wrap:wrap;
+}
+.cover-meta span{display:flex;align-items:center;gap:6px}
+
+/* ─── COMIC PANEL ─── */
+.panel{
+  background:var(--paper);
+  border:4px solid var(--ink);
+  border-radius:8px;
+  margin-bottom:32px;
+  padding:20px 18px 22px;
+  position:relative;
+  box-shadow:6px 6px 0 var(--ink),0 12px 30px rgba(0,0,0,0.4);
+  transition:transform .3s ease;
+}
+.panel:hover{transform:translateY(-3px)}
+.panel:nth-child(odd){transform:rotate(-.4deg)}
+.panel:nth-child(even){transform:rotate(.4deg)}
+.panel:nth-child(odd):hover{transform:rotate(-.4deg) translateY(-3px)}
+.panel:nth-child(even):hover{transform:rotate(.4deg) translateY(-3px)}
+
+.panel-num{
+  position:absolute;top:-14px;left:-14px;
+  width:44px;height:44px;border-radius:50%;
+  background:#FFE566;color:#000;
+  border:3px solid var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:20px;
+  box-shadow:3px 3px 0 var(--ink);
+  z-index:5;
+}
+
+/* CAPTION BOX (yellow box top-left or top-right) */
+.caption{
+  background:linear-gradient(180deg,#FFE566,#f0d042);
+  color:#000;
+  border:3px solid var(--ink);
+  padding:10px 14px;
+  margin-bottom:14px;
+  font-family:var(--type);font-size:14px;line-height:1.4;
+  box-shadow:3px 3px 0 var(--ink);
+  font-weight:700;
+  letter-spacing:.3px;
+}
+.caption.narrator{background:linear-gradient(180deg,#fff,#f0e8d0)}
+.caption.smoke{background:linear-gradient(180deg,#1f1a2e,#0d0a18);color:#FFE566;border-color:#FFE566;font-family:var(--comic);letter-spacing:2px;font-size:18px;text-align:center}
+
+/* PANEL ART (image container) */
+.panel-art{
+  position:relative;
+  background:linear-gradient(135deg,#7F77DD,#5A4FB8);
+  border:3px solid var(--ink);
+  border-radius:4px;
+  overflow:hidden;
+  margin-bottom:14px;
+  min-height:280px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 0 0 2px rgba(0,0,0,0.1);
+}
+.panel-art img{
+  width:100%;height:auto;display:block;
+  max-height:480px;object-fit:cover;
+}
+.panel-art.tall img{max-height:600px}
+/* sound effects + speech bubbles overlay on art */
+.panel-art-overlay{
+  position:absolute;inset:0;pointer-events:none;
+  display:flex;align-items:flex-end;justify-content:center;
+}
+
+/* SPEECH BUBBLE */
+.bubble{
+  background:#fff;color:#000;
+  border:3px solid var(--ink);
+  border-radius:24px;
+  padding:12px 18px;
+  font-family:var(--hand);font-size:18px;line-height:1.3;
+  box-shadow:4px 4px 0 var(--ink);
+  position:relative;
+  max-width:90%;
+  margin:14px auto 0;
+}
+.bubble::after{
+  content:'';position:absolute;left:30px;bottom:-18px;
+  width:0;height:0;
+  border:10px solid transparent;
+  border-top-color:var(--ink);
+}
+.bubble::before{
+  content:'';position:absolute;left:33px;bottom:-12px;
+  width:0;height:0;
+  border:7px solid transparent;
+  border-top-color:#fff;
+  z-index:2;
+}
+.bubble.right::after{left:auto;right:30px}
+.bubble.right::before{left:auto;right:33px}
+.bubble.thought{
+  border-radius:30px;
+  background:#fff;
+  font-style:italic;
+}
+.bubble.thought::after{
+  border:none;
+  width:14px;height:14px;border-radius:50%;
+  background:#fff;border:3px solid var(--ink);
+  left:30px;bottom:-22px;
+}
+.bubble.thought::before{display:none}
+.bubble.thought::before{
+  content:'';display:block;
+  position:absolute;left:38px;bottom:-36px;
+  width:8px;height:8px;border-radius:50%;
+  background:#fff;border:3px solid var(--ink);
+}
+.bubble.shout{
+  font-family:var(--comic);font-size:22px;letter-spacing:1px;
+  background:var(--yellow);
+  border-color:var(--ink);
+  text-transform:uppercase;
+}
+.bubble.villain{
+  background:#1f1a2e;color:#FF4444;
+  border-color:#FF4444;
+  font-family:var(--comic);font-size:20px;letter-spacing:1px;
+  text-transform:uppercase;
+}
+.bubble.villain::before{border-top-color:#1f1a2e}
+.bubble.villain::after{border-top-color:#FF4444}
+
+/* SOUND EFFECT (big colored explosion text) */
+.sfx{
+  position:absolute;
+  font-family:var(--display);
+  text-transform:uppercase;
+  color:#FFE566;
+  text-shadow:
+    4px 0 0 var(--ink),-4px 0 0 var(--ink),
+    0 4px 0 var(--ink),0 -4px 0 var(--ink),
+    3px 3px 0 var(--ink),-3px -3px 0 var(--ink),
+    3px -3px 0 var(--ink),-3px 3px 0 var(--ink),
+    8px 8px 0 var(--red);
+  letter-spacing:2px;
+  pointer-events:none;
+  animation:sfxbounce 1.5s ease infinite;
+}
+@keyframes sfxbounce{
+  0%,100%{transform:scale(1) rotate(-5deg)}
+  50%{transform:scale(1.05) rotate(-3deg)}
+}
+.sfx.tl{top:12px;left:12px;font-size:42px}
+.sfx.tr{top:12px;right:12px;font-size:42px}
+.sfx.bl{bottom:50px;left:12px;font-size:38px}
+.sfx.br{bottom:50px;right:12px;font-size:38px;animation-delay:.3s}
+.sfx.center{top:40%;left:50%;transform:translate(-50%,-50%) rotate(-3deg);font-size:54px}
+.sfx.center:hover{transform:translate(-50%,-50%) rotate(-3deg) scale(1.05)}
+.sfx.green{color:#4DFFA0;text-shadow:
+    4px 0 0 var(--ink),-4px 0 0 var(--ink),
+    0 4px 0 var(--ink),0 -4px 0 var(--ink),
+    3px 3px 0 var(--ink),-3px -3px 0 var(--ink),
+    3px -3px 0 var(--ink),-3px 3px 0 var(--ink),
+    8px 8px 0 #1f7a4a;}
+.sfx.purple{color:#A89FFF;text-shadow:
+    4px 0 0 var(--ink),-4px 0 0 var(--ink),
+    0 4px 0 var(--ink),0 -4px 0 var(--ink),
+    3px 3px 0 var(--ink),-3px -3px 0 var(--ink),
+    3px -3px 0 var(--ink),-3px 3px 0 var(--ink),
+    8px 8px 0 #5A4FB8;}
+
+/* DIALOGUE STACK (multiple bubbles in panel) */
+.dialogue-stack{
+  display:flex;flex-direction:column;gap:14px;
+  padding:0 4px;
+}
+
+/* split panels (2 art side by side) */
+.panel-art-split{
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;
+  background:var(--ink);padding:6px;
+  border:3px solid var(--ink);border-radius:4px;
+  margin-bottom:14px;min-height:240px;
+}
+.panel-art-split > div{
+  position:relative;overflow:hidden;border-radius:2px;
+  background:linear-gradient(135deg,#7F77DD,#5A4FB8);
+  display:flex;align-items:center;justify-content:center;
+}
+.panel-art-split img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* page break / chapter divider */
+.chapter-break{
+  text-align:center;margin:48px 0 32px;
+  font-family:var(--display);
+  color:#FFE566;letter-spacing:4px;
+  font-size:14px;
+  display:flex;align-items:center;gap:14px;
+}
+.chapter-break::before,.chapter-break::after{
+  content:'';flex:1;height:2px;background:rgba(255,229,102,0.3);
+}
+
+/* end card */
+.end-card{
+  background:linear-gradient(135deg,#FFE566,#FF9F4A);
+  border:4px solid var(--ink);
+  border-radius:16px;
+  padding:32px 24px;text-align:center;
+  margin-top:48px;
+  box-shadow:8px 8px 0 #7F77DD,0 0 60px rgba(255,229,102,0.4);
+  transform:rotate(.5deg);
+  position:relative;
+}
+.end-card::after{
+  content:'';position:absolute;inset:6px;border:2px dashed rgba(13,10,24,0.3);border-radius:10px;pointer-events:none;
+}
+.end-title{
+  font-family:var(--display);font-size:clamp(36px,7vw,72px);
+  color:#000;text-transform:uppercase;letter-spacing:1px;line-height:.95;
+  text-shadow:4px 4px 0 #fff,8px 8px 0 #7F77DD;
+  margin-bottom:14px;
+}
+.end-sub{
+  font-family:var(--hand);font-size:18px;color:#0d0a18;margin-bottom:24px;letter-spacing:.5px;
+}
+.end-cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.end-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 28px;
+  background:#0d0a18;color:#FFE566;
+  text-decoration:none;
+  font-family:var(--display);font-size:14px;letter-spacing:2px;
+  border-radius:10px;
+  border:3px solid #fff;
+  box-shadow:4px 4px 0 #fff,4px 4px 0 4px #0d0a18;
+  transition:all .15s;text-transform:uppercase;
+}
+.end-cta:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 #fff,6px 6px 0 4px #0d0a18}
+.end-cta:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #fff,2px 2px 0 4px #0d0a18}
+.end-cta.purple{background:#7F77DD;color:#fff}
+
+.next-issue{
+  margin-top:32px;text-align:center;color:#A89FFF;
+  font-family:var(--hand);font-size:20px;letter-spacing:1px;
+}
+.next-issue b{color:#FFE566;display:block;font-size:24px;margin-top:8px}
+
+/* responsive tweaks */
+@media(max-width:540px){
+  .panel{padding:18px 14px 18px}
+  .sfx.center{font-size:38px}
+  .sfx.tl,.sfx.tr,.sfx.bl,.sfx.br{font-size:28px}
+  .panel-num{width:36px;height:36px;font-size:16px;top:-12px;left:-12px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ─── COMIC COVER ─── -->
+  <header class="comic-cover">
+    <div class="cover-issue">ISSUE #001</div>
+    <h1 class="cover-title">ORIGIN OF<br>THE TREAT WALL</h1>
+    <p class="cover-subtitle">"He came for the treats. He stayed for the bag."</p>
+    <div class="cover-meta">
+      <span>📖 12 PAGES</span>
+      <span>🐶 RENE CINEMATIC UNIVERSE</span>
+      <span>🦴 CHAPTER 1</span>
+    </div>
+  </header>
+
+  <!-- ─── PANEL 1 — Rene at Monad HQ door ─── -->
+  <div class="panel">
+    <div class="panel-num">1</div>
+    <div class="caption narrator">
+      <strong>MONAD HQ.</strong> One year ago. The team was deep in a sprint when a small purple bulldog showed up at the door.
+    </div>
+    <div class="panel-art">
+      <img src="public/rene/art/rene_real_purple_puffer_treats.jpg" alt="Rene the purple bulldog with treat jar">
+      <div class="sfx tr" style="top:14px;right:18px;font-size:34px">SCRATCH SCRATCH!</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble">"Sir... a dog is at the front door. Says he wants in."</div>
+      <div class="bubble shout right">LET HIM IN.</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 2 — Inside HQ ─── -->
+  <div class="panel">
+    <div class="panel-num">2</div>
+    <div class="caption">
+      He walked in like he <strong>owned</strong> the place. He asked for one thing.
+    </div>
+    <div class="panel-art">
+      <img src="public/rene/art/rene_anime_chilling_tree.jpg" alt="Rene chilling under tree">
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble shout">TREATS. NOW.</div>
+      <div class="bubble right">"...we don't have dog treats here, ser."</div>
+      <div class="bubble">"Then you'll <i>get</i> some."</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 3 — Becomes CTO ─── -->
+  <div class="panel">
+    <div class="panel-num">3</div>
+    <div class="caption smoke">
+      DAY 30 · PROMOTED TO CHIEF TREAT OFFICER
+    </div>
+    <div class="panel-art">
+      <img src="public/rene/art/rene_arcade_hero.jpg" alt="Rene as CTO">
+      <div class="sfx tl green" style="top:8px;left:8px;font-size:36px">CTO</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble">"He runs the whole place now."</div>
+      <div class="bubble right">"He doesn't even code, bro."</div>
+      <div class="bubble shout">DOESN'T MATTER. <br>HE BRINGS THE VIBES.</div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER BREAK ─── -->
+  <div class="chapter-break">⸺ CHAPTER II · THE BAG ⸺</div>
+
+  <!-- ─── PANEL 4 — His own coin ─── -->
+  <div class="panel">
+    <div class="panel-num">4</div>
+    <div class="caption narrator">
+      Eventually, the community decided he needed his <strong>own coin</strong>. The contract launched. The pack assembled.
+    </div>
+    <div class="panel-art">
+      <img src="public/rene/art/rene_anime_car.jpg" alt="Rene in $RENE car">
+      <div class="sfx br purple" style="bottom:60px;right:14px;font-size:38px">$RENE!</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble shout">JUST LAUNCHED. ALREADY ROLLIN'.</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 5 — At the gym (gym sprite) ─── -->
+  <div class="panel">
+    <div class="panel-num">5</div>
+    <div class="caption">
+      Rene's daily routine: GMONAD GYM. Pumping iron. Pumping bags. Pumping <strong>vibes</strong>.
+    </div>
+    <div class="panel-art" style="background:linear-gradient(135deg,#1f1735,#0d0820)">
+      <img src="public/rene/sprites/deadlift/deadlift_top.png" alt="Rene deadlifting" style="max-height:380px;width:auto;object-fit:contain;padding:20px">
+      <div class="sfx tl" style="top:14px;left:14px;font-size:38px">REPS!</div>
+      <div class="sfx br green" style="bottom:60px;right:14px;font-size:38px">PUMP!</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble thought">must... lift... bag...</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 6 — Chart bleeding ─── -->
+  <div class="panel">
+    <div class="panel-num">6</div>
+    <div class="caption smoke">
+      ⚠ THEN ONE DAY · THE CHART BEGAN TO BLEED ⚠
+    </div>
+    <div class="panel-art" style="background:linear-gradient(180deg,#1f1735,#3d1414)">
+      <img src="public/rene/sprites/faces/angry_face.png" alt="Rene angry" style="max-height:340px;width:auto;object-fit:contain;padding:20px">
+      <div class="sfx center" style="color:#FF4444;text-shadow:
+        4px 0 0 var(--ink),-4px 0 0 var(--ink),
+        0 4px 0 var(--ink),0 -4px 0 var(--ink),
+        3px 3px 0 var(--ink),-3px -3px 0 var(--ink),
+        8px 8px 0 #1f1a2e;">RUG?!?</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble villain">SOMEONE'S DUMPING ON US.</div>
+      <div class="bubble shout right">WHO?!</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 7 — The villain reveal ─── -->
+  <div class="panel">
+    <div class="panel-num">7</div>
+    <div class="caption">
+      A wallet appeared. Selling. Scared paws followed. The cascade began.
+    </div>
+    <div class="panel-art" style="background:linear-gradient(135deg,#3d1414,#1f1735);min-height:240px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--comic);">
+      <div style="text-align:center;padding:40px 20px">
+        <div style="font-size:80px;margin-bottom:14px">🧻🤲</div>
+        <div style="font-family:var(--display);font-size:32px;color:#FF4444;letter-spacing:2px;text-shadow:3px 3px 0 #000">PAPER HANDS</div>
+        <div style="font-family:var(--hand);font-size:18px;color:#fff;margin-top:12px;opacity:.8">"I'm out, ser. Sorry."</div>
+      </div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble villain">SELL · SELL · SELL</div>
+      <div class="bubble">"The chart is getting wicked, Rene."</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 8 — Rene thinks ─── -->
+  <div class="panel">
+    <div class="panel-num">8</div>
+    <div class="caption">
+      Rene watched the chart. He didn't panic. He <strong>thought</strong>.
+    </div>
+    <div class="panel-art">
+      <img src="public/rene/art/rene_anime_bedroom_lightning.jpg" alt="Rene having an idea">
+      <div class="sfx tl" style="top:14px;left:14px;font-size:46px">💡</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble thought">If one paper hand can dump the chart... then many diamond paws can <strong>defend</strong> it.</div>
+    </div>
+  </div>
+
+  <!-- ─── CHAPTER BREAK ─── -->
+  <div class="chapter-break">⸺ CHAPTER III · THE WALL ⸺</div>
+
+  <!-- ─── PANEL 9 — The plan ─── -->
+  <div class="panel">
+    <div class="panel-num">9</div>
+    <div class="caption">
+      He gathered the pack. He laid out the plan.
+    </div>
+    <div class="panel-art" style="background:linear-gradient(135deg,#7F77DD,#5A4FB8);min-height:280px;display:flex;align-items:center;justify-content:center;padding:20px">
+      <div style="background:#FFE566;border:4px solid #0d0a18;padding:20px 24px;border-radius:8px;box-shadow:6px 6px 0 #0d0a18;font-family:var(--type);color:#000;max-width:380px">
+        <div style="font-family:var(--display);font-size:22px;letter-spacing:1px;margin-bottom:10px;text-align:center">📋 THE TREAT WALL</div>
+        <div style="font-size:13px;line-height:1.7">
+          <b>1.</b> The pack pools MON together.<br>
+          <b>2.</b> When the chart dips — ADMINS FIRE.<br>
+          <b>3.</b> The vault buys $RENE at the floor.<br>
+          <b>4.</b> The pack walks out with heavier bags.<br>
+        </div>
+      </div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble shout">DIAMOND PAWS COORDINATE.<br>PAPER HANDS FUND.</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 10 — The wall fires ─── -->
+  <div class="panel">
+    <div class="panel-num">10</div>
+    <div class="caption smoke">
+      ⚡ FIRST FIRE · THE WALL DEPLOYS ⚡
+    </div>
+    <div class="panel-art" style="background:radial-gradient(circle at center,#FFE566,#FF9F4A,#3d1414);min-height:320px;position:relative;overflow:hidden">
+      <img src="public/rene/sprites/run_2leg/run2_03.png" alt="Rene charging" style="max-height:280px;width:auto;object-fit:contain;padding:20px;position:relative;z-index:2">
+      <div class="sfx center" style="font-size:80px">🔥 FIRE!</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble shout right">8,420 MON DEPLOYED.<br>3.2M $RENE BOUGHT.</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 11 — Recovery ─── -->
+  <div class="panel">
+    <div class="panel-num">11</div>
+    <div class="caption">
+      The cascade <strong>stopped</strong>. The wick got bought. The chart healed. Sellers hesitated.
+    </div>
+    <div class="panel-art" style="background:linear-gradient(135deg,#0d0a18,#1f7a4a);min-height:280px;display:flex;align-items:center;justify-content:center;padding:20px">
+      <div style="text-align:center;color:#fff">
+        <svg viewBox="0 0 200 100" style="width:100%;max-width:280px;height:auto">
+          <path d="M 10 70 L 30 75 L 50 88 L 70 92 L 80 95 L 85 60 L 100 50 L 120 38 L 140 25 L 160 18 L 190 10"
+                fill="none" stroke="#4DFFA0" stroke-width="3"/>
+          <circle cx="85" cy="60" r="6" fill="#FFE566"/>
+          <text x="78" y="55" font-family="Bangers" font-size="11" fill="#FFE566" text-anchor="end">🔥 FIRE</text>
+        </svg>
+        <div style="font-family:var(--display);font-size:24px;color:#4DFFA0;letter-spacing:2px;margin-top:14px;text-shadow:3px 3px 0 #000">+18% RECOVERY</div>
+      </div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble">"...the chart bounced."</div>
+      <div class="bubble right shout">THE WALL <i>WORKS</i>.</div>
+    </div>
+  </div>
+
+  <!-- ─── PANEL 12 — Trophy / closer ─── -->
+  <div class="panel">
+    <div class="panel-num">12</div>
+    <div class="caption narrator">
+      That night, Rene sat with the pack. The bag was safe. The wall was real. The pack had teeth.
+    </div>
+    <div class="panel-art" style="background:linear-gradient(135deg,#7F77DD,#5A4FB8);min-height:340px;display:flex;align-items:center;justify-content:center;padding:20px">
+      <img src="public/rene/sprites/trophy_win/trophy_v1.png" alt="Rene with trophy" style="max-height:300px;width:auto;object-fit:contain">
+      <div class="sfx tl" style="top:14px;left:14px;font-size:36px">VICTORY!</div>
+      <div class="sfx br green" style="bottom:60px;right:14px;font-size:38px">WAGMI!</div>
+    </div>
+    <div class="dialogue-stack">
+      <div class="bubble shout">DIAMOND PAWS<br>NEVER UNCLENCH. 🦴</div>
+    </div>
+  </div>
+
+  <!-- ─── END CARD ─── -->
+  <div class="end-card">
+    <div class="end-title">END · ISSUE #1</div>
+    <div class="end-sub">"The wall is built. The pack defends the bag.<br>The treats keep coming."</div>
+
+    <div class="end-cta-row">
+      <a href="https://arcade.reneonmonad.xyz/treat-wall.html" class="end-cta">
+        🦴 ENTER THE WALL
+      </a>
+      <a href="https://arcade.reneonmonad.xyz" class="end-cta purple">
+        🎮 PLAY ARCADE
+      </a>
+    </div>
+  </div>
+
+  <div class="next-issue">
+    NEXT ISSUE...
+    <b>RENE vs THE RUG ☠</b>
+  </div>
+
+</div>
+
+<script>
+// Panel reveal on scroll
+const panels = document.querySelectorAll('.panel');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.animation = 'panelIn .6s ease both';
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+panels.forEach(p => {
+  p.style.opacity = '0';
+  obs.observe(p);
+});
+
+// Inject keyframe
+const s = document.createElement('style');
+s.textContent = `
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(40px) rotate(0deg); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.panel { opacity: 1 !important; }
+.panel:nth-child(odd) { animation-name: panelInOdd !important; }
+.panel:nth-child(even) { animation-name: panelInEven !important; }
+@keyframes panelInOdd {
+  from { opacity: 0; transform: translateY(40px) rotate(-2deg); }
+  to { opacity: 1; transform: translateY(0) rotate(-.4deg); }
+}
+@keyframes panelInEven {
+  from { opacity: 0; transform: translateY(40px) rotate(2deg); }
+  to { opacity: 1; transform: translateY(0) rotate(.4deg); }
+}
+`;
+document.head.appendChild(s);
+</script>
+
+</body>
+</html>
