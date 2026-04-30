@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONSHI MULTISENDER — Send to many wallets in one tx</title>
+<meta name="theme-color" content="#A89FFF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#A89FFF;
+  --bg-deep:#8B7FE8;
+  --bg-soft:#C4BCFF;
+  --surface:#FFFFFF;
+  --ink:#1A1340;
+  --ink-soft:#3D2E80;
+  --muted:#6B5FB0;
+  --purple:#7F77DD;
+  --purple-deep:#5A4FB8;
+  --yellow:#FFE566;
+  --green:#4DFFA0;
+  --pink:#EC4899;
+  --orange:#FF9F4A;
+  --red:#FF6B6B;
+  --display:'Bowlby One',Impact,sans-serif;
+  --hand:'Caveat',cursive;
+  --mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--mono);
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(circle at 18% 25%,rgba(255,255,255,0.25),transparent 50%),
+    radial-gradient(circle at 82% 78%,rgba(127,119,221,0.3),transparent 60%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle at 50% 50%,rgba(26,19,64,0.12) 1px,transparent 1.5px);
+  background-size:14px 14px;
+  opacity:.4;
+}
+.wrap{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:24px 20px 80px}
+
+/* TOPBAR */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;background:var(--surface);
+  border:3px solid var(--ink);border-radius:18px;
+  margin:0 0 28px;flex-wrap:wrap;gap:14px;
+  box-shadow:6px 6px 0 var(--ink);
+}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.brand-mark{
+  width:48px;height:48px;border-radius:11px;
+  background:var(--ink);color:var(--bg);
+  border:3px solid var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:22px;
+  box-shadow:3px 3px 0 var(--ink);
+  transform:rotate(-3deg);
+}
+.brand-text{display:flex;flex-direction:column;line-height:1}
+.brand-text .l1{font-family:var(--display);font-size:20px;letter-spacing:1px;color:var(--ink);margin-bottom:2px}
+.brand-text .l2{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--muted);font-weight:700}
+
+.topbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.back-link{
+  padding:10px 16px;background:var(--surface);color:var(--ink);
+  border:2.5px solid var(--ink);border-radius:10px;
+  font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:1.5px;
+  text-decoration:none;
+  box-shadow:3px 3px 0 var(--ink);transition:all .15s;
+  text-transform:uppercase;
+}
+.back-link:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+
+.connect-cta{
+  padding:11px 22px;background:var(--ink);color:var(--bg);
+  border:3px solid var(--ink);border-radius:11px;
+  font-family:var(--display);font-size:12px;letter-spacing:1.5px;
+  cursor:pointer;transition:all .15s;
+  box-shadow:4px 4px 0 var(--ink);
+  text-transform:uppercase;
+}
+.connect-cta:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.connect-cta.connected{
+  background:var(--green);color:var(--ink);
+  font-family:var(--mono);font-weight:800;
+}
+
+/* HEADER */
+.page-head{
+  background:var(--surface);
+  border:3px solid var(--ink);border-radius:24px;
+  padding:32px 36px;margin-bottom:28px;
+  box-shadow:8px 8px 0 var(--ink);
+  position:relative;overflow:hidden;
+}
+.page-head .eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;background:var(--green);color:var(--ink);
+  border:2.5px solid var(--ink);border-radius:8px;
+  font-family:var(--display);font-size:11px;letter-spacing:2px;
+  margin-bottom:14px;text-transform:uppercase;
+  box-shadow:3px 3px 0 var(--ink);transform:rotate(-1deg);
+}
+.page-head h1{
+  font-family:var(--display);
+  font-size:clamp(36px,5.5vw,56px);line-height:1;letter-spacing:0;
+  color:var(--ink);margin-bottom:14px;text-transform:uppercase;
+}
+.page-head h1 .acc{
+  display:inline-block;background:var(--yellow);color:var(--ink);
+  padding:0 12px;border:3px solid var(--ink);border-radius:8px;
+  transform:rotate(-2deg);box-shadow:4px 4px 0 var(--ink);
+}
+.page-head p{
+  font-size:14px;color:var(--ink-soft);line-height:1.7;max-width:680px;
+}
+.page-head p strong{color:var(--ink);background:var(--yellow);padding:1px 6px;border:2px solid var(--ink);border-radius:4px;display:inline-block;line-height:1.3}
+
+/* TIER BANNER */
+.tier-banner{
+  background:var(--surface);
+  border:3px solid var(--ink);border-radius:18px;
+  padding:18px 22px;margin-bottom:24px;
+  box-shadow:5px 5px 0 var(--ink);
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:14px;
+}
+.tier-banner .lbl{font-family:var(--display);font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.tier-banner .your-status{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.tier-pill{
+  background:var(--bg);color:var(--ink);
+  padding:8px 14px;border:2.5px solid var(--ink);border-radius:10px;
+  font-family:var(--display);font-size:14px;letter-spacing:.5px;
+  box-shadow:3px 3px 0 var(--ink);
+}
+.tier-pill.unlocked{background:var(--green)}
+.tier-pill.locked{background:var(--red);color:#fff}
+
+/* MAIN CARD */
+.card{
+  background:var(--surface);
+  border:3px solid var(--ink);border-radius:20px;
+  padding:28px 32px;margin-bottom:24px;
+  box-shadow:6px 6px 0 var(--ink);
+}
+.card-title{
+  font-family:var(--display);font-size:22px;color:var(--ink);
+  letter-spacing:.5px;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;
+}
+.card-title .num-tag{
+  background:var(--yellow);padding:3px 10px;border:2.5px solid var(--ink);border-radius:8px;
+  font-size:14px;transform:rotate(-2deg);box-shadow:2.5px 2.5px 0 var(--ink);
+}
+
+/* STEP 1: TOKEN PICKER */
+.token-row{
+  display:grid;grid-template-columns:1fr auto;gap:14px;align-items:end;
+}
+@media(max-width:680px){.token-row{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:8px}
+.field-label{
+  font-family:var(--display);font-size:11px;letter-spacing:1.5px;color:var(--ink);text-transform:uppercase;
+}
+.field-label .hint{
+  color:var(--muted);font-family:var(--hand);font-size:14px;
+  letter-spacing:0;text-transform:none;margin-left:6px;
+}
+.address-input{
+  padding:14px 18px;background:var(--bg);
+  border:3px solid var(--ink);border-radius:11px;
+  font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink);
+  outline:none;transition:all .15s;
+}
+.address-input:focus{box-shadow:4px 4px 0 var(--ink);transform:translate(-1px,-1px)}
+.address-input::placeholder{color:var(--muted)}
+
+.token-presets{
+  display:flex;gap:8px;flex-wrap:wrap;
+}
+.preset-btn{
+  padding:8px 14px;background:var(--surface);
+  border:2.5px solid var(--ink);border-radius:9px;
+  font-family:var(--display);font-size:11px;letter-spacing:1px;color:var(--ink);
+  cursor:pointer;transition:all .15s;text-transform:uppercase;
+  box-shadow:2.5px 2.5px 0 var(--ink);
+}
+.preset-btn:hover{transform:translate(-1px,-1px);box-shadow:3.5px 3.5px 0 var(--ink)}
+.preset-btn.active{background:var(--yellow)}
+.preset-btn.native{background:var(--green)}
+
+.token-info{
+  margin-top:14px;
+  background:var(--bg);
+  border:2.5px dashed var(--ink);border-radius:12px;
+  padding:14px 18px;
+  display:none;
+}
+.token-info.shown{display:block}
+.token-info-row{
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--mono);font-size:12px;font-weight:700;
+  padding:4px 0;
+}
+.token-info-row .k{color:var(--ink-soft)}
+.token-info-row .v{color:var(--ink);font-family:var(--display);font-size:14px;letter-spacing:0}
+
+/* MODE TOGGLE */
+.mode-toggle{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;
+}
+.mode-btn{
+  padding:14px;background:var(--surface);
+  border:3px solid var(--ink);border-radius:12px;
+  font-family:var(--display);font-size:13px;letter-spacing:1px;color:var(--ink);
+  cursor:pointer;transition:all .15s;text-transform:uppercase;
+  box-shadow:3px 3px 0 var(--ink);
+  text-align:left;
+}
+.mode-btn .mode-title{display:block;font-size:14px}
+.mode-btn .mode-sub{display:block;font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:4px;letter-spacing:.5px}
+.mode-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.mode-btn.active{background:var(--yellow)}
+
+/* RECIPIENTS TEXTAREA */
+.ms-textarea{
+  width:100%;
+  background:var(--bg);
+  border:3px solid var(--ink);border-radius:11px;
+  padding:14px;
+  font-family:var(--mono);font-size:12px;line-height:1.65;
+  color:var(--ink);min-height:240px;resize:vertical;outline:none;
+  font-weight:600;transition:all .15s;
+  margin-top:8px;
+}
+.ms-textarea:focus{box-shadow:4px 4px 0 var(--ink);transform:translate(-1px,-1px)}
+.ms-textarea::placeholder{color:var(--muted)}
+
+.upload-row{
+  display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center;
+}
+.upload-btn{
+  padding:10px 16px;background:var(--surface);
+  border:2.5px solid var(--ink);border-radius:10px;
+  font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:1px;color:var(--ink);
+  cursor:pointer;transition:all .15s;text-transform:uppercase;
+  box-shadow:3px 3px 0 var(--ink);
+  display:inline-flex;align-items:center;gap:8px;
+}
+.upload-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.upload-btn input{display:none}
+
+.amount-each-input{
+  width:100%;
+  margin-top:14px;display:none;
+}
+.amount-each-input.shown{display:block}
+
+.parse-result{
+  margin-top:12px;
+  background:var(--surface);
+  border:2.5px dashed var(--ink);border-radius:12px;
+  padding:14px 18px;
+  font-family:var(--mono);font-size:12px;
+  display:none;
+}
+.parse-result.shown{display:block}
+.parse-result.error{background:rgba(255,107,107,0.1);border-color:var(--red)}
+.parse-result-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-weight:700}
+.parse-result-row .k{color:var(--ink-soft)}
+.parse-result-row .v{color:var(--ink);font-family:var(--display);font-size:14px;letter-spacing:0}
+.parse-result-row .v.warn{color:var(--orange)}
+.parse-result-row .v.err{color:var(--red)}
+.parse-result-row .v.ok{color:#0a6e3f}
+.parse-result-errors{
+  margin-top:10px;padding-top:10px;border-top:2px dashed var(--ink);
+  font-family:var(--mono);font-size:11px;color:var(--red);max-height:140px;overflow-y:auto;
+}
+.parse-result-errors div{padding:2px 0}
+
+/* SUMMARY + SEND */
+.send-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.summary-list{
+  background:var(--bg);border:3px solid var(--ink);border-radius:14px;
+  padding:18px 22px;display:flex;flex-direction:column;gap:12px;
+  box-shadow:4px 4px 0 var(--ink);
+}
+.summary-row{display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.summary-row .k{color:var(--ink-soft);font-family:var(--mono);font-weight:700;letter-spacing:.5px}
+.summary-row .v{color:var(--ink);font-family:var(--display);font-size:15px;letter-spacing:0;line-height:1}
+.summary-row .v.green{
+  background:var(--green);padding:3px 10px;border:2px solid var(--ink);border-radius:6px;
+}
+.summary-row .v.yellow{
+  background:var(--yellow);padding:3px 10px;border:2px solid var(--ink);border-radius:6px;
+}
+.summary-row .v.red{color:var(--red)}
+
+.action-row{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+
+.cta{
+  width:100%;padding:18px;
+  background:var(--green);color:var(--ink);
+  border:3px solid var(--ink);border-radius:14px;
+  font-family:var(--display);font-size:17px;letter-spacing:1.2px;cursor:pointer;
+  box-shadow:5px 5px 0 var(--ink);transition:all .15s;
+  text-transform:uppercase;
+}
+.cta:hover{transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--ink)}
+.cta:active{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--ink)}
+.cta:disabled{
+  background:#ccc;color:#666;cursor:not-allowed;
+  box-shadow:5px 5px 0 var(--ink);
+}
+.cta:disabled:hover{transform:none;box-shadow:5px 5px 0 var(--ink)}
+.cta.approve{background:var(--orange)}
+.cta.send{background:var(--green)}
+
+/* TX STATUS */
+.tx-status{
+  background:var(--surface);border:3px solid var(--ink);border-radius:14px;
+  padding:18px 22px;display:none;font-family:var(--mono);font-size:12px;font-weight:700;
+  box-shadow:4px 4px 0 var(--ink);
+  margin-top:14px;
+}
+.tx-status.shown{display:block}
+.tx-status.success{background:var(--green)}
+.tx-status.error{background:rgba(255,107,107,0.15);border-color:var(--red)}
+.tx-status.pending{background:var(--yellow)}
+.tx-status .title{
+  font-family:var(--display);font-size:14px;letter-spacing:1px;text-transform:uppercase;
+  margin-bottom:8px;color:var(--ink);
+}
+.tx-status .detail{color:var(--ink-soft);line-height:1.7;font-size:12px}
+.tx-status a{color:var(--ink);text-decoration:underline;font-weight:800}
+.tx-status .spinner{
+  display:inline-block;width:14px;height:14px;border:2.5px solid var(--ink);
+  border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;
+  margin-right:8px;vertical-align:middle;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* FOOTER */
+.foot{
+  text-align:center;padding-top:36px;
+  color:var(--ink);font-family:var(--mono);font-size:11px;letter-spacing:1.5px;margin-top:40px;font-weight:700;
+}
+.disclaim{
+  background:var(--surface);border:3px solid var(--ink);
+  border-radius:14px;padding:16px 22px;margin-bottom:14px;
+  color:var(--ink);font-size:11px;letter-spacing:1px;line-height:1.6;
+  box-shadow:4px 4px 0 var(--ink);
+}
+.disclaim b{background:var(--yellow);padding:1px 6px;border:2px solid var(--ink);border-radius:4px;display:inline-block;line-height:1.3}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="topbar">
+    <a href="/tools.html" class="brand">
+      <div class="brand-mark">M</div>
+      <div class="brand-text">
+        <span class="l1">MULTISENDER</span>
+        <span class="l2">MONSHI TOOLS · BASIC TIER</span>
+      </div>
+    </a>
+    <div class="topbar-right">
+      <a href="/tools.html" class="back-link">← TOOLS HUB</a>
+      <button class="connect-cta" id="connectBtn">CONNECT WALLET</button>
+    </div>
+  </header>
+
+  <section class="page-head">
+    <span class="eyebrow">📤 BASIC TIER · 100K $MONSHI</span>
+    <h1>SEND TO MANY <span class="acc">ONE TX</span></h1>
+    <p>Multisender for $MONSHI holders. Send any token (or native MON) to thousands of wallets in a single transaction. <strong>Free for holders. No fees. No custody.</strong></p>
+  </section>
+
+  <!-- TIER BANNER -->
+  <section class="tier-banner" id="tierBanner" style="display:none">
+    <div>
+      <div class="lbl">YOUR ACCESS</div>
+      <div class="your-status">
+        <span class="tier-pill" id="tierPill">CONNECT WALLET</span>
+        <span class="tier-pill unlocked" id="balPill" style="display:none"></span>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div class="lbl">REQUIRED</div>
+      <div class="your-status" style="justify-content:flex-end">
+        <span class="tier-pill" style="background:var(--yellow)">100,000 $MONSHI</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 1: TOKEN -->
+  <section class="card">
+    <h2 class="card-title"><span class="num-tag">01</span> PICK TOKEN</h2>
+
+    <div class="field">
+      <label class="field-label">TOKEN ADDRESS <span class="hint">(or pick MON / MONSHI below)</span></label>
+      <input type="text" class="address-input" id="tokenAddress" placeholder="0x...">
+    </div>
+
+    <div class="token-presets" style="margin-top:14px">
+      <button class="preset-btn native" data-preset="native">⚡ NATIVE MON</button>
+      <button class="preset-btn" data-preset="monshi" data-addr="0xB744F5CDb792d8187640214C4A1c9aCE29af7777">🐟 $MONSHI</button>
+      <button class="preset-btn" data-preset="rene" data-addr="0xaCA86430cCCEdbedB35910fC8A5AFEF07dA37777">🐶 $RENE</button>
+    </div>
+
+    <div class="token-info" id="tokenInfo">
+      <div class="token-info-row"><span class="k">Symbol</span><span class="v" id="tokSym">—</span></div>
+      <div class="token-info-row"><span class="k">Decimals</span><span class="v" id="tokDec">—</span></div>
+      <div class="token-info-row"><span class="k">Your balance</span><span class="v" id="tokBal">—</span></div>
+    </div>
+  </section>
+
+  <!-- STEP 2: MODE -->
+  <section class="card">
+    <h2 class="card-title"><span class="num-tag">02</span> PICK MODE</h2>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="modeCustom" data-mode="custom">
+        <span class="mode-title">CUSTOM AMOUNTS</span>
+        <span class="mode-sub">address, amount per line</span>
+      </button>
+      <button class="mode-btn" id="modeEqual" data-mode="equal">
+        <span class="mode-title">EQUAL AMOUNTS</span>
+        <span class="mode-sub">same amount to every wallet</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- STEP 3: RECIPIENTS -->
+  <section class="card">
+    <h2 class="card-title"><span class="num-tag">03</span> RECIPIENTS</h2>
+
+    <label class="field-label" id="recipientsLabel">
+      ADDRESS, AMOUNT (one per line)
+      <span class="hint">paste from anywhere · one per line · # for comments</span>
+    </label>
+    <textarea class="ms-textarea" id="recipientsArea" placeholder="0x9a3f...b820, 1000
+0x7d11...c4a2, 500
+# comments allowed
+0xff21...7b3c, 1000"></textarea>
+
+    <div class="upload-row">
+      <label class="upload-btn">
+        📂 UPLOAD CSV
+        <input type="file" accept=".csv,.txt" id="csvInput">
+      </label>
+      <label class="upload-btn" id="addrOnlyBtn" style="display:none">
+        📋 PASTE ADDRESSES ONLY
+      </label>
+    </div>
+
+    <div class="amount-each-input" id="amountEachWrap">
+      <label class="field-label">AMOUNT EACH WALLET RECEIVES</label>
+      <input type="text" class="address-input" id="amountEach" placeholder="e.g. 1000" style="margin-top:8px">
+    </div>
+
+    <div class="parse-result" id="parseResult">
+      <div class="parse-result-row"><span class="k">Recipients</span><span class="v" id="prCount">0</span></div>
+      <div class="parse-result-row"><span class="k">Total to send</span><span class="v" id="prTotal">—</span></div>
+      <div class="parse-result-row"><span class="k">Skipped (invalid)</span><span class="v" id="prSkipped">0</span></div>
+      <div class="parse-result-row"><span class="k">Duplicates merged</span><span class="v" id="prDupes">0</span></div>
+      <div class="parse-result-errors" id="prErrors" style="display:none"></div>
+    </div>
+  </section>
+
+  <!-- STEP 4: REVIEW + SEND -->
+  <section class="card">
+    <h2 class="card-title"><span class="num-tag">04</span> REVIEW &amp; SEND</h2>
+
+    <div class="summary-list">
+      <div class="summary-row"><span class="k">Token</span><span class="v" id="sumToken">—</span></div>
+      <div class="summary-row"><span class="k">Mode</span><span class="v" id="sumMode">CUSTOM</span></div>
+      <div class="summary-row"><span class="k">Recipients</span><span class="v" id="sumRecips">0</span></div>
+      <div class="summary-row"><span class="k">Total amount</span><span class="v yellow" id="sumTotal">—</span></div>
+      <div class="summary-row"><span class="k">Approval status</span><span class="v" id="sumApproval">—</span></div>
+      <div class="summary-row"><span class="k">Estimated gas</span><span class="v" id="sumGas">—</span></div>
+      <div class="summary-row"><span class="k">Holders fee</span><span class="v green">FREE</span></div>
+    </div>
+
+    <div class="action-row">
+      <button class="cta approve" id="approveBtn" style="display:none">APPROVE TOKEN 🔐</button>
+      <button class="cta send" id="sendBtn" disabled>SEND TO 0 WALLETS 📤</button>
+    </div>
+
+    <div class="tx-status" id="txStatus">
+      <div class="title" id="txTitle">—</div>
+      <div class="detail" id="txDetail">—</div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="disclaim">
+      ⚠️ <b>HOW THIS WORKS</b>
+      Multisender contract holds zero funds — all transfers forward in one transaction.
+      No custody, no fees beyond gas. Token approvals are scoped to exactly the amount you're sending.
+      Gas grows linearly with recipient count. Recommended max 500 per send.
+    </div>
+    <p>$MONSHI MULTISENDER · Free for the pack 🐟 · No custody · No fees</p>
+  </footer>
+
+</div>
+
+<!-- ethers v6 from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+
+<script>
+'use strict';
+
+// ─── CONFIG ───
+const MULTISENDER_ADDRESS = '0x0000000000000000000000000000000000000000'; // ← REPLACE AFTER DEPLOY
+const MONSHI_TOKEN = '0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
+const MONAD_CHAIN_ID = 143;
+const MONAD_HEX = '0x8f';
+const MIN_HOLDER_BALANCE = 100000n; // 100k MONSHI required
+
+const RPC_URL = 'https://rpc.monad.xyz';
+const EXPLORER = 'https://monadexplorer.com';
+
+const ABI_MULTISENDER = [
+  'function sendERC20(address token, address[] recipients, uint256[] amounts) external',
+  'function sendERC20Equal(address token, address[] recipients, uint256 amountEach) external',
+  'function sendNative(address[] recipients, uint256[] amounts) external payable',
+  'function sendNativeEqual(address[] recipients, uint256 amountEach) external payable',
+  'event BatchSent(address indexed sender, address indexed token, uint256 totalAmount, uint256 recipientCount)',
+  'event NativeBatchSent(address indexed sender, uint256 totalAmount, uint256 recipientCount)'
+];
+
+const ABI_ERC20 = [
+  'function name() view returns (string)',
+  'function symbol() view returns (string)',
+  'function decimals() view returns (uint8)',
+  'function balanceOf(address) view returns (uint256)',
+  'function allowance(address owner, address spender) view returns (uint256)',
+  'function approve(address spender, uint256 amount) returns (bool)'
+];
+
+// ─── STATE ───
+let provider = null;
+let signer = null;
+let userAddress = null;
+let tokenContract = null;
+let tokenInfo = null; // {address, symbol, decimals, balance, isNative}
+let mode = 'custom';
+let parsedRecipients = []; // [{address, amount}]
+let totalAmount = 0n;
+let multisenderContract = null;
+let monshiBalance = 0n;
+let isHolder = false;
+
+// ─── HELPERS ───
+const $ = (id) => document.getElementById(id);
+
+function shortAddr(a) {
+  return a.slice(0, 6) + '…' + a.slice(-4);
+}
+
+function fmtUnits(amount, decimals) {
+  try {
+    return Number(ethers.formatUnits(amount, decimals)).toLocaleString(undefined, { maximumFractionDigits: 4 });
+  } catch { return '—'; }
+}
+
+function setStatus(kind, title, detailHTML) {
+  const s = $('txStatus');
+  s.className = 'tx-status shown ' + kind;
+  $('txTitle').innerHTML = (kind === 'pending' ? '<span class="spinner"></span>' : '') + title;
+  $('txDetail').innerHTML = detailHTML;
+}
+
+function clearStatus() {
+  $('txStatus').className = 'tx-status';
+}
+
+// ─── WALLET CONNECT ───
+async function connectWallet() {
+  if (!window.ethereum) {
+    alert('Install MetaMask, Rabby, or another EVM wallet to use this tool.');
+    return;
+  }
+  try {
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
+    signer = await provider.getSigner();
+    userAddress = await signer.getAddress();
+
+    // Check chain
+    const network = await provider.getNetwork();
+    if (Number(network.chainId) !== MONAD_CHAIN_ID) {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: MONAD_HEX }]
+        });
+      } catch (e) {
+        if (e.code === 4902) {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: MONAD_HEX,
+              chainName: 'Monad',
+              nativeCurrency: { name: 'Monad', symbol: 'MON', decimals: 18 },
+              rpcUrls: [RPC_URL],
+              blockExplorerUrls: [EXPLORER]
+            }]
+          });
+        }
+      }
+      provider = new ethers.BrowserProvider(window.ethereum);
+      signer = await provider.getSigner();
+    }
+
+    multisenderContract = new ethers.Contract(MULTISENDER_ADDRESS, ABI_MULTISENDER, signer);
+
+    // Check holder status
+    await checkHolderStatus();
+
+    $('connectBtn').textContent = shortAddr(userAddress);
+    $('connectBtn').classList.add('connected');
+    $('tierBanner').style.display = 'flex';
+
+    // Re-load token info if address already entered
+    if ($('tokenAddress').value || tokenInfo?.isNative) {
+      await loadTokenInfo();
+    }
+
+    // Re-listen for chain/account changes
+    window.ethereum.on('accountsChanged', () => location.reload());
+    window.ethereum.on('chainChanged', () => location.reload());
+  } catch (e) {
+    console.error(e);
+    alert('Failed to connect: ' + (e.message || e));
+  }
+}
+
+async function checkHolderStatus() {
+  try {
+    const monshi = new ethers.Contract(MONSHI_TOKEN, ABI_ERC20, provider);
+    const dec = await monshi.decimals();
+    const bal = await monshi.balanceOf(userAddress);
+    monshiBalance = bal / (10n ** BigInt(dec));
+    isHolder = monshiBalance >= MIN_HOLDER_BALANCE;
+
+    const pill = $('tierPill');
+    const balPill = $('balPill');
+    if (isHolder) {
+      pill.textContent = '🐟 BASIC · UNLOCKED';
+      pill.className = 'tier-pill unlocked';
+    } else {
+      pill.textContent = '🔒 NEED 100K $MONSHI';
+      pill.className = 'tier-pill locked';
+    }
+    balPill.textContent = monshiBalance.toLocaleString() + ' $MONSHI';
+    balPill.style.display = 'inline-block';
+
+    refreshSendButton();
+  } catch (e) {
+    console.error('holder check failed:', e);
+  }
+}
+
+// ─── TOKEN PRESETS + LOAD ───
+$('tokenAddress').addEventListener('input', () => {
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  loadTokenInfo();
+});
+
+document.querySelectorAll('.preset-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.preset-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    if (b.dataset.preset === 'native') {
+      $('tokenAddress').value = '';
+      tokenInfo = { isNative: true, symbol: 'MON', decimals: 18, balance: 0n };
+      loadNativeInfo();
+    } else {
+      $('tokenAddress').value = b.dataset.addr;
+      loadTokenInfo();
+    }
+  });
+});
+
+async function loadNativeInfo() {
+  if (!provider || !userAddress) return;
+  try {
+    const bal = await provider.getBalance(userAddress);
+    tokenInfo = { isNative: true, symbol: 'MON', decimals: 18, balance: bal };
+    $('tokSym').textContent = 'MON (native)';
+    $('tokDec').textContent = '18';
+    $('tokBal').textContent = fmtUnits(bal, 18) + ' MON';
+    $('tokenInfo').classList.add('shown');
+    refreshAll();
+  } catch (e) { console.error(e); }
+}
+
+async function loadTokenInfo() {
+  const addr = $('tokenAddress').value.trim();
+  if (!ethers.isAddress(addr)) {
+    $('tokenInfo').classList.remove('shown');
+    tokenInfo = null;
+    refreshAll();
+    return;
+  }
+  if (!provider) {
+    provider = new ethers.JsonRpcProvider(RPC_URL); // read-only
+  }
+  try {
+    const c = new ethers.Contract(addr, ABI_ERC20, provider);
+    const [symbol, decimals] = await Promise.all([
+      c.symbol().catch(() => '???'),
+      c.decimals().catch(() => 18)
+    ]);
+    let bal = 0n;
+    if (userAddress) bal = await c.balanceOf(userAddress);
+
+    tokenInfo = { address: addr, symbol, decimals: Number(decimals), balance: bal, isNative: false };
+    tokenContract = signer ? new ethers.Contract(addr, ABI_ERC20, signer) : c;
+
+    $('tokSym').textContent = symbol;
+    $('tokDec').textContent = decimals.toString();
+    $('tokBal').textContent = userAddress ? fmtUnits(bal, decimals) + ' ' + symbol : 'connect wallet';
+    $('tokenInfo').classList.add('shown');
+    refreshAll();
+  } catch (e) {
+    console.error(e);
+    $('tokenInfo').classList.remove('shown');
+    tokenInfo = null;
+  }
+}
+
+// ─── MODE TOGGLE ───
+document.querySelectorAll('.mode-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.mode-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    mode = b.dataset.mode;
+    $('amountEachWrap').classList.toggle('shown', mode === 'equal');
+    $('recipientsLabel').innerHTML = mode === 'equal'
+      ? 'ADDRESSES (one per line) <span class="hint">just paste addresses, set amount below</span>'
+      : 'ADDRESS, AMOUNT (one per line) <span class="hint">paste from anywhere · one per line · # for comments</span>';
+    $('recipientsArea').placeholder = mode === 'equal'
+      ? '0x9a3f...b820\n0x7d11...c4a2\n# comments allowed\n0xff21...7b3c'
+      : '0x9a3f...b820, 1000\n0x7d11...c4a2, 500\n# comments allowed\n0xff21...7b3c, 1000';
+    refreshAll();
+  });
+});
+
+// ─── PARSING ───
+$('recipientsArea').addEventListener('input', refreshAll);
+$('amountEach').addEventListener('input', refreshAll);
+
+function parseRecipients() {
+  const text = $('recipientsArea').value;
+  if (!text.trim()) {
+    parsedRecipients = []; totalAmount = 0n;
+    showParseResult(0, 0n, 0, 0, []);
+    return;
+  }
+  if (!tokenInfo) {
+    showParseResult(0, 0n, 0, 0, ['Pick a token first']);
+    return;
+  }
+
+  const lines = text.split('\n');
+  const seen = {}; // addr -> idx in result
+  const result = [];
+  const errors = [];
+  let skipped = 0;
+  let dupes = 0;
+  const equalAmount = mode === 'equal' ? $('amountEach').value.trim() : null;
+
+  let equalAmountWei = 0n;
+  if (mode === 'equal') {
+    if (!equalAmount) {
+      parsedRecipients = []; totalAmount = 0n;
+      showParseResult(0, 0n, 0, 0, ['Set amount each wallet receives']);
+      return;
+    }
+    try {
+      equalAmountWei = ethers.parseUnits(equalAmount, tokenInfo.decimals);
+      if (equalAmountWei <= 0n) {
+        showParseResult(0, 0n, 0, 0, ['Amount must be greater than 0']);
+        return;
+      }
+    } catch {
+      showParseResult(0, 0n, 0, 0, ['Invalid amount: ' + equalAmount]);
+      return;
+    }
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i].trim();
+    if (!raw || raw.startsWith('#') || raw.startsWith('//')) continue;
+    let addr, amt;
+    if (mode === 'equal') {
+      addr = raw.replace(/[, \t].*$/, '').trim();
+      amt = equalAmountWei;
+    } else {
+      const parts = raw.split(/[,\s\t]+/).filter(Boolean);
+      if (parts.length < 2) {
+        skipped++;
+        if (errors.length < 8) errors.push(`Line ${i+1}: missing amount → "${raw}"`);
+        continue;
+      }
+      addr = parts[0];
+      try {
+        amt = ethers.parseUnits(parts[1], tokenInfo.decimals);
+        if (amt <= 0n) throw new Error('zero');
+      } catch {
+        skipped++;
+        if (errors.length < 8) errors.push(`Line ${i+1}: bad amount "${parts[1]}"`);
+        continue;
+      }
+    }
+    if (!ethers.isAddress(addr)) {
+      skipped++;
+      if (errors.length < 8) errors.push(`Line ${i+1}: invalid address "${addr}"`);
+      continue;
+    }
+    const norm = ethers.getAddress(addr);
+    if (norm in seen) {
+      result[seen[norm]].amount += amt;
+      dupes++;
+    } else {
+      seen[norm] = result.length;
+      result.push({ address: norm, amount: amt });
+    }
+  }
+
+  parsedRecipients = result;
+  totalAmount = result.reduce((s, r) => s + r.amount, 0n);
+  showParseResult(result.length, totalAmount, skipped, dupes, errors);
+}
+
+function showParseResult(count, total, skipped, dupes, errors) {
+  const pr = $('parseResult');
+  pr.classList.add('shown');
+  pr.classList.toggle('error', count === 0 && errors.length > 0);
+  $('prCount').textContent = count;
+  $('prCount').className = 'v ' + (count > 0 ? 'ok' : '');
+  $('prTotal').textContent = tokenInfo ? fmtUnits(total, tokenInfo.decimals) + ' ' + tokenInfo.symbol : '—';
+  $('prSkipped').textContent = skipped;
+  $('prSkipped').className = 'v ' + (skipped > 0 ? 'warn' : 'ok');
+  $('prDupes').textContent = dupes;
+  $('prDupes').className = 'v ' + (dupes > 0 ? 'warn' : 'ok');
+  const errBox = $('prErrors');
+  if (errors.length) {
+    errBox.style.display = 'block';
+    errBox.innerHTML = errors.map(e => `<div>⚠ ${e}</div>`).join('');
+  } else {
+    errBox.style.display = 'none';
+  }
+}
+
+// ─── CSV UPLOAD ───
+$('csvInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    $('recipientsArea').value = reader.result.toString();
+    refreshAll();
+  };
+  reader.readAsText(file);
+});
+
+// ─── SUMMARY + APPROVAL ───
+let needsApproval = false;
+
+async function refreshAll() {
+  parseRecipients();
+
+  if (!tokenInfo) {
+    $('sumToken').textContent = '—';
+  } else if (tokenInfo.isNative) {
+    $('sumToken').textContent = 'MON (native)';
+  } else {
+    $('sumToken').textContent = tokenInfo.symbol;
+  }
+  $('sumMode').textContent = mode === 'equal' ? 'EQUAL · same amount each' : 'CUSTOM · per recipient';
+  $('sumRecips').textContent = parsedRecipients.length;
+  $('sumTotal').textContent = tokenInfo ? fmtUnits(totalAmount, tokenInfo.decimals) + ' ' + tokenInfo.symbol : '—';
+
+  await refreshApproval();
+  await refreshGasEstimate();
+  refreshSendButton();
+}
+
+async function refreshApproval() {
+  if (!tokenInfo || tokenInfo.isNative || !userAddress || !signer) {
+    $('sumApproval').textContent = tokenInfo?.isNative ? 'NOT NEEDED' : '—';
+    $('sumApproval').className = 'v';
+    $('approveBtn').style.display = 'none';
+    needsApproval = false;
+    return;
+  }
+  if (totalAmount === 0n) {
+    $('sumApproval').textContent = '—';
+    $('approveBtn').style.display = 'none';
+    needsApproval = false;
+    return;
+  }
+  try {
+    const c = new ethers.Contract(tokenInfo.address, ABI_ERC20, provider);
+    const allowance = await c.allowance(userAddress, MULTISENDER_ADDRESS);
+    if (allowance >= totalAmount) {
+      $('sumApproval').textContent = '✓ APPROVED';
+      $('sumApproval').className = 'v green';
+      $('approveBtn').style.display = 'none';
+      needsApproval = false;
+    } else {
+      $('sumApproval').textContent = 'NEEDS APPROVAL';
+      $('sumApproval').className = 'v yellow';
+      $('approveBtn').style.display = 'block';
+      needsApproval = true;
+    }
+  } catch (e) {
+    console.error('allowance check err', e);
+  }
+}
+
+async function refreshGasEstimate() {
+  if (!signer || !tokenInfo || parsedRecipients.length === 0 || needsApproval) {
+    $('sumGas').textContent = '—';
+    return;
+  }
+  try {
+    const recipients = parsedRecipients.map(r => r.address);
+    const amounts = parsedRecipients.map(r => r.amount);
+    let estimate;
+    if (tokenInfo.isNative) {
+      const fn = mode === 'equal'
+        ? multisenderContract.sendNativeEqual.estimateGas(recipients, parsedRecipients[0].amount, { value: totalAmount })
+        : multisenderContract.sendNative.estimateGas(recipients, amounts, { value: totalAmount });
+      estimate = await fn;
+    } else {
+      const fn = mode === 'equal'
+        ? multisenderContract.sendERC20Equal.estimateGas(tokenInfo.address, recipients, parsedRecipients[0].amount)
+        : multisenderContract.sendERC20.estimateGas(tokenInfo.address, recipients, amounts);
+      estimate = await fn;
+    }
+    const fee = await provider.getFeeData();
+    const cost = estimate * (fee.gasPrice || fee.maxFeePerGas || 50000000000n);
+    $('sumGas').textContent = '~' + fmtUnits(cost, 18) + ' MON';
+  } catch (e) {
+    $('sumGas').textContent = 'estimate fail';
+  }
+}
+
+function refreshSendButton() {
+  const btn = $('sendBtn');
+  const n = parsedRecipients.length;
+  btn.textContent = `SEND TO ${n} WALLET${n === 1 ? '' : 'S'} 📤`;
+  let canSend = userAddress && tokenInfo && n > 0 && !needsApproval;
+  if (!isHolder && userAddress) canSend = false;
+  if (tokenInfo && !tokenInfo.isNative && totalAmount > tokenInfo.balance) canSend = false;
+  if (tokenInfo?.isNative && tokenInfo.balance < totalAmount) canSend = false;
+  btn.disabled = !canSend;
+}
+
+// ─── APPROVE ───
+$('approveBtn').addEventListener('click', async () => {
+  if (!tokenInfo || tokenInfo.isNative) return;
+  try {
+    setStatus('pending', 'WAITING FOR WALLET', 'Approve the multisender contract to spend your ' + tokenInfo.symbol + '...');
+    const c = new ethers.Contract(tokenInfo.address, ABI_ERC20, signer);
+    const tx = await c.approve(MULTISENDER_ADDRESS, totalAmount);
+    setStatus('pending', 'APPROVING', `Tx submitted: <a href="${EXPLORER}/tx/${tx.hash}" target="_blank">${shortAddr(tx.hash)}</a>`);
+    await tx.wait();
+    setStatus('success', '✓ APPROVED', `You can now send. <a href="${EXPLORER}/tx/${tx.hash}" target="_blank">View tx</a>`);
+    setTimeout(() => clearStatus(), 4000);
+    await refreshAll();
+  } catch (e) {
+    console.error(e);
+    setStatus('error', '✗ APPROVAL FAILED', e.shortMessage || e.message || 'unknown error');
+  }
+});
+
+// ─── SEND ───
+$('sendBtn').addEventListener('click', async () => {
+  if (!tokenInfo || parsedRecipients.length === 0) return;
+  if (!isHolder) {
+    setStatus('error', '🔒 LOCKED', `You need at least 100,000 $MONSHI to use this tool. You hold ${monshiBalance.toLocaleString()}.`);
+    return;
+  }
+  // Validate multisender address is set
+  if (MULTISENDER_ADDRESS === '0x0000000000000000000000000000000000000000') {
+    setStatus('error', '⚠️ NOT YET DEPLOYED', 'Multisender contract not yet deployed to mainnet. King Petty is finalizing deploy. Try again soon ser.');
+    return;
+  }
+
+  try {
+    setStatus('pending', 'WAITING FOR WALLET', `Sign the transaction to send to ${parsedRecipients.length} wallet${parsedRecipients.length === 1 ? '' : 's'}...`);
+    const recipients = parsedRecipients.map(r => r.address);
+    const amounts = parsedRecipients.map(r => r.amount);
+    let tx;
+    if (tokenInfo.isNative) {
+      tx = mode === 'equal'
+        ? await multisenderContract.sendNativeEqual(recipients, parsedRecipients[0].amount, { value: totalAmount })
+        : await multisenderContract.sendNative(recipients, amounts, { value: totalAmount });
+    } else {
+      tx = mode === 'equal'
+        ? await multisenderContract.sendERC20Equal(tokenInfo.address, recipients, parsedRecipients[0].amount)
+        : await multisenderContract.sendERC20(tokenInfo.address, recipients, amounts);
+    }
+
+    setStatus('pending', 'SENDING', `Tx submitted: <a href="${EXPLORER}/tx/${tx.hash}" target="_blank">${shortAddr(tx.hash)}</a>`);
+    const rcpt = await tx.wait();
+    setStatus('success', '✅ SENT! 🐟', `Successfully sent to ${parsedRecipients.length} wallet${parsedRecipients.length === 1 ? '' : 's'}.<br><a href="${EXPLORER}/tx/${rcpt.hash}" target="_blank">View on explorer</a>`);
+  } catch (e) {
+    console.error(e);
+    setStatus('error', '✗ SEND FAILED', e.shortMessage || e.message || 'unknown error');
+  }
+});
+
+// ─── INIT ───
+$('connectBtn').addEventListener('click', connectWallet);
+
+// Default: pick MONSHI preset
+window.addEventListener('load', () => {
+  document.querySelector('.preset-btn[data-preset="monshi"]').click();
+  // Auto-connect if previously connected
+  if (window.ethereum && window.ethereum.selectedAddress) {
+    setTimeout(() => connectWallet(), 200);
+  }
+});
+</script>
+
+</body>
+</html>
