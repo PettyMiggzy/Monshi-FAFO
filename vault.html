@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MONSHI VAULT — Personal Privacy Vault</title>
+<meta name="theme-color" content="#A89FFF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#A89FFF;
+  --bg-deep:#8B7FE8;
+  --bg-soft:#C4BCFF;
+  --surface:#FFFFFF;
+  --ink:#1A1340;
+  --ink-soft:#3D2E80;
+  --muted:#6B5FB0;
+  --purple:#7F77DD;
+  --purple-deep:#5A4FB8;
+  --yellow:#FFE566;
+  --green:#4DFFA0;
+  --pink:#EC4899;
+  --orange:#FF9F4A;
+  --red:#FF6B6B;
+  --display:'Bowlby One',Impact,sans-serif;
+  --hand:'Caveat',cursive;
+  --mono:'JetBrains Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--mono);
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(circle at 18% 25%,rgba(255,255,255,0.25),transparent 50%),radial-gradient(circle at 82% 78%,rgba(127,119,221,0.3),transparent 60%);
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle at 50% 50%,rgba(26,19,64,0.12) 1px,transparent 1.5px);
+  background-size:14px 14px;opacity:.4;
+}
+.wrap{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:24px 20px 80px}
+
+/* TOPBAR */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;background:var(--surface);
+  border:3px solid var(--ink);border-radius:18px;
+  margin:0 0 28px;flex-wrap:wrap;gap:14px;
+  box-shadow:6px 6px 0 var(--ink);
+}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.brand-mark{
+  width:48px;height:48px;border-radius:11px;
+  background:var(--ink);color:var(--bg);
+  border:3px solid var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:22px;
+  box-shadow:3px 3px 0 var(--ink);transform:rotate(-3deg);
+}
+.brand-text{display:flex;flex-direction:column;line-height:1}
+.brand-text .l1{font-family:var(--display);font-size:20px;letter-spacing:1px;color:var(--ink);margin-bottom:2px}
+.brand-text .l2{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--muted);font-weight:700}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.back-link{
+  padding:10px 16px;background:var(--surface);color:var(--ink);
+  border:2.5px solid var(--ink);border-radius:10px;
+  font-family:var(--mono);font-size:11px;font-weight:800;letter-spacing:1.5px;
+  text-decoration:none;
+  box-shadow:3px 3px 0 var(--ink);transition:all .15s;
+  text-transform:uppercase;
+}
+.back-link:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.connect-cta{
+  padding:11px 22px;background:var(--ink);color:var(--bg);
+  border:3px solid var(--ink);border-radius:11px;
+  font-family:var(--display);font-size:12px;letter-spacing:1.5px;
+  cursor:pointer;transition:all .15s;
+  box-shadow:4px 4px 0 var(--ink);text-transform:uppercase;
+}
+.connect-cta:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.connect-cta.connected{background:var(--green);color:var(--ink);font-family:var(--mono);font-weight:800}
+
+/* HEADER */
+.page-head{
+  background:var(--surface);
+  border:3px solid var(--ink);border-radius:24px;
+  padding:32px 36px;margin-bottom:24px;
+  box-shadow:8px 8px 0 var(--ink);
+}
+.page-head .eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 14px;background:var(--pink);color:#fff;
+  border:2.5px solid var(--ink);border-radius:8px;
+  font-family:var(--display);font-size:11px;letter-spacing:2px;
+  margin-bottom:14px;text-transform:uppercase;
+  box-shadow:3px 3px 0 var(--ink);transform:rotate(-1deg);
+}
+.page-head h1{
+  font-family:var(--display);
+  font-size:clamp(36px,5.5vw,56px);line-height:1;letter-spacing:0;
+  color:var(--ink);margin-bottom:14px;text-transform:uppercase;
+}
+.page-head h1 .acc{
+  display:inline-block;background:var(--pink);color:#fff;
+  padding:0 12px;border:3px solid var(--ink);border-radius:8px;
+  transform:rotate(-2deg);box-shadow:4px 4px 0 var(--ink);
+}
+.page-head p{font-size:14px;color:var(--ink-soft);line-height:1.7;max-width:680px}
+.page-head p strong{color:var(--ink);background:var(--yellow);padding:1px 6px;border:2px solid var(--ink);border-radius:4px;display:inline-block;line-height:1.3}
+
+/* TIER BANNER */
+.tier-banner{
+  background:var(--surface);
+  border:3px solid var(--ink);border-radius:18px;
+  padding:18px 22px;margin-bottom:24px;
+  box-shadow:5px 5px 0 var(--ink);
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:14px;
+}
+.tier-banner .lbl{font-family:var(--display);font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.tier-banner .your-status{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.tier-pill{
+  background:var(--bg);color:var(--ink);
+  padding:8px 14px;border:2.5px solid var(--ink);border-radius:10px;
+  font-family:var(--display);font-size:14px;letter-spacing:.5px;
+  box-shadow:3px 3px 0 var(--ink);
+}
+.tier-pill.unlocked{background:var(--green)}
+.tier-pill.locked{background:var(--red);color:#fff}
+
+/* MAIN CARD */
+.card{
+  background:var(--surface);
+  border:3px solid var(--ink);border-radius:20px;
+  padding:28px 32px;margin-bottom:24px;
+  box-shadow:6px 6px 0 var(--ink);
+}
+.card-title{
+  font-family:var(--display);font-size:22px;color:var(--ink);
+  letter-spacing:.5px;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;margin-bottom:18px;
+}
+.card-title .num-tag{
+  background:var(--yellow);padding:3px 10px;border:2.5px solid var(--ink);border-radius:8px;
+  font-size:14px;transform:rotate(-2deg);box-shadow:2.5px 2.5px 0 var(--ink);
+}
+
+/* CREATE VAULT BIG BUTTON */
+.create-vault-card{
+  background:linear-gradient(135deg,var(--pink) 0%,#FF1F8F 100%);
+  border:3px solid var(--ink);border-radius:20px;
+  padding:36px 32px;margin-bottom:24px;
+  box-shadow:8px 8px 0 var(--ink);
+  text-align:center;color:#fff;
+  position:relative;overflow:hidden;
+}
+.create-vault-card h2{
+  font-family:var(--display);font-size:32px;letter-spacing:1px;
+  margin-bottom:12px;text-transform:uppercase;
+  text-shadow:3px 3px 0 var(--ink);
+}
+.create-vault-card p{
+  font-size:14px;line-height:1.7;margin-bottom:24px;max-width:560px;margin-left:auto;margin-right:auto;
+  font-weight:600;
+}
+.create-vault-cta{
+  padding:18px 36px;
+  background:var(--yellow);color:var(--ink);
+  border:3px solid var(--ink);border-radius:14px;
+  font-family:var(--display);font-size:18px;letter-spacing:1.5px;cursor:pointer;
+  box-shadow:5px 5px 0 var(--ink);transition:all .15s;
+  text-transform:uppercase;
+}
+.create-vault-cta:hover{transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--ink)}
+.create-vault-cta:active{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--ink)}
+.create-vault-cta:disabled{background:#ccc;color:#666;cursor:not-allowed;box-shadow:5px 5px 0 var(--ink)}
+
+/* VAULT INFO */
+.vault-info{
+  background:var(--bg);
+  border:3px dashed var(--ink);border-radius:14px;
+  padding:18px 22px;margin-bottom:24px;
+}
+.vault-info-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:6px 0;font-size:13px;font-family:var(--mono);
+}
+.vault-info-row .k{color:var(--ink-soft);font-weight:700;letter-spacing:1px;text-transform:uppercase;font-size:11px}
+.vault-info-row .v{color:var(--ink);font-family:var(--display);font-size:14px;letter-spacing:0;line-height:1}
+.copy-btn{
+  background:var(--ink);color:var(--bg);border:none;
+  padding:4px 10px;border-radius:6px;
+  font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:1px;
+  cursor:pointer;margin-left:8px;
+  text-transform:uppercase;
+}
+.copy-btn:hover{background:var(--purple-deep)}
+.copy-btn.copied{background:var(--green);color:var(--ink)}
+
+/* TABS */
+.tab-row{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;
+  margin-bottom:18px;
+}
+.tab-btn{
+  padding:14px;background:var(--surface);
+  border:3px solid var(--ink);border-radius:12px;
+  font-family:var(--display);font-size:13px;letter-spacing:1px;color:var(--ink);
+  cursor:pointer;transition:all .15s;text-transform:uppercase;
+  box-shadow:3px 3px 0 var(--ink);
+}
+.tab-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.tab-btn.active{background:var(--yellow)}
+
+/* DEPOSIT/WITHDRAW PANEL */
+.field{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.field-label{
+  font-family:var(--display);font-size:11px;letter-spacing:1.5px;color:var(--ink);text-transform:uppercase;
+}
+.field-label .hint{
+  color:var(--muted);font-family:var(--hand);font-size:14px;
+  letter-spacing:0;text-transform:none;margin-left:6px;
+}
+.address-input,.amount-input{
+  padding:14px 18px;background:var(--bg);
+  border:3px solid var(--ink);border-radius:11px;
+  font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink);
+  outline:none;transition:all .15s;
+}
+.address-input:focus,.amount-input:focus{box-shadow:4px 4px 0 var(--ink);transform:translate(-1px,-1px)}
+
+.token-presets{
+  display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;
+}
+.preset-btn{
+  padding:8px 14px;background:var(--surface);
+  border:2.5px solid var(--ink);border-radius:9px;
+  font-family:var(--display);font-size:11px;letter-spacing:1px;color:var(--ink);
+  cursor:pointer;transition:all .15s;text-transform:uppercase;
+  box-shadow:2.5px 2.5px 0 var(--ink);
+}
+.preset-btn:hover{transform:translate(-1px,-1px);box-shadow:3.5px 3.5px 0 var(--ink)}
+.preset-btn.active{background:var(--yellow)}
+.preset-btn.native{background:var(--green)}
+
+.balance-display{
+  background:var(--bg);
+  border:2.5px dashed var(--ink);border-radius:12px;
+  padding:14px 18px;margin-bottom:14px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.balance-display .lbl{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:var(--ink-soft);font-weight:700;text-transform:uppercase}
+.balance-display .val{font-family:var(--display);font-size:18px;color:var(--ink);letter-spacing:0;line-height:1}
+
+/* CTA */
+.cta{
+  width:100%;padding:18px;
+  background:var(--green);color:var(--ink);
+  border:3px solid var(--ink);border-radius:14px;
+  font-family:var(--display);font-size:17px;letter-spacing:1.2px;cursor:pointer;
+  box-shadow:5px 5px 0 var(--ink);transition:all .15s;
+  text-transform:uppercase;
+  margin-top:8px;
+}
+.cta:hover{transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--ink)}
+.cta:active{transform:translate(2px,2px);box-shadow:3px 3px 0 var(--ink)}
+.cta:disabled{background:#ccc;color:#666;cursor:not-allowed;box-shadow:5px 5px 0 var(--ink)}
+.cta:disabled:hover{transform:none;box-shadow:5px 5px 0 var(--ink)}
+.cta.approve{background:var(--orange)}
+.cta.withdraw{background:var(--pink);color:#fff}
+
+/* HOLDINGS LIST */
+.holdings-list{
+  display:flex;flex-direction:column;gap:10px;
+}
+.holding-row{
+  background:var(--bg);
+  border:2.5px solid var(--ink);border-radius:12px;
+  padding:14px 18px;
+  display:flex;justify-content:space-between;align-items:center;
+  box-shadow:3px 3px 0 var(--ink);
+  flex-wrap:wrap;gap:10px;
+}
+.holding-row .left{display:flex;flex-direction:column;gap:4px;flex:1;min-width:140px}
+.holding-row .symbol{font-family:var(--display);font-size:16px;color:var(--ink);letter-spacing:.5px}
+.holding-row .addr{font-family:var(--mono);font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.5px}
+.holding-row .amt{font-family:var(--display);font-size:18px;color:var(--ink-soft);letter-spacing:0;line-height:1}
+
+.no-holdings{
+  text-align:center;padding:40px 20px;
+  color:var(--muted);font-family:var(--hand);font-size:18px;
+}
+
+/* TX STATUS */
+.tx-status{
+  background:var(--surface);border:3px solid var(--ink);border-radius:14px;
+  padding:18px 22px;display:none;font-family:var(--mono);font-size:12px;font-weight:700;
+  box-shadow:4px 4px 0 var(--ink);
+  margin-top:14px;
+}
+.tx-status.shown{display:block}
+.tx-status.success{background:var(--green)}
+.tx-status.error{background:rgba(255,107,107,0.15);border-color:var(--red)}
+.tx-status.pending{background:var(--yellow)}
+.tx-status .title{
+  font-family:var(--display);font-size:14px;letter-spacing:1px;text-transform:uppercase;
+  margin-bottom:8px;color:var(--ink);
+}
+.tx-status .detail{color:var(--ink-soft);line-height:1.7;font-size:12px}
+.tx-status a{color:var(--ink);text-decoration:underline;font-weight:800}
+.spinner{
+  display:inline-block;width:14px;height:14px;border:2.5px solid var(--ink);
+  border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;
+  margin-right:8px;vertical-align:middle;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* DISCLAIMER */
+.foot{
+  text-align:center;padding-top:36px;
+  color:var(--ink);font-family:var(--mono);font-size:11px;letter-spacing:1.5px;margin-top:40px;font-weight:700;
+}
+.disclaim{
+  background:var(--surface);border:3px solid var(--ink);
+  border-radius:14px;padding:16px 22px;margin-bottom:14px;
+  color:var(--ink);font-size:11px;letter-spacing:1px;line-height:1.7;
+  box-shadow:4px 4px 0 var(--ink);
+}
+.disclaim b{background:var(--yellow);padding:1px 6px;border:2px solid var(--ink);border-radius:4px;display:inline-block;line-height:1.3}
+.disclaim .red{background:rgba(255,107,107,0.2);border:2px solid var(--red);color:var(--ink);padding:1px 6px;border-radius:4px;display:inline-block;line-height:1.3}
+
+/* HIDE/SHOW UTIL */
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="topbar">
+    <a href="/tools.html" class="brand">
+      <div class="brand-mark">🔒</div>
+      <div class="brand-text">
+        <span class="l1">PRIVACY VAULT</span>
+        <span class="l2">MONSHI TOOLS · WHALE TIER</span>
+      </div>
+    </a>
+    <div class="topbar-right">
+      <a href="/tools.html" class="back-link">← TOOLS HUB</a>
+      <button class="connect-cta" id="connectBtn">CONNECT WALLET</button>
+    </div>
+  </header>
+
+  <section class="page-head">
+    <span class="eyebrow">🐳 WHALE TIER · 1M $MONSHI REQUIRED</span>
+    <h1>YOUR PRIVATE <span class="acc">VAULT</span></h1>
+    <p>Each user gets their own unique smart contract vault. Deposit any token (or native MON), withdraw anytime, only you can move funds. <strong>Your wallet looks empty. Your bag is safe.</strong></p>
+  </section>
+
+  <!-- TIER BANNER -->
+  <section class="tier-banner" id="tierBanner" style="display:none">
+    <div>
+      <div class="lbl">YOUR ACCESS</div>
+      <div class="your-status">
+        <span class="tier-pill" id="tierPill">CONNECT WALLET</span>
+        <span class="tier-pill unlocked" id="balPill" style="display:none"></span>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div class="lbl">REQUIRED</div>
+      <div class="your-status" style="justify-content:flex-end">
+        <span class="tier-pill" style="background:var(--pink);color:#fff">1,000,000 $MONSHI</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CREATE VAULT (shown if user doesn't have one yet) -->
+  <section class="create-vault-card" id="createVaultCard" style="display:none">
+    <h2>🔒 CREATE YOUR VAULT</h2>
+    <p>One-time deploy. Deploys a unique smart contract owned only by your wallet. Cost: gas only (~$0.01 on Monad). After this, deposit/withdraw any token at any time.</p>
+    <button class="create-vault-cta" id="createBtn">DEPLOY MY VAULT 🚀</button>
+  </section>
+
+  <!-- VAULT INFO (shown if user has a vault) -->
+  <section class="vault-info" id="vaultInfo" style="display:none">
+    <div class="vault-info-row">
+      <span class="k">YOUR VAULT</span>
+      <span style="display:flex;align-items:center">
+        <span class="v" id="vaultAddr">—</span>
+        <button class="copy-btn" id="copyVaultBtn">COPY</button>
+      </span>
+    </div>
+    <div class="vault-info-row">
+      <span class="k">EXPLORER</span>
+      <a href="#" id="vaultExplorerLink" target="_blank" class="v" style="color:var(--purple-deep);text-decoration:underline">View on Monadexplorer →</a>
+    </div>
+  </section>
+
+  <!-- TABS (shown if user has a vault) -->
+  <section class="card" id="vaultPanel" style="display:none">
+    <div class="tab-row">
+      <button class="tab-btn active" data-tab="deposit">📥 DEPOSIT</button>
+      <button class="tab-btn" data-tab="withdraw">📤 WITHDRAW</button>
+      <button class="tab-btn" data-tab="holdings">💰 HOLDINGS</button>
+    </div>
+
+    <!-- DEPOSIT TAB -->
+    <div class="tab-content" id="tabDeposit">
+      <div class="field">
+        <label class="field-label">PICK TOKEN <span class="hint">(or paste any token address)</span></label>
+        <div class="token-presets">
+          <button class="preset-btn native" data-preset="native">⚡ NATIVE MON</button>
+          <button class="preset-btn active" data-preset="monshi" data-addr="0xB744F5CDb792d8187640214C4A1c9aCE29af7777">🐟 $MONSHI</button>
+          <button class="preset-btn" data-preset="rene" data-addr="0xaCA86430cCCEdbedB35910fC8A5AFEF07dA37777">🐶 $RENE</button>
+        </div>
+        <input type="text" class="address-input" id="depositToken" value="0xB744F5CDb792d8187640214C4A1c9aCE29af7777" placeholder="0x... token contract">
+      </div>
+
+      <div class="balance-display">
+        <span class="lbl">YOUR WALLET BALANCE</span>
+        <span class="val" id="walletBalance">—</span>
+      </div>
+
+      <div class="field">
+        <label class="field-label">AMOUNT TO DEPOSIT</label>
+        <input type="text" class="amount-input" id="depositAmount" placeholder="0.0">
+      </div>
+
+      <button class="cta approve hidden" id="approveBtn">APPROVE TOKEN 🔐</button>
+      <button class="cta" id="depositBtn">DEPOSIT TO VAULT 🔒</button>
+
+      <div class="tx-status" id="depositStatus">
+        <div class="title" id="depositStatusTitle">—</div>
+        <div class="detail" id="depositStatusDetail">—</div>
+      </div>
+    </div>
+
+    <!-- WITHDRAW TAB -->
+    <div class="tab-content hidden" id="tabWithdraw">
+      <div class="field">
+        <label class="field-label">PICK TOKEN <span class="hint">(must be in your vault)</span></label>
+        <div class="token-presets">
+          <button class="preset-btn native" data-w-preset="native">⚡ NATIVE MON</button>
+          <button class="preset-btn active" data-w-preset="monshi" data-addr="0xB744F5CDb792d8187640214C4A1c9aCE29af7777">🐟 $MONSHI</button>
+          <button class="preset-btn" data-w-preset="rene" data-addr="0xaCA86430cCCEdbedB35910fC8A5AFEF07dA37777">🐶 $RENE</button>
+        </div>
+        <input type="text" class="address-input" id="withdrawToken" value="0xB744F5CDb792d8187640214C4A1c9aCE29af7777" placeholder="0x... token contract">
+      </div>
+
+      <div class="balance-display">
+        <span class="lbl">VAULT BALANCE</span>
+        <span class="val" id="vaultBalance">—</span>
+      </div>
+
+      <div class="field">
+        <label class="field-label">AMOUNT TO WITHDRAW</label>
+        <input type="text" class="amount-input" id="withdrawAmount" placeholder="0.0">
+      </div>
+
+      <button class="cta withdraw" id="withdrawBtn">WITHDRAW FROM VAULT 📤</button>
+
+      <div class="tx-status" id="withdrawStatus">
+        <div class="title" id="withdrawStatusTitle">—</div>
+        <div class="detail" id="withdrawStatusDetail">—</div>
+      </div>
+    </div>
+
+    <!-- HOLDINGS TAB -->
+    <div class="tab-content hidden" id="tabHoldings">
+      <div class="holdings-list" id="holdingsList">
+        <div class="no-holdings">Connect wallet to view your vault holdings</div>
+      </div>
+      <button class="cta" id="refreshHoldingsBtn" style="margin-top:18px;background:var(--bg)">🔄 REFRESH HOLDINGS</button>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="disclaim">
+      ⚠️ <b>HOW PRIVACY WORKS</b><br>
+      Your tokens move from your wallet to a unique smart contract YOU own. Your wallet's balance shows lower, your vault holds the bag. <span class="red">Privacy from casual lookups, NOT anonymity.</span> On-chain forensic analysis can still trace ownership via your deploy transaction. Use accordingly.
+    </div>
+    <p>$MONSHI VAULT · No fees · No custody · Owner-only · Built for the Pack 🐟</p>
+  </footer>
+
+</div>
+
+<!-- ethers v6 from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+
+<script>
+'use strict';
+
+// ─── CONFIG ───
+const FACTORY_ADDRESS = '0x0000000000000000000000000000000000000000'; // ← REPLACE AFTER DEPLOY
+const MONSHI_TOKEN = '0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
+const MONAD_CHAIN_ID = 143;
+const MONAD_HEX = '0x8f';
+const MIN_TIER_BALANCE = 1_000_000n;
+
+const RPC_URL = 'https://rpc.monad.xyz';
+const EXPLORER = 'https://monadexplorer.com';
+
+const ABI_FACTORY = [
+  'function createMyVault() returns (address)',
+  'function userVault(address) view returns (address)',
+  'function hasVault(address) view returns (bool)',
+  'function getVault(address) view returns (address)',
+  'function totalVaults() view returns (uint256)',
+  'event VaultCreated(address indexed owner, address indexed vault, uint256 totalVaultsAtCreation)'
+];
+
+const ABI_VAULT = [
+  'function owner() view returns (address)',
+  'function deposit(address token, uint256 amount)',
+  'function withdraw(address token, uint256 amount)',
+  'function depositNative() payable',
+  'function withdrawNative(uint256 amount)',
+  'function balanceOf(address token) view returns (uint256)',
+  'function nativeBalance() view returns (uint256)',
+  'event Deposited(address indexed token, uint256 amount)',
+  'event Withdrawn(address indexed token, uint256 amount)'
+];
+
+const ABI_ERC20 = [
+  'function name() view returns (string)',
+  'function symbol() view returns (string)',
+  'function decimals() view returns (uint8)',
+  'function balanceOf(address) view returns (uint256)',
+  'function allowance(address owner, address spender) view returns (uint256)',
+  'function approve(address spender, uint256 amount) returns (bool)'
+];
+
+// ─── STATE ───
+let provider = null;
+let signer = null;
+let userAddress = null;
+let factoryContract = null;
+let vaultContract = null;
+let vaultAddress = null;
+let monshiBalance = 0n;
+let isHolder = false;
+let activeTab = 'deposit';
+
+const $ = (id) => document.getElementById(id);
+const shortAddr = (a) => a.slice(0, 6) + '…' + a.slice(-4);
+
+function fmtUnits(amount, decimals) {
+  try {
+    return Number(ethers.formatUnits(amount, decimals)).toLocaleString(undefined, { maximumFractionDigits: 4 });
+  } catch { return '—'; }
+}
+
+function setStatus(id, kind, title, detailHTML) {
+  const s = $(id);
+  s.className = 'tx-status shown ' + kind;
+  $(id + 'Title').innerHTML = (kind === 'pending' ? '<span class="spinner"></span>' : '') + title;
+  $(id + 'Detail').innerHTML = detailHTML;
+}
+function clearStatus(id) { $(id).className = 'tx-status'; }
+
+// ─── WALLET CONNECT ───
+async function connectWallet() {
+  if (!window.ethereum) { alert('Install MetaMask, Rabby, or another EVM wallet.'); return; }
+  try {
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
+    signer = await provider.getSigner();
+    userAddress = await signer.getAddress();
+
+    const network = await provider.getNetwork();
+    if (Number(network.chainId) !== MONAD_CHAIN_ID) {
+      try {
+        await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: MONAD_HEX }] });
+      } catch (e) {
+        if (e.code === 4902) {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{ chainId: MONAD_HEX, chainName: 'Monad', nativeCurrency: { name: 'Monad', symbol: 'MON', decimals: 18 }, rpcUrls: [RPC_URL], blockExplorerUrls: [EXPLORER] }]
+          });
+        }
+      }
+      provider = new ethers.BrowserProvider(window.ethereum);
+      signer = await provider.getSigner();
+    }
+
+    factoryContract = new ethers.Contract(FACTORY_ADDRESS, ABI_FACTORY, signer);
+    $('connectBtn').textContent = shortAddr(userAddress);
+    $('connectBtn').classList.add('connected');
+    $('tierBanner').style.display = 'flex';
+
+    await checkTier();
+    await checkVault();
+    refreshAll();
+
+    window.ethereum.on('accountsChanged', () => location.reload());
+    window.ethereum.on('chainChanged', () => location.reload());
+  } catch (e) {
+    console.error(e); alert('Connect failed: ' + (e.message || e));
+  }
+}
+
+async function checkTier() {
+  try {
+    const monshi = new ethers.Contract(MONSHI_TOKEN, ABI_ERC20, provider);
+    const dec = await monshi.decimals();
+    const bal = await monshi.balanceOf(userAddress);
+    monshiBalance = bal / (10n ** BigInt(dec));
+    isHolder = monshiBalance >= MIN_TIER_BALANCE;
+
+    const pill = $('tierPill');
+    const balPill = $('balPill');
+    if (isHolder) {
+      pill.textContent = '🐳 WHALE · UNLOCKED';
+      pill.className = 'tier-pill unlocked';
+    } else {
+      pill.textContent = '🔒 NEED 1M+ $MONSHI';
+      pill.className = 'tier-pill locked';
+    }
+    balPill.textContent = monshiBalance.toLocaleString() + ' $MONSHI';
+    balPill.style.display = 'inline-block';
+  } catch (e) { console.error('tier check', e); }
+}
+
+async function checkVault() {
+  if (FACTORY_ADDRESS === '0x0000000000000000000000000000000000000000') {
+    $('createVaultCard').style.display = 'block';
+    $('createBtn').textContent = '⚠ CONTRACT NOT YET DEPLOYED';
+    $('createBtn').disabled = true;
+    return;
+  }
+  try {
+    vaultAddress = await factoryContract.getVault(userAddress);
+    if (vaultAddress && vaultAddress !== ethers.ZeroAddress) {
+      vaultContract = new ethers.Contract(vaultAddress, ABI_VAULT, signer);
+      $('createVaultCard').style.display = 'none';
+      $('vaultInfo').style.display = 'block';
+      $('vaultPanel').style.display = 'block';
+      $('vaultAddr').textContent = shortAddr(vaultAddress);
+      $('vaultExplorerLink').href = `${EXPLORER}/address/${vaultAddress}`;
+    } else {
+      $('createVaultCard').style.display = 'block';
+      $('vaultInfo').style.display = 'none';
+      $('vaultPanel').style.display = 'none';
+      if (!isHolder) {
+        $('createBtn').textContent = '🔒 NEED 1M+ $MONSHI';
+        $('createBtn').disabled = true;
+      } else {
+        $('createBtn').textContent = 'DEPLOY MY VAULT 🚀';
+        $('createBtn').disabled = false;
+      }
+    }
+  } catch (e) { console.error('vault check', e); }
+}
+
+// ─── CREATE VAULT ───
+$('createBtn').addEventListener('click', async () => {
+  if (!isHolder) return;
+  try {
+    setStatus('depositStatus', 'pending', 'DEPLOYING YOUR VAULT', 'Confirm the transaction in your wallet...');
+    const tx = await factoryContract.createMyVault();
+    setStatus('depositStatus', 'pending', 'DEPLOYING', `Tx: <a href="${EXPLORER}/tx/${tx.hash}" target="_blank">${shortAddr(tx.hash)}</a>`);
+    const rcpt = await tx.wait();
+    setStatus('depositStatus', 'success', '✅ VAULT DEPLOYED', `Your unique vault is live. <a href="${EXPLORER}/tx/${rcpt.hash}" target="_blank">View tx</a>`);
+    setTimeout(() => clearStatus('depositStatus'), 3000);
+    await checkVault();
+    refreshAll();
+  } catch (e) {
+    console.error(e);
+    setStatus('depositStatus', 'error', '✗ DEPLOY FAILED', e.shortMessage || e.message || 'unknown');
+  }
+});
+
+// ─── COPY VAULT ADDR ───
+$('copyVaultBtn').addEventListener('click', () => {
+  if (!vaultAddress) return;
+  navigator.clipboard.writeText(vaultAddress);
+  const btn = $('copyVaultBtn');
+  btn.textContent = '✓ COPIED';
+  btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('copied'); }, 1500);
+});
+
+// ─── TABS ───
+document.querySelectorAll('.tab-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    activeTab = b.dataset.tab;
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+    $('tab' + activeTab[0].toUpperCase() + activeTab.slice(1)).classList.remove('hidden');
+    if (activeTab === 'holdings') refreshHoldings();
+    if (activeTab === 'withdraw') refreshVaultBalance();
+    if (activeTab === 'deposit') refreshWalletBalance();
+  });
+});
+
+// ─── DEPOSIT TAB ───
+document.querySelectorAll('.token-presets .preset-btn[data-preset]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.token-presets .preset-btn[data-preset]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    if (b.dataset.preset === 'native') {
+      $('depositToken').value = 'NATIVE_MON';
+    } else {
+      $('depositToken').value = b.dataset.addr;
+    }
+    refreshWalletBalance();
+    refreshAllowance();
+  });
+});
+
+$('depositToken').addEventListener('input', () => {
+  document.querySelectorAll('.token-presets .preset-btn[data-preset]').forEach(x => x.classList.remove('active'));
+  refreshWalletBalance();
+  refreshAllowance();
+});
+$('depositAmount').addEventListener('input', refreshAllowance);
+
+async function refreshWalletBalance() {
+  if (!signer) return;
+  const tok = $('depositToken').value.trim();
+  if (tok === 'NATIVE_MON') {
+    const bal = await provider.getBalance(userAddress);
+    $('walletBalance').textContent = fmtUnits(bal, 18) + ' MON';
+    return;
+  }
+  if (!ethers.isAddress(tok)) { $('walletBalance').textContent = '—'; return; }
+  try {
+    const c = new ethers.Contract(tok, ABI_ERC20, provider);
+    const [sym, dec, bal] = await Promise.all([c.symbol().catch(()=>'???'), c.decimals().catch(()=>18), c.balanceOf(userAddress)]);
+    $('walletBalance').textContent = fmtUnits(bal, Number(dec)) + ' ' + sym;
+  } catch (e) { console.error(e); }
+}
+
+let needsApproval = false;
+async function refreshAllowance() {
+  if (!signer || !vaultAddress) { $('approveBtn').classList.add('hidden'); return; }
+  const tok = $('depositToken').value.trim();
+  const amtStr = $('depositAmount').value.trim();
+  if (tok === 'NATIVE_MON') { $('approveBtn').classList.add('hidden'); needsApproval = false; return; }
+  if (!ethers.isAddress(tok) || !amtStr) { $('approveBtn').classList.add('hidden'); needsApproval = false; return; }
+  try {
+    const c = new ethers.Contract(tok, ABI_ERC20, provider);
+    const dec = await c.decimals();
+    const amt = ethers.parseUnits(amtStr, Number(dec));
+    const allowance = await c.allowance(userAddress, vaultAddress);
+    if (allowance < amt) {
+      $('approveBtn').classList.remove('hidden');
+      needsApproval = true;
+    } else {
+      $('approveBtn').classList.add('hidden');
+      needsApproval = false;
+    }
+  } catch (e) { console.error(e); }
+}
+
+$('approveBtn').addEventListener('click', async () => {
+  const tok = $('depositToken').value.trim();
+  const amtStr = $('depositAmount').value.trim();
+  if (!ethers.isAddress(tok) || !amtStr) return;
+  try {
+    setStatus('depositStatus', 'pending', 'APPROVING', 'Confirm in wallet...');
+    const c = new ethers.Contract(tok, ABI_ERC20, signer);
+    const dec = await c.decimals();
+    const amt = ethers.parseUnits(amtStr, Number(dec));
+    const tx = await c.approve(vaultAddress, amt);
+    setStatus('depositStatus', 'pending', 'APPROVING', `Tx: <a href="${EXPLORER}/tx/${tx.hash}" target="_blank">${shortAddr(tx.hash)}</a>`);
+    await tx.wait();
+    setStatus('depositStatus', 'success', '✓ APPROVED', 'Now click DEPOSIT to lock the bag.');
+    setTimeout(() => clearStatus('depositStatus'), 3000);
+    await refreshAllowance();
+  } catch (e) {
+    console.error(e);
+    setStatus('depositStatus', 'error', '✗ APPROVAL FAILED', e.shortMessage || e.message);
+  }
+});
+
+$('depositBtn').addEventListener('click', async () => {
+  if (!vaultAddress) return;
+  const tok = $('depositToken').value.trim();
+  const amtStr = $('depositAmount').value.trim();
+  if (!amtStr) return;
+  try {
+    setStatus('depositStatus', 'pending', 'DEPOSITING', 'Confirm in wallet...');
+    let tx;
+    if (tok === 'NATIVE_MON') {
+      const amt = ethers.parseUnits(amtStr, 18);
+      tx = await vaultContract.depositNative({ value: amt });
+    } else {
+      if (!ethers.isAddress(tok)) throw new Error('Bad token address');
+      const c = new ethers.Contract(tok, ABI_ERC20, provider);
+      const dec = await c.decimals();
+      const amt = ethers.parseUnits(amtStr, Number(dec));
+      tx = await vaultContract.deposit(tok, amt);
+    }
+    setStatus('depositStatus', 'pending', 'DEPOSITING', `Tx: <a href="${EXPLORER}/tx/${tx.hash}" target="_blank">${shortAddr(tx.hash)}</a>`);
+    const rcpt = await tx.wait();
+    setStatus('depositStatus', 'success', '✅ DEPOSITED', `Bag locked. <a href="${EXPLORER}/tx/${rcpt.hash}" target="_blank">View tx</a>`);
+    setTimeout(() => clearStatus('depositStatus'), 4000);
+    refreshWalletBalance();
+  } catch (e) {
+    console.error(e);
+    setStatus('depositStatus', 'error', '✗ DEPOSIT FAILED', e.shortMessage || e.message);
+  }
+});
+
+// ─── WITHDRAW TAB ───
+document.querySelectorAll('.token-presets .preset-btn[data-w-preset]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.token-presets .preset-btn[data-w-preset]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    if (b.dataset.wPreset === 'native') {
+      $('withdrawToken').value = 'NATIVE_MON';
+    } else {
+      $('withdrawToken').value = b.dataset.addr;
+    }
+    refreshVaultBalance();
+  });
+});
+$('withdrawToken').addEventListener('input', refreshVaultBalance);
+
+async function refreshVaultBalance() {
+  if (!vaultContract) return;
+  const tok = $('withdrawToken').value.trim();
+  if (tok === 'NATIVE_MON') {
+    const bal = await vaultContract.nativeBalance();
+    $('vaultBalance').textContent = fmtUnits(bal, 18) + ' MON';
+    return;
+  }
+  if (!ethers.isAddress(tok)) { $('vaultBalance').textContent = '—'; return; }
+  try {
+    const c = new ethers.Contract(tok, ABI_ERC20, provider);
+    const [sym, dec] = await Promise.all([c.symbol().catch(()=>'???'), c.decimals().catch(()=>18)]);
+    const bal = await vaultContract.balanceOf(tok);
+    $('vaultBalance').textContent = fmtUnits(bal, Number(dec)) + ' ' + sym;
+  } catch (e) { console.error(e); }
+}
+
+$('withdrawBtn').addEventListener('click', async () => {
+  if (!vaultContract) return;
+  const tok = $('withdrawToken').value.trim();
+  const amtStr = $('withdrawAmount').value.trim();
+  if (!amtStr) return;
+  try {
+    setStatus('withdrawStatus', 'pending', 'WITHDRAWING', 'Confirm in wallet...');
+    let tx;
+    if (tok === 'NATIVE_MON') {
+      const amt = ethers.parseUnits(amtStr, 18);
+      tx = await vaultContract.withdrawNative(amt);
+    } else {
+      if (!ethers.isAddress(tok)) throw new Error('Bad token address');
+      const c = new ethers.Contract(tok, ABI_ERC20, provider);
+      const dec = await c.decimals();
+      const amt = ethers.parseUnits(amtStr, Number(dec));
+      tx = await vaultContract.withdraw(tok, amt);
+    }
+    setStatus('withdrawStatus', 'pending', 'WITHDRAWING', `Tx: <a href="${EXPLORER}/tx/${tx.hash}" target="_blank">${shortAddr(tx.hash)}</a>`);
+    const rcpt = await tx.wait();
+    setStatus('withdrawStatus', 'success', '✅ WITHDRAWN', `Bag back. <a href="${EXPLORER}/tx/${rcpt.hash}" target="_blank">View tx</a>`);
+    setTimeout(() => clearStatus('withdrawStatus'), 4000);
+    refreshVaultBalance();
+  } catch (e) {
+    console.error(e);
+    setStatus('withdrawStatus', 'error', '✗ WITHDRAW FAILED', e.shortMessage || e.message);
+  }
+});
+
+// ─── HOLDINGS TAB ───
+const KNOWN_TOKENS = [
+  { addr: 'NATIVE_MON', sym: 'MON', name: 'Monad (Native)' },
+  { addr: '0xB744F5CDb792d8187640214C4A1c9aCE29af7777', sym: 'MONSHI', name: '$MONSHI' },
+  { addr: '0xaCA86430cCCEdbedB35910fC8A5AFEF07dA37777', sym: 'RENE', name: '$RENE' },
+  { addr: '0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A', sym: 'WMON', name: 'Wrapped MON' }
+];
+
+async function refreshHoldings() {
+  if (!vaultContract) return;
+  const list = $('holdingsList');
+  list.innerHTML = '<div class="no-holdings">Loading...</div>';
+  try {
+    const rows = [];
+    for (const t of KNOWN_TOKENS) {
+      try {
+        if (t.addr === 'NATIVE_MON') {
+          const bal = await vaultContract.nativeBalance();
+          if (bal > 0n) rows.push({ ...t, bal, dec: 18 });
+        } else {
+          const c = new ethers.Contract(t.addr, ABI_ERC20, provider);
+          const dec = await c.decimals();
+          const bal = await vaultContract.balanceOf(t.addr);
+          if (bal > 0n) rows.push({ ...t, bal, dec: Number(dec) });
+        }
+      } catch (e) {}
+    }
+    if (rows.length === 0) {
+      list.innerHTML = '<div class="no-holdings">No tokens in vault yet. Deposit something!</div>';
+      return;
+    }
+    list.innerHTML = rows.map(r => `
+      <div class="holding-row">
+        <div class="left">
+          <div class="symbol">${r.sym} <span style="color:var(--muted);font-size:11px;font-family:var(--mono);font-weight:700">· ${r.name}</span></div>
+          <div class="addr">${r.addr === 'NATIVE_MON' ? 'NATIVE MON' : shortAddr(r.addr)}</div>
+        </div>
+        <div class="amt">${fmtUnits(r.bal, r.dec)}</div>
+      </div>
+    `).join('');
+  } catch (e) { console.error(e); }
+}
+
+$('refreshHoldingsBtn').addEventListener('click', refreshHoldings);
+
+// ─── INIT ───
+$('connectBtn').addEventListener('click', connectWallet);
+
+function refreshAll() {
+  refreshWalletBalance();
+  refreshAllowance();
+  refreshVaultBalance();
+}
+
+window.addEventListener('load', () => {
+  if (window.ethereum && window.ethereum.selectedAddress) {
+    setTimeout(() => connectWallet(), 200);
+  }
+});
+</script>
+
+</body>
+</html>
