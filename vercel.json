@@ -1,15 +1,13 @@
 {
   "outputDirectory": ".",
-  "rewrites": [
+  "redirects": [
     {
       "source": "/",
       "has": [
-        {
-          "type": "host",
-          "value": "arcade.reneonmonad.xyz"
-        }
+        { "type": "host", "value": "arcade.reneonmonad.xyz" }
       ],
-      "destination": "/rene-hub.html"
+      "destination": "/rene-hub.html",
+      "permanent": false
     }
   ]
 }
