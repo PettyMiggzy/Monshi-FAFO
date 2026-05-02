@@ -973,11 +973,11 @@ const DEAD_ADDRS = [
 
 // Tier thresholds (WOLF tokens, not raw)
 const TIERS = [
-  { name:'CUB',    min:0,         badge:null },
-  { name:'OMEGA',  min:100_000,   badge:'../wolf-omega.jpg' },
-  { name:'BETA',   min:1_000_000, badge:'../wolf-beta.jpg' },
-  { name:'ALPHA',  min:5_000_000, badge:'../wolf-alpha.jpg' },
-  { name:'LEGEND', min:25_000_000,badge:'../wolf-alpha.jpg' }
+  { name:'CUB',    min:0,          badge:null },
+  { name:'OMEGA',  min:100_000,    badge:'../wolf-omega.jpg' },
+  { name:'BETA',   min:1_000_000,  badge:'../wolf-beta.jpg' },
+  { name:'ALPHA',  min:10_000_000, badge:'../wolf-alpha.jpg' },
+  { name:'LEGEND', min:25_000_000, badge:'../wolf-alpha.jpg' }
 ];
 
 // Other Monad memes to scan in user wallet (cross-pack identity)
@@ -1349,7 +1349,7 @@ function calcScore(){
   // Bag score (max 30): scales by tier
   let bagS = 0;
   if(userWolfBal >= 25_000_000) bagS = 30;
-  else if(userWolfBal >= 5_000_000) bagS = 25;
+  else if(userWolfBal >= 10_000_000) bagS = 25;
   else if(userWolfBal >= 1_000_000) bagS = 18;
   else if(userWolfBal >= 100_000) bagS = 10;
   else if(userWolfBal > 0) bagS = 4;
@@ -1525,7 +1525,7 @@ function loadAchievements(){
     { e:'💯', name:'100K Cub',            tip:'Hold 100K WOLF',             ok:userWolfBal >= 100_000 },
     { e:'🥈', name:'Omega Tier',          tip:'Reach Omega tier',           ok:userWolfBal >= 100_000 },
     { e:'🥇', name:'Beta Tier',           tip:'Reach Beta tier',            ok:userWolfBal >= 1_000_000 },
-    { e:'👑', name:'Alpha Tier',          tip:'Reach Alpha tier',           ok:userWolfBal >= 5_000_000 },
+    { e:'👑', name:'Alpha Tier',          tip:'Reach Alpha tier',           ok:userWolfBal >= 10_000_000 },
     { e:'🌕', name:'Legend',              tip:'Hold 25M+ WOLF',             ok:userWolfBal >= 25_000_000 },
     { e:'⛽', name:'Gas Loaded',          tip:'Hold MON',                   ok:userMonBal > 0 },
     { e:'🧹', name:'Cleanser',            tip:'Use Reverse Dust (soon)',    ok:false },
@@ -1716,7 +1716,7 @@ function loadMilestone(){
   const milestones = [
     { check:()=>userWolfBal >= 100_000,    icon:'🥈', title:'Hit Omega Tier', desc:'Hold 100K WOLF' },
     { check:()=>userWolfBal >= 1_000_000,  icon:'🥇', title:'Hit Beta Tier',  desc:'Hold 1M WOLF · serious bag' },
-    { check:()=>userWolfBal >= 5_000_000,  icon:'👑', title:'Hit Alpha Tier', desc:'Hold 5M WOLF · alpha territory' },
+    { check:()=>userWolfBal >= 10_000_000, icon:'👑', title:'Hit Alpha Tier', desc:'Hold 10M WOLF · alpha territory' },
     { check:()=>userWolfBal >= 25_000_000, icon:'🌕', title:'Become Legend',  desc:'Hold 25M WOLF · pack royalty' },
     { check:()=>{ const days = firstSeenTs ? Math.floor((Date.now()/1000 - firstSeenTs)/86400) : 0; return days >= 30; }, icon:'⏳', title:'30-Day Diamond', desc:'Hold for 30 days straight' },
     { check:()=>{ const days = firstSeenTs ? Math.floor((Date.now()/1000 - firstSeenTs)/86400) : 0; return days >= 90; }, icon:'💎', title:'Blood-Bonded', desc:'Hold for 90 days · forever pack' }
