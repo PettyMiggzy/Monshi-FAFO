@@ -103,11 +103,86 @@ h2{font-family:Orbitron,sans-serif;font-size:clamp(20px,3vw,32px);color:#4ADE80;
 .ticker-item .game{color:#A855F7;font-weight:700;}
 .contract-tag{display:inline-block;margin-top:14px;padding:8px 14px;background:rgba(0,0,0,.4);border:1px solid rgba(139,92,246,.2);border-radius:8px;font-family:'Space Mono',monospace;font-size:10px;color:rgba(167,139,250,.7);letter-spacing:1px;cursor:pointer;}
 .contract-tag:hover{color:#fff;border-color:#8B5CF6;}
+
+/* ─── MONSHI HUB · BROADCAST PANELS ─── */
+.mhub-wrap{ max-width:1100px; margin:0 auto 30px; padding:0 4px; }
+.mhub-eyebrow{ font-family:Orbitron,sans-serif; font-size:11px; letter-spacing:5px; font-weight:900; color:#A855F7; text-align:center; margin-bottom:8px; }
+.mhub-title{ font-family:Orbitron,sans-serif; font-size:clamp(28px,5vw,44px); font-weight:900; letter-spacing:3px; text-align:center; margin-bottom:6px;
+  background:linear-gradient(180deg,#fff 30%,#C4B5FD 70%,#A855F7); -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow:0 0 60px rgba(168,85,247,.4); }
+.mhub-sub{ font-family:'Space Mono',monospace; font-size:12px; color:rgba(196,181,253,.7); text-align:center; max-width:540px; margin:0 auto 22px; line-height:1.6; }
+.mhub-panel{ background:linear-gradient(180deg,rgba(20,5,50,.7),rgba(10,2,35,.5)); border:1px solid rgba(139,92,246,.2); border-radius:14px; padding:18px; position:relative; overflow:hidden; margin-bottom:16px; }
+.mhub-panel::before{ content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,#A855F7,transparent); opacity:0.5; }
+.mhub-hot{ border-color:rgba(168,85,247,.5); box-shadow:0 0 30px rgba(168,85,247,.08); }
+.mhub-full{ width:100%; }
+.mhub-grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px; }
+.mhub-grid-2 .mhub-panel{ margin-bottom:0; }
+@media(max-width:760px){ .mhub-grid-2{ grid-template-columns:1fr; } }
+.mhub-panel-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; font-family:Orbitron,sans-serif; font-size:10px; letter-spacing:2.5px; color:rgba(196,181,253,.6); font-weight:800; }
+.mhub-live{ display:inline-flex; align-items:center; gap:6px; color:#4ADE80; }
+.mhub-live::before{ content:''; width:6px; height:6px; border-radius:50%; background:#4ADE80; animation:mhubPulse 1.5s infinite; }
+@keyframes mhubPulse{ 0%,100%{opacity:1}50%{opacity:0.3} }
+.mhub-ticker{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.mhub-price-big{ font-family:Orbitron,sans-serif; font-weight:900; font-size:42px; color:#fff; }
+.mhub-price-change{ font-family:'Space Mono',monospace; font-weight:800; font-size:14px; padding:6px 12px; border-radius:6px; background:rgba(168,85,247,.1); color:#C4B5FD; }
+.mhub-price-change.up{ background:rgba(74,222,128,.15); color:#4ADE80; }
+.mhub-price-change.down{ background:rgba(239,68,68,.15); color:#EF4444; }
+.mhub-sparkline{ width:100%; height:50px; margin-top:12px; }
+.mhub-spark-path{ fill:none; stroke:#A855F7; stroke-width:1.8; }
+.mhub-spark-path.up{ stroke:#4ADE80; }
+.mhub-spark-path.down{ stroke:#EF4444; }
+.mhub-spark-fill{ fill:url(#mhSparkGrad); opacity:0.3; }
+.mhub-ticker-row{ display:flex; gap:24px; margin-top:14px; flex-wrap:wrap; }
+.mhub-tlbl{ font-family:Orbitron,sans-serif; font-size:9px; letter-spacing:2px; color:rgba(196,181,253,.5); font-weight:700; }
+.mhub-tval{ font-family:'Space Mono',monospace; font-size:14px; font-weight:700; color:#fff; margin-top:2px; }
+.mhub-chart-frame{ width:100%; height:380px; border:0; border-radius:10px; background:#02000a; }
+.mhub-chart-card{ padding:0; overflow:hidden; }
+.mhub-chart-card .mhub-panel-head{ padding:14px 18px 10px; margin-bottom:0; }
+.mhub-pgrid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.mhub-pitem{ padding:14px; background:rgba(168,85,247,.05); border-radius:10px; border:1px solid rgba(168,85,247,.1); }
+.mhub-plbl{ font-family:Orbitron,sans-serif; font-size:9px; letter-spacing:2px; color:rgba(196,181,253,.5); font-weight:700; }
+.mhub-pval{ font-family:Orbitron,sans-serif; font-size:22px; font-weight:900; margin-top:4px; color:#C4B5FD; }
+.mhub-pval.gold{ color:#FCD34D; }
+.mhub-pval.green{ color:#4ADE80; }
+.mhub-chain-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.mhub-chain-cell{ padding:12px 8px; background:rgba(0,0,0,.3); border-radius:8px; text-align:center; }
+.mhub-chain-lbl{ font-family:Orbitron,sans-serif; font-size:8px; letter-spacing:2px; color:rgba(196,181,253,.5); font-weight:700; }
+.mhub-chain-val{ font-family:'Space Mono',monospace; font-weight:800; font-size:14px; margin-top:4px; color:#4ADE80; }
+.mhub-burn-card{ padding:16px; background:linear-gradient(180deg,rgba(252,211,77,.08),rgba(252,211,77,.02)); border:1px solid rgba(252,211,77,.2); border-radius:12px; }
+.mhub-burn-stat{ font-family:Orbitron,sans-serif; font-size:30px; font-weight:900; color:#FCD34D; margin-bottom:8px; line-height:1; }
+.mhub-burn-bar{ height:14px; background:rgba(0,0,0,.4); border-radius:7px; overflow:hidden; border:1px solid rgba(252,211,77,.2); }
+.mhub-burn-bar > div{ height:100%; background:linear-gradient(90deg,#FCD34D,#F59E0B,#EF4444); width:0%; transition:width 1.4s ease; box-shadow:0 0 14px rgba(252,211,77,.5); }
+.mhub-burn-meta{ display:flex; justify-content:space-between; font-family:'Space Mono',monospace; font-size:10px; color:rgba(196,181,253,.6); margin-top:6px; }
+.mhub-burn-note{ margin-top:10px; font-family:'Space Mono',monospace; font-size:10px; color:rgba(196,181,253,.5); line-height:1.5; }
+.mhub-pulse-card{ padding:18px; background:radial-gradient(circle at 50% 0%, rgba(168,85,247,.12), transparent 60%); border:1px solid rgba(168,85,247,.2); border-radius:12px; text-align:center; }
+.mhub-pulse-arc{ position:relative; width:200px; height:120px; margin:0 auto; }
+.mhub-pulse-arc svg{ width:100%; height:100%; }
+.mhub-pulse-bg{ fill:none; stroke:rgba(168,85,247,.15); stroke-width:14; stroke-linecap:round; }
+.mhub-pulse-fg{ fill:none; stroke-width:14; stroke-linecap:round; transition:stroke-dashoffset 1s ease; }
+.mhub-pulse-needle{ position:absolute; left:50%; bottom:0; width:3px; height:80px; background:#FCD34D; transform-origin:bottom center; transform:rotate(-90deg); border-radius:2px; box-shadow:0 0 10px rgba(252,211,77,.6); transition:transform 1s ease; }
+.mhub-pulse-label{ font-family:Orbitron,sans-serif; font-size:22px; font-weight:900; margin-top:8px; color:#fff; }
+.mhub-pulse-meta{ font-family:'Space Mono',monospace; font-size:10px; color:rgba(196,181,253,.5); margin-top:4px; letter-spacing:1px; }
+.mhub-empty{ padding:24px 14px; text-align:center; font-family:'Space Mono',monospace; font-size:11px; color:rgba(196,181,253,.4); letter-spacing:1px; line-height:1.6; }
+.mhub-whale{ display:flex; align-items:center; gap:10px; padding:11px 12px; background:rgba(168,85,247,.04); border-radius:8px; font-family:'Space Mono',monospace; font-size:11px; border-left:2px solid transparent; color:#EDE9FF; }
+.mhub-whale + .mhub-whale{ margin-top:6px; }
+.mhub-whale.huge{ border-left-color:#FCD34D; background:rgba(252,211,77,.06); }
+.mhub-whale.big{ border-left-color:#A855F7; background:rgba(168,85,247,.07); }
+.mhub-whale-tag{ font-family:Orbitron,sans-serif; font-weight:800; font-size:9px; letter-spacing:1px; padding:3px 6px; border-radius:4px; background:rgba(74,222,128,.15); color:#4ADE80; }
+.mhub-whale-tag.burn{ background:rgba(252,211,77,.15); color:#FCD34D; }
+.mhub-whale-amt{ font-weight:800; color:#FCD34D; margin-left:auto; }
+.mhub-whale-mid{ color:rgba(196,181,253,.6); }
+.mhub-wisdom{ padding:18px 22px; background:linear-gradient(135deg,rgba(252,211,77,.08),rgba(168,85,247,.08)); border:1px solid rgba(252,211,77,.25); border-radius:12px; position:relative; overflow:hidden; }
+.mhub-wisdom::before{ content:'🐱'; position:absolute; top:10px; right:14px; font-size:32px; opacity:0.3; }
+.mhub-wis-eyebrow{ font-family:Orbitron,sans-serif; font-size:9px; letter-spacing:3px; color:#FCD34D; font-weight:800; }
+.mhub-wis-text{ font-family:Orbitron,sans-serif; font-size:16px; font-weight:700; line-height:1.4; margin-top:10px; color:#fff; }
+.mhub-wis-attr{ font-family:'Space Mono',monospace; font-size:10px; color:rgba(196,181,253,.5); margin-top:10px; letter-spacing:1px; }
+@media(max-width:600px){ .mhub-price-big{ font-size:32px; } .mhub-chart-frame{ height:300px; } .mhub-pgrid{ grid-template-columns:1fr 1fr; } .mhub-chain-grid{ grid-template-columns:1fr 1fr; } }
+/* ─── /MONSHI HUB ─── */
 </style>
 <script src="/games-config.js"></script>
 <script src="/monshi-shared.js"></script>
 <script src="/achievements.js"></script>
-<script src="/prize-banner.js" defer></script>
+
 </head>
 <body>
 <div class="scanlines"></div>
@@ -166,37 +241,130 @@ h2{font-family:Orbitron,sans-serif;font-size:clamp(20px,3vw,32px);color:#4ADE80;
 </div>
   </div>
   <div class="hero" style="margin-top:18px;">
-    <a href="/prize.html" style="display:block;text-decoration:none;margin:0 auto;max-width:800px;padding:24px;background:linear-gradient(135deg,rgba(252,211,77,.18),rgba(34,197,94,.12),rgba(20,5,50,.7));border:2px solid #FCD34D;border-radius:16px;text-align:center;box-shadow:0 0 40px rgba(252,211,77,.3);transition:transform .2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
-      <div style="font-family:Orbitron,sans-serif;font-size:11px;color:#FCD34D;letter-spacing:5px;font-weight:900;margin-bottom:6px;">🏆 LIMITED EVENT</div>
-      <div style="font-family:Orbitron,sans-serif;font-size:clamp(28px,5vw,42px);font-weight:900;color:#fff;letter-spacing:3px;margin-bottom:6px;">600 MON PRIZE</div>
-      <div style="color:rgba(196,181,253,.8);font-size:12px;letter-spacing:2px;margin-bottom:6px;">TOP SCORE WINS · 48 HOUR EVENT</div>
-      <div style="color:#FCD34D;font-size:11px;letter-spacing:3px;margin-bottom:12px;font-family:Orbitron,sans-serif;font-weight:700;" id="hubPrizeLabel">STARTS IN</div>
-      <div style="font-family:Orbitron,sans-serif;font-size:24px;font-weight:900;color:#4ADE80;letter-spacing:3px;text-shadow:0 0 16px rgba(74,222,128,.5);" id="hubPrizeTimer">--:--:--</div>
-      <div style="margin-top:10px;display:inline-block;padding:8px 18px;background:#FCD34D;color:#000;border-radius:20px;font-family:Orbitron,sans-serif;font-size:11px;font-weight:900;letter-spacing:2px;">VIEW DETAILS →</div>
-    </a>
-    <script>
-    (function(){
-      var START=1777373655508,END=1777546455508;
-      function tick(){
-        var now=Date.now(),target,label;
-        if(now<START){target=START-now;label='STARTS IN';}
-        else if(now<END){target=END-now;label='🟢 LIVE · ENDS IN';}
-        else{document.getElementById('hubPrizeTimer').textContent='ENDED';return;}
-        var d=Math.floor(target/86400000),h=Math.floor((target%86400000)/3600000),m=Math.floor((target%3600000)/60000),s=Math.floor((target%60000)/1000);
-        var pad=function(n){return String(n).padStart(2,'0');};
-        var el=document.getElementById('hubPrizeTimer');
-        var lblEl=document.getElementById('hubPrizeLabel');
-        if(el)el.textContent=(d>0?d+'d ':'')+pad(h)+':'+pad(m)+':'+pad(s);
-        if(lblEl)lblEl.textContent=label;
-      }
-      tick();setInterval(tick,1000);
-    })();
-    </script>
 
-    <div class="disclaimer">
-      <div class="t">⚠ DISCLAIMER</div>
-      <div class="d">No $MONSHI tokens can be won at this time. Leaderboard rewards & on-chain prizes are coming soon. Play for the trenches glory and bragging rights only.</div>
+    <!-- ─── MONSHI HUB · LIVE BROADCAST ─── -->
+    <div class="mhub-wrap">
+      <div class="mhub-eyebrow">▸ MONSHI HUB · LIVE</div>
+      <div class="mhub-title">$MONSHI COMMAND</div>
+      <div class="mhub-sub">Real-time token data · arcade tournament · trader tools · pack identity. All in one place.</div>
+
+      <!-- Live price + sparkline + ticker -->
+      <div class="mhub-panel mhub-hot mhub-full">
+        <div class="mhub-panel-head"><span>$MONSHI · LIVE</span><span class="mhub-live">DEXSCREENER</span></div>
+        <div class="mhub-ticker">
+          <span class="mhub-price-big" id="mhPriceBig">—</span>
+          <span class="mhub-price-change" id="mhPriceChange">—</span>
+        </div>
+        <svg class="mhub-sparkline" id="mhSparkline" viewBox="0 0 600 50" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="mhSparkGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#A855F7" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#A855F7" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path id="mhSparkFill" class="mhub-spark-fill" d=""/>
+          <path id="mhSparkPath" class="mhub-spark-path" d=""/>
+        </svg>
+        <div class="mhub-ticker-row">
+          <div><div class="mhub-tlbl">MARKET CAP</div><div class="mhub-tval" id="mhMcap">—</div></div>
+          <div><div class="mhub-tlbl">24H VOLUME</div><div class="mhub-tval" id="mhVol">—</div></div>
+          <div><div class="mhub-tlbl">LIQUIDITY</div><div class="mhub-tval" id="mhLiq">—</div></div>
+          <div><div class="mhub-tlbl">FDV</div><div class="mhub-tval" id="mhFdv">—</div></div>
+          <div><div class="mhub-tlbl">TXNS 24H</div><div class="mhub-tval" id="mhTxn">—</div></div>
+        </div>
+      </div>
+
+      <!-- DexScreener chart embed -->
+      <div class="mhub-panel mhub-chart-card mhub-full">
+        <div class="mhub-panel-head" style="padding:14px 18px 10px;"><span>LIVE CHART · 5M</span><span class="mhub-live">DEXSCREENER</span></div>
+        <iframe class="mhub-chart-frame"
+          src="https://dexscreener.com/monad/0xB744F5CDb792d8187640214C4A1c9aCE29af7777?embed=1&theme=dark&trades=0&info=0"
+          loading="lazy" referrerpolicy="no-referrer"></iframe>
+      </div>
+
+      <!-- 2-col: Pulse | Burn -->
+      <div class="mhub-grid-2">
+        <div class="mhub-panel">
+          <div class="mhub-panel-head"><span>MONSHI PULSE</span><span class="mhub-live">SENTIMENT</span></div>
+          <div class="mhub-pulse-card">
+            <div class="mhub-pulse-arc">
+              <svg viewBox="0 0 200 110">
+                <path class="mhub-pulse-bg" d="M 20 100 A 80 80 0 0 1 180 100"/>
+                <path id="mhPulseFg" class="mhub-pulse-fg" d="M 20 100 A 80 80 0 0 1 180 100" stroke="url(#mhPulseGrad)" stroke-dasharray="251" stroke-dashoffset="251"/>
+                <defs>
+                  <linearGradient id="mhPulseGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#EF4444"/>
+                    <stop offset="50%" stop-color="#FCD34D"/>
+                    <stop offset="100%" stop-color="#4ADE80"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="mhub-pulse-needle" id="mhPulseNeedle"></div>
+            </div>
+            <div class="mhub-pulse-label" id="mhPulseLabel">—</div>
+            <div class="mhub-pulse-meta" id="mhPulseMeta">price · volume · txn ratio</div>
+          </div>
+        </div>
+
+        <div class="mhub-panel">
+          <div class="mhub-panel-head"><span>BURN METER</span><span class="mhub-live">DEAD ADDR</span></div>
+          <div class="mhub-burn-card">
+            <div class="mhub-burn-stat" id="mhBurnBig">— MONSHI</div>
+            <div class="mhub-burn-bar"><div id="mhBurnFill"></div></div>
+            <div class="mhub-burn-meta">
+              <span id="mhBurnPct">—% gone</span>
+              <span id="mhBurnUsd">$—</span>
+            </div>
+            <div class="mhub-burn-note">
+              Every torched bag adds to the meter. Supply only goes down.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-col: Token Stats | Chain Status -->
+      <div class="mhub-grid-2">
+        <div class="mhub-panel">
+          <div class="mhub-panel-head"><span>TOKEN STATS</span><span class="mhub-live">ON-CHAIN</span></div>
+          <div class="mhub-pgrid">
+            <div class="mhub-pitem"><div class="mhub-plbl">SUPPLY</div><div class="mhub-pval">1.0B</div></div>
+            <div class="mhub-pitem"><div class="mhub-plbl">BURNED</div><div class="mhub-pval gold" id="mhPsBurned">—</div></div>
+            <div class="mhub-pitem"><div class="mhub-plbl">CIRCULATING</div><div class="mhub-pval" id="mhPsCirc">—</div></div>
+            <div class="mhub-pitem"><div class="mhub-plbl">PAIR</div><div class="mhub-pval" style="font-size:14px;" id="mhPsPair">MONSHI/WMON</div></div>
+            <div class="mhub-pitem"><div class="mhub-plbl">CHAIN</div><div class="mhub-pval" style="font-size:14px;color:#A855F7;">MONAD</div></div>
+            <div class="mhub-pitem"><div class="mhub-plbl">TAX</div><div class="mhub-pval green">0/0</div></div>
+          </div>
+        </div>
+
+        <div class="mhub-panel">
+          <div class="mhub-panel-head"><span>MONAD CHAIN STATUS</span><span class="mhub-live">LIVE</span></div>
+          <div class="mhub-chain-grid">
+            <div class="mhub-chain-cell"><div class="mhub-chain-lbl">BLOCK</div><div class="mhub-chain-val" id="mhChainBlock">—</div></div>
+            <div class="mhub-chain-cell"><div class="mhub-chain-lbl">GAS</div><div class="mhub-chain-val" id="mhChainGas">—</div></div>
+            <div class="mhub-chain-cell"><div class="mhub-chain-lbl">CHAIN ID</div><div class="mhub-chain-val">143</div></div>
+            <div class="mhub-chain-cell"><div class="mhub-chain-lbl">TPS PEAK</div><div class="mhub-chain-val" style="color:#FCD34D;">10K</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Whale Watch -->
+      <div class="mhub-panel mhub-full">
+        <div class="mhub-panel-head"><span>WHALE WATCH · MONSHI</span><span class="mhub-live">ON-CHAIN</span></div>
+        <div id="mhWhales"><div class="mhub-empty">Scanning recent transfers for whales...</div></div>
+      </div>
+
+      <!-- Monshi Says -->
+      <div class="mhub-panel mhub-full">
+        <div class="mhub-panel-head"><span>MONSHI SAYS</span><span class="mhub-live">LIVE</span></div>
+        <div class="mhub-wisdom">
+          <div class="mhub-wis-eyebrow">▸ FROM THE PACK</div>
+          <div class="mhub-wis-text" id="mhWisText">Loading...</div>
+          <div class="mhub-wis-attr">— monshi · pack philosophy</div>
+        </div>
+      </div>
+
     </div>
+    <!-- ─── /MONSHI HUB ─── -->
 
     <div style="margin:30px auto 0;max-width:1100px;background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(168,85,247,.08));border:1.5px solid rgba(74,222,128,.3);border-radius:16px;padding:24px;">
       <div style="text-align:center;margin-bottom:20px;">
@@ -258,13 +426,48 @@ h2{font-family:Orbitron,sans-serif;font-size:clamp(20px,3vw,32px);color:#4ADE80;
   </div>
 
   <div class="section-title">📊 LIVE TOOLS <span class="badge">REAL DATA · WALLET CONNECT</span></div>
-  <div class="featured">
+  <div class="featured" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));">
     <a href="/dashboard/" class="card" style="--glow:rgba(74,222,128,.4);--accent:#4ADE80;">
       <span class="emoji">📊</span>
       <span class="tag">LIVE TRACKER</span>
       <h3>$MONSHI DASHBOARD</h3>
       <p>Real-time price, holder leaderboard, your bag, tier badges. Connect wallet to flex on-chain.</p>
       <span class="cta">OPEN DASHBOARD</span>
+    </a>
+    <a href="/rugscanner.html" class="card" style="--glow:rgba(239,68,68,.4);--accent:#EF4444;">
+      <span class="emoji">🚨</span>
+      <span class="tag">SAFETY FIRST</span>
+      <h3>RUG SCANNER</h3>
+      <p>Paste any Monad token CA. Instant honeypot, mint, blacklist, owner-rug analysis.</p>
+      <span class="cta">SCAN A TOKEN</span>
+    </a>
+    <a href="/scanner.html" class="card" style="--glow:rgba(245,158,11,.4);--accent:#F59E0B;">
+      <span class="emoji">🔍</span>
+      <span class="tag">LIVE FEED</span>
+      <h3>LIVE TOKEN SCAN</h3>
+      <p>Stream of newly deployed Monad tokens. Catch fresh launches the second they go live.</p>
+      <span class="cta">START SCAN</span>
+    </a>
+    <a href="/multisender.html" class="card" style="--glow:rgba(168,85,247,.4);--accent:#A855F7;">
+      <span class="emoji">📤</span>
+      <span class="tag">BULK TX</span>
+      <h3>MULTISENDER</h3>
+      <p>Send $MONSHI or any ERC-20 to many wallets in one tx. Holder-gated. Saves gas.</p>
+      <span class="cta">OPEN MULTISENDER</span>
+    </a>
+    <a href="/glossary.html" class="card" style="--glow:rgba(196,181,253,.4);--accent:#C4B5FD;">
+      <span class="emoji">📖</span>
+      <span class="tag">LEARN</span>
+      <h3>SOLIDITY GLOSSARY</h3>
+      <p>Plain-english breakdown of contract jargon. Spot the danger words before you ape.</p>
+      <span class="cta">READ THE BOOK</span>
+    </a>
+    <a href="/buyers.html" class="card" style="--glow:rgba(34,197,94,.4);--accent:#22C55E;">
+      <span class="emoji">💰</span>
+      <span class="tag">LEADERBOARD</span>
+      <h3>TOP BUYERS</h3>
+      <p>Live ranking of top $MONSHI buyers. Wallet badges, total bought, recent activity.</p>
+      <span class="cta">SEE THE WHALES</span>
     </a>
   </div>
 
@@ -667,5 +870,216 @@ setTimeout(function(){
 }, 2000);
 </script>
 <script src="/pwa-install.js" defer></script>
+
+<!-- ─── MONSHI HUB · BROADCAST LOADERS ─── -->
+<script>
+(function(){
+  var MONSHI_CA = '0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
+  var DEAD = '0x000000000000000000000000000000000000dEaD';
+  var ZERO = '0x0000000000000000000000000000000000000000';
+  var SUPPLY = 1e9;
+  var RPC = 'https://rpc.monad.xyz';
+
+  function fmtPrice(n){
+    if(!n||isNaN(n))return '$—';
+    if(n>=1)return '$'+n.toFixed(2);
+    if(n>=0.01)return '$'+n.toFixed(4);
+    if(n>=0.0001)return '$'+n.toFixed(6);
+    var s=n.toFixed(20).split('.')[1]||'';
+    var z=0; for(var i=0;i<s.length;i++){if(s[i]==='0')z++;else break;}
+    var sig=s.slice(z,z+4).replace(/0+$/,'')||'0';
+    var sub=String(z).split('').map(function(d){return '₀₁₂₃₄₅₆₇₈₉'[+d];}).join('');
+    return '$0.0'+sub+sig;
+  }
+  function fmtUsd(n){
+    if(!n||isNaN(n))return '$—';
+    if(n>=1e9)return '$'+(n/1e9).toFixed(2)+'B';
+    if(n>=1e6)return '$'+(n/1e6).toFixed(2)+'M';
+    if(n>=1e3)return '$'+(n/1e3).toFixed(1)+'K';
+    return '$'+n.toFixed(0);
+  }
+  function fmtNum(n){
+    if(!n||isNaN(n))return '—';
+    if(n>=1e9)return (n/1e9).toFixed(2)+'B';
+    if(n>=1e6)return (n/1e6).toFixed(2)+'M';
+    if(n>=1e3)return (n/1e3).toFixed(1)+'K';
+    return String(Math.floor(n));
+  }
+  function $(id){return document.getElementById(id);}
+  function rpcCall(method, params){
+    return fetch(RPC,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:method,params:params||[]})})
+      .then(function(r){return r.json();}).then(function(j){return j.result;});
+  }
+  // Padded address for eth_call/log topic
+  function padAddr(a){return '0x'+a.toLowerCase().replace('0x','').padStart(64,'0');}
+  function hexToBig(h){return BigInt(h);}
+
+  // ─── DexScreener: price/sparkline/ticker ───
+  var sparkPoints = [];
+  function paintSpark(pts){
+    if(pts.length<2)return;
+    var w=600,h=50,min=Math.min.apply(null,pts),max=Math.max.apply(null,pts),range=max-min||1;
+    var xs=pts.map(function(p,i){return (i/(pts.length-1))*w;});
+    var ys=pts.map(function(p){return h - ((p-min)/range)*(h-4) - 2;});
+    var d='M '+xs[0]+' '+ys[0];
+    for(var i=1;i<pts.length;i++)d+=' L '+xs[i]+' '+ys[i];
+    var fill=d+' L '+w+' '+h+' L 0 '+h+' Z';
+    var path=$('mhSparkPath'),fillEl=$('mhSparkFill');
+    if(path){
+      path.setAttribute('d',d);
+      path.classList.toggle('up', pts[pts.length-1]>=pts[0]);
+      path.classList.toggle('down', pts[pts.length-1]<pts[0]);
+    }
+    if(fillEl)fillEl.setAttribute('d',fill);
+  }
+
+  function loadDex(){
+    fetch('https://api.dexscreener.com/latest/dex/tokens/'+MONSHI_CA)
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(!d.pairs||!d.pairs.length)return;
+        var p = d.pairs.sort(function(a,b){return (b.liquidity?.usd||0)-(a.liquidity?.usd||0);})[0];
+        var price=parseFloat(p.priceUsd||0), chg=parseFloat(p.priceChange?.h24||0);
+        $('mhPriceBig').textContent = fmtPrice(price);
+        var ch=$('mhPriceChange'); ch.textContent=(chg>=0?'+':'')+chg.toFixed(2)+'% 24H';
+        ch.className='mhub-price-change '+(chg>=0?'up':'down');
+        $('mhMcap').textContent = fmtUsd(p.marketCap||p.fdv);
+        $('mhVol').textContent = fmtUsd(p.volume?.h24);
+        $('mhLiq').textContent = fmtUsd(p.liquidity?.usd);
+        $('mhFdv').textContent = fmtUsd(p.fdv);
+        var txns = (p.txns?.h24?.buys||0)+(p.txns?.h24?.sells||0);
+        $('mhTxn').textContent = fmtNum(txns);
+        $('mhPsPair').textContent = (p.baseToken?.symbol||'MONSHI')+'/'+(p.quoteToken?.symbol||'WMON');
+
+        sparkPoints.push(price);
+        if(sparkPoints.length>60)sparkPoints.shift();
+        if(sparkPoints.length<2){
+          // seed with a small fake variation so the line renders
+          var seed=[]; for(var i=0;i<20;i++)seed.push(price*(1+(Math.random()-0.5)*Math.abs(chg)/2000));
+          paintSpark(seed);
+        } else paintSpark(sparkPoints);
+
+        // pulse: combine 24h price change + volume + txns into a 0-100 score
+        var pulse = 50 + (chg*2.5);
+        if(txns>500)pulse+=10; if(txns>2000)pulse+=10;
+        if((p.volume?.h24||0)>10000)pulse+=5;
+        pulse = Math.max(0,Math.min(100,pulse));
+        renderPulse(pulse, chg, txns);
+      }).catch(function(){});
+  }
+
+  function renderPulse(pct, chg, txns){
+    var fg=$('mhPulseFg'), needle=$('mhPulseNeedle'), label=$('mhPulseLabel'), meta=$('mhPulseMeta');
+    if(!fg)return;
+    fg.setAttribute('stroke-dashoffset', String(251 - (pct/100)*251));
+    var deg = -90 + (pct/100)*180;
+    needle.style.transform='rotate('+deg+'deg)';
+    var lbl = pct<25?'BEARISH':pct<45?'COOLING':pct<60?'NEUTRAL':pct<80?'BULLISH':'EUPHORIC';
+    label.textContent = lbl+' · '+Math.round(pct);
+    meta.textContent = (chg>=0?'+':'')+chg.toFixed(2)+'% · '+fmtNum(txns)+' txns';
+  }
+
+  // ─── Burn meter via eth_call balanceOf(0xdead) ───
+  function loadBurn(){
+    var data='0x70a08231'+padAddr(DEAD).slice(2);
+    rpcCall('eth_call',[{to:MONSHI_CA, data:data},'latest']).then(function(res){
+      if(!res)return;
+      var burned = Number(BigInt(res))/1e18;
+      var pct = (burned/SUPPLY)*100;
+      $('mhBurnBig').textContent = fmtNum(burned)+' MONSHI';
+      $('mhBurnFill').style.width = Math.min(pct,100).toFixed(2)+'%';
+      $('mhBurnPct').textContent = pct.toFixed(3)+'% gone';
+      $('mhPsBurned').textContent = fmtNum(burned);
+      $('mhPsCirc').textContent = fmtNum(SUPPLY-burned);
+      // estimate burn USD using current price
+      var price=parseFloat($('mhPriceBig').textContent.replace(/[$,₀-₉]/g,''))||0;
+      // use last spark point if available
+      if(sparkPoints.length)price=sparkPoints[sparkPoints.length-1];
+      $('mhBurnUsd').textContent = fmtUsd(burned*price);
+    }).catch(function(){});
+  }
+
+  // ─── Chain status ───
+  function loadChain(){
+    rpcCall('eth_blockNumber').then(function(r){
+      if(r)$('mhChainBlock').textContent = '#'+Number(BigInt(r)).toLocaleString();
+    }).catch(function(){});
+    rpcCall('eth_gasPrice').then(function(r){
+      if(r){
+        var gwei = Number(BigInt(r))/1e9;
+        $('mhChainGas').textContent = gwei.toFixed(2)+' gwei';
+      }
+    }).catch(function(){});
+  }
+
+  // ─── Whale watch via eth_getLogs (Transfer events) ───
+  function loadWhales(){
+    rpcCall('eth_blockNumber').then(function(bn){
+      if(!bn)return;
+      var to = parseInt(bn,16);
+      var from = to - 90; // RPC caps at 100 blocks
+      var topic = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef';
+      rpcCall('eth_getLogs',[{
+        fromBlock:'0x'+from.toString(16),
+        toBlock:'0x'+to.toString(16),
+        address:MONSHI_CA,
+        topics:[topic]
+      }]).then(function(logs){
+        if(!logs||!logs.length){ $('mhWhales').innerHTML='<div class="mhub-empty">No transfers in last 90 blocks. Pack is napping.</div>'; return; }
+        var threshold = SUPPLY*0.0005*1e18; // 0.05% supply (~500k MONSHI)
+        var whales = logs.map(function(l){
+          var amt = BigInt(l.data);
+          var to = '0x'+l.topics[2].slice(26);
+          var from = '0x'+l.topics[1].slice(26);
+          return {amt:amt, to:to.toLowerCase(), from:from.toLowerCase(), tx:l.transactionHash};
+        }).filter(function(w){ return w.amt >= BigInt(Math.floor(threshold)); })
+          .sort(function(a,b){ return Number(b.amt-a.amt); })
+          .slice(0,5);
+        if(!whales.length){ $('mhWhales').innerHTML='<div class="mhub-empty">No whale moves in last 90 blocks. Quiet pack.</div>'; return; }
+        $('mhWhales').innerHTML = whales.map(function(w){
+          var amt = Number(w.amt)/1e18;
+          var size = amt > SUPPLY*0.005 ? 'huge' : amt > SUPPLY*0.001 ? 'big' : '';
+          var burn = w.to===DEAD.toLowerCase() || w.to===ZERO;
+          var tag = burn ? '<span class="mhub-whale-tag burn">🔥 BURN</span>' : '<span class="mhub-whale-tag">MOVE</span>';
+          var midto = w.to.slice(0,6)+'…'+w.to.slice(-4);
+          return '<div class="mhub-whale '+size+'">'+tag+' <span class="mhub-whale-mid">→ '+midto+'</span><span class="mhub-whale-amt">'+fmtNum(amt)+' MONSHI</span></div>';
+        }).join('');
+      }).catch(function(){
+        $('mhWhales').innerHTML='<div class="mhub-empty">Couldn\'t fetch whale data. RPC napping.</div>';
+      });
+    });
+  }
+
+  // ─── Wisdom (dad jokes API + monshi-flavored fallbacks) ───
+  var fallbacks = [
+    'A fluffy hand never paper-hands.',
+    'The pack eats together or starves alone.',
+    'Charts go up. Charts go down. Monshi naps.',
+    'Holders hold. Whales flop. Devs ship.',
+    'Best time to buy: yesterday. Second best: now.',
+    'Volume is just the pack purring.',
+    'Every dip is a hug from the bottom.',
+    'Ladders are for climbing, not painting.'
+  ];
+  function loadWisdom(){
+    fetch('https://icanhazdadjoke.com/',{headers:{'Accept':'application/json'}})
+      .then(function(r){return r.json();})
+      .then(function(d){ $('mhWisText').textContent = d.joke || fallbacks[Math.floor(Math.random()*fallbacks.length)]; })
+      .catch(function(){ $('mhWisText').textContent = fallbacks[Math.floor(Math.random()*fallbacks.length)]; });
+  }
+
+  function bootHub(){
+    loadDex(); loadBurn(); loadChain(); loadWhales(); loadWisdom();
+    setInterval(loadDex, 30000);
+    setInterval(loadBurn, 60000);
+    setInterval(loadChain, 12000);
+    setInterval(loadWhales, 45000);
+    setInterval(loadWisdom, 60000);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', bootHub); else bootHub();
+})();
+</script>
+<!-- ─── /MONSHI HUB ─── -->
+
 </body>
 </html>
