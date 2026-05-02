@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MONSHI BOOK · The Pack Feed</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#EDE9FF;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 0%, rgba(168,85,247,.18), transparent 50%),radial-gradient(circle at 80% 100%, rgba(252,211,77,.10), transparent 50%);z-index:-1;}
+
+.wrap{max-width:780px;margin:0 auto;padding:20px 14px 80px;}
+
+/* nav */
+.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px;padding:12px 16px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.2);border-radius:12px;}
+.nav .brand{font-family:Orbitron,sans-serif;font-weight:900;font-size:13px;letter-spacing:2.5px;color:#fff;text-decoration:none;}
+.nav .links{display:flex;gap:6px;flex-wrap:wrap;}
+.nav .links a{padding:6px 10px;font-family:Orbitron,sans-serif;font-size:9px;letter-spacing:1.5px;color:#C4B5FD;text-decoration:none;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:5px;}
+.nav .links a:hover{background:rgba(168,85,247,.18);color:#fff;}
+
+/* hero */
+.hero{text-align:center;padding:18px 0 22px;}
+.hero .eyebrow{font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:5px;font-weight:900;color:#A855F7;}
+.hero h1{font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(30px,6vw,48px);letter-spacing:3px;margin:8px 0 4px;background:linear-gradient(180deg,#fff 30%,#C4B5FD 70%,#A855F7);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero p{font-size:12px;color:rgba(196,181,253,.7);max-width:520px;margin:0 auto;line-height:1.6;}
+
+/* connect bar */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:rgba(20,5,50,.5);border:1px solid rgba(139,92,246,.2);border-radius:12px;margin-bottom:14px;flex-wrap:wrap;}
+.bar-l{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:12px;}
+.tier-badge{padding:5px 10px;border-radius:14px;font-family:Orbitron,sans-serif;font-size:9px;font-weight:900;letter-spacing:1.5px;display:inline-flex;align-items:center;gap:5px;}
+.tier-shrimp{background:rgba(167,139,250,.12);color:#C4B5FD;border:1px solid rgba(167,139,250,.3);}
+.tier-crab{background:rgba(252,211,77,.12);color:#FCD34D;border:1px solid rgba(252,211,77,.4);}
+.tier-dolphin{background:rgba(96,165,250,.12);color:#60A5FA;border:1px solid rgba(96,165,250,.4);}
+.tier-whale{background:rgba(168,85,247,.18);color:#A855F7;border:1px solid rgba(168,85,247,.5);}
+.tier-royalty{background:linear-gradient(135deg,rgba(74,222,128,.2),rgba(252,211,77,.15));color:#4ADE80;border:1px solid #4ADE80;box-shadow:0 0 10px rgba(74,222,128,.25);}
+.connect{padding:10px 18px;font-family:Orbitron,sans-serif;font-weight:900;font-size:10px;letter-spacing:2px;color:#000;background:linear-gradient(135deg,#FCD34D,#F59E0B);border:none;border-radius:8px;cursor:pointer;}
+.connect.connected{background:linear-gradient(135deg,#A855F7,#7C3AED);color:#fff;}
+
+/* sponsored slot */
+.ad-slot{background:linear-gradient(135deg,rgba(252,211,77,.10),rgba(168,85,247,.08));border:1.5px solid rgba(252,211,77,.4);border-radius:12px;padding:14px;margin-bottom:14px;position:relative;overflow:hidden;}
+.ad-slot::before{content:'SPONSORED';position:absolute;top:6px;right:10px;font-family:Orbitron,sans-serif;font-size:8px;letter-spacing:2px;color:rgba(252,211,77,.7);font-weight:800;}
+.ad-content{display:flex;align-items:center;gap:12px;}
+.ad-emoji{font-size:32px;}
+.ad-text{flex:1;}
+.ad-title{font-family:Orbitron,sans-serif;font-weight:800;font-size:13px;color:#FCD34D;letter-spacing:1.5px;margin-bottom:3px;}
+.ad-body{font-size:11px;color:rgba(237,233,255,.8);line-height:1.5;}
+.ad-cta{padding:8px 14px;font-family:Orbitron,sans-serif;font-size:10px;font-weight:800;background:#FCD34D;color:#000;border-radius:6px;text-decoration:none;letter-spacing:1.5px;white-space:nowrap;}
+
+.buy-ad{display:inline-block;margin-top:8px;padding:7px 12px;background:rgba(74,222,128,.12);color:#4ADE80;border:1px solid rgba(74,222,128,.3);border-radius:6px;font-family:Orbitron,sans-serif;font-size:9px;letter-spacing:1.5px;text-decoration:none;font-weight:800;}
+
+/* composer */
+.composer{background:linear-gradient(180deg,rgba(20,5,50,.7),rgba(10,2,35,.5));border:1px solid rgba(139,92,246,.25);border-radius:14px;padding:16px;margin-bottom:18px;}
+.composer textarea{width:100%;padding:14px;background:rgba(0,0,0,.35);border:1.5px solid rgba(139,92,246,.2);border-radius:10px;font-family:'Space Mono',monospace;color:#fff;font-size:13px;resize:vertical;min-height:84px;}
+.composer textarea:focus{outline:none;border-color:#A855F7;}
+.composer textarea:disabled{opacity:.4;cursor:not-allowed;}
+.composer-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px;flex-wrap:wrap;}
+.composer-info{font-size:10px;color:rgba(196,181,253,.5);font-family:'JetBrains Mono',monospace;}
+.pin-toggle{display:flex;align-items:center;gap:6px;font-size:10px;color:rgba(196,181,253,.7);font-family:Orbitron,sans-serif;letter-spacing:1.5px;cursor:pointer;}
+.pin-toggle input{margin:0;}
+.pin-toggle.disabled{opacity:.35;cursor:not-allowed;}
+.post-btn{padding:10px 20px;font-family:Orbitron,sans-serif;font-weight:900;font-size:10px;letter-spacing:2px;color:#fff;background:linear-gradient(135deg,#A855F7,#7C3AED);border:none;border-radius:8px;cursor:pointer;}
+.post-btn:disabled{opacity:.35;cursor:not-allowed;}
+
+/* feed */
+.feed-tabs{display:flex;gap:6px;margin-bottom:14px;}
+.feed-tab{padding:8px 14px;font-family:Orbitron,sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;color:rgba(196,181,253,.6);background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.15);border-radius:8px;cursor:pointer;}
+.feed-tab.active{color:#fff;background:rgba(168,85,247,.18);border-color:#A855F7;}
+.feed-tab:hover{color:#fff;}
+
+.post{background:rgba(20,5,50,.55);border:1px solid rgba(139,92,246,.18);border-radius:12px;padding:16px;margin-bottom:12px;position:relative;}
+.post.pinned{border-color:rgba(252,211,77,.4);background:linear-gradient(180deg,rgba(252,211,77,.04),rgba(20,5,50,.6));}
+.post.pinned::before{content:'📌 PINNED';position:absolute;top:-9px;left:14px;background:#FCD34D;color:#000;font-family:Orbitron,sans-serif;font-size:8px;font-weight:900;padding:3px 8px;border-radius:5px;letter-spacing:1.5px;}
+.post.whale{border-color:rgba(168,85,247,.4);}
+.post.royalty{border-color:rgba(74,222,128,.5);box-shadow:0 0 18px rgba(74,222,128,.08);}
+
+.post-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
+.post-author{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#C4B5FD;}
+.post-time{font-size:10px;color:rgba(196,181,253,.4);font-family:'Space Mono',monospace;}
+.post-body{font-size:13px;line-height:1.6;color:#EDE9FF;white-space:pre-wrap;word-wrap:break-word;margin:8px 0;}
+.post-actions{display:flex;gap:14px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(139,92,246,.1);}
+.post-actions button{background:none;border:none;color:rgba(196,181,253,.6);font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:1.5px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-weight:700;padding:0;}
+.post-actions button:hover{color:#fff;}
+.post-actions button.liked{color:#EC4899;}
+.post-actions .delete{color:rgba(239,68,68,.5);margin-left:auto;}
+.post-actions .delete:hover{color:#EF4444;}
+
+.comments{margin-top:10px;padding:10px 12px;background:rgba(0,0,0,.25);border-radius:8px;display:none;}
+.comments.show{display:block;}
+.comment{padding:8px 0;border-bottom:1px solid rgba(139,92,246,.08);font-size:12px;}
+.comment:last-child{border-bottom:none;}
+.comment-head{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(196,181,253,.6);margin-bottom:3px;}
+.comment-body{color:#EDE9FF;line-height:1.5;white-space:pre-wrap;word-wrap:break-word;}
+.comment-input{display:flex;gap:6px;margin-top:8px;}
+.comment-input input{flex:1;padding:8px 10px;background:rgba(0,0,0,.4);border:1px solid rgba(139,92,246,.2);border-radius:6px;font-family:'Space Mono',monospace;color:#fff;font-size:12px;}
+.comment-input input:focus{outline:none;border-color:#A855F7;}
+.comment-input button{padding:8px 12px;background:rgba(168,85,247,.25);color:#C4B5FD;border:1px solid rgba(168,85,247,.4);border-radius:6px;font-family:Orbitron,sans-serif;font-size:10px;cursor:pointer;}
+
+.empty{padding:40px 14px;text-align:center;color:rgba(196,181,253,.4);font-family:'Space Mono',monospace;font-size:12px;line-height:1.7;}
+
+.toast{position:fixed;bottom:20px;right:20px;padding:12px 18px;background:rgba(168,85,247,.95);color:#fff;border-radius:10px;font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:1.5px;font-weight:800;z-index:1000;transition:opacity .3s;}
+.toast.success{background:rgba(74,222,128,.95);color:#000;}
+.toast.error{background:rgba(239,68,68,.95);}
+
+.tier-info{padding:14px 16px;background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.15);border-radius:10px;margin-bottom:14px;font-size:11px;color:rgba(196,181,253,.75);line-height:1.6;}
+.tier-info b{color:#FCD34D;}
+
+.skel{height:80px;background:linear-gradient(90deg,rgba(168,85,247,.05),rgba(168,85,247,.12),rgba(168,85,247,.05));background-size:200% 100%;animation:skel 1.4s infinite;border-radius:12px;margin-bottom:12px;}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a class="brand" href="/">📖 MONSHI BOOK</a>
+    <div class="links">
+      <a href="/">DEN</a>
+      <a href="/arcade.html">ARCADE</a>
+      <a href="/dashboard/">DASHBOARD</a>
+      <a href="/tools.html">TOOLS</a>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow">▸ THE PACK FEED</div>
+    <h1>MONSHI BOOK</h1>
+    <p>Free posts, free comments, free vibes. Hold $MONSHI for tier perks: featured badge, pinned posts, priority feed. Sponsored slots available for projects (1M MONSHI / 24h).</p>
+  </div>
+
+  <div class="bar">
+    <div class="bar-l">
+      <span id="balLine">Connect to see your tier →</span>
+      <span class="tier-badge tier-shrimp" id="tierBadge" style="display:none;">🦐 SHRIMP</span>
+    </div>
+    <button class="connect" id="connectBtn">CONNECT WALLET</button>
+  </div>
+
+  <!-- Sponsored slot -->
+  <div id="adSlot"></div>
+
+  <div class="composer">
+    <textarea id="postBody" maxlength="560" placeholder="Connect wallet to post. Be cool. Mods can torch spam." disabled></textarea>
+    <div class="composer-row">
+      <div class="composer-info"><span id="charCount">0</span>/560</div>
+      <label class="pin-toggle disabled" id="pinToggleWrap">
+        <input type="checkbox" id="pinToggle" disabled>
+        📌 PIN (WHALE+)
+      </label>
+      <button class="post-btn" id="postBtn" disabled>POST</button>
+    </div>
+  </div>
+
+  <div class="tier-info">
+    <b>TIER PERKS</b> — 🦐 Shrimp (any) post + comment · 🦀 Crab (10K+) verified badge · 🐬 Dolphin (100K+) priority feed · 🐋 Whale (1M+) pin posts · 👑 Royalty (10M+) gold badge + featured.
+    <a href="/buybot.html" class="buy-ad" style="margin-top:6px;">⚡ BUY SPONSORED SLOT</a>
+  </div>
+
+  <div class="feed-tabs">
+    <button class="feed-tab active" data-tab="all">ALL POSTS</button>
+    <button class="feed-tab" data-tab="whale">WHALES ONLY</button>
+    <button class="feed-tab" data-tab="mine">MY POSTS</button>
+  </div>
+
+  <div id="feed">
+    <div class="skel"></div>
+    <div class="skel"></div>
+    <div class="skel"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  // ─── CONFIG ───
+  var SUPABASE_URL = 'https://cuqhqcmrgpdjlhyqztnc.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
+  var MONSHI = '0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
+  var TREASURY = '0xB9d4B73bE18914c6d64Bee65a806648370be467f';
+
+  var ANKR_PREMIUM = ''; // paste premium URL here
+  var RPC_POOL = [ANKR_PREMIUM,'https://rpc.ankr.com/monad','https://rpc.monad.xyz','https://monad-mainnet.drpc.org'].filter(Boolean);
+  var rpcIdx = 0;
+  function rpc(method,params){
+    return new Promise(function(resolve,reject){
+      var attempt=0;
+      function next(){
+        if(attempt>=RPC_POOL.length){reject(new Error('rpc fail'));return;}
+        var url=RPC_POOL[(rpcIdx+attempt)%RPC_POOL.length]; attempt++;
+        var ctrl=new AbortController(); var to=setTimeout(function(){ctrl.abort();},6000);
+        fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:method,params:params||[]}),signal:ctrl.signal})
+          .then(function(r){clearTimeout(to);if(!r.ok)throw 0;return r.json();})
+          .then(function(j){if(j.error)throw 0;rpcIdx=(rpcIdx+attempt-1)%RPC_POOL.length;resolve(j.result);})
+          .catch(function(){clearTimeout(to);next();});
+      }
+      next();
+    });
+  }
+
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function $(id){return document.getElementById(id);}
+  function fmtNum(n){if(n>=1e9)return (n/1e9).toFixed(2)+'B';if(n>=1e6)return (n/1e6).toFixed(2)+'M';if(n>=1e3)return (n/1e3).toFixed(1)+'K';return Math.floor(n).toString();}
+  function pad(a){return '0x'+a.toLowerCase().replace('0x','').padStart(64,'0');}
+  function shortAddr(a){return a.slice(0,6)+'…'+a.slice(-4);}
+  function timeAgo(ts){
+    var s=Math.floor((Date.now()-new Date(ts).getTime())/1000);
+    if(s<60)return s+'s ago';
+    if(s<3600)return Math.floor(s/60)+'m ago';
+    if(s<86400)return Math.floor(s/3600)+'h ago';
+    return Math.floor(s/86400)+'d ago';
+  }
+  function escape(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+  function toast(msg,type){
+    var t=document.createElement('div');
+    t.className='toast '+(type||'');t.textContent=msg;
+    document.body.appendChild(t);
+    setTimeout(function(){t.style.opacity=0;setTimeout(function(){t.remove();},300);},2400);
+  }
+
+  // ─── TIER LOGIC ───
+  function tierFromBalance(bal){
+    if(bal>=10_000_000)return {key:'royalty',name:'ROYALTY',emoji:'👑'};
+    if(bal>=1_000_000)return {key:'whale',name:'WHALE',emoji:'🐋'};
+    if(bal>=100_000)return {key:'dolphin',name:'DOLPHIN',emoji:'🐬'};
+    if(bal>=10_000)return {key:'crab',name:'CRAB',emoji:'🦀'};
+    return {key:'shrimp',name:'SHRIMP',emoji:'🦐'};
+  }
+  function tierBadge(t){return '<span class="tier-badge tier-'+t.key+'">'+t.emoji+' '+t.name+'</span>';}
+
+  // ─── STATE ───
+  var wallet=null, balance=0, tier=tierFromBalance(0), currentTab='all';
+
+  // ─── WALLET ───
+  $('connectBtn').onclick = async function(){
+    if(wallet){
+      wallet=null;balance=0;tier=tierFromBalance(0);
+      $('connectBtn').textContent='CONNECT WALLET';
+      $('connectBtn').classList.remove('connected');
+      $('balLine').textContent='Connect to see your tier →';
+      $('tierBadge').style.display='none';
+      $('postBody').disabled=true; $('postBody').placeholder='Connect wallet to post. Be cool. Mods can torch spam.';
+      $('postBtn').disabled=true;
+      $('pinToggle').disabled=true; $('pinToggleWrap').classList.add('disabled');
+      loadFeed();
+      return;
+    }
+    if(!window.ethereum){ toast('No wallet detected','error'); return; }
+    try{
+      var accts = await window.ethereum.request({method:'eth_requestAccounts'});
+      wallet = accts[0].toLowerCase();
+      try{ await window.ethereum.request({method:'wallet_switchEthereumChain', params:[{chainId:'0x8f'}]}); }catch(e){
+        if(e.code===4902){ await window.ethereum.request({method:'wallet_addEthereumChain', params:[{chainId:'0x8f', chainName:'Monad', rpcUrls:['https://rpc.monad.xyz'], nativeCurrency:{name:'MON',symbol:'MON',decimals:18}, blockExplorerUrls:['https://explorer.monad.xyz']}]}); }
+      }
+      await refreshBalance();
+      $('connectBtn').textContent = shortAddr(wallet)+' ✕';
+      $('connectBtn').classList.add('connected');
+      $('postBody').disabled=false; $('postBody').placeholder='Speak to the pack. 560 chars.';
+      $('postBtn').disabled=false;
+      if(balance>=1_000_000){ $('pinToggle').disabled=false; $('pinToggleWrap').classList.remove('disabled'); }
+      loadFeed();
+    }catch(e){ toast('Connect failed','error'); }
+  };
+
+  async function refreshBalance(){
+    try{
+      var raw = await rpc('eth_call',[{to:MONSHI, data:'0x70a08231'+pad(wallet).slice(2)},'latest']);
+      balance = Number(BigInt(raw))/1e18;
+    }catch(e){ balance=0; }
+    tier = tierFromBalance(balance);
+    $('balLine').textContent = fmtNum(balance)+' MONSHI · '+shortAddr(wallet);
+    $('tierBadge').className = 'tier-badge tier-'+tier.key;
+    $('tierBadge').textContent = tier.emoji+' '+tier.name;
+    $('tierBadge').style.display = 'inline-flex';
+  }
+
+  // ─── COMPOSER ───
+  $('postBody').oninput = function(){ $('charCount').textContent = this.value.length; };
+
+  $('postBtn').onclick = async function(){
+    if(!wallet){ toast('Connect first','error'); return; }
+    var body = $('postBody').value.trim();
+    if(body.length<2){ toast('Too short','error'); return; }
+    var pin = $('pinToggle').checked && balance>=1_000_000;
+    var btn=this; btn.disabled=true; btn.textContent='POSTING...';
+    try{
+      // refresh balance to lock tier at post time
+      await refreshBalance();
+      var r = await sb.from('monshi_book_posts').insert({
+        wallet: wallet,
+        body: body,
+        tier: tier.key,
+        balance_at_post: Math.floor(balance),
+        is_pinned: pin
+      }).select().single();
+      if(r.error) throw r.error;
+      $('postBody').value=''; $('charCount').textContent='0';
+      $('pinToggle').checked=false;
+      toast('Posted ✓','success');
+      loadFeed();
+    }catch(e){
+      console.error(e);
+      toast('Post failed: '+(e.message||'check Supabase tables exist'),'error');
+    }finally{ btn.disabled=false; btn.textContent='POST'; }
+  };
+
+  // ─── FEED ───
+  document.querySelectorAll('.feed-tab').forEach(function(b){
+    b.onclick = function(){
+      document.querySelectorAll('.feed-tab').forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');
+      currentTab = b.dataset.tab;
+      loadFeed();
+    };
+  });
+
+  async function loadFeed(){
+    var feed = $('feed');
+    feed.innerHTML='<div class="skel"></div><div class="skel"></div>';
+    try{
+      var q = sb.from('monshi_book_posts').select('*').is('deleted_at', null).order('is_pinned',{ascending:false}).order('created_at',{ascending:false}).limit(50);
+      if(currentTab==='whale') q = q.in('tier',['whale','royalty']);
+      else if(currentTab==='mine'){
+        if(!wallet){ feed.innerHTML='<div class="empty">Connect wallet to see your posts.</div>'; return; }
+        q = q.eq('wallet', wallet);
+      }
+      var r = await q;
+      if(r.error){
+        if(r.error.code==='PGRST205' || /does not exist/i.test(r.error.message||'')){
+          feed.innerHTML = '<div class="empty">⚠ Supabase tables not created yet.<br><br>Open browser console for the SQL setup script.<br><br>Once tables exist, the feed will load.</div>';
+          console.log('%cMONSHI BOOK SETUP SQL','font-size:14px;font-weight:bold;color:#A855F7');
+          console.log(SETUP_SQL);
+          return;
+        }
+        throw r.error;
+      }
+      if(!r.data.length){ feed.innerHTML='<div class="empty">No posts yet. Be the first ape on the feed.</div>'; return; }
+      feed.innerHTML = r.data.map(renderPost).join('');
+      r.data.forEach(function(p){ wireActions(p.id); loadComments(p.id); loadLikes(p.id); });
+    }catch(e){
+      console.error(e);
+      feed.innerHTML='<div class="empty">Couldn\'t load feed.<br><br>'+(e.message||'')+'</div>';
+    }
+  }
+
+  function renderPost(p){
+    var t = {key:p.tier, name:(p.tier||'shrimp').toUpperCase(), emoji:({royalty:'👑',whale:'🐋',dolphin:'🐬',crab:'🦀',shrimp:'🦐'}[p.tier])||'🦐'};
+    var cls = 'post '+(p.is_pinned?'pinned ':'')+(p.tier==='whale'||p.tier==='royalty'?p.tier:'');
+    var canDelete = wallet && (wallet===p.wallet || wallet===TREASURY.toLowerCase());
+    return '<div class="'+cls+'" data-id="'+p.id+'">'+
+      '<div class="post-head">'+
+        '<div class="post-author">'+tierBadge(t)+' <span>'+shortAddr(p.wallet)+'</span></div>'+
+        '<div class="post-time">'+timeAgo(p.created_at)+'</div>'+
+      '</div>'+
+      '<div class="post-body">'+escape(p.body)+'</div>'+
+      '<div class="post-actions">'+
+        '<button data-act="like" data-id="'+p.id+'">♡ <span class="lk-count">'+(p.likes_count||0)+'</span></button>'+
+        '<button data-act="reply" data-id="'+p.id+'">💬 REPLY</button>'+
+        (canDelete?'<button class="delete" data-act="delete" data-id="'+p.id+'">🗑</button>':'')+
+      '</div>'+
+      '<div class="comments" id="cm-'+p.id+'"></div>'+
+    '</div>';
+  }
+
+  function wireActions(postId){
+    var post = document.querySelector('[data-id="'+postId+'"]');
+    if(!post) return;
+    post.querySelectorAll('button[data-act]').forEach(function(b){
+      b.onclick = function(){
+        var act = b.dataset.act;
+        if(act==='like') toggleLike(postId, b);
+        if(act==='reply') $('cm-'+postId).classList.toggle('show');
+        if(act==='delete') deletePost(postId);
+      };
+    });
+  }
+
+  async function loadComments(postId){
+    var box = $('cm-'+postId);
+    var r = await sb.from('monshi_book_comments').select('*').eq('post_id', postId).is('deleted_at',null).order('created_at',{ascending:true}).limit(50);
+    if(r.error){ box.innerHTML='<div style="font-size:11px;color:rgba(196,181,253,.4);">comments unavailable</div>'+commentInput(postId); return; }
+    var html = r.data.map(function(c){
+      var t = {key:c.tier||'shrimp', name:(c.tier||'shrimp').toUpperCase(), emoji:({royalty:'👑',whale:'🐋',dolphin:'🐬',crab:'🦀',shrimp:'🦐'}[c.tier])||'🦐'};
+      return '<div class="comment"><div class="comment-head">'+tierBadge(t)+'<span>'+shortAddr(c.wallet)+'</span><span style="margin-left:auto;color:rgba(196,181,253,.4);">'+timeAgo(c.created_at)+'</span></div><div class="comment-body">'+escape(c.body)+'</div></div>';
+    }).join('');
+    box.innerHTML = html + commentInput(postId);
+  }
+
+  function commentInput(postId){
+    return '<div class="comment-input">'+
+      '<input id="ci-'+postId+'" maxlength="280" placeholder="'+(wallet?'Reply…':'Connect to reply')+'"'+(wallet?'':' disabled')+'>'+
+      '<button onclick="window.__monshiSendComment('+postId+')"'+(wallet?'':' disabled')+'>SEND</button>'+
+    '</div>';
+  }
+
+  window.__monshiSendComment = async function(postId){
+    var input = $('ci-'+postId);
+    var body = input.value.trim();
+    if(body.length<1) return;
+    input.disabled=true;
+    try{
+      var r = await sb.from('monshi_book_comments').insert({post_id:postId, wallet:wallet, body:body, tier:tier.key});
+      if(r.error) throw r.error;
+      input.value='';
+      loadComments(postId);
+    }catch(e){ toast('Comment failed','error'); console.error(e); }
+    finally{ input.disabled=false; }
+  };
+
+  async function loadLikes(postId){
+    if(!wallet) return;
+    var r = await sb.from('monshi_book_likes').select('post_id').eq('post_id', postId).eq('wallet', wallet);
+    if(r.data && r.data.length){
+      var btn = document.querySelector('[data-id="'+postId+'"] button[data-act="like"]');
+      if(btn){ btn.classList.add('liked'); btn.innerHTML='♥ <span class="lk-count">'+btn.querySelector('.lk-count').textContent+'</span>'; }
+    }
+  }
+
+  async function toggleLike(postId, btn){
+    if(!wallet){ toast('Connect first','error'); return; }
+    var liked = btn.classList.contains('liked');
+    var countEl = btn.querySelector('.lk-count');
+    var cur = parseInt(countEl.textContent)||0;
+    try{
+      if(liked){
+        await sb.from('monshi_book_likes').delete().eq('post_id',postId).eq('wallet',wallet);
+        await sb.rpc('decrement_post_likes',{p_id:postId}).catch(function(){
+          return sb.from('monshi_book_posts').update({likes_count: Math.max(0,cur-1)}).eq('id',postId);
+        });
+        btn.classList.remove('liked'); countEl.textContent = Math.max(0,cur-1); btn.innerHTML='♡ <span class="lk-count">'+(Math.max(0,cur-1))+'</span>';
+      }else{
+        await sb.from('monshi_book_likes').insert({post_id:postId, wallet:wallet});
+        await sb.rpc('increment_post_likes',{p_id:postId}).catch(function(){
+          return sb.from('monshi_book_posts').update({likes_count: cur+1}).eq('id',postId);
+        });
+        btn.classList.add('liked'); countEl.textContent = cur+1; btn.innerHTML='♥ <span class="lk-count">'+(cur+1)+'</span>';
+      }
+    }catch(e){ console.error(e); }
+  }
+
+  async function deletePost(postId){
+    if(!confirm('Delete this post?')) return;
+    var r = await sb.from('monshi_book_posts').update({deleted_at:new Date().toISOString()}).eq('id',postId);
+    if(r.error){ toast('Delete failed','error'); return; }
+    toast('Deleted','success');
+    loadFeed();
+  }
+
+  // ─── ADS ───
+  async function loadAd(){
+    try{
+      var r = await sb.from('monshi_book_ads').select('*').eq('status','active').gt('expires_at', new Date().toISOString()).order('created_at',{ascending:false}).limit(1);
+      if(r.error || !r.data || !r.data.length){ $('adSlot').innerHTML=''; return; }
+      var ad = r.data[0];
+      $('adSlot').innerHTML = '<div class="ad-slot"><div class="ad-content">'+
+        '<div class="ad-emoji">'+(escape(ad.emoji||'⚡'))+'</div>'+
+        '<div class="ad-text"><div class="ad-title">'+escape(ad.title||'')+'</div><div class="ad-body">'+escape(ad.body||'')+'</div></div>'+
+        (ad.target_url ? '<a class="ad-cta" href="'+escape(ad.target_url)+'" target="_blank" rel="noopener">VIEW →</a>' : '')+
+      '</div></div>';
+    }catch(e){ $('adSlot').innerHTML=''; }
+  }
+
+  // ─── SETUP SQL (logged to console if tables missing) ───
+  var SETUP_SQL = `
+-- ════════════════════════════════════════════════════════════
+-- MONSHI BOOK · Supabase setup SQL · run once in SQL Editor
+-- ════════════════════════════════════════════════════════════
+
+create table if not exists public.monshi_book_posts (
+  id bigserial primary key,
+  wallet text not null,
+  body text not null check (char_length(body) between 1 and 600),
+  tier text default 'shrimp',
+  balance_at_post bigint default 0,
+  is_pinned boolean default false,
+  is_ad boolean default false,
+  likes_count int default 0,
+  replies_count int default 0,
+  created_at timestamptz default now(),
+  deleted_at timestamptz
+);
+create index if not exists ix_book_posts_created on public.monshi_book_posts(created_at desc) where deleted_at is null;
+create index if not exists ix_book_posts_wallet on public.monshi_book_posts(wallet);
+
+create table if not exists public.monshi_book_comments (
+  id bigserial primary key,
+  post_id bigint not null references public.monshi_book_posts(id) on delete cascade,
+  wallet text not null,
+  body text not null check (char_length(body) between 1 and 320),
+  tier text default 'shrimp',
+  created_at timestamptz default now(),
+  deleted_at timestamptz
+);
+create index if not exists ix_book_comments_post on public.monshi_book_comments(post_id, created_at);
+
+create table if not exists public.monshi_book_likes (
+  post_id bigint not null references public.monshi_book_posts(id) on delete cascade,
+  wallet text not null,
+  created_at timestamptz default now(),
+  primary key(post_id, wallet)
+);
+
+create table if not exists public.monshi_book_ads (
+  id bigserial primary key,
+  wallet text not null,
+  emoji text default '⚡',
+  title text not null,
+  body text not null,
+  target_url text,
+  monshi_paid bigint default 0,
+  paid_tx text,
+  status text default 'pending',
+  created_at timestamptz default now(),
+  expires_at timestamptz
+);
+
+-- RLS: anon CAN read undeleted, insert posts, like, comment, delete own
+alter table public.monshi_book_posts enable row level security;
+alter table public.monshi_book_comments enable row level security;
+alter table public.monshi_book_likes enable row level security;
+alter table public.monshi_book_ads enable row level security;
+
+create policy "read posts" on public.monshi_book_posts for select using (deleted_at is null);
+create policy "insert posts" on public.monshi_book_posts for insert with check (true);
+create policy "update own post (soft delete)" on public.monshi_book_posts for update using (true);
+create policy "read comments" on public.monshi_book_comments for select using (deleted_at is null);
+create policy "insert comments" on public.monshi_book_comments for insert with check (true);
+create policy "update own comment" on public.monshi_book_comments for update using (true);
+create policy "read likes" on public.monshi_book_likes for select using (true);
+create policy "insert likes" on public.monshi_book_likes for insert with check (true);
+create policy "delete own like" on public.monshi_book_likes for delete using (true);
+create policy "read active ads" on public.monshi_book_ads for select using (status='active');
+create policy "insert ads" on public.monshi_book_ads for insert with check (true);
+
+-- like-count helpers (atomic increment/decrement)
+create or replace function public.increment_post_likes(p_id bigint)
+returns void language plpgsql as $$
+begin update public.monshi_book_posts set likes_count = likes_count + 1 where id = p_id; end;$$;
+create or replace function public.decrement_post_likes(p_id bigint)
+returns void language plpgsql as $$
+begin update public.monshi_book_posts set likes_count = greatest(0, likes_count - 1) where id = p_id; end;$$;
+grant execute on function public.increment_post_likes to anon, authenticated;
+grant execute on function public.decrement_post_likes to anon, authenticated;
+
+-- ════════════════════════════════════════════════════════════
+-- DONE. Refresh the Monshi Book page and the feed will load.
+-- ════════════════════════════════════════════════════════════
+`;
+
+  // ─── BOOT ───
+  loadAd();
+  loadFeed();
+  // Auto-reconnect
+  if(window.ethereum && window.ethereum.selectedAddress){
+    window.ethereum.request({method:'eth_accounts'}).then(function(a){
+      if(a && a.length){ $('connectBtn').click(); }
+    });
+  }
+})();
+</script>
+</body>
+</html>
