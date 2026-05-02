@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>$MONSHI — WAKE UP CALL · CARTOON</title>
+<meta name="theme-color" content="#7F77DD">
+<meta property="og:title" content="$MONSHI — WAKE UP CALL">
+<meta property="og:description" content="Paper hands dump. Monshi gets up. Watch what happens next.">
+<meta property="og:image" content="https://monshi.xyz/public/monshi_assets/monshi_hero_poster.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Bowlby+One&family=Press+Start+2P&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --neon-purple:#9D4EDD;
+  --purple:#7F77DD;
+  --violet-glow:#C4B5FD;
+  --acid-yellow:#FFFF00;
+  --pink:#FF00E5;
+  --cyan:#00F0FF;
+  --red:#FF1744;
+}
+html,body{height:100%;background:#000;overflow:hidden;font-family:'Special Elite',monospace;color:#fff;}
+
+/* CRT scanlines */
+body::before{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0,rgba(0,0,0,.18) 1px,transparent 1px,transparent 3px);
+  pointer-events:none;z-index:80;
+}
+
+/* Vignette */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:79;
+  background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.85) 100%);
+}
+
+.stage{
+  position:fixed;inset:0;
+  background:#0a0612;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+
+/* SCENES */
+.scene{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;
+  transition:opacity .6s ease, visibility .6s;
+}
+.scene.active{opacity:1;visibility:visible;}
+
+/* ─── SCENE 1 — TITLE FLASH ─── */
+.title-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 50%,rgba(157,78,221,.4),transparent 60%),#0a0612;
+}
+.title-text{
+  font-family:'Bowlby One',Impact,sans-serif;
+  font-size:clamp(64px,16vw,180px);
+  letter-spacing:8px;
+  color:#fff;
+  position:relative;z-index:5;
+  text-shadow:0 0 60px var(--neon-purple),0 0 120px var(--neon-purple);
+  animation:glitch-shake .12s steps(2) infinite;
+}
+.title-text .glitch-c{
+  display:inline-block;
+  text-shadow:4px 0 0 var(--pink),-4px 0 0 var(--cyan),0 0 60px var(--neon-purple);
+}
+.title-sub{
+  position:absolute;bottom:30%;left:50%;transform:translateX(-50%);
+  font-family:'Press Start 2P',monospace;
+  font-size:clamp(10px,2.2vw,14px);
+  letter-spacing:4px;
+  color:var(--violet-glow);
+  z-index:5;
+}
+
+@keyframes glitch-shake{
+  0%{transform:translate(0)} 25%{transform:translate(-4px,2px)} 50%{transform:translate(3px,-2px)} 75%{transform:translate(-2px,-3px)} 100%{transform:translate(0)}
+}
+
+/* ─── SCENE 2 — THRONE ─── */
+.throne-scene{
+  background:#000;
+}
+.throne-bg{
+  position:absolute;inset:0;
+  background-image:url('public/monshi_assets/monshi_chain_throne.jpeg');
+  background-size:cover;background-position:center;
+  filter:saturate(1.2) contrast(1.1);
+}
+.scene.active .throne-bg{
+  animation:slow-zoom 14s ease-out forwards;
+}
+@keyframes slow-zoom{
+  0%{transform:scale(1.0)} 100%{transform:scale(1.18)}
+}
+.throne-vignette{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(10,6,18,.4) 0%,transparent 30%,transparent 70%,rgba(10,6,18,.85) 100%),
+             radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.6) 100%);
+}
+/* Paper hands ticker */
+.ticker{
+  position:absolute;bottom:24%;left:0;right:0;
+  background:linear-gradient(90deg,rgba(255,23,68,.0),rgba(255,23,68,.85) 20%,rgba(255,23,68,.85) 80%,rgba(255,23,68,.0));
+  padding:14px 0;
+  font-family:'Press Start 2P',monospace;
+  font-size:clamp(10px,2.2vw,14px);
+  color:#fff;
+  letter-spacing:3px;
+  white-space:nowrap;
+  overflow:hidden;
+  z-index:5;
+  text-shadow:2px 2px 0 #000;
+  border-top:2px solid #fff;border-bottom:2px solid #fff;
+  opacity:0;
+  transition:opacity .5s;
+}
+.ticker.show{opacity:1;}
+.ticker-track{
+  display:inline-block;
+  animation:ticker-scroll 18s linear infinite;
+}
+@keyframes ticker-scroll{
+  0%{transform:translateX(0)} 100%{transform:translateX(-50%)}
+}
+.ticker-track span{margin:0 30px;}
+.ticker-track .alert{color:var(--acid-yellow);}
+
+.throne-thought{
+  position:absolute;top:18%;right:8%;
+  background:#fff;color:#0a0612;
+  font-family:'Bangers',cursive;font-size:clamp(28px,6vw,48px);
+  letter-spacing:3px;
+  padding:14px 26px;
+  border:3px solid #0a0612;border-radius:30px;
+  box-shadow:6px 6px 0 #0a0612;
+  transform:scale(0);
+  z-index:6;
+}
+.throne-thought.show{
+  animation:bubble-pop .4s cubic-bezier(.68,-0.55,.265,1.55) forwards;
+}
+.throne-thought::after{
+  content:'';position:absolute;bottom:-22px;left:30px;
+  width:20px;height:20px;background:#fff;
+  border:3px solid #0a0612;border-radius:50%;
+}
+.throne-thought::before{
+  content:'';position:absolute;bottom:-44px;left:14px;
+  width:12px;height:12px;background:#fff;
+  border:2px solid #0a0612;border-radius:50%;
+}
+@keyframes bubble-pop{0%{transform:scale(0)} 70%{transform:scale(1.1)} 100%{transform:scale(1)}}
+
+/* ─── SCENE 3 — STAND UP ─── */
+.stand-scene{background:linear-gradient(180deg,#1a0d2e,#0a0612);}
+.stand-bg-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(157,78,221,0.1) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(157,78,221,0.1) 1px,transparent 1px);
+  background-size:40px 40px;
+  opacity:0.5;
+}
+.stand-bg-glow{
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 60%,rgba(157,78,221,.5),transparent 50%);
+  animation:pulse-glow 2s ease-in-out infinite;
+}
+@keyframes pulse-glow{50%{opacity:.5}}
+
+.character{
+  position:absolute;
+  bottom:5%;left:50%;transform:translateX(-50%);
+  height:75vh;max-height:680px;
+  z-index:5;
+  filter:drop-shadow(0 20px 30px rgba(0,0,0,.8)) drop-shadow(0 0 40px rgba(157,78,221,.6));
+  transition:transform .3s, filter .3s;
+}
+.character.entering{
+  animation:char-rise 1.2s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes char-rise{
+  0%{transform:translateX(-50%) translateY(40%) scale(.7);opacity:0}
+  100%{transform:translateX(-50%) translateY(0) scale(1);opacity:1}
+}
+
+/* Speech bubble (bottom) */
+.speech{
+  position:absolute;bottom:80px;left:50%;transform:translateX(-50%) scale(0);
+  background:var(--acid-yellow);color:#0a0612;
+  font-family:'Bangers',cursive;
+  font-size:clamp(24px,5.5vw,46px);
+  letter-spacing:3px;
+  padding:18px 32px;
+  border:4px solid #0a0612;border-radius:14px;
+  box-shadow:8px 8px 0 #0a0612, 0 0 50px rgba(255,255,0,.5);
+  z-index:7;
+  max-width:90vw;text-align:center;
+  white-space:nowrap;
+}
+.speech.show{
+  animation:bubble-pop .35s cubic-bezier(.68,-0.55,.265,1.55) forwards;
+}
+.speech::after{
+  content:'';position:absolute;bottom:-22px;left:50%;transform:translateX(-50%) rotate(45deg);
+  width:24px;height:24px;background:var(--acid-yellow);
+  border-right:4px solid #0a0612;border-bottom:4px solid #0a0612;
+}
+
+/* SFX bursts */
+.sfx{
+  position:absolute;
+  font-family:'Bangers',cursive;
+  font-size:clamp(48px,12vw,140px);
+  font-weight:900;
+  -webkit-text-stroke:4px #0a0612;
+  letter-spacing:4px;
+  transform:scale(0) rotate(-12deg);
+  opacity:0;
+  z-index:8;
+  pointer-events:none;
+  filter:drop-shadow(6px 6px 0 #0a0612);
+  transition:transform .35s cubic-bezier(.68,-0.55,.265,1.55), opacity .25s;
+}
+.sfx.show{
+  transform:scale(1) rotate(-8deg);opacity:1;
+  animation:sfx-pulse 1s ease-out infinite;
+}
+@keyframes sfx-pulse{50%{filter:drop-shadow(6px 6px 0 #0a0612) drop-shadow(0 0 30px currentColor);}}
+.sfx.color-yellow{color:var(--acid-yellow);}
+.sfx.color-cyan{color:var(--cyan);}
+.sfx.color-pink{color:var(--pink);}
+
+/* ─── SCENE 4 — WALK ─── */
+.walk-scene{background:linear-gradient(180deg,#1a0d2e 0%,#0a0612 100%);}
+.walk-floor{
+  position:absolute;bottom:0;left:0;right:0;height:30%;
+  background:linear-gradient(180deg,transparent,rgba(157,78,221,.3));
+  border-top:2px solid var(--neon-purple);
+  box-shadow:0 -10px 40px rgba(157,78,221,.5);
+}
+.walk-stripes{
+  position:absolute;bottom:0;left:0;right:0;height:30%;
+  background:repeating-linear-gradient(90deg,transparent 0,transparent 60px,rgba(196,181,253,.15) 60px,rgba(196,181,253,.15) 62px);
+  animation:stripes-move .4s linear infinite;
+}
+@keyframes stripes-move{0%{background-position:0 0} 100%{background-position:-120px 0}}
+.walk-bg-text{
+  position:absolute;top:15%;left:0;right:0;text-align:center;
+  font-family:'Bowlby One',Impact,sans-serif;
+  font-size:clamp(60px,18vw,200px);
+  color:rgba(157,78,221,.12);
+  letter-spacing:12px;
+  pointer-events:none;
+  white-space:nowrap;
+}
+.walk-bg-text.show{animation:walk-text-shake .3s steps(2) infinite;}
+@keyframes walk-text-shake{0%{transform:translateX(0)} 50%{transform:translateX(-3px)} 100%{transform:translateX(0)}}
+
+.character-walk{
+  position:absolute;
+  bottom:8%;left:0;
+  height:65vh;max-height:520px;
+  z-index:5;
+  filter:drop-shadow(0 14px 24px rgba(0,0,0,.8)) drop-shadow(0 0 30px rgba(157,78,221,.5));
+}
+.character-walk.go{
+  animation:walk-bob .35s ease-in-out infinite, walk-cross 6s linear forwards;
+}
+@keyframes walk-bob{
+  0%,100%{transform:translateY(0) rotate(-1deg)}
+  50%{transform:translateY(-8px) rotate(1deg)}
+}
+@keyframes walk-cross{
+  0%{left:-30%;}
+  100%{left:120%;}
+}
+
+/* ─── SCENE 5 — VORTEX TRANSITION ─── */
+.vortex-scene{background:#0a0612;}
+.vortex-img{
+  position:absolute;width:140%;height:140%;
+  top:-20%;left:-20%;
+  background-image:url('public/monshi_assets/vortex.jpeg');
+  background-size:cover;background-position:center;
+  filter:saturate(1.5) brightness(.9);
+}
+.scene.active .vortex-img{
+  animation:vortex-spin 2.5s ease-in;
+}
+@keyframes vortex-spin{
+  0%{transform:scale(.6) rotate(0deg);filter:blur(8px) saturate(1.5)}
+  100%{transform:scale(2.5) rotate(360deg);filter:blur(0) saturate(2) brightness(1.4)}
+}
+.vortex-text{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:'Press Start 2P',monospace;
+  font-size:clamp(18px,4vw,32px);
+  color:#fff;letter-spacing:6px;
+  text-shadow:3px 0 0 var(--pink),-3px 0 0 var(--cyan),0 0 30px var(--neon-purple);
+  z-index:5;
+  animation:glitch-shake .12s steps(2) infinite;
+}
+
+/* ─── SCENE 6 — HERO REVEAL (MP4) ─── */
+.hero-scene{background:#000;}
+.hero-vid{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+}
+.hero-overlay-text{
+  position:absolute;top:8%;left:50%;transform:translateX(-50%);
+  font-family:'Bangers',cursive;
+  font-size:clamp(32px,8vw,72px);
+  color:var(--acid-yellow);
+  letter-spacing:4px;
+  text-shadow:5px 5px 0 #0a0612, 0 0 30px rgba(255,255,0,.7);
+  z-index:5;
+  text-align:center;
+  white-space:nowrap;
+}
+.hero-overlay-text.show{animation:slam-in .5s cubic-bezier(.34,1.56,.64,1) forwards;}
+@keyframes slam-in{0%{transform:translateX(-50%) translateY(-200%) rotate(-5deg);opacity:0} 70%{transform:translateX(-50%) translateY(10px) rotate(-3deg)} 100%{transform:translateX(-50%) translateY(0) rotate(-2deg);opacity:1}}
+
+/* ─── SCENE 7 — CTA ─── */
+.cta-scene{background:linear-gradient(135deg,#1a0d2e,#0a0612);}
+.cta-card{
+  text-align:center;z-index:5;padding:24px;
+}
+.cta-card .label{
+  font-family:'Press Start 2P',monospace;
+  font-size:clamp(10px,2.2vw,13px);
+  letter-spacing:4px;
+  color:var(--violet-glow);
+  margin-bottom:14px;
+}
+.cta-card h2{
+  font-family:'Bowlby One',Impact,sans-serif;
+  font-size:clamp(36px,9vw,86px);
+  letter-spacing:4px;
+  color:#fff;
+  text-shadow:0 0 40px var(--neon-purple);
+  line-height:1;
+  margin-bottom:24px;
+}
+.cta-card h2 span{color:var(--neon-purple);}
+.cta-card .ctas{
+  display:flex;gap:14px;flex-wrap:wrap;justify-content:center;
+}
+.cta-btn{
+  padding:16px 28px;
+  background:linear-gradient(135deg,var(--neon-purple),var(--purple));
+  color:#fff;
+  font-family:'Bowlby One',Impact,sans-serif;
+  font-size:clamp(13px,2.4vw,16px);
+  letter-spacing:3px;
+  text-decoration:none;
+  border:3px solid #fff;border-radius:12px;
+  box-shadow:6px 6px 0 #0a0612, 0 0 30px rgba(157,78,221,.6);
+  transition:transform .15s;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.cta-btn:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 #0a0612, 0 0 40px rgba(157,78,221,.9);}
+.cta-btn.ghost{background:transparent;border-color:var(--violet-glow);color:var(--violet-glow);}
+
+/* HUD */
+.hud{
+  position:fixed;left:0;right:0;bottom:0;z-index:90;
+  padding:12px 16px;
+  background:linear-gradient(0deg,rgba(0,0,0,.85),transparent);
+  display:flex;flex-direction:column;gap:8px;pointer-events:none;
+}
+.hud > *{pointer-events:auto;}
+.progress{height:3px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden;}
+.progress .fill{
+  height:100%;background:linear-gradient(90deg,var(--neon-purple),var(--cyan));
+  width:0%;transition:width .25s linear;
+  box-shadow:0 0 10px var(--neon-purple);
+}
+.controls{display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.controls .left,.controls .right{display:flex;gap:6px;}
+.btn{
+  background:rgba(20,5,50,.85);
+  border:1.5px solid rgba(168,85,247,.5);
+  color:#fff;
+  font-family:'Bowlby One',Impact,sans-serif;font-size:11px;letter-spacing:2px;
+  padding:8px 12px;border-radius:8px;
+  cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;text-decoration:none;
+}
+.btn:hover{background:rgba(157,78,221,.4);}
+.btn.icon{padding:8px 10px;font-size:13px;}
+
+/* Tap-to-start */
+.start-screen{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(10,6,18,.95);backdrop-filter:blur(8px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:24px;cursor:pointer;
+}
+.start-screen.hide{display:none;}
+.start-screen .preview{
+  width:240px;height:240px;border-radius:24px;overflow:hidden;
+  border:3px solid var(--neon-purple);
+  box-shadow:0 0 60px var(--neon-purple);
+  margin-bottom:24px;
+  background:url('public/monshi_assets/sprites/pose_front.png') center/contain no-repeat,
+             linear-gradient(135deg,#1a0d2e,#3d0a4d);
+}
+.start-screen h1{
+  font-family:'Bowlby One',Impact,sans-serif;
+  font-size:clamp(28px,7vw,56px);letter-spacing:3px;color:#fff;
+  text-shadow:0 0 40px var(--neon-purple);margin-bottom:8px;
+}
+.start-screen .epi{
+  font-family:'Bangers',cursive;
+  font-size:clamp(16px,3.5vw,24px);letter-spacing:4px;color:var(--acid-yellow);
+  margin-bottom:32px;
+}
+.start-screen .play{
+  width:100px;height:100px;border-radius:50%;
+  background:linear-gradient(135deg,var(--neon-purple),var(--purple));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 60px var(--neon-purple);
+  animation:start-pulse 2s ease-in-out infinite;
+  margin-bottom:18px;
+}
+.start-screen .play::after{
+  content:'';width:0;height:0;
+  border-left:30px solid #fff;
+  border-top:20px solid transparent;border-bottom:20px solid transparent;
+  margin-left:6px;
+}
+.start-screen .hint{font-family:'Special Elite',monospace;font-size:12px;color:rgba(196,181,253,.7);letter-spacing:1.5px;}
+@keyframes start-pulse{50%{transform:scale(1.08);box-shadow:0 0 90px var(--neon-purple);}}
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+
+  <!-- 1 — TITLE FLASH -->
+  <div class="scene" id="s-title">
+    <div class="title-bg"></div>
+    <div class="title-text"><span class="glitch-c">$</span>MONSHI</div>
+    <div class="title-sub">▓▓▓ WAKE UP CALL ▓▓▓</div>
+  </div>
+
+  <!-- 2 — THRONE -->
+  <div class="scene throne-scene" id="s-throne">
+    <div class="throne-bg"></div>
+    <div class="throne-vignette"></div>
+    <div class="ticker" id="ticker">
+      <div class="ticker-track">
+        <span>📉 PAPER HANDS DUMPING</span>
+        <span class="alert">⚠ -8.2%</span>
+        <span>📉 WEAK HOLDS FOLDING</span>
+        <span class="alert">⚠ -12.4%</span>
+        <span>📉 NORMIES EXITING</span>
+        <span class="alert">⚠ -6.7%</span>
+        <span>📉 PAPER HANDS DUMPING</span>
+        <span class="alert">⚠ -8.2%</span>
+        <span>📉 WEAK HOLDS FOLDING</span>
+        <span class="alert">⚠ -12.4%</span>
+        <span>📉 NORMIES EXITING</span>
+        <span class="alert">⚠ -6.7%</span>
+      </div>
+    </div>
+    <div class="throne-thought" id="throneThought">…</div>
+  </div>
+
+  <!-- 3 — STAND UP -->
+  <div class="scene stand-scene" id="s-stand">
+    <div class="stand-bg-grid"></div>
+    <div class="stand-bg-glow"></div>
+    <img class="character" id="standChar" src="public/monshi_assets/sprites/pose_front.png" alt="Monshi">
+    <div class="speech" id="standSpeech">TIME TO MAKE NOISE.</div>
+    <div class="sfx color-yellow" style="top:14%;right:12%;" id="standSfx">!</div>
+  </div>
+
+  <!-- 4 — WALK -->
+  <div class="scene walk-scene" id="s-walk">
+    <div class="walk-bg-text" id="walkText">PAPER HANDS</div>
+    <div class="walk-stripes"></div>
+    <div class="walk-floor"></div>
+    <img class="character-walk" id="walkChar" src="public/monshi_assets/sprites/pose_smirk.png" alt="Monshi walking">
+    <div class="sfx color-pink" style="bottom:32%;left:20%;" id="walkSfx1">STOMP!</div>
+    <div class="sfx color-cyan" style="bottom:32%;right:20%;" id="walkSfx2">STOMP!</div>
+  </div>
+
+  <!-- 5 — VORTEX -->
+  <div class="scene vortex-scene" id="s-vortex">
+    <div class="vortex-img"></div>
+    <div class="vortex-text">▓ TRANSCENDING ▓</div>
+  </div>
+
+  <!-- 6 — HERO REVEAL -->
+  <div class="scene hero-scene" id="s-hero">
+    <video class="hero-vid" id="heroVid" muted playsinline preload="auto" poster="public/monshi_assets/monshi_hero_poster.jpg">
+      <source src="public/monshi_assets/monshi_hero.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay-text" id="heroText">$MONSHI ARCADE</div>
+  </div>
+
+  <!-- 7 — CTA -->
+  <div class="scene cta-scene" id="s-cta">
+    <div class="cta-card">
+      <div class="label">▓ THIS IS JUST THE START ▓</div>
+      <h2>WELCOME TO<br><span>MONSHI</span></h2>
+      <div class="ctas">
+        <a class="cta-btn" href="/">▶ ENTER ARCADE</a>
+        <a class="cta-btn ghost" href="/monshi-comic-1.html">📖 READ COMIC</a>
+        <button class="cta-btn ghost" onclick="replay()" style="cursor:pointer;border:none;font:inherit;">↻ REPLAY</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- HUD -->
+<div class="hud">
+  <div class="progress"><div class="fill" id="progFill"></div></div>
+  <div class="controls">
+    <div class="left">
+      <button class="btn icon" id="btnPlay">⏸</button>
+      <button class="btn icon" id="btnMute">🔊</button>
+    </div>
+    <div class="right">
+      <a class="btn" href="/">← ARCADE</a>
+      <button class="btn icon" id="btnFullscreen">⛶</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tap-to-start -->
+<div class="start-screen" id="startScreen">
+  <div class="preview"></div>
+  <h1>$MONSHI</h1>
+  <div class="epi">⚡ WAKE UP CALL ⚡</div>
+  <div class="play"></div>
+  <div class="hint">TAP TO BEGIN · SOUND ON</div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────
+// CARTOON SCRIPT
+// ─────────────────────────────────────────────────────────────────────────
+const SCRIPT = [
+  // 0 — TITLE FLASH
+  { id:'s-title', dur:2500, music:'intro', narration:null,
+    onEnter:()=>{ Audio.fx('boom'); }
+  },
+  // 1 — THRONE
+  { id:'s-throne', dur:7000, music:'tense', narration:"Block one point eight million. The chain is bleeding paper hands.",
+    onEnter:()=>{
+      setTimeout(()=>document.getElementById('ticker').classList.add('show'), 300);
+      setTimeout(()=>{ document.getElementById('throneThought').textContent='…'; document.getElementById('throneThought').classList.add('show'); }, 1500);
+    }
+  },
+  // 2 — STAND UP
+  { id:'s-stand', dur:4500, music:'rising', narration:"Monshi looks up. Says one thing.",
+    onEnter:()=>{
+      const c = document.getElementById('standChar');
+      c.classList.remove('entering'); void c.offsetWidth; c.classList.add('entering');
+      Audio.fx('thud');
+      // Cycle through poses for "turning to face camera"
+      const poses = ['pose_back','pose_smirk','pose_side_r','pose_front'];
+      let i = 0;
+      const turnInt = setInterval(()=>{
+        i++;
+        if(i >= poses.length){ clearInterval(turnInt); return; }
+        c.src = `public/monshi_assets/sprites/${poses[i]}.png`;
+      }, 300);
+      setTimeout(()=>{
+        document.getElementById('standSpeech').classList.add('show');
+        document.getElementById('standSfx').classList.add('show');
+        Audio.fx('shout');
+      }, 2200);
+    }
+  },
+  // 3 — WALK
+  { id:'s-walk', dur:5500, music:'climax', narration:"He's not asking. He's done waiting.",
+    onEnter:()=>{
+      const c = document.getElementById('walkChar');
+      c.classList.remove('go'); void c.offsetWidth;
+      // Sprite swap to fake walking — alternate side ↔ smirk
+      c.src = 'public/monshi_assets/sprites/pose_side_r.png';
+      let toggle = false;
+      const walkInt = setInterval(()=>{
+        toggle = !toggle;
+        c.src = `public/monshi_assets/sprites/${toggle ? 'pose_smirk' : 'pose_side_r'}.png`;
+      }, 220);
+      c.classList.add('go');
+      document.getElementById('walkText').classList.add('show');
+      // Stomp SFX as he crosses
+      setTimeout(()=>{ document.getElementById('walkSfx1').classList.add('show'); Audio.fx('stomp'); }, 1500);
+      setTimeout(()=>{ document.getElementById('walkSfx2').classList.add('show'); Audio.fx('stomp'); }, 3500);
+      // Stop walking animation when scene ends
+      setTimeout(()=>clearInterval(walkInt), 5400);
+    }
+  },
+  // 4 — VORTEX
+  { id:'s-vortex', dur:2800, music:'glitch', narration:"He breaks through.",
+    onEnter:()=>{ Audio.fx('whoosh'); }
+  },
+  // 5 — HERO REVEAL (MP4)
+  { id:'s-hero', dur:6500, music:'climax', narration:"And lands in the only place that can keep up.",
+    onEnter:()=>{
+      const v = document.getElementById('heroVid');
+      try { v.currentTime = 0; v.play(); } catch(e){}
+      Audio.fx('boom');
+      setTimeout(()=>document.getElementById('heroText').classList.add('show'), 400);
+    }
+  },
+  // 6 — CTA
+  { id:'s-cta', dur:99999, music:'outro', narration:"Welcome to Monshi.",
+    onEnter:()=>{}
+  }
+];
+
+// ─────────────────────────────────────────────────────────────────────────
+// AUDIO ENGINE — Web Audio synthesis + browser TTS
+// ─────────────────────────────────────────────────────────────────────────
+const Audio = (function(){
+  let ctx = null, master = null, musicNodes = [], muted = false;
+
+  function ensure(){
+    if(!ctx){
+      ctx = new (window.AudioContext||window.webkitAudioContext)();
+      master = ctx.createGain();
+      master.gain.value = muted ? 0 : 0.45;
+      master.connect(ctx.destination);
+    }
+    if(ctx.state === 'suspended') ctx.resume();
+  }
+  function setMuted(m){
+    muted = m;
+    if(master) master.gain.value = muted ? 0 : 0.45;
+    if(window.speechSynthesis && muted) window.speechSynthesis.cancel();
+  }
+  function stopMusic(){ musicNodes.forEach(n=>{ try{n.stop()}catch(e){} }); musicNodes=[]; }
+
+  function playMusic(mood){
+    ensure(); stopMusic();
+    const moods = {
+      intro:  { f:[110,165,220], w:'sawtooth', cut:600, q:6, g:.10, lfo:.3 },
+      tense:  { f:[55,82.4,110], w:'sawtooth', cut:500, q:6, g:.11, lfo:.5 },
+      rising: { f:[82.4,110,164.8], w:'sawtooth', cut:1000, q:4, g:.12, lfo:.4 },
+      climax: { f:[110,138.6,164.8,220], w:'sawtooth', cut:1500, q:4, g:.13, lfo:.5 },
+      glitch: { f:[58.27,73.42,87.31], w:'square', cut:400, q:8, g:.10, lfo:2.0 },
+      outro:  { f:[110,138.6,220], w:'sine', cut:900, q:2, g:.09, lfo:.25 },
+    };
+    const m = moods[mood] || moods.intro;
+    const filt = ctx.createBiquadFilter();
+    filt.type='lowpass'; filt.frequency.value=m.cut; filt.Q.value=m.q; filt.connect(master);
+    const lfo = ctx.createOscillator(); const lfoG = ctx.createGain();
+    lfo.frequency.value = m.lfo; lfoG.gain.value = m.cut*0.4;
+    lfo.connect(lfoG).connect(filt.frequency); lfo.start(); musicNodes.push(lfo);
+    m.f.forEach(f=>{
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type=m.w; o.frequency.value=f;
+      g.gain.value=0; g.gain.linearRampToValueAtTime(m.g, ctx.currentTime+1);
+      o.connect(g).connect(filt); o.start();
+      musicNodes.push(o); musicNodes.push(g);
+    });
+  }
+
+  function fx(type){
+    ensure();
+    const t = ctx.currentTime;
+    if(type==='boom'){
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type='sine'; o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(20, t+0.9);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.6, t+0.02); g.gain.exponentialRampToValueAtTime(.001, t+.95);
+      o.connect(g).connect(master); o.start(t); o.stop(t+1);
+      const buf = ctx.createBuffer(1, ctx.sampleRate*.3, ctx.sampleRate);
+      const d = buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,1.5);
+      const src = ctx.createBufferSource(); src.buffer=buf; const sg=ctx.createGain(); sg.gain.value=.3;
+      src.connect(sg).connect(master); src.start(t); src.stop(t+.3);
+    } else if(type==='thud'){
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type='sine'; o.frequency.value=70;
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.5, t+.01); g.gain.exponentialRampToValueAtTime(.001, t+.3);
+      o.connect(g).connect(master); o.start(t); o.stop(t+.35);
+    } else if(type==='shout'){
+      [600,900,1200].forEach((f,i)=>{
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type='triangle'; o.frequency.value=f;
+        g.gain.setValueAtTime(0,t+i*.02); g.gain.linearRampToValueAtTime(.18, t+i*.02+.02); g.gain.exponentialRampToValueAtTime(.001, t+i*.02+.4);
+        o.connect(g).connect(master); o.start(t+i*.02); o.stop(t+i*.02+.5);
+      });
+    } else if(type==='stomp'){
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type='sine'; o.frequency.setValueAtTime(80,t); o.frequency.exponentialRampToValueAtTime(40, t+.15);
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.4, t+.01); g.gain.exponentialRampToValueAtTime(.001, t+.2);
+      o.connect(g).connect(master); o.start(t); o.stop(t+.25);
+      const buf = ctx.createBuffer(1, ctx.sampleRate*.15, ctx.sampleRate);
+      const d = buf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2)*.5;
+      const src = ctx.createBufferSource(); src.buffer=buf; const sg=ctx.createGain(); sg.gain.value=.3;
+      src.connect(sg).connect(master); src.start(t); src.stop(t+.15);
+    } else if(type==='whoosh'){
+      const buf = ctx.createBuffer(1, ctx.sampleRate*1.5, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.sin(Math.PI*i/d.length);
+      const src = ctx.createBufferSource(); src.buffer=buf;
+      const filt = ctx.createBiquadFilter(); filt.type='bandpass';
+      filt.frequency.setValueAtTime(200, t); filt.frequency.exponentialRampToValueAtTime(2000, t+1.2);
+      filt.Q.value=4;
+      const g = ctx.createGain(); g.gain.value=.4;
+      src.connect(filt).connect(g).connect(master); src.start(t); src.stop(t+1.5);
+    }
+  }
+
+  let voice = null;
+  function pickVoice(){
+    if(!window.speechSynthesis) return;
+    const vs = window.speechSynthesis.getVoices();
+    if(!vs.length) return;
+    voice =
+      vs.find(v=>/en/i.test(v.lang) && /(daniel|fred|alex|google.*us|male)/i.test(v.name)) ||
+      vs.find(v=>/en-us/i.test(v.lang)) || vs.find(v=>/en/i.test(v.lang)) || vs[0];
+  }
+  if(window.speechSynthesis){ window.speechSynthesis.onvoiceschanged = pickVoice; pickVoice(); }
+  function narrate(text){
+    if(muted || !text || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    if(voice) u.voice = voice;
+    u.rate=.95; u.pitch=.8; u.volume=1;
+    window.speechSynthesis.speak(u);
+  }
+  function stopNarration(){ if(window.speechSynthesis) window.speechSynthesis.cancel(); }
+
+  return { ensure, setMuted, playMusic, stopMusic, fx, narrate, stopNarration };
+})();
+
+// ─────────────────────────────────────────────────────────────────────────
+// PLAYER
+// ─────────────────────────────────────────────────────────────────────────
+let cur = 0, playing = false, muted = false, sceneStart = 0, elapsed = 0, sceneTimer = null, progressTimer = null;
+const fill = document.getElementById('progFill');
+const btnPlay = document.getElementById('btnPlay');
+const btnMute = document.getElementById('btnMute');
+const btnFs = document.getElementById('btnFullscreen');
+const startScreen = document.getElementById('startScreen');
+
+function showScene(i){
+  // Reset all dynamic states
+  document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.bubble,.speech,.sfx,.ticker,.throne-thought,.walk-bg-text,.hero-overlay-text').forEach(el=>el.classList.remove('show'));
+  Audio.stopNarration();
+  const s = SCRIPT[i];
+  if(!s) return;
+  const el = document.getElementById(s.id);
+  el.classList.add('active');
+  if(s.music) Audio.playMusic(s.music);
+  if(s.narration) setTimeout(()=>Audio.narrate(s.narration), 300);
+  if(s.onEnter) try { s.onEnter(); } catch(e){ console.log('onEnter err',e); }
+  sceneStart = performance.now();
+  elapsed = 0;
+}
+
+function startTimer(){
+  clearInterval(progressTimer); clearTimeout(sceneTimer);
+  const dur = SCRIPT[cur].dur;
+  progressTimer = setInterval(()=>{
+    if(!playing) return;
+    elapsed = performance.now() - sceneStart;
+    const pct = Math.min(100, (elapsed/dur)*100);
+    const overall = ((cur + pct/100) / (SCRIPT.length-1)) * 100; // exclude infinite CTA scene
+    fill.style.width = Math.min(100, overall) + '%';
+  }, 100);
+  if(dur < 99999){
+    sceneTimer = setTimeout(()=>{
+      if(cur < SCRIPT.length-1){ cur++; showScene(cur); startTimer(); }
+      else{ playing=false; btnPlay.textContent='↻'; }
+    }, dur);
+  }
+}
+
+function play(){
+  playing = true; btnPlay.textContent='⏸';
+  Audio.ensure();
+  if(SCRIPT[cur].music) Audio.playMusic(SCRIPT[cur].music);
+  startTimer();
+}
+function pause(){ playing=false; btnPlay.textContent='▶'; clearTimeout(sceneTimer); Audio.stopMusic(); Audio.stopNarration(); }
+function replay(){ cur = 0; showScene(0); play(); }
+window.replay = replay;
+
+btnPlay.addEventListener('click', ()=>{
+  if(btnPlay.textContent==='↻'){ replay(); }
+  else if(playing){ pause(); }
+  else { play(); }
+});
+btnMute.addEventListener('click', ()=>{
+  muted = !muted; Audio.setMuted(muted);
+  btnMute.textContent = muted ? '🔇' : '🔊';
+});
+btnFs.addEventListener('click', ()=>{
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+  else document.exitFullscreen?.();
+});
+document.addEventListener('keydown', e=>{
+  if(e.code==='Space'){ e.preventDefault(); btnPlay.click(); }
+  else if(e.code==='KeyM'){ btnMute.click(); }
+  else if(e.code==='KeyR'){ replay(); }
+});
+
+startScreen.addEventListener('click', ()=>{
+  startScreen.classList.add('hide');
+  Audio.ensure();
+  showScene(0);
+  play();
+});
+</script>
+</body>
+</html>
