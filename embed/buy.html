@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BUY EMBED LICENSE · Monshi</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<meta name="theme-color" content="#A855F7">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#EDE9FF;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 0%,rgba(168,85,247,.18),transparent 50%),radial-gradient(circle at 80% 100%,rgba(96,165,250,.12),transparent 50%);z-index:-1;}
+.wrap{max-width:780px;margin:0 auto;padding:24px 18px 80px;}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:24px;padding:14px 18px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.2);border-radius:14px;}
+.nav a.brand{font-family:Orbitron,sans-serif;font-weight:900;font-size:14px;letter-spacing:3px;color:#fff;text-decoration:none;}
+.nav .links{display:flex;gap:8px;flex-wrap:wrap;}
+.nav .links a,.nav .links button{padding:8px 12px;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;color:#C4B5FD;text-decoration:none;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:6px;cursor:pointer;font-weight:700;}
+.nav .links .connect{background:linear-gradient(135deg,#FCD34D,#F59E0B);color:#000;border-color:transparent;font-weight:900;}
+.nav .links .connect.connected{background:linear-gradient(135deg,#A855F7,#7C3AED);color:#fff;}
+
+.hero{text-align:center;padding:30px 0 18px;}
+.hero .eye{font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:5px;font-weight:900;color:#60A5FA;}
+.hero h1{font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(30px,5vw,46px);letter-spacing:3px;margin:8px 0 6px;background:linear-gradient(180deg,#fff 30%,#C4B5FD 70%,#60A5FA);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero p{font-size:13px;color:rgba(196,181,253,.7);max-width:520px;margin:0 auto;line-height:1.6;}
+
+.tiers{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:30px 0;}
+@media(max-width:600px){.tiers{grid-template-columns:1fr;}}
+.tier{padding:20px;background:rgba(20,5,50,.6);border:2px solid rgba(139,92,246,.2);border-radius:14px;cursor:pointer;transition:all .15s;}
+.tier.paid.active{border-color:#60A5FA;box-shadow:0 0 30px rgba(96,165,250,.18);}
+.tier.pro.active{border-color:#A855F7;box-shadow:0 0 30px rgba(168,85,247,.18);background:linear-gradient(180deg,rgba(168,85,247,.1),rgba(20,5,50,.6));}
+.tier:hover{transform:translateY(-1px);}
+.tier-emoji{font-size:30px;margin-bottom:6px;}
+.tier-name{font-family:Orbitron,sans-serif;font-size:13px;font-weight:900;letter-spacing:2px;}
+.tier-price{font-family:Orbitron,sans-serif;font-size:22px;font-weight:900;margin:6px 0 2px;}
+.tier-price.paid{color:#60A5FA;}
+.tier-price.pro{color:#A855F7;}
+.tier-sub{font-size:10px;letter-spacing:1.5px;color:rgba(196,181,253,.5);margin-bottom:10px;}
+.tier-feat{font-size:11px;color:rgba(220,210,255,.85);line-height:1.7;}
+.tier-radio{width:14px;height:14px;border:2px solid rgba(139,92,246,.4);border-radius:50%;display:inline-block;vertical-align:middle;margin-right:6px;}
+.tier.active .tier-radio{background:#60A5FA;border-color:#60A5FA;}
+.tier.pro.active .tier-radio{background:#A855F7;border-color:#A855F7;}
+
+.panel{background:linear-gradient(180deg,rgba(20,5,50,.7),rgba(10,2,35,.5));border:1px solid rgba(139,92,246,.25);border-radius:14px;padding:22px;margin-bottom:14px;}
+.panel-h{font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:2.5px;color:rgba(196,181,253,.7);font-weight:800;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+.balance{padding:11px 14px;background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.18);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#C4B5FD;display:flex;justify-content:space-between;align-items:center;}
+.balance.ok{border-color:rgba(74,222,128,.4);color:#4ADE80;}
+.balance.short{border-color:rgba(239,68,68,.4);color:#EF4444;}
+
+.pay-btn{width:100%;padding:16px;font-family:Orbitron,sans-serif;font-weight:900;font-size:13px;letter-spacing:3px;color:#fff;background:linear-gradient(135deg,#A855F7,#7C3AED);border:none;border-radius:12px;cursor:pointer;transition:all .15s;margin-top:14px;}
+.pay-btn:hover:not(:disabled){transform:translateY(-1px);}
+.pay-btn:disabled{opacity:.45;cursor:not-allowed;}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.success{display:none;background:linear-gradient(135deg,rgba(74,222,128,.12),rgba(168,85,247,.08));border:1.5px solid rgba(74,222,128,.4);border-radius:14px;padding:24px;}
+.success.show{display:block;}
+.success h2{font-family:Orbitron,sans-serif;font-weight:900;font-size:22px;color:#4ADE80;letter-spacing:2px;margin-bottom:12px;}
+.lic-box{background:rgba(0,0,0,.5);border:1.5px solid rgba(96,165,250,.4);border-radius:10px;padding:14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#60A5FA;line-height:1.6;word-break:break-all;position:relative;margin:14px 0;}
+.lic-copy{position:absolute;top:8px;right:8px;padding:6px 10px;background:linear-gradient(135deg,#60A5FA,#3B82F6);color:#fff;border:none;border-radius:6px;font-family:Orbitron,sans-serif;font-size:9px;letter-spacing:1.5px;font-weight:800;cursor:pointer;}
+.lic-copy.copied{background:linear-gradient(135deg,#22C55E,#16A34A);}
+
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(20,5,50,.95);border:1.5px solid rgba(139,92,246,.5);border-radius:10px;padding:11px 22px;font-size:12px;display:none;z-index:1000;font-family:'Space Mono',monospace;}
+.toast.show{display:block;}
+.toast.success{border-color:rgba(74,222,128,.5);color:#4ADE80;}
+.toast.error{border-color:rgba(239,68,68,.5);color:#EF4444;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a class="brand" href="/embed/">🧩 GET LICENSE</a>
+    <div class="links">
+      <a href="/">DEN</a>
+      <a href="/embed/">EMBED PACK</a>
+      <button class="connect" id="connectBtn">CONNECT WALLET</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="eye">▸ ONE-TIME PAYMENT · LIFETIME LICENSE</div>
+    <h1>GET LICENSE</h1>
+    <p>Pay MONSHI to our treasury. The transaction hash <i>is</i> your license — paste it in <code style="background:rgba(168,85,247,.15);padding:2px 5px;border-radius:3px;color:#C4B5FD;">data-license</code> on your script tag. No keys, no logins, no expiry.</p>
+  </div>
+
+  <div class="tiers">
+    <div class="tier paid active" data-tier="paid">
+      <div class="tier-emoji">⭐</div>
+      <div class="tier-name"><span class="tier-radio"></span>PAID</div>
+      <div class="tier-price paid">500K MONSHI</div>
+      <div class="tier-sub">REMOVES WATERMARK · LIFETIME</div>
+      <div class="tier-feat">All 4 widgets clean (no "powered by" footer). Use on unlimited sites.</div>
+    </div>
+    <div class="tier pro" data-tier="pro">
+      <div class="tier-emoji">👑</div>
+      <div class="tier-name"><span class="tier-radio"></span>PRO</div>
+      <div class="tier-price pro">5M MONSHI</div>
+      <div class="tier-sub">FULL WHITELABEL · LIFETIME</div>
+      <div class="tier-feat">Paid + custom CSS overrides + multi-token + priority bug fixes.</div>
+    </div>
+  </div>
+
+  <div class="panel" id="payPanel">
+    <div class="panel-h">
+      <span>PAYMENT</span>
+      <span style="font-size:10px;color:rgba(196,181,253,.5);">→ <span id="payTreasuryShort">treasury</span></span>
+    </div>
+    <div class="balance" id="bal">
+      <span>Connect wallet to see balance</span>
+      <span></span>
+    </div>
+    <button class="pay-btn" id="payBtn" disabled>CONNECT WALLET FIRST</button>
+    <div style="font-size:10px;color:rgba(196,181,253,.45);margin-top:10px;line-height:1.6;text-align:center;">
+      Treasury: <code style="font-family:'JetBrains Mono',monospace;color:#C4B5FD;">0xB9d4…467f</code> · Token: $MONSHI on Monad mainnet
+    </div>
+  </div>
+
+  <div class="success" id="success">
+    <h2>✅ LICENSE READY</h2>
+    <p style="color:rgba(196,181,253,.85);font-size:13px;line-height:1.7;margin-bottom:8px;">Your transaction is your license. Save the hash below — you'll paste it as <code style="color:#C4B5FD;">data-license</code> on your script tag.</p>
+    <div class="lic-box" id="licBox">
+      <button class="lic-copy" id="licCopy">COPY</button>
+      <span id="licHash">—</span>
+    </div>
+    <p style="color:rgba(196,181,253,.6);font-size:12px;margin:14px 0 8px;">Example usage:</p>
+    <div class="lic-box">
+      <span id="licExample">—</span>
+    </div>
+    <p style="color:rgba(196,181,253,.5);font-size:11px;margin-top:14px;line-height:1.7;">View tx on <a id="licExplorer" target="_blank" rel="noopener" style="color:#60A5FA;font-weight:800;text-decoration:none;">Monad explorer →</a></p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script>
+(function(){
+  var MONSHI = '0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
+  var TREASURY = '0xB9d4B73bE18914c6d64Bee65a806648370be467f';
+  var TIERS = {
+    paid: { amount: 500000n  * 1000000000000000000n, label: '500K MONSHI', display: '500,000' },
+    pro:  { amount: 5000000n * 1000000000000000000n, label: '5M MONSHI',   display: '5,000,000' }
+  };
+
+  var ANKR_PREMIUM = '';
+  var RPC_POOL = [ANKR_PREMIUM,'https://rpc.ankr.com/monad','https://rpc.monad.xyz','https://monad-mainnet.drpc.org'].filter(Boolean);
+  var rpcIdx = 0;
+  function rpc(method, params){
+    return new Promise(function(resolve, reject){
+      var attempt=0;
+      function next(){
+        if(attempt>=RPC_POOL.length){reject(new Error('rpc'));return;}
+        var url=RPC_POOL[(rpcIdx+attempt)%RPC_POOL.length]; attempt++;
+        var ctrl=new AbortController(); var to=setTimeout(function(){ctrl.abort();},6000);
+        fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:method,params:params||[]}),signal:ctrl.signal})
+          .then(function(r){clearTimeout(to);if(!r.ok)throw 0;return r.json();})
+          .then(function(j){if(j.error)throw 0; rpcIdx=(rpcIdx+attempt-1)%RPC_POOL.length; resolve(j.result);})
+          .catch(function(){clearTimeout(to);next();});
+      }
+      next();
+    });
+  }
+  function $(id){return document.getElementById(id);}
+  function pad(a){return '0x'+String(a).toLowerCase().replace('0x','').padStart(64,'0');}
+  function fmtNum(n){if(n>=1e6)return (n/1e6).toFixed(2)+'M';if(n>=1e3)return (n/1e3).toFixed(1)+'K';return Math.floor(n).toLocaleString();}
+  function toast(msg, kind){var t=$('toast');t.textContent=msg;t.className='toast show '+(kind||'');setTimeout(function(){t.className='toast';},3500);}
+
+  // ─── Tier selection ─────────────────────────────────────────────────
+  var selectedTier = 'paid';
+  // Prefill from URL ?tier=
+  var urlTier = new URLSearchParams(location.search).get('tier');
+  if (urlTier === 'pro') selectedTier = 'pro';
+
+  function updateTierUI(){
+    document.querySelectorAll('.tier').forEach(function(el){
+      el.classList.toggle('active', el.dataset.tier === selectedTier);
+    });
+    refreshPayBtn();
+  }
+  document.querySelectorAll('.tier').forEach(function(el){
+    el.addEventListener('click', function(){
+      selectedTier = el.dataset.tier;
+      updateTierUI();
+    });
+  });
+  $('payTreasuryShort').textContent = TREASURY.slice(0,6) + '…' + TREASURY.slice(-4);
+
+  // ─── Wallet ─────────────────────────────────────────────────────────
+  var wallet = null;
+  var balance = 0n;
+
+  $('connectBtn').onclick = async function(){
+    if(wallet){
+      wallet = null; balance = 0n;
+      $('connectBtn').textContent = 'CONNECT WALLET';
+      $('connectBtn').classList.remove('connected');
+      $('bal').className = 'balance';
+      $('bal').innerHTML = '<span>Connect wallet to see balance</span><span></span>';
+      refreshPayBtn();
+      return;
+    }
+    if(!window.ethereum){ toast('No wallet detected','error'); return; }
+    try{
+      var accts = await window.ethereum.request({method:'eth_requestAccounts'});
+      wallet = accts[0];
+      try{ await window.ethereum.request({method:'wallet_switchEthereumChain', params:[{chainId:'0x8f'}]}); }
+      catch(e){ if(e.code===4902){ await window.ethereum.request({method:'wallet_addEthereumChain', params:[{chainId:'0x8f', chainName:'Monad', rpcUrls:['https://rpc.monad.xyz'], nativeCurrency:{name:'MON',symbol:'MON',decimals:18}, blockExplorerUrls:['https://explorer.monad.xyz']}]}); } }
+      $('connectBtn').textContent = wallet.slice(0,6)+'…'+wallet.slice(-4);
+      $('connectBtn').classList.add('connected');
+      await refreshBalance();
+      toast('Connected ✓','success');
+    }catch(e){ toast('Connect failed','error'); }
+  };
+
+  async function refreshBalance(){
+    if(!wallet) return;
+    try{
+      var raw = await rpc('eth_call',[{to:MONSHI, data:'0x70a08231'+pad(wallet).slice(2)},'latest']);
+      balance = BigInt(raw);
+      var bal = Number(balance)/1e18;
+      $('bal').innerHTML = '<span>Your $MONSHI balance</span><span>' + fmtNum(bal) + ' MONSHI</span>';
+      refreshPayBtn();
+    }catch(e){ console.log(e); }
+  }
+
+  function refreshPayBtn(){
+    var btn = $('payBtn');
+    var tier = TIERS[selectedTier];
+    if (!wallet) {
+      btn.disabled = true;
+      btn.textContent = 'CONNECT WALLET FIRST';
+      $('bal').className = 'balance';
+    } else if (balance < tier.amount) {
+      btn.disabled = true;
+      btn.textContent = 'NEED ' + tier.label + ' (YOU HAVE ' + fmtNum(Number(balance)/1e18) + ')';
+      $('bal').className = 'balance short';
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'PAY ' + tier.label + ' · GET LICENSE';
+      $('bal').className = 'balance ok';
+    }
+  }
+
+  $('payBtn').onclick = async function(){
+    if (!wallet) return;
+    var tier = TIERS[selectedTier];
+    if (balance < tier.amount) return;
+
+    var btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> SENDING...';
+
+    try{
+      // ERC20 transfer(treasury, amount)
+      var calldata = '0xa9059cbb' + pad(TREASURY).slice(2) + tier.amount.toString(16).padStart(64,'0');
+      var txHash = await window.ethereum.request({
+        method:'eth_sendTransaction',
+        params:[{from: wallet, to: MONSHI, data: calldata}]
+      });
+
+      btn.innerHTML = '<span class="spinner"></span> WAITING FOR CONFIRMATION...';
+
+      // Poll for receipt (~2 minute max)
+      var receipt = null;
+      for (var i = 0; i < 60; i++) {
+        await new Promise(function(r){setTimeout(r,2000);});
+        receipt = await rpc('eth_getTransactionReceipt',[txHash]);
+        if (receipt) break;
+      }
+      if (!receipt || receipt.status !== '0x1') throw new Error('Tx failed');
+
+      // Show success
+      $('payPanel').style.display = 'none';
+      var s = $('success');
+      $('licHash').textContent = txHash;
+      $('licExplorer').href = 'https://explorer.monad.xyz/tx/' + txHash;
+      $('licExample').innerHTML =
+        '&lt;script\n  src="https://monshi.xyz/embed.js"\n  data-token="0xYOUR_TOKEN_CA"\n  data-widget="price"\n  data-style="dark"\n  data-license="' + txHash + '"&gt;&lt;/script&gt;';
+      s.classList.add('show');
+      window.scrollTo({top: s.offsetTop - 20, behavior:'smooth'});
+      toast('License granted ✓','success');
+    }catch(e){
+      btn.disabled = false;
+      refreshPayBtn();
+      toast('Failed: ' + (e.message || 'rejected').slice(0,80),'error');
+    }
+  };
+
+  $('licCopy').onclick = function(){
+    var hash = $('licHash').textContent.trim();
+    if (!hash || hash === '—') return;
+    navigator.clipboard.writeText(hash).then(function(){
+      var b = $('licCopy'); b.textContent = 'COPIED ✓'; b.classList.add('copied');
+      setTimeout(function(){ b.textContent = 'COPY'; b.classList.remove('copied'); }, 1800);
+    });
+  };
+
+  // Auto-reconnect
+  if(window.ethereum){
+    window.ethereum.request({method:'eth_accounts'}).then(function(a){
+      if(a && a.length) $('connectBtn').click();
+    });
+  }
+
+  updateTierUI();
+})();
+</script>
+</body>
+</html>

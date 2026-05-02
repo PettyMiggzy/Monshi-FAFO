@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MONSHI EMBED PACK · Drop-in widgets for any Monad token</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#EDE9FF;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 0%,rgba(168,85,247,.18),transparent 50%),radial-gradient(circle at 80% 100%,rgba(96,165,250,.12),transparent 50%);z-index:-1;}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 18px 80px;}
+
+.nav{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:24px;padding:14px 18px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.2);border-radius:14px;}
+.nav a.brand{font-family:Orbitron,sans-serif;font-weight:900;font-size:14px;letter-spacing:3px;color:#fff;text-decoration:none;}
+.nav .links{display:flex;gap:8px;flex-wrap:wrap;}
+.nav .links a{padding:8px 12px;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;color:#C4B5FD;text-decoration:none;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:6px;font-weight:700;}
+.nav .links a:hover{background:rgba(168,85,247,.18);color:#fff;}
+
+.hero{text-align:center;padding:30px 0 24px;}
+.hero .eye{font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:5px;font-weight:900;color:#60A5FA;}
+.hero h1{font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(34px,6vw,56px);letter-spacing:3px;margin:10px 0 8px;background:linear-gradient(180deg,#fff 30%,#C4B5FD 60%,#60A5FA);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero p{font-size:14px;color:rgba(196,181,253,.75);max-width:620px;margin:0 auto;line-height:1.7;}
+.hero-pills{display:flex;justify-content:center;gap:10px;margin-top:18px;flex-wrap:wrap;}
+.hero-pill{padding:8px 14px;background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.3);border-radius:30px;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:1.5px;color:#60A5FA;font-weight:800;}
+
+.section{margin:36px 0;}
+.section-h{font-family:Orbitron,sans-serif;font-size:13px;letter-spacing:4px;color:#A855F7;font-weight:900;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.section-h::before{content:'';width:24px;height:2px;background:linear-gradient(90deg,transparent,#A855F7);}
+.section-h::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(168,85,247,.4),transparent);}
+
+.demos{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;}
+.demo-cell{background:rgba(20,5,50,.5);border:1px solid rgba(139,92,246,.2);border-radius:12px;padding:14px;}
+.demo-lbl{font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;color:rgba(196,181,253,.6);font-weight:800;margin-bottom:10px;}
+
+.builder{background:linear-gradient(180deg,rgba(20,5,50,.7),rgba(10,2,35,.5));border:1px solid rgba(139,92,246,.3);border-radius:14px;padding:24px;}
+.builder-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+@media(max-width:760px){.builder-grid{grid-template-columns:1fr;}}
+.field{margin-bottom:14px;}
+.field label{display:block;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;color:#C4B5FD;font-weight:800;margin-bottom:6px;}
+.field input,.field select{width:100%;padding:11px 14px;background:rgba(0,0,0,.35);border:1.5px solid rgba(139,92,246,.25);border-radius:8px;font-family:'JetBrains Mono',monospace;color:#fff;font-size:12px;}
+.field input:focus,.field select:focus{outline:none;border-color:#A855F7;}
+.builder-out{background:rgba(0,0,0,.5);border:1.5px solid rgba(96,165,250,.4);border-radius:10px;padding:14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#60A5FA;line-height:1.7;word-break:break-all;position:relative;margin-top:12px;}
+.copy-btn{position:absolute;top:8px;right:8px;padding:6px 10px;background:linear-gradient(135deg,#60A5FA,#3B82F6);color:#fff;border:none;border-radius:6px;font-family:Orbitron,sans-serif;font-size:9px;letter-spacing:1.5px;font-weight:800;cursor:pointer;}
+.copy-btn.copied{background:linear-gradient(135deg,#22C55E,#16A34A);}
+
+.preview{background:rgba(255,255,255,.02);border:1px dashed rgba(168,85,247,.3);border-radius:10px;padding:20px;min-height:200px;display:flex;align-items:center;justify-content:center;}
+
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+@media(max-width:760px){.tiers{grid-template-columns:1fr;}}
+.tier{padding:24px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.2);border-radius:14px;position:relative;overflow:hidden;}
+.tier.paid{border-color:rgba(96,165,250,.5);box-shadow:0 0 30px rgba(96,165,250,.1);}
+.tier.pro{border-color:rgba(168,85,247,.6);box-shadow:0 0 40px rgba(168,85,247,.18);background:linear-gradient(180deg,rgba(168,85,247,.1),rgba(20,5,50,.6));}
+.tier-emoji{font-size:32px;margin-bottom:6px;}
+.tier-name{font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;letter-spacing:2px;margin-bottom:6px;}
+.tier-price{font-family:Orbitron,sans-serif;font-size:24px;font-weight:900;color:#fff;margin-bottom:4px;}
+.tier-price.free{color:#4ADE80;}
+.tier-price.paid{color:#60A5FA;}
+.tier-price.pro{color:#A855F7;}
+.tier-sub{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;color:rgba(196,181,253,.5);margin-bottom:14px;}
+.tier-feats{font-size:12px;color:rgba(220,210,255,.85);line-height:1.9;}
+.tier-feats li{list-style:none;padding-left:18px;position:relative;}
+.tier-feats li::before{content:'✓';position:absolute;left:0;color:#4ADE80;font-weight:900;}
+.tier-cta{display:block;width:100%;margin-top:16px;padding:13px;text-align:center;text-decoration:none;font-family:Orbitron,sans-serif;font-weight:900;letter-spacing:2px;font-size:11px;border-radius:10px;}
+.tier-cta.free{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.4);color:#4ADE80;}
+.tier-cta.paid{background:linear-gradient(135deg,#60A5FA,#3B82F6);color:#fff;}
+.tier-cta.pro{background:linear-gradient(135deg,#A855F7,#7C3AED);color:#fff;}
+.tier-cta:hover{transform:translateY(-1px);}
+
+.faq{background:rgba(20,5,50,.4);border:1px solid rgba(139,92,246,.15);border-radius:12px;padding:20px;}
+.faq-q{font-family:Orbitron,sans-serif;font-size:12px;letter-spacing:1.5px;color:#C4B5FD;font-weight:800;margin:14px 0 6px;}
+.faq-q:first-child{margin-top:0;}
+.faq-a{font-size:12px;color:rgba(220,210,255,.8);line-height:1.7;}
+.faq-a code{background:rgba(0,0,0,.4);padding:1px 5px;border-radius:3px;font-size:11px;color:#60A5FA;}
+
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(20,5,50,.95);border:1.5px solid rgba(74,222,128,.5);border-radius:10px;padding:11px 22px;font-size:12px;color:#4ADE80;display:none;z-index:1000;font-family:'Space Mono',monospace;}
+.toast.show{display:block;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a class="brand" href="/">🧩 MONSHI · EMBED</a>
+    <div class="links">
+      <a href="/">DEN</a>
+      <a href="/dashboard/">DASHBOARD</a>
+      <a href="/arcade.html">ARCADE</a>
+      <a href="/tools.html">TOOLS</a>
+      <a href="/embed/buy.html" style="background:linear-gradient(135deg,#A855F7,#7C3AED);color:#fff;border-color:transparent;">GET LICENSE</a>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="eye">▸ DROP-IN MONAD WIDGETS</div>
+    <h1>EMBED PACK</h1>
+    <p>One <code style="background:rgba(168,85,247,.15);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#C4B5FD;">&lt;script&gt;</code> tag → live <b>price · ticker · buy button · burn meter</b> for any Monad token, on your site. Browser-side. No backend. No API keys. No tracking.</p>
+    <div class="hero-pills">
+      <span class="hero-pill">⚡ ZERO BACKEND</span>
+      <span class="hero-pill">📦 ~12KB</span>
+      <span class="hero-pill">🌐 ANY SITE</span>
+      <span class="hero-pill">🆓 FREE TIER</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-h">📦 LIVE DEMOS · SHOWING $MONSHI</div>
+    <div class="demos">
+      <div class="demo-cell">
+        <div class="demo-lbl">📊 PRICE WIDGET</div>
+        <div id="d-price"></div>
+      </div>
+      <div class="demo-cell">
+        <div class="demo-lbl">🚀 BUY WIDGET</div>
+        <div id="d-buy"></div>
+      </div>
+      <div class="demo-cell">
+        <div class="demo-lbl">🔥 BURN WIDGET</div>
+        <div id="d-burn"></div>
+      </div>
+      <div class="demo-cell">
+        <div class="demo-lbl">🟢 TICKER WIDGET</div>
+        <div id="d-ticker"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-h">🔧 BUILD YOUR SCRIPT TAG</div>
+    <div class="builder">
+      <div class="builder-grid">
+        <div>
+          <div class="field">
+            <label>YOUR TOKEN CONTRACT *</label>
+            <input id="bToken" placeholder="0x..." value="0xB744F5CDb792d8187640214C4A1c9aCE29af7777" spellcheck="false">
+          </div>
+          <div class="field">
+            <label>WIDGET TYPE</label>
+            <select id="bWidget">
+              <option value="price">💰 Price + sparkline</option>
+              <option value="ticker">🟢 Live trade ticker</option>
+              <option value="buy">🚀 Buy button</option>
+              <option value="burn">🔥 Burn meter</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>STYLE</label>
+            <select id="bStyle">
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>LICENSE TX HASH (optional)</label>
+            <input id="bLicense" placeholder="0xtx_hash... (leave empty for free tier)" spellcheck="false">
+          </div>
+        </div>
+        <div>
+          <div style="font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;color:#C4B5FD;font-weight:800;margin-bottom:6px;">LIVE PREVIEW</div>
+          <div class="preview" id="bPreview"></div>
+        </div>
+      </div>
+      <div class="builder-out" id="bOutput">
+        <button class="copy-btn" id="bCopy">COPY</button>
+        <span id="bSnippet"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-h">💎 PRICING</div>
+    <div class="tiers">
+      <div class="tier">
+        <div class="tier-emoji">🆓</div>
+        <div class="tier-name">FREE</div>
+        <div class="tier-price free">$0</div>
+        <div class="tier-sub">FOREVER</div>
+        <ul class="tier-feats">
+          <li>All 4 widgets</li>
+          <li>Live data, real-time</li>
+          <li>Any Monad token</li>
+          <li>Small "powered by 🐱 Monshi" footer</li>
+          <li>Use on unlimited sites</li>
+        </ul>
+        <a class="tier-cta free" href="#bOutput">USE FREE</a>
+      </div>
+      <div class="tier paid">
+        <div class="tier-emoji">⭐</div>
+        <div class="tier-name">PAID</div>
+        <div class="tier-price paid">500K MONSHI</div>
+        <div class="tier-sub">ONE-TIME · NO SUBSCRIPTION</div>
+        <ul class="tier-feats">
+          <li>Everything in Free</li>
+          <li><b>No watermark</b> — clean look</li>
+          <li>License works on unlimited sites</li>
+          <li>Lifetime access</li>
+        </ul>
+        <a class="tier-cta paid" href="/embed/buy.html?tier=paid">BUY LICENSE</a>
+      </div>
+      <div class="tier pro">
+        <div class="tier-emoji">👑</div>
+        <div class="tier-name">PRO</div>
+        <div class="tier-price pro">5M MONSHI</div>
+        <div class="tier-sub">ONE-TIME · WHITELABEL</div>
+        <ul class="tier-feats">
+          <li>Everything in Paid</li>
+          <li>Custom CSS overrides</li>
+          <li>Multiple tokens per page</li>
+          <li>Priority bug fixes + new widgets</li>
+        </ul>
+        <a class="tier-cta pro" href="/embed/buy.html?tier=pro">BUY PRO</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-h">❓ FAQ</div>
+    <div class="faq">
+      <div class="faq-q">How does the watermark removal work?</div>
+      <div class="faq-a">You pay 500K MONSHI to our treasury. The transaction hash <i>is</i> your license. Paste it in <code>data-license</code> on your script tag and the widget verifies on-chain (cached locally so it's checked once). No keys, no logins, no expiry.</div>
+      <div class="faq-q">Where does the data come from?</div>
+      <div class="faq-a">DexScreener API for prices/volume, Monad RPC nodes for on-chain data (burn balances, swap events). Both public, both free, no API keys needed. The widget runs entirely in your visitor's browser.</div>
+      <div class="faq-q">Will it slow down my site?</div>
+      <div class="faq-a">Script is ~12KB gzipped. Loads async. First render in &lt;500ms. Updates every 30-60s. Lighter than a Twitter embed.</div>
+      <div class="faq-q">Can I customize the look?</div>
+      <div class="faq-a">Free/Paid tier: dark and light styles built-in. Pro tier: override any CSS via <code>.monshi-w</code> selectors. Set custom colors, fonts, sizes — it's all just CSS.</div>
+      <div class="faq-q">What if my pool doesn't exist on DexScreener yet?</div>
+      <div class="faq-a">The widget will show "No pair found" until you have liquidity. Once your token trades on any Monad DEX that DexScreener indexes (Crust, etc.), the widget activates automatically.</div>
+      <div class="faq-q">Multiple widgets on one page?</div>
+      <div class="faq-a">Yes — paste multiple <code>&lt;script&gt;</code> tags. Each becomes its own widget where you put it. The library only injects styles once.</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copied to clipboard ✓</div>
+
+<!-- DEMO WIDGETS — load embed.js then place 4 widgets in the demo cells -->
+<script>
+(function(){
+  // Helper: dynamically place a script tag inside a target element
+  function plant(targetId, widget){
+    var t = document.getElementById(targetId);
+    if(!t) return;
+    var s = document.createElement('script');
+    s.src = '/embed.js';
+    s.setAttribute('data-token','0xB744F5CDb792d8187640214C4A1c9aCE29af7777');
+    s.setAttribute('data-widget',widget);
+    s.setAttribute('data-style','dark');
+    t.appendChild(s);
+  }
+  plant('d-price','price');
+  plant('d-buy','buy');
+  plant('d-burn','burn');
+  plant('d-ticker','ticker');
+})();
+</script>
+
+<!-- BUILDER -->
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var preview = $('bPreview');
+  var snippet = $('bSnippet');
+
+  function buildSnippet(){
+    var token = $('bToken').value.trim();
+    var widget = $('bWidget').value;
+    var style = $('bStyle').value;
+    var license = $('bLicense').value.trim();
+    var attrs = [
+      'src="https://monshi.xyz/embed.js"',
+      'data-token="' + (token || '0x...') + '"',
+      'data-widget="' + widget + '"',
+      'data-style="' + style + '"'
+    ];
+    if (license) attrs.push('data-license="' + license + '"');
+    var html = '&lt;script\n  ' + attrs.join('\n  ') + '&gt;&lt;/script&gt;';
+    snippet.innerHTML = html;
+    return { token: token, widget: widget, style: style, license: license };
+  }
+
+  function refreshPreview(){
+    var cfg = buildSnippet();
+    preview.innerHTML = '';
+    if (!/^0x[a-fA-F0-9]{40}$/.test(cfg.token)) {
+      preview.innerHTML = '<div style="font-family:\'Space Mono\',monospace;font-size:11px;color:rgba(196,181,253,.5);text-align:center;">Enter a valid Monad token CA above to preview</div>';
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = '/embed.js';
+    s.setAttribute('data-token', cfg.token);
+    s.setAttribute('data-widget', cfg.widget);
+    s.setAttribute('data-style', cfg.style);
+    if (cfg.license) s.setAttribute('data-license', cfg.license);
+    preview.appendChild(s);
+  }
+
+  ['bToken','bWidget','bStyle','bLicense'].forEach(function(id){
+    $(id).addEventListener('change', refreshPreview);
+    $(id).addEventListener('input', buildSnippet);
+  });
+
+  $('bCopy').addEventListener('click', function(){
+    var cfg = buildSnippet();
+    var raw = '<script\n  src="https://monshi.xyz/embed.js"\n  data-token="' + cfg.token + '"\n  data-widget="' + cfg.widget + '"\n  data-style="' + cfg.style + '"' + (cfg.license ? '\n  data-license="' + cfg.license + '"' : '') + '><\/script>';
+    navigator.clipboard.writeText(raw).then(function(){
+      var b = $('bCopy'); b.textContent = 'COPIED ✓'; b.classList.add('copied');
+      var t = $('toast'); t.classList.add('show');
+      setTimeout(function(){ b.textContent = 'COPY'; b.classList.remove('copied'); t.classList.remove('show'); }, 1800);
+    });
+  });
+
+  refreshPreview();
+})();
+</script>
+</body>
+</html>
