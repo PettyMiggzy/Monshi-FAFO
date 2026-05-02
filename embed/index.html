@@ -121,8 +121,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
         <div id="d-burn"></div>
       </div>
       <div class="demo-cell">
-        <div class="demo-lbl">🟢 TICKER WIDGET</div>
+        <div class="demo-lbl">🟢 TICKER WIDGET (BUYS + SELLS)</div>
         <div id="d-ticker"></div>
+      </div>
+      <div class="demo-cell">
+        <div class="demo-lbl">👥 HOLDERS WIDGET</div>
+        <div id="d-holders"></div>
+      </div>
+      <div class="demo-cell">
+        <div class="demo-lbl">📊 COMPARE WIDGET <span style="background:rgba(168,85,247,.2);color:#A855F7;padding:2px 6px;border-radius:4px;font-size:8px;letter-spacing:1px;margin-left:4px;">PRO</span></div>
+        <div id="d-compare"></div>
       </div>
     </div>
   </div>
@@ -140,10 +148,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
             <label>WIDGET TYPE</label>
             <select id="bWidget">
               <option value="price">💰 Price + sparkline</option>
-              <option value="ticker">🟢 Live trade ticker</option>
+              <option value="ticker">🟢 Live trade ticker (buys + sells)</option>
               <option value="buy">🚀 Buy button</option>
               <option value="burn">🔥 Burn meter</option>
+              <option value="holders">👥 Holders count</option>
+              <option value="compare">📊 Compare tokens (PRO only)</option>
             </select>
+          </div>
+          <div class="field" id="bTokensField" style="display:none;">
+            <label>COMPARE TOKENS (comma-separated CAs, max 10)</label>
+            <input id="bTokens" placeholder="0xtoken1, 0xtoken2, 0xtoken3" spellcheck="false">
           </div>
           <div class="field">
             <label>STYLE</label>
@@ -151,6 +165,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
               <option value="dark">Dark</option>
               <option value="light">Light</option>
             </select>
+          </div>
+          <div class="field" id="bAccentField" style="display:none;">
+            <label>ACCENT COLOR (PRO only) <span style="opacity:.5;">override default purple</span></label>
+            <input id="bAccent" type="color" value="#a855f7" style="height:42px;cursor:pointer;">
           </div>
           <div class="field">
             <label>LICENSE TX HASH (optional)</label>
@@ -206,8 +224,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
         <div class="tier-sub">ONE-TIME · WHITELABEL</div>
         <ul class="tier-feats">
           <li>Everything in Paid</li>
-          <li>Custom CSS overrides</li>
-          <li>Multiple tokens per page</li>
+          <li>📊 <b>Compare widget</b> — multi-token ranking</li>
+          <li>🎨 Custom <code style="background:rgba(168,85,247,.15);padding:1px 4px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#C4B5FD;">data-accent</code> color</li>
+          <li>Unlimited tokens per page</li>
           <li>Priority bug fixes + new widgets</li>
         </ul>
         <a class="tier-cta pro" href="/embed/buy.html?tier=pro">BUY PRO</a>
@@ -236,24 +255,28 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 
 <div class="toast" id="toast">Copied to clipboard ✓</div>
 
-<!-- DEMO WIDGETS — load embed.js then place 4 widgets in the demo cells -->
+<!-- DEMO WIDGETS — load embed.js then place 6 widgets in the demo cells -->
 <script>
 (function(){
   // Helper: dynamically place a script tag inside a target element
-  function plant(targetId, widget){
+  function plant(targetId, widget, extra){
     var t = document.getElementById(targetId);
     if(!t) return;
     var s = document.createElement('script');
     s.src = '/embed.js';
-    s.setAttribute('data-token','0xB744F5CDb792d8187640214C4A1c9aCE29af7777');
+    if (widget !== 'compare') s.setAttribute('data-token','0xB744F5CDb792d8187640214C4A1c9aCE29af7777');
     s.setAttribute('data-widget',widget);
     s.setAttribute('data-style','dark');
+    if (extra) Object.keys(extra).forEach(function(k){ s.setAttribute(k, extra[k]); });
     t.appendChild(s);
   }
   plant('d-price','price');
   plant('d-buy','buy');
   plant('d-burn','burn');
   plant('d-ticker','ticker');
+  plant('d-holders','holders');
+  // Compare needs a Pro license to actually render — demo shows the upgrade prompt
+  plant('d-compare','compare', { 'data-tokens':'0xB744F5CDb792d8187640214C4A1c9aCE29af7777,0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A' });
 })();
 </script>
 
@@ -264,47 +287,82 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
   var preview = $('bPreview');
   var snippet = $('bSnippet');
 
+  function syncFieldVis(){
+    var w = $('bWidget').value;
+    $('bTokensField').style.display = w === 'compare' ? 'block' : 'none';
+    // Accent only useful for Pro — show always but note in label
+    $('bAccentField').style.display = $('bLicense').value.trim() ? 'block' : 'none';
+  }
+
   function buildSnippet(){
     var token = $('bToken').value.trim();
     var widget = $('bWidget').value;
     var style = $('bStyle').value;
     var license = $('bLicense').value.trim();
-    var attrs = [
-      'src="https://monshi.xyz/embed.js"',
-      'data-token="' + (token || '0x...') + '"',
-      'data-widget="' + widget + '"',
-      'data-style="' + style + '"'
-    ];
+    var accent = $('bAccent').value;
+    var tokens = $('bTokens').value.trim();
+
+    var attrs = ['src="https://monshi.xyz/embed.js"'];
+    if (widget === 'compare') {
+      attrs.push('data-tokens="' + (tokens || '0x...,0x...') + '"');
+    } else {
+      attrs.push('data-token="' + (token || '0x...') + '"');
+    }
+    attrs.push('data-widget="' + widget + '"');
+    attrs.push('data-style="' + style + '"');
     if (license) attrs.push('data-license="' + license + '"');
+    if (license && accent && accent.toLowerCase() !== '#a855f7') attrs.push('data-accent="' + accent + '"');
+
     var html = '&lt;script\n  ' + attrs.join('\n  ') + '&gt;&lt;/script&gt;';
     snippet.innerHTML = html;
-    return { token: token, widget: widget, style: style, license: license };
+    return { token: token, widget: widget, style: style, license: license, accent: accent, tokens: tokens };
   }
 
   function refreshPreview(){
+    syncFieldVis();
     var cfg = buildSnippet();
     preview.innerHTML = '';
-    if (!/^0x[a-fA-F0-9]{40}$/.test(cfg.token)) {
+
+    if (cfg.widget === 'compare') {
+      if (!cfg.tokens) {
+        preview.innerHTML = '<div style="font-family:\'Space Mono\',monospace;font-size:11px;color:rgba(196,181,253,.5);text-align:center;">Enter comma-separated token CAs to preview compare widget</div>';
+        return;
+      }
+    } else if (!/^0x[a-fA-F0-9]{40}$/.test(cfg.token)) {
       preview.innerHTML = '<div style="font-family:\'Space Mono\',monospace;font-size:11px;color:rgba(196,181,253,.5);text-align:center;">Enter a valid Monad token CA above to preview</div>';
       return;
     }
+
     var s = document.createElement('script');
     s.src = '/embed.js';
-    s.setAttribute('data-token', cfg.token);
+    if (cfg.widget === 'compare') {
+      s.setAttribute('data-tokens', cfg.tokens);
+    } else {
+      s.setAttribute('data-token', cfg.token);
+    }
     s.setAttribute('data-widget', cfg.widget);
     s.setAttribute('data-style', cfg.style);
     if (cfg.license) s.setAttribute('data-license', cfg.license);
+    if (cfg.license && cfg.accent && cfg.accent.toLowerCase() !== '#a855f7') s.setAttribute('data-accent', cfg.accent);
     preview.appendChild(s);
   }
 
-  ['bToken','bWidget','bStyle','bLicense'].forEach(function(id){
-    $(id).addEventListener('change', refreshPreview);
-    $(id).addEventListener('input', buildSnippet);
+  ['bToken','bTokens','bWidget','bStyle','bLicense','bAccent'].forEach(function(id){
+    var el = $(id); if (!el) return;
+    el.addEventListener('change', refreshPreview);
+    el.addEventListener('input', function(){ buildSnippet(); syncFieldVis(); });
   });
 
   $('bCopy').addEventListener('click', function(){
     var cfg = buildSnippet();
-    var raw = '<script\n  src="https://monshi.xyz/embed.js"\n  data-token="' + cfg.token + '"\n  data-widget="' + cfg.widget + '"\n  data-style="' + cfg.style + '"' + (cfg.license ? '\n  data-license="' + cfg.license + '"' : '') + '><\/script>';
+    var lines = ['<script', '  src="https://monshi.xyz/embed.js"'];
+    if (cfg.widget === 'compare') lines.push('  data-tokens="' + cfg.tokens + '"');
+    else lines.push('  data-token="' + cfg.token + '"');
+    lines.push('  data-widget="' + cfg.widget + '"');
+    lines.push('  data-style="' + cfg.style + '"');
+    if (cfg.license) lines.push('  data-license="' + cfg.license + '"');
+    if (cfg.license && cfg.accent && cfg.accent.toLowerCase() !== '#a855f7') lines.push('  data-accent="' + cfg.accent + '"');
+    var raw = lines.join('\n') + '><\/script>';
     navigator.clipboard.writeText(raw).then(function(){
       var b = $('bCopy'); b.textContent = 'COPIED ✓'; b.classList.add('copied');
       var t = $('toast'); t.classList.add('show');
@@ -312,6 +370,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
     });
   });
 
+  syncFieldVis();
   refreshPreview();
 })();
 </script>

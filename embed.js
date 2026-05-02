@@ -91,16 +91,40 @@
   }
   function shortAddr(a) { return a ? a.slice(0, 6) + '…' + a.slice(-4) : ''; }
 
-  // ─── License verification (cached in localStorage) ──────────────────
+  // ─── License verification (cached in localStorage with integrity hash) ──
+  // Lightweight tamper resistance. Determined dev with browser tools can still bypass.
+  // Real protection requires server-side validation.
+  function _h(s) {
+    // tiny non-crypto hash for cache integrity (cyrb53-ish)
+    var h1 = 0xdeadbeef ^ 0, h2 = 0x41c6ce57 ^ 0;
+    for (var i = 0, ch; i < s.length; i++) {
+      ch = s.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 2654435761);
+      h2 = Math.imul(h2 ^ ch, 1597334677);
+    }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);
+    h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);
+    h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+  }
+  function _k(license) { return 'm_' + _h('lic:' + license.toLowerCase() + ':' + TREASURY); }
+  function _seal(obj) { obj._s = _h(JSON.stringify({ t: obj.tier, k: TREASURY })); return obj; }
+  function _unseal(obj) {
+    if (!obj || obj._s !== _h(JSON.stringify({ t: obj.tier, k: TREASURY }))) return null;
+    return { tier: obj.tier };
+  }
+
   function verifyLicense(license) {
     return new Promise(function (resolve) {
       if (!license || !/^0x[a-fA-F0-9]{64}$/.test(license)) {
         resolve({ tier: 'free' }); return;
       }
-      var cacheKey = 'monshi_lic_' + license.toLowerCase();
+      var cacheKey = _k(license);
       try {
-        var cached = localStorage.getItem(cacheKey);
-        if (cached) { resolve(JSON.parse(cached)); return; }
+        var cached = JSON.parse(localStorage.getItem(cacheKey) || 'null');
+        var unsealed = _unseal(cached);
+        if (unsealed) { resolve(unsealed); return; }
       } catch (e) {}
 
       Promise.all([
@@ -115,9 +139,9 @@
         var amount = BigInt('0x' + tx.input.slice(74, 138));
         if (recipient.toLowerCase() !== TREASURY) throw 0;
         var tier = amount >= LICENSE_PRO_MIN ? 'pro' : amount >= LICENSE_PAID_MIN ? 'paid' : 'free';
-        var result = { tier: tier };
+        var result = _seal({ tier: tier });
         try { localStorage.setItem(cacheKey, JSON.stringify(result)); } catch (e) {}
-        resolve(result);
+        resolve({ tier: tier });
       }).catch(function () { resolve({ tier: 'free' }); });
     });
   }
@@ -212,6 +236,33 @@
 .mw-burn-fill{height:100%;background:linear-gradient(90deg,#f97316,#fcd34d,#f97316);background-size:200% 100%;animation:mwBurnGrad 3s linear infinite;border-radius:3px;}\
 @keyframes mwBurnGrad{0%{background-position:0% 0%;}100%{background-position:200% 0%;}}\
 .mw-burn-foot{display:flex;justify-content:space-between;font-size:10px;letter-spacing:1px;font-weight:700;opacity:.6;}\
+\
+/* HOLDERS widget */\
+.mw-holders{padding:18px 20px;}\
+.mw-h-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;font-size:11px;letter-spacing:1.5px;font-weight:700;text-transform:uppercase;opacity:.7;}\
+.mw-h-emoji{font-size:18px;}\
+.mw-h-big{font-size:30px;font-weight:900;letter-spacing:-.3px;line-height:1;margin-bottom:4px;color:var(--monshi-accent,#a855f7);}\
+.mw-h-lbl{font-size:10px;letter-spacing:1.5px;opacity:.65;font-weight:700;text-transform:uppercase;margin-bottom:12px;}\
+.mw-h-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;}\
+.mw-h-cell{padding:8px 10px;background:rgba(168,85,247,.06);border-radius:6px;}\
+.mw-h-cell-l{font-size:9px;letter-spacing:1.2px;opacity:.6;font-weight:700;text-transform:uppercase;}\
+.mw-h-cell-v{font-weight:800;font-size:13px;margin-top:2px;}\
+\
+/* COMPARE widget (Pro) */\
+.mw-compare{padding:14px 16px;}\
+.mw-c-head{font-size:11px;letter-spacing:1.5px;font-weight:700;text-transform:uppercase;opacity:.7;margin-bottom:10px;}\
+.mw-c-row{display:grid;grid-template-columns:24px 1fr 90px 70px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(168,85,247,.08);font-size:12px;}\
+.mw-c-row:last-child{border:none;}\
+.mw-c-rank{font-weight:900;opacity:.5;font-size:11px;}\
+.mw-c-rank.g{color:#fcd34d;opacity:1;}\
+.mw-c-rank.s{color:#cbd5e1;opacity:1;}\
+.mw-c-rank.b{color:#cd7f32;opacity:1;}\
+.mw-c-sym{font-weight:800;}\
+.mw-c-name{font-size:9px;opacity:.55;letter-spacing:.5px;margin-top:1px;}\
+.mw-c-price{font-weight:700;text-align:right;}\
+.mw-c-chg{font-weight:800;text-align:right;font-size:11px;padding:2px 6px;border-radius:4px;}\
+.mw-c-chg.up{background:rgba(74,222,128,.15);color:#4ade80;}\
+.mw-c-chg.dn{background:rgba(239,68,68,.15);color:#ef4444;}\
 ';
     var s = document.createElement('style');
     s.textContent = css;
@@ -268,7 +319,7 @@
     setInterval(refresh, 30000);
   }
 
-  // ─── Widget: TICKER (live buys via Swap event polling) ──────────────
+  // ─── Widget: TICKER (live buys + sells via Swap event polling) ──────
   function renderTicker(host, token, license) {
     host.innerHTML = '<div class="mw-ticker"><div class="mw-ticker-head"><span class="mw-live-dot"></span><span>LIVE TRADES</span></div><div class="mw-ticker-list"><div class="monshi-loading">Loading…</div></div></div>' + makeFooter(license);
 
@@ -325,22 +376,25 @@
             return fetchDex(token).then(function (top) {
               var price = top ? parseFloat(top.priceUsd || 0) : 0;
               logs.forEach(function (log) {
-                // data: amount0(int256), amount1(int256), sqrtPriceX96(uint160), liquidity(uint128), tick(int24)
+                // V3 Swap data: amount0(int256), amount1(int256), sqrtPriceX96, liquidity, tick
                 var raw = log.data.replace('0x', '');
                 var amount0 = decodeInt256('0x' + raw.slice(0, 64));
                 var amount1 = decodeInt256('0x' + raw.slice(64, 128));
-                // For Uniswap V3: amount0/amount1 is from pool's perspective. negative = pool sent (user got it)
-                var tokenAmt = isToken0 ? -amount0 : -amount1;
-                if (tokenAmt <= 0n) return; // not a buy of our token (it's a sell)
-                var tokens = Number(tokenAmt) / Math.pow(10, tokenDecimals);
-                var recipient = '0x' + log.topics[2].slice(26);
+                // Pool's perspective: positive = pool received, negative = pool sent
+                // For our token: tokenDelta > 0 = SELL (someone gave token to pool)
+                //                tokenDelta < 0 = BUY  (pool gave token to someone)
+                var tokenDelta = isToken0 ? amount0 : amount1;
+                if (tokenDelta === 0n) return;
+                var isBuy = tokenDelta < 0n;
+                var tokens = Number(isBuy ? -tokenDelta : tokenDelta) / Math.pow(10, tokenDecimals);
+                var trader = '0x' + log.topics[2].slice(26); // recipient = trader
                 trades.unshift({
-                  buyer: recipient,
+                  trader: trader,
                   amt: tokens,
                   usd: tokens * price,
                   ts: blockTimes[log.blockNumber] || Math.floor(Date.now() / 1000),
                   tx: log.transactionHash,
-                  isBuy: true
+                  isBuy: isBuy
                 });
               });
               if (trades.length > 30) trades = trades.slice(0, 30);
@@ -358,7 +412,7 @@
         return '<a class="mw-ticker-row" href="https://explorer.monad.xyz/tx/' + t.tx + '" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">' +
           '<span class="mw-ticker-emoji">' + (t.isBuy ? '🟢' : '🔴') + '</span>' +
           '<div class="mw-ticker-mid">' +
-          '<div class="mw-ticker-buyer">' + shortAddr(t.buyer) + '</div>' +
+          '<div class="mw-ticker-buyer">' + shortAddr(t.trader) + ' ' + (t.isBuy ? 'bought' : 'sold') + '</div>' +
           '<div class="mw-ticker-amt">' + fmtNum(t.amt) + ' tokens</div>' +
           '</div>' +
           '<div style="text-align:right;">' +
@@ -429,6 +483,112 @@
     setInterval(refresh, 60000);
   }
 
+  // ─── Widget: HOLDERS ────────────────────────────────────────────────
+  function renderHolders(host, token, license) {
+    host.innerHTML = '<div class="mw-holders"><div class="monshi-loading">Loading…</div></div>' + makeFooter(license);
+
+    function tryFetchHolders() {
+      // Try Blockscout-style v2 API (most likely format for Monad explorer)
+      return fetch('https://explorer.monad.xyz/api/v2/tokens/' + token)
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+          if (d && (d.holders || d.holders_count)) {
+            return parseInt(d.holders || d.holders_count, 10);
+          }
+          // Try Blockscout v1 (etherscan-style)
+          return fetch('https://explorer.monad.xyz/api?module=token&action=getToken&contractaddress=' + token)
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (d2) {
+              if (d2 && d2.result && d2.result.holders) return parseInt(d2.result.holders, 10);
+              return null;
+            });
+        })
+        .catch(function () { return null; });
+    }
+
+    function refresh() {
+      Promise.all([tryFetchHolders(), fetchDex(token)]).then(function (r) {
+        var holders = r[0];
+        var top = r[1];
+        var c = host.querySelector('.mw-holders');
+        var sym = (top && top.baseToken && top.baseToken.symbol) || 'TOKEN';
+        var change = (top && top.priceChange && top.priceChange.h24) || 0;
+
+        if (holders === null || holders === 0) {
+          c.innerHTML =
+            '<div class="mw-h-head"><span class="mw-h-emoji">👥</span><span>$' + sym + ' Holders</span></div>' +
+            '<div class="mw-h-big">—</div>' +
+            '<div class="mw-h-lbl">data not yet indexed</div>';
+          return;
+        }
+
+        // Aggregate stats from DexScreener if available
+        var txns24 = top && top.txns && top.txns.h24 || {};
+        var totalTx = (txns24.buys || 0) + (txns24.sells || 0);
+
+        c.innerHTML =
+          '<div class="mw-h-head"><span class="mw-h-emoji">👥</span><span>$' + sym + ' Holders</span></div>' +
+          '<div class="mw-h-big">' + fmtNum(holders) + '</div>' +
+          '<div class="mw-h-lbl">unique wallets holding</div>' +
+          '<div class="mw-h-grid">' +
+          '<div class="mw-h-cell"><div class="mw-h-cell-l">24h Tx</div><div class="mw-h-cell-v">' + fmtNum(totalTx) + '</div></div>' +
+          '<div class="mw-h-cell"><div class="mw-h-cell-l">24h Δ</div><div class="mw-h-cell-v" style="color:' + (change >= 0 ? '#4ade80' : '#ef4444') + '">' + (change >= 0 ? '+' : '') + change.toFixed(2) + '%</div></div>' +
+          '</div>';
+      });
+    }
+    refresh();
+    setInterval(refresh, 120000); // refresh every 2 min
+  }
+
+  // ─── Widget: COMPARE (Pro tier — multi-token ranking) ───────────────
+  function renderCompare(host, tokens, license) {
+    if (license.tier !== 'pro') {
+      host.innerHTML =
+        '<div class="mw-compare"><div class="monshi-loading" style="padding:30px 20px;">' +
+        '👑 The <b>compare</b> widget requires a <a href="https://monshi.xyz/embed/buy.html?tier=pro" target="_blank" rel="noopener" style="color:#a855f7;">Pro license</a>' +
+        '</div></div>' + makeFooter(license);
+      return;
+    }
+    var tokenList = tokens.split(',').map(function (t) { return t.trim().toLowerCase(); }).filter(function (t) { return /^0x[a-f0-9]{40}$/.test(t); });
+    if (!tokenList.length) {
+      host.innerHTML = '<div class="mw-compare"><div class="monshi-loading">No valid tokens in data-tokens</div></div>';
+      return;
+    }
+    if (tokenList.length > 10) tokenList = tokenList.slice(0, 10);
+
+    host.innerHTML = '<div class="mw-compare"><div class="mw-c-head">📊 TOKEN COMPARISON</div><div class="mw-c-list"><div class="monshi-loading">Loading…</div></div></div>' + makeFooter(license);
+
+    function refresh() {
+      Promise.all(tokenList.map(function (t) { return fetchDex(t); })).then(function (results) {
+        var rows = results.map(function (top, i) {
+          if (!top) return { sym: tokenList[i].slice(0, 6) + '…', name: 'no pair', price: 0, change: 0, mcap: 0 };
+          return {
+            sym: (top.baseToken && top.baseToken.symbol) || '?',
+            name: (top.baseToken && top.baseToken.name) || '',
+            price: parseFloat(top.priceUsd || 0),
+            change: parseFloat(top.priceChange && top.priceChange.h24 || 0),
+            mcap: top.marketCap || top.fdv || 0,
+            ca: tokenList[i]
+          };
+        });
+        // Rank by 24h % change
+        rows.sort(function (a, b) { return b.change - a.change; });
+
+        host.querySelector('.mw-c-list').innerHTML = rows.map(function (r, idx) {
+          var rankCls = idx === 0 ? 'g' : idx === 1 ? 's' : idx === 2 ? 'b' : '';
+          return '<div class="mw-c-row">' +
+            '<div class="mw-c-rank ' + rankCls + '">#' + (idx + 1) + '</div>' +
+            '<div><div class="mw-c-sym">$' + r.sym + '</div><div class="mw-c-name">' + (r.name || r.ca.slice(0, 8)) + '</div></div>' +
+            '<div class="mw-c-price">' + fmtPrice(r.price) + '</div>' +
+            '<div class="mw-c-chg ' + (r.change >= 0 ? 'up' : 'dn') + '">' + (r.change >= 0 ? '+' : '') + r.change.toFixed(1) + '%</div>' +
+            '</div>';
+        }).join('');
+      });
+    }
+    refresh();
+    setInterval(refresh, 30000);
+  }
+
   // ─── Boot ────────────────────────────────────────────────────────────
   function init() {
     injectStyles();
@@ -440,15 +600,21 @@
 
       var widget = (script.getAttribute('data-widget') || '').toLowerCase();
       var token = (script.getAttribute('data-token') || '').toLowerCase();
+      var tokens = script.getAttribute('data-tokens') || ''; // for compare widget
       var style = (script.getAttribute('data-style') || 'dark').toLowerCase();
       var license = script.getAttribute('data-license') || '';
+      var accent = script.getAttribute('data-accent') || ''; // Pro-only
 
-      if (!token || !/^0x[a-fA-F0-9]{40}$/.test(token)) {
+      if (widget !== 'compare' && (!token || !/^0x[a-fA-F0-9]{40}$/.test(token))) {
         console.warn('[monshi-embed] missing or invalid data-token on', script);
         return;
       }
-      if (!['price', 'ticker', 'buy', 'burn'].includes(widget)) {
-        console.warn('[monshi-embed] unknown data-widget="' + widget + '". Use: price, ticker, buy, burn');
+      if (!['price', 'ticker', 'buy', 'burn', 'holders', 'compare'].includes(widget)) {
+        console.warn('[monshi-embed] unknown data-widget="' + widget + '". Use: price, ticker, buy, burn, holders, compare');
+        return;
+      }
+      if (widget === 'compare' && !tokens) {
+        console.warn('[monshi-embed] compare widget requires data-tokens="0xa,0xb,..."');
         return;
       }
 
@@ -458,10 +624,16 @@
       script.parentNode.insertBefore(host, script.nextSibling);
 
       verifyLicense(license).then(function (lic) {
+        // Pro-only: custom accent color
+        if (lic.tier === 'pro' && accent && /^#[0-9a-fA-F]{6}$/.test(accent)) {
+          host.style.setProperty('--monshi-accent', accent);
+        }
         if (widget === 'price') renderPrice(host, token, lic);
         else if (widget === 'ticker') renderTicker(host, token, lic);
         else if (widget === 'buy') renderBuy(host, token, lic);
         else if (widget === 'burn') renderBurn(host, token, lic);
+        else if (widget === 'holders') renderHolders(host, token, lic);
+        else if (widget === 'compare') renderCompare(host, tokens, lic);
       });
     });
   }
