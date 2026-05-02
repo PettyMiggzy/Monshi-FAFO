@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>THE BOUNCER — $WOLF gated pack</title>
+<meta name="description" content="The pack picks who's in. Burn $WOLF to vouch a fren. Every member is someone's bet. Reputation is the rent." />
+<meta name="theme-color" content="#870b6a" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Space Grotesk',sans-serif;
+    background:#000;
+    color:#f6f6f6;
+    line-height:1.55;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:'';
+    position:fixed;inset:0;
+    background:
+      radial-gradient(ellipse at 15% 25%, rgba(135,11,106,0.18), transparent 55%),
+      radial-gradient(ellipse at 85% 75%, rgba(155,136,250,0.10), transparent 55%);
+    pointer-events:none;z-index:0;
+  }
+  body::after{
+    content:'';
+    position:fixed;inset:0;
+    background-image:repeating-linear-gradient(0deg, rgba(255,255,255,0.013) 0, rgba(255,255,255,0.013) 1px, transparent 1px, transparent 3px);
+    pointer-events:none;z-index:1;
+  }
+  main{position:relative;z-index:2}
+  a{text-decoration:none;color:inherit}
+  button{cursor:pointer;border:none;font-family:inherit}
+  ::selection{background:#870b6a;color:#fff}
+
+  :root{
+    --magenta:#870b6a;
+    --magenta-hot:#c0148f;
+    --lavender:#9b88fa;
+    --cream:#f6f6f6;
+    --muted:#7a7a85;
+    --line:#1f1f24;
+    --good:#4eff9a;
+    --warn:#ffb84d;
+    --bad:#ff3e6a;
+    --bg:#000;
+    --surface:#0a0a0c;
+    --card:#101015;
+  }
+
+  /* ============ TYPE ============ */
+  h1,h2,h3,h4{font-family:'Anton',sans-serif;letter-spacing:.02em;text-transform:uppercase;font-weight:400}
+  .mono{font-family:'Space Mono',monospace}
+
+  /* ============ TICKER ============ */
+  .ticker-bar{
+    position:fixed;top:0;left:0;right:0;z-index:1001;
+    background:var(--magenta);
+    overflow:hidden;height:34px;
+    display:flex;align-items:center;
+    border-bottom:1px solid #b0149a;
+  }
+  .ticker-track{display:inline-flex;animation:ticker 28s linear infinite;white-space:nowrap}
+  .ticker-track span{
+    padding:0 36px;
+    font-family:'Space Mono',monospace;
+    font-size:.78rem;font-weight:700;letter-spacing:.18em;
+    color:#fff;text-transform:uppercase;
+  }
+  .ticker-track .accent{color:#ffd1f4}
+  @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  /* ============ NAV ============ */
+  .navbar{
+    position:fixed;top:34px;left:0;right:0;z-index:1000;
+    background:rgba(0,0,0,0.85);
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 28px;max-width:1240px;margin:0 auto;
+  }
+  .nav-logo{
+    display:flex;align-items:center;gap:10px;
+  }
+  .nav-logo .mark{
+    width:36px;height:36px;border-radius:8px;
+    background:linear-gradient(135deg,var(--magenta),#5a0848);
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;
+    border:1px solid rgba(155,136,250,0.4);
+  }
+  .nav-logo .name{
+    font-family:'Anton',sans-serif;
+    font-size:1.4rem;letter-spacing:.05em;
+    text-transform:uppercase;
+  }
+  .nav-logo .name .tag{color:var(--lavender);font-size:.85em}
+  .nav-links{display:flex;align-items:center;gap:30px;list-style:none}
+  .nav-links a{
+    color:var(--muted);font-size:.85rem;font-weight:600;
+    text-transform:uppercase;letter-spacing:.12em;
+    transition:color .25s;position:relative;
+  }
+  .nav-links a:hover,.nav-links a.active{color:#fff}
+  .nav-links a:hover::after,.nav-links a.active::after{
+    content:'';position:absolute;bottom:-6px;left:0;right:0;
+    height:2px;background:var(--magenta);
+  }
+  .nav-cta{
+    background:var(--magenta);color:#fff;
+    padding:10px 18px;border-radius:6px;
+    font-weight:700;font-size:.82rem;
+    text-transform:uppercase;letter-spacing:.1em;
+    border:1px solid var(--magenta-hot);
+    transition:all .2s;
+  }
+  .nav-cta:hover{
+    background:var(--magenta-hot);
+    box-shadow:0 0 20px rgba(192,20,143,0.4);
+    transform:translateY(-1px);
+  }
+  .hamburger{display:none;flex-direction:column;gap:5px;background:none;padding:6px}
+  .hamburger span{display:block;width:22px;height:2px;background:#fff;transition:.2s}
+  .hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+  .hamburger.open span:nth-child(2){opacity:0}
+  .hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+  .mobile-menu{
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,0.97);
+    z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:30px;
+  }
+  .mobile-menu.open{display:flex}
+  .mobile-menu a{
+    font-family:'Anton',sans-serif;font-size:2rem;letter-spacing:.05em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  .mobile-menu a:hover{color:#fff}
+  @media(max-width:880px){
+    .nav-links,.nav-cta-wrap{display:none}
+    .hamburger{display:flex}
+  }
+
+  /* ============ CONTAINER ============ */
+  .container{max-width:1240px;margin:0 auto;padding:0 28px}
+
+  /* ============ BUTTONS ============ */
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:14px 26px;
+    font-family:'Anton',sans-serif;
+    font-size:1rem;letter-spacing:.06em;text-transform:uppercase;
+    border-radius:6px;
+    transition:all .2s;
+    cursor:pointer;border:1px solid transparent;
+  }
+  .btn-primary{
+    background:var(--magenta);color:#fff;
+    border-color:var(--magenta-hot);
+    box-shadow:0 0 0 0 rgba(192,20,143,0.6);
+  }
+  .btn-primary:hover{
+    background:var(--magenta-hot);
+    box-shadow:0 0 30px rgba(192,20,143,0.5);
+    transform:translateY(-2px);
+  }
+  .btn-ghost{
+    background:transparent;color:#fff;
+    border-color:rgba(155,136,250,0.4);
+  }
+  .btn-ghost:hover{
+    border-color:var(--lavender);
+    background:rgba(155,136,250,0.08);
+    transform:translateY(-2px);
+  }
+  .btn-lg{padding:18px 36px;font-size:1.15rem}
+
+  /* ============ HERO ============ */
+  .hero{
+    min-height:100vh;display:flex;align-items:center;
+    padding:160px 28px 100px;
+    position:relative;overflow:hidden;
+  }
+  .hero-bg-text{
+    position:absolute;
+    bottom:-40px;left:-50px;right:-50px;
+    font-family:'Anton',sans-serif;
+    font-size:clamp(120px,22vw,340px);
+    color:transparent;-webkit-text-stroke:1.5px rgba(135,11,106,0.25);
+    text-stroke:1.5px rgba(135,11,106,0.25);
+    letter-spacing:-.02em;
+    pointer-events:none;
+    white-space:nowrap;
+    z-index:0;
+    animation:slideX 30s linear infinite;
+  }
+  @keyframes slideX{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  .hero-grid{
+    max-width:1240px;margin:0 auto;
+    display:grid;grid-template-columns:1.2fr 1fr;gap:64px;
+    align-items:center;width:100%;position:relative;z-index:1;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:'Space Mono',monospace;
+    font-size:.78rem;letter-spacing:.2em;
+    color:var(--lavender);text-transform:uppercase;
+    margin-bottom:24px;
+    padding:6px 14px;
+    border:1px solid rgba(155,136,250,0.3);
+    border-radius:100px;
+    background:rgba(155,136,250,0.06);
+  }
+  .eyebrow::before{
+    content:'';width:6px;height:6px;border-radius:50%;
+    background:var(--lavender);
+    animation:blink 1.4s infinite;
+  }
+  @keyframes blink{50%{opacity:0.3}}
+
+  .hero h1{
+    font-size:clamp(3rem,9vw,7rem);
+    line-height:.92;margin-bottom:24px;
+    color:#fff;
+  }
+  .hero h1 .pink{color:var(--magenta-hot);text-shadow:0 0 40px rgba(192,20,143,0.4)}
+  .hero h1 .strike{
+    position:relative;display:inline-block;
+  }
+  .hero h1 .strike::after{
+    content:'';position:absolute;left:-4%;right:-4%;top:46%;
+    height:8px;background:var(--magenta);transform:rotate(-2deg);
+    box-shadow:0 0 20px rgba(135,11,106,0.6);
+  }
+
+  .hero p{
+    font-size:1.15rem;line-height:1.6;color:var(--cream);
+    opacity:.85;margin-bottom:36px;max-width:580px;
+  }
+  .hero p strong{color:#fff;font-weight:700}
+  .hero p .lav{color:var(--lavender);font-weight:600}
+
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:48px}
+  .hero-stats{display:flex;gap:14px;flex-wrap:wrap}
+  .hero-stat{
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:14px 20px;
+    border-radius:6px;
+    min-width:140px;
+  }
+  .hero-stat .label{
+    font-family:'Space Mono',monospace;
+    font-size:.7rem;letter-spacing:.15em;
+    color:var(--muted);text-transform:uppercase;margin-bottom:4px;
+  }
+  .hero-stat .value{
+    font-family:'Anton',sans-serif;
+    font-size:1.5rem;letter-spacing:.04em;color:#fff;
+  }
+  .hero-stat .value.lav{color:var(--lavender)}
+  .hero-stat .value.pink{color:var(--magenta-hot)}
+
+  /* ============ HERO RIGHT — VOUCH FLOW ============ */
+  .vouch-card{
+    background:linear-gradient(160deg,rgba(135,11,106,0.12),var(--card));
+    border:1px solid rgba(135,11,106,0.4);
+    border-radius:14px;
+    padding:32px 28px;
+    position:relative;
+    box-shadow:0 0 80px rgba(135,11,106,0.15);
+  }
+  .vouch-card::before{
+    content:'';position:absolute;
+    top:-1px;left:-1px;right:-1px;bottom:-1px;
+    background:linear-gradient(135deg,var(--magenta),transparent 50%,var(--lavender));
+    border-radius:14px;z-index:-1;
+    opacity:0.6;
+  }
+  .vouch-step{
+    display:flex;align-items:flex-start;gap:14px;
+    padding:14px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .vouch-step:last-child{border-bottom:none}
+  .vouch-step .num{
+    width:30px;height:30px;flex-shrink:0;
+    background:var(--magenta);color:#fff;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Anton',sans-serif;font-size:.95rem;
+    border:1px solid var(--magenta-hot);
+  }
+  .vouch-step .body{flex:1}
+  .vouch-step h4{
+    font-size:1.1rem;margin-bottom:4px;color:#fff;
+  }
+  .vouch-step p{
+    font-size:.88rem;color:var(--muted);line-height:1.5;
+  }
+  .vouch-step p .pink{color:var(--magenta-hot);font-weight:600}
+  .vouch-step p .lav{color:var(--lavender);font-weight:600}
+
+  /* ============ SECTION BASICS ============ */
+  section{position:relative;padding:120px 0}
+  .section-tag{
+    font-family:'Space Mono',monospace;
+    font-size:.78rem;letter-spacing:.25em;
+    color:var(--magenta-hot);text-transform:uppercase;
+    margin-bottom:14px;display:block;
+  }
+  .section-title{
+    font-size:clamp(2.5rem,7vw,5rem);
+    line-height:.95;color:#fff;margin-bottom:18px;
+    max-width:900px;
+  }
+  .section-title .pink{color:var(--magenta-hot)}
+  .section-title .lav{color:var(--lavender)}
+  .section-sub{
+    font-size:1.1rem;color:var(--muted);max-width:680px;line-height:1.6;
+    margin-bottom:60px;
+  }
+
+  /* ============ THE PACK ============ */
+  .pack-section{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .pack-controls{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:30px;flex-wrap:wrap;gap:18px;
+  }
+  .filter-tabs{display:flex;gap:8px;flex-wrap:wrap}
+  .filter-tab{
+    padding:8px 16px;
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--muted);
+    font-family:'Space Mono',monospace;
+    font-size:.78rem;letter-spacing:.1em;
+    text-transform:uppercase;
+    border-radius:100px;
+    cursor:pointer;transition:all .2s;
+  }
+  .filter-tab:hover{color:#fff;border-color:var(--lavender)}
+  .filter-tab.active{
+    background:var(--magenta);color:#fff;border-color:var(--magenta-hot);
+  }
+  .pack-meta{
+    font-family:'Space Mono',monospace;font-size:.85rem;
+    color:var(--muted);
+  }
+  .pack-meta b{color:var(--lavender)}
+
+  .pack-table{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  .pack-row{
+    display:grid;
+    grid-template-columns:60px 1.4fr 1fr 1fr 0.9fr 100px;
+    gap:16px;align-items:center;
+    padding:14px 22px;
+    border-bottom:1px solid var(--line);
+    transition:background .2s;
+    font-size:.92rem;
+  }
+  .pack-row:last-child{border-bottom:none}
+  .pack-row:hover{background:rgba(135,11,106,0.05)}
+  .pack-row.head{
+    background:rgba(135,11,106,0.08);
+    font-family:'Space Mono',monospace;
+    font-size:.72rem;letter-spacing:.15em;
+    color:var(--lavender);text-transform:uppercase;
+  }
+  .pack-rank{
+    font-family:'Anton',sans-serif;font-size:1.2rem;color:var(--muted);
+  }
+  .pack-rank.top{color:var(--magenta-hot)}
+  .pack-wallet{
+    font-family:'Space Mono',monospace;font-size:.85rem;color:#fff;
+  }
+  .pack-vouchedby{
+    font-family:'Space Mono',monospace;font-size:.78rem;color:var(--muted);
+  }
+  .pack-vouchedby .arrow{color:var(--magenta-hot);margin-right:4px}
+  .pack-rep{
+    font-family:'Anton',sans-serif;font-size:1.2rem;
+  }
+  .pack-rep.high{color:var(--good)}
+  .pack-rep.mid{color:var(--lavender)}
+  .pack-rep.low{color:var(--warn)}
+  .pack-rep.bad{color:var(--bad)}
+  .pack-tier{
+    display:inline-block;padding:4px 12px;border-radius:100px;
+    font-family:'Anton',sans-serif;font-size:.78rem;letter-spacing:.05em;
+    text-transform:uppercase;
+  }
+  .tier-lone{background:linear-gradient(135deg,#ffd700,#ff7a3a);color:#000;border:1px solid #ffaa00}
+  .tier-alpha{background:rgba(192,20,143,0.18);color:var(--magenta-hot);border:1px solid var(--magenta)}
+  .tier-wolf{background:rgba(155,136,250,0.15);color:var(--lavender);border:1px solid rgba(155,136,250,0.4)}
+  .tier-pup{background:rgba(255,255,255,0.06);color:var(--cream);border:1px solid var(--line)}
+  .tier-sheep{background:rgba(255,62,106,0.1);color:var(--bad);border:1px solid rgba(255,62,106,0.3)}
+  .pack-action{
+    font-family:'Space Mono',monospace;font-size:.72rem;
+    color:var(--muted);text-align:right;letter-spacing:.1em;
+    text-transform:uppercase;
+  }
+
+  @media(max-width:980px){
+    .pack-row{grid-template-columns:40px 1fr 0.8fr 100px;font-size:.85rem;padding:12px 14px}
+    .pack-row .col-vouchedby,.pack-row .col-rep{display:none}
+  }
+
+  /* ============ TIERS DISPLAY ============ */
+  .tiers-section{padding-top:80px}
+  .tiers-grid{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:16px;
+  }
+  .tier-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:24px 18px;
+    transition:all .25s;
+    position:relative;
+  }
+  .tier-card:hover{
+    transform:translateY(-4px);
+    border-color:var(--magenta);
+    box-shadow:0 12px 40px rgba(135,11,106,0.15);
+  }
+  .tier-card .icon{
+    font-size:2.4rem;margin-bottom:14px;display:block;
+  }
+  .tier-card h4{
+    font-size:1.4rem;margin-bottom:6px;color:#fff;
+  }
+  .tier-card .threshold{
+    font-family:'Space Mono',monospace;font-size:.75rem;
+    color:var(--lavender);letter-spacing:.1em;
+    text-transform:uppercase;margin-bottom:12px;
+  }
+  .tier-card p{
+    font-size:.85rem;color:var(--muted);line-height:1.5;
+  }
+  .tier-card.lone{border-color:#ffaa00;background:linear-gradient(160deg,rgba(255,170,0,0.08),var(--card))}
+  .tier-card.lone h4{color:#ffd700}
+  .tier-card.lone .threshold{color:#ffd700}
+  .tier-card.sheep{border-color:rgba(255,62,106,0.3)}
+  .tier-card.sheep h4{color:var(--bad)}
+  .tier-card.sheep .threshold{color:var(--bad)}
+  @media(max-width:900px){.tiers-grid{grid-template-columns:repeat(2,1fr)}}
+
+  /* ============ HOWL WALL ============ */
+  .howl-section{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .howl-grid{
+    display:grid;grid-template-columns:1fr 380px;gap:32px;
+  }
+  .howl-feed{display:flex;flex-direction:column;gap:14px}
+  .howl-post{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px 22px;
+    transition:all .2s;
+  }
+  .howl-post:hover{border-color:rgba(135,11,106,0.4)}
+  .howl-post.pinned{
+    border-color:var(--magenta);
+    background:linear-gradient(160deg,rgba(135,11,106,0.1),var(--card));
+  }
+  .howl-post.pinned::before{
+    content:'📌 PACK LEADER';
+    display:block;
+    font-family:'Space Mono',monospace;font-size:.7rem;
+    letter-spacing:.15em;color:var(--magenta-hot);
+    margin-bottom:10px;
+  }
+  .howl-meta{
+    display:flex;align-items:center;gap:12px;
+    margin-bottom:10px;flex-wrap:wrap;
+  }
+  .howl-author{
+    font-family:'Space Mono',monospace;font-size:.85rem;color:#fff;font-weight:700;
+  }
+  .howl-tier{padding:2px 10px;border-radius:100px;font-family:'Anton',sans-serif;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase}
+  .howl-time{
+    font-family:'Space Mono',monospace;font-size:.72rem;color:var(--muted);
+  }
+  .howl-burn{
+    margin-left:auto;
+    font-family:'Space Mono',monospace;font-size:.72rem;
+    color:var(--magenta-hot);
+    background:rgba(135,11,106,0.1);
+    padding:3px 8px;border-radius:4px;
+  }
+  .howl-body{
+    font-size:1rem;line-height:1.55;color:var(--cream);
+    margin-bottom:14px;
+  }
+  .howl-actions{
+    display:flex;gap:8px;align-items:center;
+  }
+  .howl-react{
+    background:transparent;
+    border:1px solid var(--line);
+    padding:6px 14px;border-radius:100px;
+    color:var(--muted);
+    font-family:'Space Mono',monospace;
+    font-size:.78rem;font-weight:700;
+    cursor:pointer;transition:all .2s;
+    display:flex;align-items:center;gap:6px;
+  }
+  .howl-react:hover{color:#fff;border-color:var(--lavender)}
+  .howl-react.howl:hover,.howl-react.howl.active{
+    color:var(--lavender);border-color:var(--lavender);
+    background:rgba(155,136,250,0.08);
+  }
+  .howl-react.sheep:hover,.howl-react.sheep.active{
+    color:var(--bad);border-color:var(--bad);
+    background:rgba(255,62,106,0.08);
+  }
+
+  .howl-side{display:flex;flex-direction:column;gap:18px}
+  .howl-compose{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px;
+  }
+  .howl-compose h3{
+    font-size:1.4rem;margin-bottom:14px;color:#fff;
+  }
+  .howl-compose textarea{
+    width:100%;
+    background:rgba(0,0,0,0.4);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:12px 14px;
+    color:#fff;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:.92rem;
+    min-height:90px;
+    resize:vertical;
+    margin-bottom:12px;
+  }
+  .howl-compose textarea:focus{
+    outline:none;border-color:var(--magenta);
+  }
+  .howl-compose .row{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:'Space Mono',monospace;font-size:.78rem;
+    color:var(--muted);
+  }
+  .howl-compose .cost{color:var(--magenta-hot);font-weight:700}
+  .howl-compose .btn{margin-top:10px;width:100%;justify-content:center}
+
+  .howl-leaderboard{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:22px;
+  }
+  .howl-leaderboard h3{
+    font-size:1.3rem;margin-bottom:16px;color:#fff;
+    display:flex;align-items:center;gap:8px;
+  }
+  .leader-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 0;border-bottom:1px solid var(--line);
+    font-family:'Space Mono',monospace;
+  }
+  .leader-row:last-child{border-bottom:none}
+  .leader-row .rank{color:var(--magenta-hot);font-weight:700;width:24px}
+  .leader-row .name{font-size:.85rem;color:#fff;flex:1;margin:0 10px}
+  .leader-row .score{font-family:'Anton',sans-serif;font-size:1rem;color:var(--lavender)}
+
+  @media(max-width:900px){.howl-grid{grid-template-columns:1fr}}
+
+  /* ============ FAQ ============ */
+  .faq-list{display:flex;flex-direction:column;gap:10px;max-width:880px}
+  .faq-item{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:22px 26px;
+    cursor:pointer;transition:all .2s;
+  }
+  .faq-item:hover{border-color:var(--magenta)}
+  .faq-q{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:'Anton',sans-serif;
+    font-size:1.2rem;letter-spacing:.03em;
+    text-transform:uppercase;color:#fff;
+  }
+  .faq-q .arrow{
+    color:var(--magenta-hot);font-size:1.4rem;transition:transform .2s;
+  }
+  .faq-item.open .arrow{transform:rotate(45deg)}
+  .faq-q .arrow::before{content:'+'}
+  .faq-a{
+    margin-top:12px;font-size:.95rem;line-height:1.6;
+    color:var(--muted);display:none;
+  }
+  .faq-item.open .faq-a{display:block}
+  .faq-a strong{color:#fff}
+  .faq-a .lav{color:var(--lavender)}
+  .faq-a .pink{color:var(--magenta-hot)}
+
+  /* ============ FOOTER ============ */
+  footer{
+    border-top:1px solid var(--line);
+    padding:50px 0 30px;
+    background:#000;
+  }
+  .footer-grid{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:20px;flex-wrap:wrap;
+  }
+  .footer-logo{
+    font-family:'Anton',sans-serif;
+    font-size:1.4rem;letter-spacing:.05em;
+    text-transform:uppercase;
+    display:flex;align-items:center;gap:10px;
+  }
+  .footer-meta{
+    font-family:'Space Mono',monospace;font-size:.78rem;
+    color:var(--muted);letter-spacing:.1em;
+  }
+  .draft-stamp{
+    border:1px dashed var(--magenta-hot);
+    color:var(--magenta-hot);
+    padding:6px 14px;border-radius:100px;
+    font-family:'Space Mono',monospace;font-size:.72rem;
+    letter-spacing:.15em;text-transform:uppercase;
+  }
+
+  @media(max-width:900px){
+    .hero-grid{grid-template-columns:1fr;gap:48px}
+  }
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-bar" aria-hidden="true">
+  <div class="ticker-track">
+    <span>// THE PACK PICKS WHO'S IN.</span>
+    <span class="accent">// 1 $WOLF BURNED PER VOUCH.</span>
+    <span>// REPUTATION IS THE RENT.</span>
+    <span class="accent">// VOUCH BAD. LOSE REP.</span>
+    <span>// LONE ALPHAS GET A THRONE.</span>
+    <span class="accent">// SHEEP GET WHAT SHEEP DESERVE.</span>
+    <span>// THE PACK PICKS WHO'S IN.</span>
+    <span class="accent">// 1 $WOLF BURNED PER VOUCH.</span>
+    <span>// REPUTATION IS THE RENT.</span>
+    <span class="accent">// VOUCH BAD. LOSE REP.</span>
+    <span>// LONE ALPHAS GET A THRONE.</span>
+    <span class="accent">// SHEEP GET WHAT SHEEP DESERVE.</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<header class="navbar">
+  <nav class="nav-inner">
+    <a href="#home" class="nav-logo">
+      <div class="mark">🐺</div>
+      <div class="name">THE BOUNCER<span class="tag"> · $WOLF</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#home" class="active">Home</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#pack">The Pack</a></li>
+      <li><a href="#howl">Howl Wall</a></li>
+      <li><a href="#tiers">Ranks</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-cta-wrap">
+      <a href="https://nad.fun/tokens/0x8361a59d340466211ad4aB41C09a32e4530a7777" target="_blank" rel="noopener noreferrer" class="nav-cta">BUY $WOLF</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#home">Home</a>
+  <a href="#how">How It Works</a>
+  <a href="#pack">The Pack</a>
+  <a href="#howl">Howl Wall</a>
+  <a href="#tiers">Ranks</a>
+  <a href="#faq">FAQ</a>
+  <a href="https://nad.fun/tokens/0x8361a59d340466211ad4aB41C09a32e4530a7777" target="_blank" rel="noopener noreferrer" class="btn btn-primary">BUY $WOLF</a>
+</div>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="home">
+    <div class="hero-bg-text">PACK PACK PACK PACK PACK PACK PACK</div>
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">// MEMBERSHIP IS EARNED · NOT BOUGHT</div>
+        <h1>NOT EVERY DOG<br/>IS <span class="strike">A WOLF.</span><br/><span class="pink">PROVE IT.</span></h1>
+        <p>
+          The Bouncer is <strong>$WOLF</strong>'s gated pack. You don't pay your way in — somebody <strong>vouches for you</strong>. They burn a <span class="lav">$WOLF</span> to do it. Their reputation rides on whether you behave. Vouch in a sniper bot, you take the hit. Vouch in a real one, you climb.
+        </p>
+        <p style="margin-top:-20px">
+          The <strong>Pack</strong> is public. Every member traceable to who let them in. <span class="lav">Sheep</span> at the bottom. <span class="pink">Lone Alphas</span> on the throne. Every wallet has a number. Every number has a face.
+        </p>
+        <div class="hero-cta">
+          <a href="#pack" class="btn btn-primary btn-lg">VIEW THE PACK 🐺</a>
+          <a href="#how" class="btn btn-ghost btn-lg">HOW IT WORKS</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="label">// PACK SIZE</div>
+            <div class="value pink">1,247</div>
+          </div>
+          <div class="hero-stat">
+            <div class="label">// PENDING</div>
+            <div class="value lav">38</div>
+          </div>
+          <div class="hero-stat">
+            <div class="label">// $WOLF BURNED</div>
+            <div class="value">2.41M</div>
+          </div>
+          <div class="hero-stat">
+            <div class="label">// LONE ALPHAS</div>
+            <div class="value pink">7</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vouch flow card -->
+      <div class="vouch-card">
+        <div class="eyebrow" style="margin-bottom:18px">// THE VOUCH FLOW</div>
+        <div class="vouch-step">
+          <div class="num">1</div>
+          <div class="body">
+            <h4>FIND A FREN</h4>
+            <p>An existing pack member commits to vouch for you. <span class="lav">Their rep is on the line.</span></p>
+          </div>
+        </div>
+        <div class="vouch-step">
+          <div class="num">2</div>
+          <div class="body">
+            <h4>BURN THE FEE</h4>
+            <p>They burn <span class="pink">1 $WOLF</span> minimum to admit you. Cost scales <span class="lav">up</span> if their rep is low.</p>
+          </div>
+        </div>
+        <div class="vouch-step">
+          <div class="num">3</div>
+          <div class="body">
+            <h4>YOU'RE IN</h4>
+            <p>Wallet joins the public Pack list. Voucher chain shown forever. <span class="pink">Behave or it traces back.</span></p>
+          </div>
+        </div>
+        <div class="vouch-step">
+          <div class="num">4</div>
+          <div class="body">
+            <h4>CLIMB THE RANK</h4>
+            <p>Hold, post, vouch others wisely → <span class="lav">rep up</span>. Dump, scam, snipe → <span class="pink">rep down</span>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section id="how">
+    <div class="container">
+      <span class="section-tag">// SECTION 01 · MECHANIC</span>
+      <h2 class="section-title">HOW THE <span class="pink">BOUNCER</span> WORKS.</h2>
+      <p class="section-sub">No KYC. No Discord verification dance. The pack vouches for the pack. Skin in the game means somebody had to spend $WOLF to admit you. They want you to win.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:10px;padding:30px 26px">
+          <div style="font-family:'Space Mono',monospace;font-size:.78rem;color:var(--magenta-hot);letter-spacing:.2em;margin-bottom:14px">// 01 ENTRY</div>
+          <h3 style="font-size:1.6rem;margin-bottom:10px;color:#fff">VOUCHED IN</h3>
+          <p style="color:var(--muted);font-size:.95rem;line-height:1.6">Membership requires a sponsor. Existing member burns 1 $WOLF (more if their rep is low) to add you. Their reputation now depends on your behavior. Public chain. No anonymous adds.</p>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:10px;padding:30px 26px">
+          <div style="font-family:'Space Mono',monospace;font-size:.78rem;color:var(--magenta-hot);letter-spacing:.2em;margin-bottom:14px">// 02 RANK</div>
+          <h3 style="font-size:1.6rem;margin-bottom:10px;color:#fff">REP COMPOUNDS</h3>
+          <p style="color:var(--muted);font-size:.95rem;line-height:1.6">Hold $WOLF, post on the Howl Wall, vouch good frens → rep up. Dump within 7d, get reported, vouch in a bad actor → rep down. Five tiers from <strong>Sheep</strong> to <strong>Lone Alpha</strong>.</p>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:10px;padding:30px 26px">
+          <div style="font-family:'Space Mono',monospace;font-size:.78rem;color:var(--magenta-hot);letter-spacing:.2em;margin-bottom:14px">// 03 PERKS</div>
+          <h3 style="font-size:1.6rem;margin-bottom:10px;color:#fff">WOLVES WIN</h3>
+          <p style="color:var(--muted);font-size:.95rem;line-height:1.6">Higher tier = cheaper vouches, Howl Wall priority, voting weight on pack matters, real merch eligibility. Lone Alphas get an engraved throne slot on the homepage. <strong>Sheep</strong> get publicly mocked. Self-balancing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ THE PACK ============ -->
+  <section class="pack-section" id="pack">
+    <div class="container">
+      <span class="section-tag">// SECTION 02 · LIVE</span>
+      <h2 class="section-title">THE <span class="pink">PACK.</span> PUBLIC.</h2>
+      <p class="section-sub">Every member, every voucher, every rep score. Receipts on the chain. Click any wallet for full vouch history.</p>
+
+      <div class="pack-controls">
+        <div class="filter-tabs">
+          <button class="filter-tab active">ALL · 1,247</button>
+          <button class="filter-tab">LONE ALPHAS · 7</button>
+          <button class="filter-tab">ALPHAS · 84</button>
+          <button class="filter-tab">WOLVES · 412</button>
+          <button class="filter-tab">PUPS · 619</button>
+          <button class="filter-tab">SHEEP · 125</button>
+        </div>
+        <div class="pack-meta">// SORTED BY <b>REP</b> · LIVE</div>
+      </div>
+
+      <div class="pack-table">
+        <div class="pack-row head">
+          <div>RANK</div>
+          <div>WALLET</div>
+          <div class="col-vouchedby">VOUCHED BY</div>
+          <div class="col-rep">REP</div>
+          <div>TIER</div>
+          <div>JOINED</div>
+        </div>
+
+        <div class="pack-row">
+          <div class="pack-rank top">01</div>
+          <div class="pack-wallet">0xb9d4...467f</div>
+          <div class="col-vouchedby pack-vouchedby"><span class="arrow">←</span> GENESIS</div>
+          <div class="col-rep pack-rep high">9,841</div>
+          <div><span class="pack-tier tier-lone">LONE ALPHA</span></div>
+          <div class="pack-action">428D AGO</div>
+        </div>
+        <div class="pack-row">
+          <div class="pack-rank top">02</div>
+          <div class="pack-wallet">0x57c8...2a16</div>
+          <div class="col-vouchedby pack-vouchedby"><span class="arrow">←</span> 0xb9d4...467f</div>
+          <div class="col-rep pack-rep high">8,720</div>
+          <div><span class="pack-tier tier-lone">LONE ALPHA</span></div>
+          <div class="pack-action">418D AGO</div>
+        </div>
+        <div class="pack-row">
+          <div class="pack-rank top">03</div>
+          <div class="pack-wallet">0xa9f6...0526</div>
+          <div class="col-vouchedby pack-vouchedby"><span class="arrow">←</span> 0xb9d4...467f</div>
+          <div class="col-rep pack-rep high">7,450</div>
+          <div><span class="pack-tier tier-alpha">ALPHA</span></div>
+          <div class="pack-action">401D AGO</div>
+        </div>
+        <div class="pack-row">
+          <div class="pack-rank">04</div>
+          <div class="pack-wallet">0x3bd3...433a</div>
+          <div class="col-vouchedby pack-vouchedby"><span class="arrow">←</span> 0xa9f6...0526</div>
+          <div class="col-rep pack-rep high">6,892</div>
+          <div><span class="pack-tier tier-alpha">ALPHA</span></div>
+          <div class="pack-action">387D AGO</div>
+        </div>
+        <div class="pack-row">
+          <div class="pack-rank">05</div>
+          <div class="pack-wallet">0x100d...de06</div>
+          <div class="col-vouchedby pack-vouchedby"><span class="arrow">←</span> 0x57c8...2a16</div>
+          <div class="col-rep pack-rep mid">5,210</div>
+          <div><span class="pack-tier tier-wolf">WOLF</span></div>
+          <div class="pack-action">312D AGO</div>
+        </div>
+        <div class="pack-row">
+          <div class="pack-rank">06</div>
+          <div class="pack-wallet">0x7d03...da52</div>
+          <div class="col-vouchedby pack-vouchedby"><span class="arrow">←</span> 0xa9f6...0526</div>
+          <div class="col-rep pack-rep mid">4,887</div>
+          <div><span class="pack-tier tier-wolf">WOLF</span></div>
+          <div class="pack-action">287D AGO</div>
+        </div>
+        <div class="pack-row">
+          <div class="pack-rank">07</div>
+          <div class="pack-wallet">0xaca8...7777</div>
+          <div class="col-vouchedby pack-vouchedby"><span class="arrow">←</span> 0xb9d4...467f</div>
+          <div class="col-rep pack-rep mid">4,201</div>
+          <div><span class="pack-tier tier-wolf">WOLF</span></div>
+          <div class="pack-action">203D AGO</div>
+        </div>
+        <div class="pack-row">
+          <div class="pack-rank">08</div>
+          <div class="pack-wallet">0x8361...7777</div>
+          <div class="col-vouchedby pack-vouchedby"><span class="arrow">←</span> 0xaca8...7777</div>
+          <div class="col-rep pack-rep mid">3,109</div>
+          <div><span class="pack-tier tier-pup">PUP</span></div>
+          <div class="pack-action">119D AGO</div>
+        </div>
+        <div class="pack-row">
+          <div class="pack-rank">09</div>
+          <div class="pack-wallet">0x6a93...a519</div>
+          <div class="col-vouchedby pack-vouchedby"><span class="arrow">←</span> 0x100d...de06</div>
+          <div class="col-rep pack-rep mid">2,840</div>
+          <div><span class="pack-tier tier-pup">PUP</span></div>
+          <div class="pack-action">87D AGO</div>
+        </div>
+        <div class="pack-row">
+          <div class="pack-rank">10</div>
+          <div class="pack-wallet">0x88a3...e021</div>
+          <div class="col-vouchedby pack-vouchedby"><span class="arrow">←</span> 0x3bd3...433a</div>
+          <div class="col-rep pack-rep mid">1,907</div>
+          <div><span class="pack-tier tier-pup">PUP</span></div>
+          <div class="pack-action">52D AGO</div>
+        </div>
+        <div class="pack-row">
+          <div class="pack-rank">..</div>
+          <div class="pack-wallet">0xfa9c...0028</div>
+          <div class="col-vouchedby pack-vouchedby"><span class="arrow">←</span> 0x223c...0771</div>
+          <div class="col-rep pack-rep low">412</div>
+          <div><span class="pack-tier tier-pup">PUP</span></div>
+          <div class="pack-action">14D AGO</div>
+        </div>
+        <div class="pack-row">
+          <div class="pack-rank">..</div>
+          <div class="pack-wallet">0x223c...0771</div>
+          <div class="col-vouchedby pack-vouchedby"><span class="arrow">←</span> 0x6dd1...0e80</div>
+          <div class="col-rep pack-rep bad">-241</div>
+          <div><span class="pack-tier tier-sheep">SHEEP</span></div>
+          <div class="pack-action">23D AGO</div>
+        </div>
+        <div class="pack-row">
+          <div class="pack-rank">..</div>
+          <div class="pack-wallet">0x6dd1...0e80</div>
+          <div class="col-vouchedby pack-vouchedby"><span class="arrow">←</span> 0xb02d...8415</div>
+          <div class="col-rep pack-rep bad">-512</div>
+          <div><span class="pack-tier tier-sheep">SHEEP</span></div>
+          <div class="pack-action">31D AGO</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TIERS ============ -->
+  <section class="tiers-section" id="tiers">
+    <div class="container">
+      <span class="section-tag">// SECTION 03 · HIERARCHY</span>
+      <h2 class="section-title">FIVE <span class="lav">RANKS.</span> ONE PACK.</h2>
+      <p class="section-sub">No buy-your-tier. Only earned. Behavior history is permanent. Your wallet wears it forever.</p>
+      <div class="tiers-grid">
+        <div class="tier-card sheep">
+          <span class="icon">🐑</span>
+          <h4>SHEEP</h4>
+          <div class="threshold">REP &lt; 0</div>
+          <p>Bad faith actors. Public shame. Vouch costs 5x. No Howl Wall posting. Earned, not assigned.</p>
+        </div>
+        <div class="tier-card">
+          <span class="icon">🐶</span>
+          <h4>PUP</h4>
+          <div class="threshold">REP 0 — 2,500</div>
+          <p>Default tier on entry. Can post on Howl Wall. Standard 1 $WOLF vouch cost. Build rep to climb.</p>
+        </div>
+        <div class="tier-card">
+          <span class="icon">🐺</span>
+          <h4>WOLF</h4>
+          <div class="threshold">REP 2,500 — 5,000</div>
+          <p>Pack regular. Half-price vouches. Howl Wall priority. Voting weight on pack proposals.</p>
+        </div>
+        <div class="tier-card">
+          <span class="icon">🌙</span>
+          <h4>ALPHA</h4>
+          <div class="threshold">REP 5,000 — 8,000</div>
+          <p>Trusted member. Free vouches once a week. Pinned posts. Real merch tier eligibility. Pack-leader badge.</p>
+        </div>
+        <div class="tier-card lone">
+          <span class="icon">👑</span>
+          <h4>LONE ALPHA</h4>
+          <div class="threshold">TOP 1% · REP 8,000+</div>
+          <p>The throne. Permanent slot on the homepage. Custom badge. Pack-wide veto on bad-faith reports. Forever.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOWL WALL ============ -->
+  <section class="howl-section" id="howl">
+    <div class="container">
+      <span class="section-tag">// SECTION 04 · GATED FEED</span>
+      <h2 class="section-title">THE <span class="pink">HOWL</span> WALL.</h2>
+      <p class="section-sub">Pack only. Burn 1 $WOLF to post. Pack reacts: 🐺 howl with · 🐑 sheep dismiss. Top howls amplify, the howler gets pinned for the day.</p>
+
+      <div class="howl-grid">
+        <div class="howl-feed">
+          <article class="howl-post pinned">
+            <div class="howl-meta">
+              <span class="howl-author">0xb9d4...467f</span>
+              <span class="howl-tier tier-lone">LONE ALPHA</span>
+              <span class="howl-time">2H AGO</span>
+              <span class="howl-burn">-1 $WOLF</span>
+            </div>
+            <div class="howl-body">monad's about to get loud. anyone still sleeping on the L1 roadmap is gonna be the meal. pack: keep the volume up. sheep: keep crying.</div>
+            <div class="howl-actions">
+              <button class="howl-react howl active"><span>🐺</span><span>HOWL · 421</span></button>
+              <button class="howl-react sheep"><span>🐑</span><span>3</span></button>
+            </div>
+          </article>
+
+          <article class="howl-post">
+            <div class="howl-meta">
+              <span class="howl-author">0xa9f6...0526</span>
+              <span class="howl-tier tier-alpha">ALPHA</span>
+              <span class="howl-time">5H AGO</span>
+              <span class="howl-burn">-1 $WOLF</span>
+            </div>
+            <div class="howl-body">just vouched 0x88a3...e021. dude's been holding 90 days, never sold under-30s. that's how u find real ones. rep on the line.</div>
+            <div class="howl-actions">
+              <button class="howl-react howl"><span>🐺</span><span>HOWL · 287</span></button>
+              <button class="howl-react sheep"><span>🐑</span><span>12</span></button>
+            </div>
+          </article>
+
+          <article class="howl-post">
+            <div class="howl-meta">
+              <span class="howl-author">0x57c8...2a16</span>
+              <span class="howl-tier tier-lone">LONE ALPHA</span>
+              <span class="howl-time">8H AGO</span>
+              <span class="howl-burn">-1 $WOLF</span>
+            </div>
+            <div class="howl-body">reminder: the pack rejected 12 vouches this week. all sniper bots traced via mempool patterns. their vouchers all took -50 rep. play stupid games ser</div>
+            <div class="howl-actions">
+              <button class="howl-react howl"><span>🐺</span><span>HOWL · 198</span></button>
+              <button class="howl-react sheep"><span>🐑</span><span>4</span></button>
+            </div>
+          </article>
+
+          <article class="howl-post">
+            <div class="howl-meta">
+              <span class="howl-author">0x3bd3...433a</span>
+              <span class="howl-tier tier-alpha">ALPHA</span>
+              <span class="howl-time">12H AGO</span>
+              <span class="howl-burn">-1 $WOLF</span>
+            </div>
+            <div class="howl-body">bought another bag. holding through the chop. wolf doesn't care about ur 4h candles. wolf cares about the moon</div>
+            <div class="howl-actions">
+              <button class="howl-react howl"><span>🐺</span><span>HOWL · 142</span></button>
+              <button class="howl-react sheep"><span>🐑</span><span>9</span></button>
+            </div>
+          </article>
+
+          <article class="howl-post">
+            <div class="howl-meta">
+              <span class="howl-author">0x100d...de06</span>
+              <span class="howl-tier tier-wolf">WOLF</span>
+              <span class="howl-time">18H AGO</span>
+              <span class="howl-burn">-1 $WOLF</span>
+            </div>
+            <div class="howl-body">honest take: vouching system is the only memecoin gate that's worked. real onboarding metric. real burn pressure. zero KYC theater.</div>
+            <div class="howl-actions">
+              <button class="howl-react howl"><span>🐺</span><span>HOWL · 89</span></button>
+              <button class="howl-react sheep"><span>🐑</span><span>2</span></button>
+            </div>
+          </article>
+
+          <article class="howl-post">
+            <div class="howl-meta">
+              <span class="howl-author">0x223c...0771</span>
+              <span class="howl-tier tier-sheep">SHEEP</span>
+              <span class="howl-time">1D AGO</span>
+              <span class="howl-burn">-5 $WOLF</span>
+            </div>
+            <div class="howl-body">y'all are too harsh. sold a little. didn't even rug. this rep system is rigged.</div>
+            <div class="howl-actions">
+              <button class="howl-react howl"><span>🐺</span><span>4</span></button>
+              <button class="howl-react sheep active"><span>🐑</span><span>SHEEP · 312</span></button>
+            </div>
+          </article>
+        </div>
+
+        <aside class="howl-side">
+          <div class="howl-compose">
+            <h3>POST A HOWL</h3>
+            <textarea placeholder="say something the pack should hear..."></textarea>
+            <div class="row">
+              <span>// COST</span>
+              <span class="cost">1 $WOLF · BURNED</span>
+            </div>
+            <button class="btn btn-primary">BURN · POST 🔥</button>
+          </div>
+
+          <div class="howl-leaderboard">
+            <h3>🏆 PACK LEADERS · 7D</h3>
+            <div class="leader-row"><span class="rank">1</span><span class="name">0xb9d4...467f</span><span class="score">2,418</span></div>
+            <div class="leader-row"><span class="rank">2</span><span class="name">0x57c8...2a16</span><span class="score">1,892</span></div>
+            <div class="leader-row"><span class="rank">3</span><span class="name">0xa9f6...0526</span><span class="score">1,201</span></div>
+            <div class="leader-row"><span class="rank">4</span><span class="name">0x3bd3...433a</span><span class="score">897</span></div>
+            <div class="leader-row"><span class="rank">5</span><span class="name">0x100d...de06</span><span class="score">643</span></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section id="faq">
+    <div class="container">
+      <span class="section-tag">// SECTION 05 · QUESTIONS</span>
+      <h2 class="section-title">QUESTIONS, <span class="pink">SER?</span></h2>
+      <div class="faq-list" style="margin-top:50px">
+        <div class="faq-item open">
+          <div class="faq-q">CAN I JUST BUY MY WAY IN? <span class="arrow"></span></div>
+          <div class="faq-a">No. Holding $WOLF doesn't get you in the Pack. <strong>Somebody has to vouch you</strong>. Membership is social, not financial. You can hold a bag forever and still be outside the pack if no one bets their rep on you.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">WHAT GETS MY REP DOCKED? <span class="arrow"></span></div>
+          <div class="faq-a">Selling more than <span class="pink">50% of your bag in 7 days</span>, getting reported by 5+ pack members for bad-faith behavior, vouching in a wallet that turns out to be a sniper bot, or sniping at a launch on a Pad-launched token. Repeat offenses = SHEEP tier. Public.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">CAN I GET KICKED? <span class="arrow"></span></div>
+          <div class="faq-a">Yes. If 10+ Alphas + Lone Alphas vote to remove a member, they're out. Their voucher chain takes a rep hit too. <span class="lav">Removed members can re-apply</span> after 30 days, but they need a vouch from an Alpha or higher (more expensive).</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">WHY VOUCH IF I PAY THE PRICE? <span class="arrow"></span></div>
+          <div class="faq-a">Because <strong>good vouches build rep faster than anything else</strong>. Vouch in a wallet that climbs to Alpha — you get rep multipliers from their progress. Lone Alphas in the current pack got there mostly by vouching wisely, not by holding longest.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">WHAT DO LONE ALPHAS ACTUALLY GET? <span class="arrow"></span></div>
+          <div class="faq-a">Engraved homepage slot. Custom emoji badge visible across the ecosystem. Veto power on close pack votes. Free vouches forever. <strong>And bragging rights</strong>. The list of all Lone Alphas is permanent — wallets that hit it once stay marked even if they later drop in rank.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">IS THIS LIVE? <span class="arrow"></span></div>
+          <div class="faq-a">Right now: <span class="pink">prototype</span>. Mechanics spec'd, member data is mock. Live deployment is the team's call. If you're seeing this, you're early.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-logo">
+        <span style="font-size:1.4rem">🐺</span>
+        <span>THE BOUNCER · $WOLF</span>
+      </div>
+      <div class="draft-stamp">PROTOTYPE · NOT YET DEPLOYED</div>
+      <div class="footer-meta">// THE PACK PICKS WHO'S IN · 2026</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.addEventListener('click', () => item.classList.toggle('open'));
+  });
+
+  // Filter tabs
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // Howl react toggles
+  document.querySelectorAll('.howl-react').forEach(btn => {
+    btn.addEventListener('click', () => btn.classList.toggle('active'));
+  });
+
+  // Hamburger
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+  });
+  mobileMenu.querySelectorAll('a').forEach(l => {
+    l.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  // Active nav based on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  function updateNav() {
+    const sy = window.scrollY + 160;
+    sections.forEach(s => {
+      const top = s.offsetTop, h = s.offsetHeight, id = s.getAttribute('id');
+      if (sy >= top && sy < top + h) {
+        navLinks.forEach(l => {
+          l.classList.remove('active');
+          if (l.getAttribute('href') === '#' + id) l.classList.add('active');
+        });
+      }
+    });
+  }
+  window.addEventListener('scroll', updateNav, { passive: true });
+
+  // Compose post button mock
+  const composeBtn = document.querySelector('.howl-compose .btn');
+  composeBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const ta = document.querySelector('.howl-compose textarea');
+    if (!ta.value.trim()) return;
+    composeBtn.textContent = '✓ HOWL POSTED · 1 $WOLF BURNED';
+    composeBtn.style.background = '#4eff9a';
+    composeBtn.style.color = '#000';
+    setTimeout(() => {
+      composeBtn.textContent = 'BURN · POST 🔥';
+      composeBtn.style.background = '';
+      composeBtn.style.color = '';
+      ta.value = '';
+    }, 2400);
+  });
+</script>
+</body>
+</html>
