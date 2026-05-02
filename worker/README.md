@@ -186,3 +186,81 @@ pm2 delete monshi-chat-bridge
 ```
 
 The web chat keeps working standalone (people just won't see TG messages and TG won't see web messages).
+
+---
+
+# Pack Map (`/map.html`) Supabase setup
+
+Separate from the chat bridge — but lives in the same Supabase project. Run this SQL once:
+
+```sql
+create table public.monshi_pack_locations (
+  wallet_hash   text       primary key,
+  lat           double precision not null check (lat between -90 and 90),
+  lng           double precision not null check (lng between -180 and 180),
+  country_code  text,
+  country       text,
+  city          text,
+  first_seen    timestamptz default now(),
+  last_seen     timestamptz default now()
+);
+
+create index pack_locations_country_idx on public.monshi_pack_locations (country_code);
+create index pack_locations_last_seen_idx on public.monshi_pack_locations (last_seen desc);
+
+alter table public.monshi_pack_locations enable row level security;
+
+-- Anyone can read pinned locations (anonymized, no wallet exposed)
+create policy "anon read all"
+  on public.monshi_pack_locations for select
+  to anon
+  using (true);
+
+-- Anyone can insert their own pin (wallet_hash is SHA-256, validated by length)
+create policy "anon insert own"
+  on public.monshi_pack_locations for insert
+  to anon
+  with check (
+    char_length(wallet_hash) = 64
+    and lat between -90 and 90
+    and lng between -180 and 180
+  );
+
+-- Anyone can update their own row (re-pin / refresh last_seen)
+create policy "anon update own"
+  on public.monshi_pack_locations for update
+  to anon
+  using (true)
+  with check (true);
+
+-- Service role can do anything (admin / cleanup tasks)
+create policy "service all"
+  on public.monshi_pack_locations for all
+  to service_role
+  using (true) with check (true);
+```
+
+### How privacy works
+
+1. User connects wallet
+2. Page reads their wallet address
+3. Page computes `SHA-256(wallet_address.toLowerCase())` **in the browser** via SubtleCrypto API
+4. Only the hash is sent to Supabase — the address never leaves the browser
+5. Lat/lng rounded to 2 decimal places (~10 km grid) before storage
+6. There's no rainbow-table risk for full addresses (2^160 keyspace) — practically irreversible
+
+### What runs against the table
+
+- `/map.html` selects all rows (anon read) → renders globe
+- `/map.html` upserts one row per pin (anon insert + update) → adds dot
+- No worker / cron needed — table is purely client-driven
+
+### Optional cleanup cron
+
+If you want stale pins to expire (e.g. 90 days inactive), run this periodically (server-side or scheduled Supabase function):
+
+```sql
+delete from public.monshi_pack_locations
+where last_seen < now() - interval '90 days';
+```
+
