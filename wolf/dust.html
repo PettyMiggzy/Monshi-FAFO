@@ -347,15 +347,28 @@ const RPC_URL = 'https://rpc.monad.xyz';
 const EXPLORER = 'https://monadexplorer.com';
 const DEAD_ADDR = '0x000000000000000000000000000000000000dEaD';
 
+// ─── V2 INTEGRATIONS · drop in keys to enable ───
+// Alchemy: https://www.alchemy.com/ (free 300M CU/month) — replaces SCAN_LIST with full wallet scan
+const ALCHEMY_KEY = ''; // <-- paste free Alchemy Monad key here to enable live full-wallet scan
+const ALCHEMY_URL = ALCHEMY_KEY ? `https://monad-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}` : null;
+
+// Envio HyperSync: https://envio.dev (free tier) — for full transfer history beyond RPC's 100-block cap
+const ENVIO_KEY = ''; // <-- paste free Envio key here to enable historical transfer scan
+
+// Kuru aggregator: https://api.kuru.io/api/v1/markets (no key needed for read endpoints)
+// When Reverse Dust contract deploys, route swaps via Kuru:
+//   1) GET /markets to find dust→MON pool
+//   2) GET /markets/{addr}/quote?in=&out= for price
+//   3) Build calldata client-side, contract executes the swap → MON → buy WOLF → burn
+
 // Threshold: anything ≤ $5 USD considered dust
 const DUST_THRESHOLD_USD = 5.0;
 const MIN_VAL_USD = 0.005; // ignore microscopic
 
-// Tokens to scan — common Monad memes/assets that might show up as dust
+// Tokens to scan when Alchemy isn't set — common Monad memes/assets that might show up as dust
 const SCAN_LIST = [
   '0xB744F5CDb792d8187640214C4A1c9aCE29af7777', // MONSHI
   '0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A', // WMON
-  // Additional tokens auto-discovered via DexScreener if they have a pair
 ];
 
 const ABI_ERC20 = [
@@ -444,8 +457,35 @@ async function scanDust(){
   $('dustList').innerHTML = '<div class="empty-state"><span class="em">🔍</span>Scanning your wallet...</div>';
   dustTokens = [];
 
-  // Scan known tokens
-  for(const addr of SCAN_LIST){
+  // Build the address list to scan
+  let addressesToScan = SCAN_LIST.slice();
+
+  // If Alchemy key set, use it for full wallet scan (one-shot)
+  if(ALCHEMY_URL){
+    try{
+      const r = await fetch(ALCHEMY_URL, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          jsonrpc:'2.0', id:1, method:'alchemy_getTokenBalances',
+          params:[userAddress, 'erc20']
+        })
+      });
+      const j = await r.json();
+      if(j.result && j.result.tokenBalances){
+        // Replace scan list with everything Alchemy found
+        addressesToScan = j.result.tokenBalances
+          .filter(t => t.tokenBalance && t.tokenBalance !== '0x0' && t.tokenBalance !== '0x')
+          .map(t => t.contractAddress);
+        console.log(`[Alchemy] scanned ${addressesToScan.length} tokens`);
+      }
+    }catch(e){
+      console.warn('Alchemy scan failed, falling back to SCAN_LIST', e);
+    }
+  }
+
+  // Scan tokens (either Alchemy-discovered or hardcoded list)
+  for(const addr of addressesToScan){
     try{
       const c = new ethers.Contract(addr, ABI_ERC20, provider);
       const [sym, decimals, balance] = await Promise.all([
@@ -478,7 +518,7 @@ async function scanDust(){
     }
   }
 
-  $('scanLive').className=''; $('scanLive').textContent='COMPLETE'; $('scanLive').style.color='var(--green)';
+  $('scanLive').className=''; $('scanLive').textContent = ALCHEMY_URL ? 'FULL SCAN COMPLETE' : 'BASIC SCAN COMPLETE'; $('scanLive').style.color='var(--green)';
   renderDust();
   renderLeaderboard();
 }

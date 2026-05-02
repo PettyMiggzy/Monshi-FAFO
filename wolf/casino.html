@@ -588,6 +588,12 @@ const shortAddr = (a) => a.slice(0,6)+'…'+a.slice(-4);
 // drand is the League of Entropy verifiable random beacon.
 // New round every 30s. Signature is BLS-verifiable on-chain or by anyone.
 // We pull the latest round + a per-spin nonce → deterministic outcome anyone can replay.
+//
+// V2 PATH · Pyth Entropy on Monad (when casino contract deploys):
+//   - Contract calls IEntropy(0x36825bf3Fbdf5a29E2d5148bfe7Dcf7B5639e320).requestWithCallback(...)
+//   - Pyth posts randomness back via callback function
+//   - Outcome computed inside the contract → fully on-chain provably fair, no trust in frontend
+//   - Reference: docs.pyth.network/entropy
 async function drandLatest(){
   try{
     const r = await fetch('https://api.drand.sh/public/latest');
