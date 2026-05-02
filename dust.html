@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>REVERSE DUST · MONSHI</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#EDE9FF;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 0%, rgba(168,85,247,.18), transparent 50%),radial-gradient(circle at 80% 100%, rgba(252,211,77,.10), transparent 50%);z-index:-1;}
+.wrap{max-width:1000px;margin:0 auto;padding:24px 18px 80px;}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:24px;padding:14px 18px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.2);border-radius:14px;}
+.nav a.brand{font-family:Orbitron,sans-serif;font-weight:900;font-size:14px;letter-spacing:3px;color:#fff;text-decoration:none;display:flex;align-items:center;gap:10px;}
+.nav .links{display:flex;gap:8px;flex-wrap:wrap;}
+.nav .links a{padding:7px 12px;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;color:#C4B5FD;text-decoration:none;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:6px;}
+.nav .links a:hover{background:rgba(168,85,247,.18);color:#fff;}
+
+.hero{text-align:center;padding:30px 0 20px;}
+.hero .eyebrow{font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:5px;font-weight:900;color:#FCD34D;}
+.hero h1{font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(34px,6vw,56px);letter-spacing:3px;margin:8px 0 6px;background:linear-gradient(180deg,#fff 30%,#FCD34D 70%,#A855F7);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero p{font-size:13px;color:rgba(196,181,253,.75);max-width:580px;margin:0 auto;line-height:1.6;}
+
+.connect-wrap{display:flex;justify-content:center;margin:30px 0;}
+.connect-btn{padding:16px 32px;font-family:Orbitron,sans-serif;font-weight:900;font-size:13px;letter-spacing:3px;color:#000;background:linear-gradient(135deg,#FCD34D,#F59E0B);border:none;border-radius:10px;cursor:pointer;box-shadow:0 0 30px rgba(252,211,77,.35);transition:all .2s;}
+.connect-btn:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(252,211,77,.5);}
+.connect-btn.connected{background:linear-gradient(135deg,#A855F7,#7C3AED);color:#fff;box-shadow:0 0 30px rgba(168,85,247,.35);}
+
+.summary{display:none;background:linear-gradient(180deg,rgba(20,5,50,.7),rgba(10,2,35,.5));border:1px solid rgba(139,92,246,.3);border-radius:14px;padding:22px;margin-bottom:18px;}
+.summary.show{display:block;}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
+.summary-cell{padding:14px;background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.15);border-radius:10px;}
+.summary-lbl{font-family:Orbitron,sans-serif;font-size:9px;letter-spacing:2px;color:rgba(196,181,253,.5);font-weight:700;}
+.summary-val{font-family:Orbitron,sans-serif;font-weight:900;font-size:24px;color:#fff;margin-top:4px;}
+.summary-val.gold{color:#FCD34D;}
+.summary-val.green{color:#4ADE80;}
+
+.panel{background:linear-gradient(180deg,rgba(20,5,50,.7),rgba(10,2,35,.5));border:1px solid rgba(139,92,246,.2);border-radius:14px;padding:18px;margin-bottom:16px;position:relative;overflow:hidden;}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#A855F7,transparent);opacity:0.5;}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:2.5px;color:rgba(196,181,253,.7);font-weight:800;}
+.live{display:inline-flex;align-items:center;gap:6px;color:#4ADE80;font-size:10px;}
+.live::before{content:'';width:6px;height:6px;border-radius:50%;background:#4ADE80;animation:lp 1.5s infinite;}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:0.3}}
+
+.dust-list{display:flex;flex-direction:column;gap:8px;}
+.dust-item{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:14px;background:rgba(168,85,247,.04);border:1px solid rgba(168,85,247,.12);border-radius:10px;transition:all .2s;}
+.dust-item:hover{border-color:rgba(168,85,247,.3);background:rgba(168,85,247,.07);}
+.dust-item.dust{border-color:rgba(252,211,77,.3);background:rgba(252,211,77,.05);}
+.dust-item.dust.zero{opacity:.4;}
+.dust-token{display:flex;align-items:center;gap:10px;}
+.dust-emoji{font-size:24px;}
+.dust-name{font-family:Orbitron,sans-serif;font-weight:800;font-size:13px;color:#fff;letter-spacing:1.5px;}
+.dust-ca{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(196,181,253,.4);margin-top:2px;}
+.dust-bal{font-family:'JetBrains Mono',monospace;font-weight:800;color:#C4B5FD;font-size:13px;text-align:right;}
+.dust-usd{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;color:rgba(196,181,253,.5);}
+.dust-tag{font-family:Orbitron,sans-serif;font-size:8px;letter-spacing:1.5px;font-weight:800;padding:4px 8px;border-radius:5px;background:rgba(252,211,77,.15);color:#FCD34D;}
+
+.empty{padding:40px 14px;text-align:center;color:rgba(196,181,253,.4);font-family:'Space Mono',monospace;font-size:12px;line-height:1.7;}
+
+.action-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+.act{flex:1;min-width:180px;padding:14px 18px;font-family:Orbitron,sans-serif;font-weight:900;font-size:11px;letter-spacing:2.5px;border:none;border-radius:10px;cursor:pointer;text-align:center;transition:all .2s;text-decoration:none;}
+.act.primary{background:linear-gradient(135deg,#A855F7,#7C3AED);color:#fff;box-shadow:0 0 24px rgba(168,85,247,.3);}
+.act.primary:hover{transform:translateY(-2px);}
+.act.burn{background:linear-gradient(135deg,#FCD34D,#F59E0B);color:#000;}
+.act.burn:hover{transform:translateY(-2px);}
+.act:disabled{opacity:.4;cursor:not-allowed;transform:none !important;}
+
+.note{font-family:'Space Mono',monospace;font-size:11px;color:rgba(196,181,253,.55);line-height:1.7;padding:14px 18px;background:rgba(252,211,77,.04);border-left:3px solid rgba(252,211,77,.5);border-radius:6px;margin-bottom:16px;}
+
+.how{margin-top:24px;}
+.how-step{display:flex;gap:14px;padding:14px;background:rgba(168,85,247,.04);border-radius:10px;margin-bottom:8px;}
+.how-num{font-family:Orbitron,sans-serif;font-weight:900;font-size:24px;color:#A855F7;min-width:36px;}
+.how-txt{font-family:'Space Mono',monospace;font-size:12px;color:rgba(237,233,255,.85);line-height:1.6;}
+.how-txt b{color:#FCD34D;}
+
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(252,211,77,.3);border-top-color:#FCD34D;border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a class="brand" href="/">🐱 MONSHI · DUST</a>
+    <div class="links">
+      <a href="/">DEN</a>
+      <a href="/dashboard/">DASHBOARD</a>
+      <a href="/tools.html">TOOLS</a>
+      <a href="/buybot.html">BUY BOT</a>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow">▸ REVERSE DUST · BURN MODE</div>
+    <h1>SWEEP YOUR BAGS</h1>
+    <p>Every wallet holds dead memecoin dust. Scan, value, and convert it to $MONSHI in one go. Optional auto-burn route torches the proceeds straight into the dead address.</p>
+  </div>
+
+  <div class="connect-wrap">
+    <button class="connect-btn" id="connectBtn">CONNECT WALLET</button>
+  </div>
+
+  <div class="summary" id="summary">
+    <div class="summary-grid">
+      <div class="summary-cell"><div class="summary-lbl">WALLET</div><div class="summary-val" style="font-size:14px;font-family:'JetBrains Mono',monospace;" id="sWallet">—</div></div>
+      <div class="summary-cell"><div class="summary-lbl">DUST TOKENS</div><div class="summary-val gold" id="sCount">—</div></div>
+      <div class="summary-cell"><div class="summary-lbl">EST. VALUE</div><div class="summary-val green" id="sValue">$—</div></div>
+      <div class="summary-cell"><div class="summary-lbl">TX COUNT EST</div><div class="summary-val" id="sTxCount">—</div></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <b style="color:#FCD34D;">⚠ V1 IS READ-ONLY.</b> The scan + value works against any Monad wallet. The "Convert to MONSHI" and "Burn Route" buttons will activate once Crust Finance routing is wired (next push). Until then, this is a free dust auditor.
+  </div>
+
+  <div class="panel">
+    <div class="panel-head"><span>🧹 WALLET DUST</span><span class="live" id="scanStatus">IDLE</span></div>
+    <div id="dustList">
+      <div class="empty">Connect a wallet to scan for dust.</div>
+    </div>
+    <div class="action-bar" id="actBar" style="display:none;">
+      <button class="act primary" id="convertBtn" disabled>🔄 CONVERT ALL TO MONSHI</button>
+      <button class="act burn" id="burnBtn" disabled>🔥 CONVERT + BURN ROUTE</button>
+    </div>
+  </div>
+
+  <div class="how panel">
+    <div class="panel-head"><span>HOW IT WORKS</span></div>
+    <div class="how-step"><div class="how-num">1</div><div class="how-txt">Connect your wallet. Read-only — <b>no approvals signed at this stage</b>.</div></div>
+    <div class="how-step"><div class="how-num">2</div><div class="how-txt">We scan a curated list of Monad tokens for balances + price each via DexScreener.</div></div>
+    <div class="how-step"><div class="how-num">3</div><div class="how-txt"><b>Convert path:</b> approve each dust token → Crust Finance routes to MONSHI → tokens land in your wallet.</div></div>
+    <div class="how-step"><div class="how-num">4</div><div class="how-txt"><b>Burn route:</b> same swap, but proceeds go straight to <code style="font-size:11px;color:#FCD34D;">0x…dEaD</code>. Pure deflation. You get the satisfaction.</div></div>
+    <div class="how-step"><div class="how-num">5</div><div class="how-txt">v2: <b style="color:#A855F7;">Alchemy</b> token-balances scan covers your full wallet, not just the curated list. Drop the API key in code when ready.</div></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script>
+(function(){
+  var MONSHI = '0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
+  var WMON = '0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A';
+  var DEAD = '0x000000000000000000000000000000000000dEaD';
+  var MONAD_CHAIN_ID = 143;
+
+  // RPC pool — paste Ankr Premium URL into ANKR_PREMIUM
+  var ANKR_PREMIUM = ''; // e.g. 'https://rpc.ankr.com/premium-http/monad_mainnet/<KEY>'
+  var RPC_POOL = [ANKR_PREMIUM,'https://rpc.ankr.com/monad','https://rpc.monad.xyz','https://monad-mainnet.drpc.org'].filter(Boolean);
+  var rpcIdx = 0;
+  function rpc(method, params){
+    return new Promise(function(resolve, reject){
+      var attempt=0;
+      function next(){
+        if(attempt>=RPC_POOL.length){reject(new Error('all RPCs failed'));return;}
+        var url=RPC_POOL[(rpcIdx+attempt)%RPC_POOL.length]; attempt++;
+        var ctrl=new AbortController(); var to=setTimeout(function(){ctrl.abort();},6000);
+        fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:method,params:params||[]}),signal:ctrl.signal})
+          .then(function(r){clearTimeout(to);if(!r.ok)throw 0;return r.json();})
+          .then(function(j){if(j.error)throw 0; rpcIdx=(rpcIdx+attempt-1)%RPC_POOL.length; resolve(j.result);})
+          .catch(function(){clearTimeout(to);next();});
+      }
+      next();
+    });
+  }
+
+  // Scan list — common Monad tokens (extend as ecosystem grows)
+  var SCAN_LIST = [
+    {ca:'0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A', sym:'WMON', emoji:'🪙', dec:18},
+    {ca:'0xB744F5CDb792d8187640214C4A1c9aCE29af7777', sym:'MONSHI', emoji:'🐱', dec:18},
+    // Add more Monad tokens here as you find them
+  ];
+
+  function $(id){return document.getElementById(id);}
+  function fmtUsd(n){if(!n||isNaN(n))return '$—';if(n>=1e6)return '$'+(n/1e6).toFixed(2)+'M';if(n>=1e3)return '$'+(n/1e3).toFixed(1)+'K';if(n>=1)return '$'+n.toFixed(2);if(n>=0.01)return '$'+n.toFixed(3);return '$'+n.toFixed(6);}
+  function fmtNum(n){if(!n||isNaN(n))return '—';if(n>=1e6)return (n/1e6).toFixed(2)+'M';if(n>=1e3)return (n/1e3).toFixed(1)+'K';return n.toFixed(2);}
+  function pad(a){return '0x'+a.toLowerCase().replace('0x','').padStart(64,'0');}
+  function balanceOf(token, owner){
+    return rpc('eth_call',[{to:token, data:'0x70a08231'+pad(owner).slice(2)},'latest']);
+  }
+
+  var wallet = null;
+  $('connectBtn').onclick = async function(){
+    if(wallet){ wallet=null; $('connectBtn').textContent='CONNECT WALLET'; $('connectBtn').classList.remove('connected'); $('summary').classList.remove('show'); $('actBar').style.display='none'; $('dustList').innerHTML='<div class="empty">Connect a wallet to scan for dust.</div>'; return; }
+    if(!window.ethereum){ alert('No wallet detected. Install MetaMask, Phantom, or Rabby.'); return; }
+    try{
+      var accts = await window.ethereum.request({method:'eth_requestAccounts'});
+      wallet = accts[0];
+      // ensure on Monad
+      try{ await window.ethereum.request({method:'wallet_switchEthereumChain', params:[{chainId:'0x8f'}]}); }catch(e){
+        if(e.code===4902){ await window.ethereum.request({method:'wallet_addEthereumChain', params:[{chainId:'0x8f', chainName:'Monad', rpcUrls:['https://rpc.monad.xyz'], nativeCurrency:{name:'MON',symbol:'MON',decimals:18}, blockExplorerUrls:['https://explorer.monad.xyz']}]}); }
+      }
+      $('connectBtn').textContent = wallet.slice(0,6)+'…'+wallet.slice(-4)+'  ✕';
+      $('connectBtn').classList.add('connected');
+      $('sWallet').textContent = wallet.slice(0,6)+'…'+wallet.slice(-4);
+      $('summary').classList.add('show');
+      scan();
+    }catch(e){ alert('Connect failed: '+(e.message||e)); }
+  };
+
+  async function scan(){
+    $('scanStatus').innerHTML = '<span class="spinner"></span> SCANNING';
+    $('actBar').style.display='flex';
+
+    // Pull DexScreener prices for everything in scan list at once
+    var prices = {};
+    try{
+      var caList = SCAN_LIST.map(function(t){return t.ca;}).join(',');
+      var dx = await fetch('https://api.dexscreener.com/latest/dex/tokens/'+caList).then(function(r){return r.json();});
+      if(dx.pairs){
+        dx.pairs.forEach(function(p){
+          var a=p.baseToken.address.toLowerCase();
+          if(!prices[a] || (p.liquidity?.usd||0) > (prices[a].liq||0)){
+            prices[a] = {usd: parseFloat(p.priceUsd||0), liq: p.liquidity?.usd||0};
+          }
+        });
+      }
+    }catch(e){}
+
+    // Native MON balance
+    var monBal = 0;
+    try{
+      var mb = await rpc('eth_getBalance',[wallet,'latest']);
+      monBal = Number(BigInt(mb))/1e18;
+    }catch(e){}
+
+    var rows = [];
+    var totalValue = 0;
+
+    if(monBal > 0){
+      var monPrice = prices[WMON.toLowerCase()]?.usd || 0;
+      var v = monBal * monPrice;
+      totalValue += v;
+      rows.push({sym:'MON', emoji:'⚡', bal:monBal, usd:v, ca:'native', isDust: v < 5});
+    }
+
+    for(var i=0; i<SCAN_LIST.length; i++){
+      var t = SCAN_LIST[i];
+      try{
+        var raw = await balanceOf(t.ca, wallet);
+        var bal = Number(BigInt(raw))/Math.pow(10, t.dec);
+        if(bal <= 0) continue;
+        var p = prices[t.ca.toLowerCase()];
+        var usd = p ? bal * p.usd : 0;
+        totalValue += usd;
+        rows.push({sym:t.sym, emoji:t.emoji, bal:bal, usd:usd, ca:t.ca, isDust: usd < 5 && t.ca.toLowerCase() !== MONSHI.toLowerCase()});
+      }catch(e){}
+    }
+
+    var dustRows = rows.filter(function(r){return r.isDust;});
+    $('sCount').textContent = dustRows.length;
+    $('sValue').textContent = fmtUsd(totalValue);
+    $('sTxCount').textContent = dustRows.length > 0 ? (dustRows.length + 1) : 0;
+
+    if(rows.length === 0){
+      $('dustList').innerHTML = '<div class="empty">Wallet looks clean. No tracked tokens with balance.<br><br>Token list is small for now — v2 adds full Alchemy wallet scan.</div>';
+      $('scanStatus').textContent = 'COMPLETE';
+      return;
+    }
+
+    $('dustList').innerHTML = rows.map(function(r){
+      var cls = r.isDust ? 'dust' : '';
+      if(r.bal === 0) cls += ' zero';
+      var ca = r.ca === 'native' ? 'native MON' : r.ca.slice(0,8)+'…'+r.ca.slice(-6);
+      var tag = r.isDust ? '<span class="dust-tag">DUST</span>' : '';
+      return '<div class="dust-item '+cls+'">'+
+        '<div class="dust-token"><div class="dust-emoji">'+r.emoji+'</div><div><div class="dust-name">'+r.sym+'</div><div class="dust-ca">'+ca+'</div></div></div>'+
+        '<div><div class="dust-bal">'+fmtNum(r.bal)+' '+r.sym+'</div><div class="dust-usd">'+fmtUsd(r.usd)+'</div></div>'+
+        tag+
+      '</div>';
+    }).join('');
+
+    $('scanStatus').textContent = 'COMPLETE · '+rows.length+' tokens';
+  }
+
+  $('convertBtn').onclick = function(){ alert('Crust Finance routing wires up next push. Until then this is a read-only auditor.'); };
+  $('burnBtn').onclick = function(){ alert('Burn route ships with the convert flow next push.'); };
+
+  // Auto-reconnect if wallet was authorized
+  if(window.ethereum && window.ethereum.selectedAddress){
+    window.ethereum.request({method:'eth_accounts'}).then(function(a){
+      if(a && a.length){ $('connectBtn').click(); }
+    });
+  }
+})();
+</script>
+</body>
+</html>
