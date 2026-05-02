@@ -1,0 +1,13 @@
+{
+  "name": "monshi-chat-bridge",
+  "version": "1.0.0",
+  "description": "Mirrors messages between Monshi web chat (Supabase) and Telegram group",
+  "main": "tg-sync.js",
+  "scripts": {
+    "start": "node tg-sync.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {}
+}

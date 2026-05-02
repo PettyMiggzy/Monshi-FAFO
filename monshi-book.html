@@ -3,185 +3,337 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MONSHI BOOK · The Pack Feed</title>
+<title>MONSHI BOOK · The Pack Social</title>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#A855F7">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#EDE9FF;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 0%, rgba(168,85,247,.18), transparent 50%),radial-gradient(circle at 80% 100%, rgba(252,211,77,.10), transparent 50%);z-index:-1;}
+body{min-height:100vh;background:#02000a;font-family:'Inter','Space Mono',sans-serif;color:#EDE9FF;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 15% 0%, rgba(168,85,247,.12), transparent 50%),radial-gradient(circle at 85% 90%, rgba(252,211,77,.07), transparent 50%);z-index:-1;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;}
 
-.wrap{max-width:780px;margin:0 auto;padding:20px 14px 80px;}
-
-/* nav */
-.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px;padding:12px 16px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.2);border-radius:12px;}
-.nav .brand{font-family:Orbitron,sans-serif;font-weight:900;font-size:13px;letter-spacing:2.5px;color:#fff;text-decoration:none;}
-.nav .links{display:flex;gap:6px;flex-wrap:wrap;}
-.nav .links a{padding:6px 10px;font-family:Orbitron,sans-serif;font-size:9px;letter-spacing:1.5px;color:#C4B5FD;text-decoration:none;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:5px;}
-.nav .links a:hover{background:rgba(168,85,247,.18);color:#fff;}
-
-/* hero */
-.hero{text-align:center;padding:18px 0 22px;}
-.hero .eyebrow{font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:5px;font-weight:900;color:#A855F7;}
-.hero h1{font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(30px,6vw,48px);letter-spacing:3px;margin:8px 0 4px;background:linear-gradient(180deg,#fff 30%,#C4B5FD 70%,#A855F7);-webkit-background-clip:text;background-clip:text;color:transparent;}
-.hero p{font-size:12px;color:rgba(196,181,253,.7);max-width:520px;margin:0 auto;line-height:1.6;}
-
-/* connect bar */
-.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;background:rgba(20,5,50,.5);border:1px solid rgba(139,92,246,.2);border-radius:12px;margin-bottom:14px;flex-wrap:wrap;}
-.bar-l{display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:12px;}
-.tier-badge{padding:5px 10px;border-radius:14px;font-family:Orbitron,sans-serif;font-size:9px;font-weight:900;letter-spacing:1.5px;display:inline-flex;align-items:center;gap:5px;}
-.tier-shrimp{background:rgba(167,139,250,.12);color:#C4B5FD;border:1px solid rgba(167,139,250,.3);}
-.tier-crab{background:rgba(252,211,77,.12);color:#FCD34D;border:1px solid rgba(252,211,77,.4);}
-.tier-dolphin{background:rgba(96,165,250,.12);color:#60A5FA;border:1px solid rgba(96,165,250,.4);}
-.tier-whale{background:rgba(168,85,247,.18);color:#A855F7;border:1px solid rgba(168,85,247,.5);}
-.tier-royalty{background:linear-gradient(135deg,rgba(74,222,128,.2),rgba(252,211,77,.15));color:#4ADE80;border:1px solid #4ADE80;box-shadow:0 0 10px rgba(74,222,128,.25);}
-.connect{padding:10px 18px;font-family:Orbitron,sans-serif;font-weight:900;font-size:10px;letter-spacing:2px;color:#000;background:linear-gradient(135deg,#FCD34D,#F59E0B);border:none;border-radius:8px;cursor:pointer;}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(10,3,25,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(139,92,246,.2);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;}
+.topbar-l{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
+.brand{display:flex;align-items:center;gap:10px;font-family:Orbitron,sans-serif;font-weight:900;font-size:14px;letter-spacing:2.5px;color:#fff;}
+.brand-logo{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#A855F7,#7C3AED);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.search{flex:1;max-width:340px;position:relative;}
+.search input{width:100%;padding:9px 14px 9px 36px;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:20px;font-family:inherit;color:#fff;font-size:13px;}
+.search input:focus{outline:none;border-color:#A855F7;background:rgba(168,85,247,.14);}
+.search::before{content:'🔍';position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;opacity:.5;}
+.topbar-r{display:flex;align-items:center;gap:8px;}
+.topbar-link{padding:8px 12px;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:1.8px;font-weight:800;color:#C4B5FD;background:rgba(168,85,247,.06);border:1px solid rgba(168,85,247,.18);border-radius:8px;}
+.topbar-link:hover{background:rgba(168,85,247,.18);color:#fff;}
+.connect{padding:9px 18px;font-family:Orbitron,sans-serif;font-weight:900;font-size:11px;letter-spacing:2px;color:#000;background:linear-gradient(135deg,#FCD34D,#F59E0B);border:none;border-radius:8px;cursor:pointer;}
 .connect.connected{background:linear-gradient(135deg,#A855F7,#7C3AED);color:#fff;}
+@media(max-width:760px){ .search{display:none;} .topbar-link{display:none;} }
 
-/* sponsored slot */
-.ad-slot{background:linear-gradient(135deg,rgba(252,211,77,.10),rgba(168,85,247,.08));border:1.5px solid rgba(252,211,77,.4);border-radius:12px;padding:14px;margin-bottom:14px;position:relative;overflow:hidden;}
-.ad-slot::before{content:'SPONSORED';position:absolute;top:6px;right:10px;font-family:Orbitron,sans-serif;font-size:8px;letter-spacing:2px;color:rgba(252,211,77,.7);font-weight:800;}
-.ad-content{display:flex;align-items:center;gap:12px;}
-.ad-emoji{font-size:32px;}
-.ad-text{flex:1;}
-.ad-title{font-family:Orbitron,sans-serif;font-weight:800;font-size:13px;color:#FCD34D;letter-spacing:1.5px;margin-bottom:3px;}
-.ad-body{font-size:11px;color:rgba(237,233,255,.8);line-height:1.5;}
-.ad-cta{padding:8px 14px;font-family:Orbitron,sans-serif;font-size:10px;font-weight:800;background:#FCD34D;color:#000;border-radius:6px;text-decoration:none;letter-spacing:1.5px;white-space:nowrap;}
+.layout{max-width:1300px;margin:18px auto;padding:0 14px;display:grid;grid-template-columns:280px 1fr 320px;gap:18px;align-items:start;}
+.col-left{position:sticky;top:78px;}
+.col-right{position:sticky;top:78px;}
+@media(max-width:1100px){
+  .layout{grid-template-columns:1fr;max-width:680px;}
+  .col-left,.col-right{position:static;}
+  .col-left{order:1;} .col-center{order:2;} .col-right{order:3;}
+}
 
-.buy-ad{display:inline-block;margin-top:8px;padding:7px 12px;background:rgba(74,222,128,.12);color:#4ADE80;border:1px solid rgba(74,222,128,.3);border-radius:6px;font-family:Orbitron,sans-serif;font-size:9px;letter-spacing:1.5px;text-decoration:none;font-weight:800;}
+.card{background:linear-gradient(180deg,rgba(20,5,50,.7),rgba(10,2,35,.55));border:1px solid rgba(139,92,246,.18);border-radius:14px;padding:16px;margin-bottom:14px;}
+.card-h{font-family:Orbitron,sans-serif;font-weight:800;font-size:11px;letter-spacing:2.5px;color:rgba(196,181,253,.7);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.card-h .live{display:inline-flex;align-items:center;gap:5px;color:#4ADE80;font-size:9px;}
+.card-h .live::before{content:'';width:5px;height:5px;border-radius:50%;background:#4ADE80;animation:p 1.5s infinite;}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* composer */
-.composer{background:linear-gradient(180deg,rgba(20,5,50,.7),rgba(10,2,35,.5));border:1px solid rgba(139,92,246,.25);border-radius:14px;padding:16px;margin-bottom:18px;}
-.composer textarea{width:100%;padding:14px;background:rgba(0,0,0,.35);border:1.5px solid rgba(139,92,246,.2);border-radius:10px;font-family:'Space Mono',monospace;color:#fff;font-size:13px;resize:vertical;min-height:84px;}
-.composer textarea:focus{outline:none;border-color:#A855F7;}
-.composer textarea:disabled{opacity:.4;cursor:not-allowed;}
-.composer-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px;flex-wrap:wrap;}
-.composer-info{font-size:10px;color:rgba(196,181,253,.5);font-family:'JetBrains Mono',monospace;}
-.pin-toggle{display:flex;align-items:center;gap:6px;font-size:10px;color:rgba(196,181,253,.7);font-family:Orbitron,sans-serif;letter-spacing:1.5px;cursor:pointer;}
-.pin-toggle input{margin:0;}
+.me-card{text-align:center;padding:18px 14px;}
+.me-cover{height:60px;margin:-18px -14px 0;border-radius:14px 14px 0 0;background:linear-gradient(135deg,#A855F7,#7C3AED,#EC4899);}
+.me-avatar{width:72px;height:72px;border-radius:50%;border:3px solid #02000a;background:#1A0A2E;margin:-36px auto 8px;overflow:hidden;display:block;}
+.me-avatar img{width:100%;height:100%;object-fit:cover;}
+.me-name{font-family:Orbitron,sans-serif;font-weight:900;font-size:14px;color:#fff;letter-spacing:1.5px;margin-bottom:2px;}
+.me-handle{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(196,181,253,.5);margin-bottom:8px;}
+.me-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0;padding:10px 0;border-top:1px solid rgba(139,92,246,.15);border-bottom:1px solid rgba(139,92,246,.15);}
+.me-stat-v{font-family:Orbitron,sans-serif;font-weight:900;font-size:14px;color:#fff;}
+.me-stat-l{font-size:8px;letter-spacing:1.5px;color:rgba(196,181,253,.5);font-weight:700;margin-top:2px;font-family:Orbitron,sans-serif;}
+.me-cta{display:block;padding:10px;background:linear-gradient(135deg,#FCD34D,#F59E0B);color:#000;border-radius:8px;font-family:Orbitron,sans-serif;font-weight:900;font-size:11px;letter-spacing:1.5px;margin-top:10px;}
+.me-empty{padding:14px 8px;font-size:12px;color:rgba(196,181,253,.6);line-height:1.5;}
+
+.left-nav{display:flex;flex-direction:column;gap:2px;}
+.left-nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:1.5px;font-weight:700;color:rgba(196,181,253,.85);}
+.left-nav-item:hover{background:rgba(168,85,247,.1);color:#fff;}
+.left-nav-item .ico{font-size:16px;}
+.left-nav-item.active{background:rgba(168,85,247,.15);color:#fff;}
+
+.composer{padding:14px;}
+.composer-top{display:flex;gap:10px;align-items:flex-start;}
+.composer-avatar{width:42px;height:42px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#1A0A2E;}
+.composer-avatar img{width:100%;height:100%;object-fit:cover;}
+.composer textarea{flex:1;padding:10px 14px;background:rgba(168,85,247,.08);border:1px solid transparent;border-radius:20px;font-family:inherit;color:#fff;font-size:14px;resize:none;min-height:42px;line-height:1.5;}
+.composer textarea:focus{outline:none;border-color:rgba(168,85,247,.4);background:rgba(168,85,247,.12);}
+.composer textarea:disabled{opacity:.5;cursor:not-allowed;}
+.composer-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:8px;flex-wrap:wrap;border-top:1px solid rgba(139,92,246,.1);padding-top:10px;}
+.composer-tools{display:flex;gap:4px;align-items:center;}
+.composer-tool{padding:7px 10px;background:transparent;border:none;color:rgba(196,181,253,.7);font-size:12px;cursor:pointer;border-radius:6px;font-family:inherit;}
+.composer-tool:hover{background:rgba(168,85,247,.1);color:#fff;}
+.pin-toggle{display:inline-flex;align-items:center;gap:5px;font-size:10px;color:rgba(196,181,253,.7);font-family:Orbitron,sans-serif;letter-spacing:1.5px;cursor:pointer;}
 .pin-toggle.disabled{opacity:.35;cursor:not-allowed;}
-.post-btn{padding:10px 20px;font-family:Orbitron,sans-serif;font-weight:900;font-size:10px;letter-spacing:2px;color:#fff;background:linear-gradient(135deg,#A855F7,#7C3AED);border:none;border-radius:8px;cursor:pointer;}
-.post-btn:disabled{opacity:.35;cursor:not-allowed;}
+.pin-toggle input{margin:0;}
+.post-btn{padding:9px 22px;font-family:Orbitron,sans-serif;font-weight:900;font-size:11px;letter-spacing:2px;color:#fff;background:linear-gradient(135deg,#A855F7,#7C3AED);border:none;border-radius:8px;cursor:pointer;}
+.post-btn:disabled{opacity:.4;cursor:not-allowed;}
+.image-input{margin-top:10px;display:none;}
+.image-input.show{display:block;}
+.image-input input{width:100%;padding:9px 12px;background:rgba(0,0,0,.3);border:1px solid rgba(139,92,246,.25);border-radius:8px;color:#fff;font-family:inherit;font-size:12px;}
+.image-input input:focus{outline:none;border-color:#A855F7;}
 
-/* feed */
-.feed-tabs{display:flex;gap:6px;margin-bottom:14px;}
-.feed-tab{padding:8px 14px;font-family:Orbitron,sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;color:rgba(196,181,253,.6);background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.15);border-radius:8px;cursor:pointer;}
-.feed-tab.active{color:#fff;background:rgba(168,85,247,.18);border-color:#A855F7;}
-.feed-tab:hover{color:#fff;}
+.feed-tabs{display:flex;gap:4px;background:rgba(168,85,247,.05);padding:4px;border-radius:11px;margin-bottom:14px;border:1px solid rgba(168,85,247,.15);}
+.feed-tab{flex:1;padding:9px;font-family:Orbitron,sans-serif;font-size:10px;font-weight:800;letter-spacing:1.8px;color:rgba(196,181,253,.6);background:transparent;border:none;border-radius:8px;cursor:pointer;}
+.feed-tab.active{color:#fff;background:rgba(168,85,247,.22);}
 
-.post{background:rgba(20,5,50,.55);border:1px solid rgba(139,92,246,.18);border-radius:12px;padding:16px;margin-bottom:12px;position:relative;}
-.post.pinned{border-color:rgba(252,211,77,.4);background:linear-gradient(180deg,rgba(252,211,77,.04),rgba(20,5,50,.6));}
-.post.pinned::before{content:'📌 PINNED';position:absolute;top:-9px;left:14px;background:#FCD34D;color:#000;font-family:Orbitron,sans-serif;font-size:8px;font-weight:900;padding:3px 8px;border-radius:5px;letter-spacing:1.5px;}
-.post.whale{border-color:rgba(168,85,247,.4);}
-.post.royalty{border-color:rgba(74,222,128,.5);box-shadow:0 0 18px rgba(74,222,128,.08);}
+.post{padding:0;overflow:hidden;}
+.post.pinned{border-color:rgba(252,211,77,.4);}
+.post.royalty{border-color:rgba(74,222,128,.4);box-shadow:0 0 16px rgba(74,222,128,.06);}
+.post-pinned-tag{padding:6px 14px;background:rgba(252,211,77,.1);color:#FCD34D;font-family:Orbitron,sans-serif;font-size:9px;font-weight:900;letter-spacing:2px;display:flex;align-items:center;gap:6px;border-bottom:1px solid rgba(252,211,77,.2);}
+.post-inner{padding:14px;}
+.post-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.post-avatar{width:42px;height:42px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#1A0A2E;cursor:pointer;}
+.post-avatar img{width:100%;height:100%;object-fit:cover;}
+.post-meta{flex:1;min-width:0;}
+.post-author{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.post-name{font-weight:800;font-size:13px;color:#fff;cursor:pointer;}
+.post-name:hover{text-decoration:underline;}
+.post-handle{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(196,181,253,.5);}
+.post-time{font-size:10px;color:rgba(196,181,253,.4);margin-top:1px;font-family:'Space Mono',monospace;}
+.tier-pill{padding:2px 7px;border-radius:10px;font-family:Orbitron,sans-serif;font-size:8px;font-weight:900;letter-spacing:1px;display:inline-flex;align-items:center;gap:3px;}
+.tier-shrimp{background:rgba(167,139,250,.12);color:#C4B5FD;}
+.tier-crab{background:rgba(252,211,77,.12);color:#FCD34D;}
+.tier-dolphin{background:rgba(96,165,250,.12);color:#60A5FA;}
+.tier-whale{background:rgba(168,85,247,.18);color:#A855F7;}
+.tier-royalty{background:linear-gradient(135deg,rgba(74,222,128,.2),rgba(252,211,77,.15));color:#4ADE80;border:1px solid rgba(74,222,128,.4);}
+.post-menu{background:none;border:none;color:rgba(196,181,253,.4);cursor:pointer;font-size:18px;padding:4px 8px;border-radius:6px;}
+.post-menu:hover{background:rgba(168,85,247,.1);color:#fff;}
 
-.post-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
-.post-author{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#C4B5FD;}
-.post-time{font-size:10px;color:rgba(196,181,253,.4);font-family:'Space Mono',monospace;}
-.post-body{font-size:13px;line-height:1.6;color:#EDE9FF;white-space:pre-wrap;word-wrap:break-word;margin:8px 0;}
-.post-actions{display:flex;gap:14px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(139,92,246,.1);}
-.post-actions button{background:none;border:none;color:rgba(196,181,253,.6);font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:1.5px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-weight:700;padding:0;}
-.post-actions button:hover{color:#fff;}
-.post-actions button.liked{color:#EC4899;}
-.post-actions .delete{color:rgba(239,68,68,.5);margin-left:auto;}
-.post-actions .delete:hover{color:#EF4444;}
+.post-body{font-size:14px;line-height:1.55;color:#EDE9FF;white-space:pre-wrap;word-wrap:break-word;margin:6px 0 10px;}
+.post-image{width:calc(100% + 28px);margin:8px -14px;border-top:1px solid rgba(139,92,246,.1);border-bottom:1px solid rgba(139,92,246,.1);}
+.post-image img{width:100%;display:block;max-height:480px;object-fit:cover;}
 
-.comments{margin-top:10px;padding:10px 12px;background:rgba(0,0,0,.25);border-radius:8px;display:none;}
-.comments.show{display:block;}
-.comment{padding:8px 0;border-bottom:1px solid rgba(139,92,246,.08);font-size:12px;}
-.comment:last-child{border-bottom:none;}
-.comment-head{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(196,181,253,.6);margin-bottom:3px;}
-.comment-body{color:#EDE9FF;line-height:1.5;white-space:pre-wrap;word-wrap:break-word;}
-.comment-input{display:flex;gap:6px;margin-top:8px;}
-.comment-input input{flex:1;padding:8px 10px;background:rgba(0,0,0,.4);border:1px solid rgba(139,92,246,.2);border-radius:6px;font-family:'Space Mono',monospace;color:#fff;font-size:12px;}
-.comment-input input:focus{outline:none;border-color:#A855F7;}
-.comment-input button{padding:8px 12px;background:rgba(168,85,247,.25);color:#C4B5FD;border:1px solid rgba(168,85,247,.4);border-radius:6px;font-family:Orbitron,sans-serif;font-size:10px;cursor:pointer;}
+.reactions-summary{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(139,92,246,.1);font-size:12px;color:rgba(196,181,253,.6);}
+.reaction-emoji-stack{display:inline-flex;}
+.reaction-emoji-stack span{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#1A0A2E;border:1.5px solid #02000a;font-size:11px;margin-right:-4px;}
 
-.empty{padding:40px 14px;text-align:center;color:rgba(196,181,253,.4);font-family:'Space Mono',monospace;font-size:12px;line-height:1.7;}
+.post-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:4px 0 0;}
+.post-action{padding:8px;background:transparent;border:none;color:rgba(196,181,253,.7);font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;border-radius:6px;position:relative;}
+.post-action:hover{background:rgba(168,85,247,.08);color:#fff;}
+.post-action.has-reaction{color:#A855F7;}
+.post-action .ico{font-size:15px;}
+.reaction-popup{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:4px;background:rgba(20,5,50,.96);backdrop-filter:blur(8px);border:1px solid rgba(168,85,247,.4);border-radius:24px;padding:6px 8px;display:none;gap:4px;box-shadow:0 8px 22px rgba(0,0,0,.5);z-index:5;}
+.reaction-popup.show{display:flex;}
+.reaction-btn{font-size:22px;background:none;border:none;cursor:pointer;padding:6px;border-radius:50%;transition:transform .15s;}
+.reaction-btn:hover{transform:scale(1.4);background:rgba(168,85,247,.12);}
 
-.toast{position:fixed;bottom:20px;right:20px;padding:12px 18px;background:rgba(168,85,247,.95);color:#fff;border-radius:10px;font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:1.5px;font-weight:800;z-index:1000;transition:opacity .3s;}
+.comments-box{padding:10px 14px;background:rgba(0,0,0,.18);border-top:1px solid rgba(139,92,246,.08);display:none;}
+.comments-box.show{display:block;}
+.comment{display:flex;gap:8px;padding:6px 0;}
+.comment-avatar{width:30px;height:30px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#1A0A2E;cursor:pointer;}
+.comment-avatar img{width:100%;height:100%;object-fit:cover;}
+.comment-bubble{flex:1;background:rgba(168,85,247,.08);border-radius:14px;padding:8px 12px;}
+.comment-head{display:flex;align-items:center;gap:6px;font-size:11px;margin-bottom:2px;}
+.comment-name{font-weight:800;color:#fff;cursor:pointer;}
+.comment-name:hover{text-decoration:underline;}
+.comment-body{font-size:13px;color:#EDE9FF;line-height:1.45;white-space:pre-wrap;word-wrap:break-word;}
+.comment-time{font-size:9px;color:rgba(196,181,253,.4);margin-top:3px;margin-left:4px;font-family:'Space Mono',monospace;}
+.comment-input-row{display:flex;gap:8px;align-items:center;margin-top:10px;}
+.comment-input-row img{width:30px;height:30px;border-radius:50%;}
+.comment-input-row input{flex:1;padding:8px 14px;background:rgba(168,85,247,.1);border:1px solid transparent;border-radius:18px;color:#fff;font-family:inherit;font-size:13px;}
+.comment-input-row input:focus{outline:none;border-color:rgba(168,85,247,.4);}
+.comment-input-row button{padding:7px 12px;background:rgba(168,85,247,.25);color:#fff;border:none;border-radius:14px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
+
+.profile-card{padding:0;overflow:hidden;}
+.profile-cover{height:160px;background:linear-gradient(135deg,#A855F7,#7C3AED,#EC4899,#FCD34D);}
+.profile-body{padding:0 18px 18px;margin-top:-50px;}
+.profile-avatar{width:104px;height:104px;border-radius:50%;border:5px solid #02000a;background:#1A0A2E;overflow:hidden;}
+.profile-avatar img{width:100%;height:100%;object-fit:cover;}
+.profile-name{font-family:Orbitron,sans-serif;font-weight:900;font-size:22px;color:#fff;letter-spacing:1px;margin-top:10px;}
+.profile-handle{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(196,181,253,.5);margin-top:3px;}
+.profile-bio{font-size:13px;color:rgba(237,233,255,.85);margin-top:10px;line-height:1.5;white-space:pre-wrap;}
+.profile-stats{display:flex;gap:18px;margin:12px 0;padding-top:12px;border-top:1px solid rgba(139,92,246,.15);font-size:12px;}
+.profile-stat b{color:#fff;font-family:Orbitron,sans-serif;}
+.profile-actions{display:flex;gap:8px;margin-top:12px;}
+.profile-actions .btn{flex:1;padding:9px;font-family:Orbitron,sans-serif;font-weight:900;font-size:10px;letter-spacing:1.8px;border:none;border-radius:8px;cursor:pointer;}
+.profile-actions .follow{background:linear-gradient(135deg,#A855F7,#7C3AED);color:#fff;}
+.profile-actions .follow.following{background:rgba(168,85,247,.15);color:#C4B5FD;border:1px solid rgba(168,85,247,.4);}
+.profile-actions .edit{background:rgba(168,85,247,.15);color:#C4B5FD;border:1px solid rgba(168,85,247,.4);}
+
+.edit-form{padding:14px;display:none;border-top:1px solid rgba(139,92,246,.15);background:rgba(0,0,0,.18);}
+.edit-form.show{display:block;}
+.edit-form label{display:block;font-family:Orbitron,sans-serif;font-size:9px;letter-spacing:2px;color:#C4B5FD;font-weight:800;margin:10px 0 5px;}
+.edit-form input,.edit-form textarea{width:100%;padding:10px 12px;background:rgba(0,0,0,.3);border:1px solid rgba(139,92,246,.25);border-radius:8px;color:#fff;font-family:inherit;font-size:13px;}
+.edit-form input:focus,.edit-form textarea:focus{outline:none;border-color:#A855F7;}
+.edit-form .save-row{display:flex;gap:8px;margin-top:12px;}
+.edit-form .save-row button{padding:9px 16px;font-family:Orbitron,sans-serif;font-weight:900;font-size:10px;letter-spacing:1.8px;border:none;border-radius:8px;cursor:pointer;}
+.edit-form .save-row .save{background:linear-gradient(135deg,#A855F7,#7C3AED);color:#fff;}
+.edit-form .save-row .cancel{background:rgba(239,68,68,.1);color:#F87171;border:1px solid rgba(239,68,68,.3);}
+
+.ad-card{position:relative;border-color:rgba(252,211,77,.35);}
+.ad-card::after{content:'SPONSORED';position:absolute;top:8px;right:12px;font-family:Orbitron,sans-serif;font-size:8px;letter-spacing:2px;color:rgba(252,211,77,.7);font-weight:800;}
+.ad-content{display:flex;align-items:flex-start;gap:10px;}
+.ad-emoji{font-size:28px;}
+.ad-title{font-family:Orbitron,sans-serif;font-weight:800;font-size:12px;color:#FCD34D;letter-spacing:1px;margin-bottom:2px;}
+.ad-body{font-size:11px;color:rgba(237,233,255,.8);line-height:1.5;}
+.buy-ad-link{display:block;margin-top:10px;padding:8px;text-align:center;background:rgba(74,222,128,.1);color:#4ADE80;border:1px solid rgba(74,222,128,.3);border-radius:7px;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:1.5px;font-weight:800;}
+
+.trend-item{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid rgba(139,92,246,.08);cursor:pointer;}
+.trend-item:last-child{border-bottom:none;}
+.trend-item:hover{background:rgba(168,85,247,.05);}
+.trend-avatar{width:34px;height:34px;border-radius:50%;overflow:hidden;flex-shrink:0;background:#1A0A2E;}
+.trend-avatar img{width:100%;height:100%;object-fit:cover;}
+.trend-text{flex:1;min-width:0;font-size:12px;}
+.trend-name{font-weight:700;color:#fff;font-size:11px;font-family:Orbitron,sans-serif;letter-spacing:.5px;}
+.trend-snippet{color:rgba(196,181,253,.6);font-size:11px;margin-top:2px;line-height:1.4;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.trend-meta{font-size:9px;color:rgba(196,181,253,.4);margin-top:2px;font-family:'Space Mono',monospace;}
+
+.empty,.skel{padding:30px 14px;text-align:center;color:rgba(196,181,253,.4);font-size:12px;line-height:1.6;}
+.skel{background:linear-gradient(90deg,rgba(168,85,247,.05),rgba(168,85,247,.12),rgba(168,85,247,.05));background-size:200% 100%;animation:sk 1.4s infinite;border-radius:12px;height:120px;margin-bottom:12px;padding:0;}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.toast{position:fixed;bottom:20px;right:20px;padding:11px 18px;background:rgba(168,85,247,.95);color:#fff;border-radius:10px;font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:1.5px;font-weight:800;z-index:1000;}
 .toast.success{background:rgba(74,222,128,.95);color:#000;}
 .toast.error{background:rgba(239,68,68,.95);}
-
-.tier-info{padding:14px 16px;background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.15);border-radius:10px;margin-bottom:14px;font-size:11px;color:rgba(196,181,253,.75);line-height:1.6;}
-.tier-info b{color:#FCD34D;}
-
-.skel{height:80px;background:linear-gradient(90deg,rgba(168,85,247,.05),rgba(168,85,247,.12),rgba(168,85,247,.05));background-size:200% 100%;animation:skel 1.4s infinite;border-radius:12px;margin-bottom:12px;}
-@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="nav">
-    <a class="brand" href="/">📖 MONSHI BOOK</a>
-    <div class="links">
-      <a href="/">DEN</a>
-      <a href="/arcade.html">ARCADE</a>
-      <a href="/dashboard/">DASHBOARD</a>
-      <a href="/tools.html">TOOLS</a>
+
+<div class="topbar">
+  <div class="topbar-l">
+    <a class="brand" href="/"><div class="brand-logo">📖</div>MONSHI BOOK</a>
+    <div class="search"><input id="searchBox" placeholder="Search posts, wallets..." /></div>
+  </div>
+  <div class="topbar-r">
+    <a class="topbar-link" href="/">DEN</a>
+    <a class="topbar-link" href="/arcade.html">ARCADE</a>
+    <button class="connect" id="connectBtn">CONNECT</button>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="col-left">
+    <div class="card me-card" id="meCard">
+      <div class="me-cover"></div>
+      <div class="me-empty" id="meEmpty">Connect your wallet to see your profile, stats, and tier perks.</div>
+      <div id="meDetail" style="display:none;">
+        <a class="me-avatar" id="meAvatar" href="#"><img id="meAvatarImg" src="" alt=""/></a>
+        <div class="me-name" id="meName">—</div>
+        <div class="me-handle" id="meHandle">—</div>
+        <span class="tier-pill" id="meTier">🦐 SHRIMP</span>
+        <div class="me-stats">
+          <div><div class="me-stat-v" id="meStatPosts">0</div><div class="me-stat-l">POSTS</div></div>
+          <div><div class="me-stat-v" id="meStatFollowers">0</div><div class="me-stat-l">PACK</div></div>
+          <div><div class="me-stat-v" id="meStatFollowing">0</div><div class="me-stat-l">FOLLOW</div></div>
+        </div>
+        <a class="me-cta" id="meCta" href="#">VIEW MY WALL →</a>
+      </div>
     </div>
-  </div>
 
-  <div class="hero">
-    <div class="eyebrow">▸ THE PACK FEED</div>
-    <h1>MONSHI BOOK</h1>
-    <p>Free posts, free comments, free vibes. Hold $MONSHI for tier perks: featured badge, pinned posts, priority feed. Sponsored slots available for projects (1M MONSHI / 24h).</p>
-  </div>
-
-  <div class="bar">
-    <div class="bar-l">
-      <span id="balLine">Connect to see your tier →</span>
-      <span class="tier-badge tier-shrimp" id="tierBadge" style="display:none;">🦐 SHRIMP</span>
+    <div class="card">
+      <div class="card-h">QUICK NAV</div>
+      <nav class="left-nav">
+        <a class="left-nav-item active" href="/monshi-book.html"><span class="ico">📖</span>FEED</a>
+        <a class="left-nav-item" href="/"><span class="ico">🏠</span>THE DEN</a>
+        <a class="left-nav-item" href="/arcade.html"><span class="ico">🎮</span>ARCADE</a>
+        <a class="left-nav-item" href="/dashboard/"><span class="ico">📊</span>DASHBOARD</a>
+        <a class="left-nav-item" href="/tools.html"><span class="ico">🧰</span>TOOLS</a>
+        <a class="left-nav-item" href="/dust.html"><span class="ico">🧹</span>DUST</a>
+        <a class="left-nav-item" href="/buybot.html"><span class="ico">🤖</span>BUY BOT</a>
+      </nav>
     </div>
-    <button class="connect" id="connectBtn">CONNECT WALLET</button>
-  </div>
+  </aside>
 
-  <!-- Sponsored slot -->
-  <div id="adSlot"></div>
-
-  <div class="composer">
-    <textarea id="postBody" maxlength="560" placeholder="Connect wallet to post. Be cool. Mods can torch spam." disabled></textarea>
-    <div class="composer-row">
-      <div class="composer-info"><span id="charCount">0</span>/560</div>
-      <label class="pin-toggle disabled" id="pinToggleWrap">
-        <input type="checkbox" id="pinToggle" disabled>
-        📌 PIN (WHALE+)
-      </label>
-      <button class="post-btn" id="postBtn" disabled>POST</button>
+  <section class="col-center">
+    <div class="card profile-card" id="profileCard" style="display:none;">
+      <div class="profile-cover"></div>
+      <div class="profile-body">
+        <div class="profile-avatar"><img id="profileAvatarImg" src="" alt=""/></div>
+        <div class="profile-name" id="profileName">—</div>
+        <div class="profile-handle" id="profileHandle">—</div>
+        <span class="tier-pill" id="profileTier" style="margin-top:8px;display:inline-flex;">🦐</span>
+        <div class="profile-bio" id="profileBio"></div>
+        <div class="profile-stats">
+          <span class="profile-stat"><b id="profileStatPosts">0</b> posts</span>
+          <span class="profile-stat"><b id="profileStatFollowers">0</b> pack</span>
+          <span class="profile-stat"><b id="profileStatFollowing">0</b> following</span>
+        </div>
+        <div class="profile-actions" id="profileActions"></div>
+      </div>
+      <div class="edit-form" id="editForm">
+        <label>DISPLAY NAME</label>
+        <input id="editName" maxlength="40" placeholder="Your handle..."/>
+        <label>BIO</label>
+        <textarea id="editBio" maxlength="240" rows="3" placeholder="A few words about you..."></textarea>
+        <div class="save-row">
+          <button class="save" id="saveProfileBtn">SAVE</button>
+          <button class="cancel" onclick="document.getElementById('editForm').classList.remove('show');">CANCEL</button>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="tier-info">
-    <b>TIER PERKS</b> — 🦐 Shrimp (any) post + comment · 🦀 Crab (10K+) verified badge · 🐬 Dolphin (100K+) priority feed · 🐋 Whale (1M+) pin posts · 👑 Royalty (10M+) gold badge + featured.
-    <a href="/buybot.html" class="buy-ad" style="margin-top:6px;">⚡ BUY SPONSORED SLOT</a>
-  </div>
+    <div class="card composer" id="composerCard">
+      <div class="composer-top">
+        <div class="composer-avatar"><img id="composerAvatar" src="" alt=""/></div>
+        <textarea id="postBody" maxlength="600" placeholder="Connect to share with the pack..." disabled></textarea>
+      </div>
+      <div class="image-input" id="imageInputWrap">
+        <input id="imageInput" placeholder="Paste image URL (optional)..." />
+      </div>
+      <div class="composer-row">
+        <div class="composer-tools">
+          <button class="composer-tool" title="Add image" onclick="document.getElementById('imageInputWrap').classList.toggle('show');">🖼️ Photo</button>
+          <label class="pin-toggle disabled" id="pinToggleWrap" title="Whale tier required to pin">
+            <input type="checkbox" id="pinToggle" disabled>📌 Pin
+          </label>
+        </div>
+        <button class="post-btn" id="postBtn" disabled>POST</button>
+      </div>
+    </div>
 
-  <div class="feed-tabs">
-    <button class="feed-tab active" data-tab="all">ALL POSTS</button>
-    <button class="feed-tab" data-tab="whale">WHALES ONLY</button>
-    <button class="feed-tab" data-tab="mine">MY POSTS</button>
-  </div>
+    <div class="feed-tabs" id="feedTabs">
+      <button class="feed-tab active" data-tab="all">ALL</button>
+      <button class="feed-tab" data-tab="following">PACK</button>
+      <button class="feed-tab" data-tab="whale">WHALES</button>
+      <button class="feed-tab" data-tab="mine">MINE</button>
+    </div>
 
-  <div id="feed">
-    <div class="skel"></div>
-    <div class="skel"></div>
-    <div class="skel"></div>
-  </div>
+    <div id="feed">
+      <div class="skel"></div>
+      <div class="skel"></div>
+    </div>
+  </section>
+
+  <aside class="col-right">
+    <div id="adSlot"></div>
+    <div class="card">
+      <div class="card-h">🔥 TRENDING <span class="live">24H</span></div>
+      <div id="trending"><div class="empty" style="padding:14px;font-size:11px;">Loading trending posts...</div></div>
+    </div>
+    <div class="card">
+      <div class="card-h">🐋 ACTIVE WHALES</div>
+      <div id="whales"><div class="empty" style="padding:14px;font-size:11px;">No active whales yet</div></div>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,rgba(252,211,77,.1),rgba(168,85,247,.08));border-color:rgba(252,211,77,.3);">
+      <div style="font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;color:#FCD34D;font-weight:800;margin-bottom:6px;">⚡ SPONSORED SLOTS</div>
+      <div style="font-size:11px;color:rgba(237,233,255,.75);line-height:1.5;margin-bottom:10px;">Get your project featured at the top of the feed for 24h. Reach the entire pack.</div>
+      <a class="buy-ad-link" href="/buybot.html">BUY A SLOT · 1M MONSHI</a>
+    </div>
+  </aside>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function(){
-  // ─── CONFIG ───
   var SUPABASE_URL = 'https://cuqhqcmrgpdjlhyqztnc.supabase.co';
   var SUPABASE_KEY = 'sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
   var MONSHI = '0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
-  var TREASURY = '0xB9d4B73bE18914c6d64Bee65a806648370be467f';
+  var TREASURY = '0xb9d4b73be18914c6d64bee65a806648370be467f';
 
-  var ANKR_PREMIUM = ''; // paste premium URL here
+  var ANKR_PREMIUM = '';
   var RPC_POOL = [ANKR_PREMIUM,'https://rpc.ankr.com/monad','https://rpc.monad.xyz','https://monad-mainnet.drpc.org'].filter(Boolean);
   var rpcIdx = 0;
   function rpc(method,params){
@@ -203,25 +355,27 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
   var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   function $(id){return document.getElementById(id);}
-  function fmtNum(n){if(n>=1e9)return (n/1e9).toFixed(2)+'B';if(n>=1e6)return (n/1e6).toFixed(2)+'M';if(n>=1e3)return (n/1e3).toFixed(1)+'K';return Math.floor(n).toString();}
+  function escape(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+  function shortAddr(a){return a?a.slice(0,6)+'…'+a.slice(-4):'—';}
+  function fmtNum(n){if(!n)return '0';if(n>=1e9)return (n/1e9).toFixed(2)+'B';if(n>=1e6)return (n/1e6).toFixed(2)+'M';if(n>=1e3)return (n/1e3).toFixed(1)+'K';return Math.floor(n).toString();}
   function pad(a){return '0x'+a.toLowerCase().replace('0x','').padStart(64,'0');}
-  function shortAddr(a){return a.slice(0,6)+'…'+a.slice(-4);}
   function timeAgo(ts){
     var s=Math.floor((Date.now()-new Date(ts).getTime())/1000);
-    if(s<60)return s+'s ago';
-    if(s<3600)return Math.floor(s/60)+'m ago';
-    if(s<86400)return Math.floor(s/3600)+'h ago';
-    return Math.floor(s/86400)+'d ago';
+    if(s<60)return s+'s';
+    if(s<3600)return Math.floor(s/60)+'m';
+    if(s<86400)return Math.floor(s/3600)+'h';
+    if(s<2592000)return Math.floor(s/86400)+'d';
+    return Math.floor(s/2592000)+'mo';
   }
-  function escape(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+  function avatarUrl(wallet){
+    if(!wallet) return 'https://effigy.im/a/0x0000000000000000000000000000000000000000.svg';
+    return 'https://effigy.im/a/'+wallet+'.svg';
+  }
   function toast(msg,type){
-    var t=document.createElement('div');
-    t.className='toast '+(type||'');t.textContent=msg;
+    var t=document.createElement('div');t.className='toast '+(type||'');t.textContent=msg;
     document.body.appendChild(t);
     setTimeout(function(){t.style.opacity=0;setTimeout(function(){t.remove();},300);},2400);
   }
-
-  // ─── TIER LOGIC ───
   function tierFromBalance(bal){
     if(bal>=10_000_000)return {key:'royalty',name:'ROYALTY',emoji:'👑'};
     if(bal>=1_000_000)return {key:'whale',name:'WHALE',emoji:'🐋'};
@@ -229,259 +383,450 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
     if(bal>=10_000)return {key:'crab',name:'CRAB',emoji:'🦀'};
     return {key:'shrimp',name:'SHRIMP',emoji:'🦐'};
   }
-  function tierBadge(t){return '<span class="tier-badge tier-'+t.key+'">'+t.emoji+' '+t.name+'</span>';}
+  function tierEmoji(k){return ({royalty:'👑',whale:'🐋',dolphin:'🐬',crab:'🦀',shrimp:'🦐'}[k||'shrimp']);}
+  function tierPill(k){k=k||'shrimp';return '<span class="tier-pill tier-'+k+'">'+tierEmoji(k)+' '+k.toUpperCase()+'</span>';}
+  var REACTION_TYPES = [{key:'fire',emoji:'🔥'},{key:'heart',emoji:'❤️'},{key:'monshi',emoji:'🐱'},{key:'laugh',emoji:'😂'},{key:'rock',emoji:'🪨'}];
 
-  // ─── STATE ───
-  var wallet=null, balance=0, tier=tierFromBalance(0), currentTab='all';
+  var wallet=null, balance=0, tier=tierFromBalance(0);
+  var profileCache = {};
+  var followingSet = new Set();
+  var currentTab = 'all';
+  var schemaShown = false;
 
-  // ─── WALLET ───
+  function getQueryUser(){var u=new URLSearchParams(window.location.search).get('u');return u?u.toLowerCase():null;}
+  function navTo(w){history.pushState({},'',w?'?u='+w:window.location.pathname);handleRoute();}
+  window.addEventListener('popstate', handleRoute);
+
+  async function getProfilesBatch(wallets){
+    var unique=[...new Set(wallets.map(function(w){return w?w.toLowerCase():null;}).filter(Boolean))];
+    var missing=unique.filter(function(w){return !profileCache[w];});
+    if(!missing.length)return;
+    try{
+      var r=await sb.from('monshi_book_profiles').select('*').in('wallet',missing);
+      if(r.data)r.data.forEach(function(p){profileCache[p.wallet]=p;});
+      missing.forEach(function(w){if(!profileCache[w])profileCache[w]={wallet:w,display_name:null,bio:null};});
+    }catch(e){}
+  }
+  function displayName(w){var p=profileCache[(w||'').toLowerCase()];return (p&&p.display_name)||shortAddr(w);}
+
   $('connectBtn').onclick = async function(){
     if(wallet){
       wallet=null;balance=0;tier=tierFromBalance(0);
-      $('connectBtn').textContent='CONNECT WALLET';
+      $('connectBtn').textContent='CONNECT';
       $('connectBtn').classList.remove('connected');
-      $('balLine').textContent='Connect to see your tier →';
-      $('tierBadge').style.display='none';
-      $('postBody').disabled=true; $('postBody').placeholder='Connect wallet to post. Be cool. Mods can torch spam.';
+      $('meEmpty').style.display='block';
+      $('meDetail').style.display='none';
+      $('postBody').disabled=true;$('postBody').placeholder='Connect to share with the pack...';
       $('postBtn').disabled=true;
-      $('pinToggle').disabled=true; $('pinToggleWrap').classList.add('disabled');
-      loadFeed();
-      return;
+      $('pinToggle').disabled=true;$('pinToggleWrap').classList.add('disabled');
+      $('composerAvatar').src = avatarUrl(null);
+      handleRoute();return;
     }
-    if(!window.ethereum){ toast('No wallet detected','error'); return; }
+    if(!window.ethereum){toast('No wallet detected','error');return;}
     try{
       var accts = await window.ethereum.request({method:'eth_requestAccounts'});
       wallet = accts[0].toLowerCase();
-      try{ await window.ethereum.request({method:'wallet_switchEthereumChain', params:[{chainId:'0x8f'}]}); }catch(e){
-        if(e.code===4902){ await window.ethereum.request({method:'wallet_addEthereumChain', params:[{chainId:'0x8f', chainName:'Monad', rpcUrls:['https://rpc.monad.xyz'], nativeCurrency:{name:'MON',symbol:'MON',decimals:18}, blockExplorerUrls:['https://explorer.monad.xyz']}]}); }
+      try{await window.ethereum.request({method:'wallet_switchEthereumChain', params:[{chainId:'0x8f'}]});}catch(e){
+        if(e.code===4902){await window.ethereum.request({method:'wallet_addEthereumChain', params:[{chainId:'0x8f', chainName:'Monad', rpcUrls:['https://rpc.monad.xyz'], nativeCurrency:{name:'MON',symbol:'MON',decimals:18}, blockExplorerUrls:['https://explorer.monad.xyz']}]});}
       }
       await refreshBalance();
-      $('connectBtn').textContent = shortAddr(wallet)+' ✕';
+      await loadFollowing();
+      await loadMyProfile();
+      $('connectBtn').textContent = shortAddr(wallet);
       $('connectBtn').classList.add('connected');
-      $('postBody').disabled=false; $('postBody').placeholder='Speak to the pack. 560 chars.';
+      $('postBody').disabled=false;$('postBody').placeholder="What's the pack saying today?";
       $('postBtn').disabled=false;
-      if(balance>=1_000_000){ $('pinToggle').disabled=false; $('pinToggleWrap').classList.remove('disabled'); }
-      loadFeed();
-    }catch(e){ toast('Connect failed','error'); }
+      if(balance>=1_000_000){$('pinToggle').disabled=false;$('pinToggleWrap').classList.remove('disabled');}
+      $('composerAvatar').src = avatarUrl(wallet);
+      handleRoute();
+    }catch(e){toast('Connect failed','error');}
   };
 
   async function refreshBalance(){
+    try{var raw=await rpc('eth_call',[{to:MONSHI,data:'0x70a08231'+pad(wallet).slice(2)},'latest']);balance=Number(BigInt(raw))/1e18;}catch(e){balance=0;}
+    tier=tierFromBalance(balance);
+  }
+  async function loadFollowing(){
+    if(!wallet)return;followingSet=new Set();
+    try{var r=await sb.from('monshi_book_follows').select('following').eq('follower',wallet);if(r.data)r.data.forEach(function(f){followingSet.add(f.following);});}catch(e){}
+  }
+  async function loadMyProfile(){
+    delete profileCache[wallet];
+    await getProfilesBatch([wallet]);
+    var p = profileCache[wallet];
+    $('meName').textContent = (p&&p.display_name)||shortAddr(wallet);
+    $('meHandle').textContent = shortAddr(wallet);
+    $('meAvatarImg').src = avatarUrl(wallet);
+    $('meAvatar').href = '?u='+wallet;
+    $('meCta').href = '?u='+wallet;
+    $('meTier').className = 'tier-pill tier-'+tier.key;
+    $('meTier').textContent = tier.emoji+' '+tier.name;
+    $('meEmpty').style.display='none';
+    $('meDetail').style.display='block';
     try{
-      var raw = await rpc('eth_call',[{to:MONSHI, data:'0x70a08231'+pad(wallet).slice(2)},'latest']);
-      balance = Number(BigInt(raw))/1e18;
-    }catch(e){ balance=0; }
-    tier = tierFromBalance(balance);
-    $('balLine').textContent = fmtNum(balance)+' MONSHI · '+shortAddr(wallet);
-    $('tierBadge').className = 'tier-badge tier-'+tier.key;
-    $('tierBadge').textContent = tier.emoji+' '+tier.name;
-    $('tierBadge').style.display = 'inline-flex';
+      var pc = await sb.from('monshi_book_posts').select('id',{count:'exact',head:true}).eq('wallet',wallet).is('deleted_at',null);
+      $('meStatPosts').textContent = pc.count||0;
+      var fc = await sb.from('monshi_book_follows').select('following',{count:'exact',head:true}).eq('follower',wallet);
+      $('meStatFollowing').textContent = fc.count||0;
+      var fr = await sb.from('monshi_book_follows').select('follower',{count:'exact',head:true}).eq('following',wallet);
+      $('meStatFollowers').textContent = fr.count||0;
+    }catch(e){}
   }
 
-  // ─── COMPOSER ───
-  $('postBody').oninput = function(){ $('charCount').textContent = this.value.length; };
-
   $('postBtn').onclick = async function(){
-    if(!wallet){ toast('Connect first','error'); return; }
-    var body = $('postBody').value.trim();
-    if(body.length<2){ toast('Too short','error'); return; }
-    var pin = $('pinToggle').checked && balance>=1_000_000;
-    var btn=this; btn.disabled=true; btn.textContent='POSTING...';
+    if(!wallet){toast('Connect first','error');return;}
+    var body=$('postBody').value.trim();
+    var imageUrl=$('imageInput').value.trim();
+    if(body.length<2 && !imageUrl){toast('Say something','error');return;}
+    var pin=$('pinToggle').checked && balance>=1_000_000;
+    var btn=this;btn.disabled=true;btn.textContent='...';
     try{
-      // refresh balance to lock tier at post time
       await refreshBalance();
-      var r = await sb.from('monshi_book_posts').insert({
-        wallet: wallet,
-        body: body,
-        tier: tier.key,
-        balance_at_post: Math.floor(balance),
-        is_pinned: pin
-      }).select().single();
-      if(r.error) throw r.error;
-      $('postBody').value=''; $('charCount').textContent='0';
+      var r=await sb.from('monshi_book_posts').insert({wallet:wallet,body:body,tier:tier.key,balance_at_post:Math.floor(balance),is_pinned:pin,image_url:imageUrl||null}).select().single();
+      if(r.error)throw r.error;
+      $('postBody').value='';$('imageInput').value='';
+      $('imageInputWrap').classList.remove('show');
       $('pinToggle').checked=false;
       toast('Posted ✓','success');
-      loadFeed();
-    }catch(e){
-      console.error(e);
-      toast('Post failed: '+(e.message||'check Supabase tables exist'),'error');
-    }finally{ btn.disabled=false; btn.textContent='POST'; }
+      navTo(null);loadMyProfile();
+    }catch(e){console.error(e);if(/does not exist|PGRST205/i.test(e.message||''))showSchema();else toast('Post failed','error');}
+    finally{btn.disabled=false;btn.textContent='POST';}
   };
 
-  // ─── FEED ───
-  document.querySelectorAll('.feed-tab').forEach(function(b){
-    b.onclick = function(){
-      document.querySelectorAll('.feed-tab').forEach(function(x){x.classList.remove('active');});
-      b.classList.add('active');
-      currentTab = b.dataset.tab;
+  function handleRoute(){
+    var u=getQueryUser();
+    if(u){
+      $('profileCard').style.display='block';
+      renderProfile(u);
+      $('composerCard').style.display=(wallet===u)?'block':'none';
+      $('feedTabs').style.display='none';
+      loadFeedFor(u);
+    }else{
+      $('profileCard').style.display='none';
+      $('composerCard').style.display='block';
+      $('feedTabs').style.display='flex';
       loadFeed();
+    }
+  }
+
+  async function renderProfile(w){
+    await getProfilesBatch([w]);
+    var p=profileCache[w];
+    $('profileAvatarImg').src=avatarUrl(w);
+    $('profileName').textContent=(p&&p.display_name)||shortAddr(w);
+    $('profileHandle').textContent=shortAddr(w);
+    $('profileBio').textContent=(p&&p.bio)||(wallet===w?'Tap edit profile to add a bio.':'');
+    try{
+      var raw=await rpc('eth_call',[{to:MONSHI,data:'0x70a08231'+pad(w).slice(2)},'latest']);
+      var bal=Number(BigInt(raw))/1e18;var t=tierFromBalance(bal);
+      $('profileTier').className='tier-pill tier-'+t.key;
+      $('profileTier').textContent=t.emoji+' '+t.name+' · '+fmtNum(bal)+' $MONSHI';
+    }catch(e){}
+    try{
+      var pc=await sb.from('monshi_book_posts').select('id',{count:'exact',head:true}).eq('wallet',w).is('deleted_at',null);
+      $('profileStatPosts').textContent=pc.count||0;
+      var fr=await sb.from('monshi_book_follows').select('follower',{count:'exact',head:true}).eq('following',w);
+      $('profileStatFollowers').textContent=fr.count||0;
+      var fc=await sb.from('monshi_book_follows').select('following',{count:'exact',head:true}).eq('follower',w);
+      $('profileStatFollowing').textContent=fc.count||0;
+    }catch(e){}
+    var actions='';
+    if(wallet===w){
+      actions='<button class="btn edit" onclick="window.__monshiToggleEdit()">EDIT PROFILE</button>';
+    }else if(wallet){
+      var f=followingSet.has(w);
+      actions='<button class="btn follow '+(f?'following':'')+'" onclick="window.__monshiToggleFollow(\''+w+'\')">'+(f?'✓ FOLLOWING':'+ FOLLOW')+'</button>';
+    }
+    $('profileActions').innerHTML=actions;
+    $('editName').value=(p&&p.display_name)||'';
+    $('editBio').value=(p&&p.bio)||'';
+    $('editForm').classList.remove('show');
+  }
+  window.__monshiToggleEdit = function(){$('editForm').classList.toggle('show');};
+  $('saveProfileBtn').onclick = async function(){
+    if(!wallet){toast('Connect first','error');return;}
+    var name=$('editName').value.trim(),bio=$('editBio').value.trim();
+    var btn=this;btn.disabled=true;
+    try{
+      var r=await sb.from('monshi_book_profiles').upsert({wallet:wallet,display_name:name||null,bio:bio||null,updated_at:new Date().toISOString()},{onConflict:'wallet'});
+      if(r.error)throw r.error;
+      delete profileCache[wallet];
+      toast('Profile saved ✓','success');
+      $('editForm').classList.remove('show');
+      renderProfile(wallet);loadMyProfile();
+    }catch(e){console.error(e);if(/does not exist|PGRST205/i.test(e.message||''))showSchema();else toast('Save failed','error');}
+    finally{btn.disabled=false;}
+  };
+  window.__monshiToggleFollow = async function(w){
+    if(!wallet){toast('Connect first','error');return;}
+    if(w===wallet)return;
+    var f=followingSet.has(w);
+    try{
+      if(f){await sb.from('monshi_book_follows').delete().eq('follower',wallet).eq('following',w);followingSet.delete(w);}
+      else{await sb.from('monshi_book_follows').insert({follower:wallet,following:w});followingSet.add(w);}
+      renderProfile(w);loadMyProfile();
+    }catch(e){console.error(e);toast('Follow failed','error');}
+  };
+
+  document.querySelectorAll('.feed-tab').forEach(function(b){
+    b.onclick=function(){
+      document.querySelectorAll('.feed-tab').forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');currentTab=b.dataset.tab;loadFeed();
     };
   });
 
   async function loadFeed(){
-    var feed = $('feed');
-    feed.innerHTML='<div class="skel"></div><div class="skel"></div>';
+    var feed=$('feed');feed.innerHTML='<div class="skel"></div><div class="skel"></div>';
     try{
-      var q = sb.from('monshi_book_posts').select('*').is('deleted_at', null).order('is_pinned',{ascending:false}).order('created_at',{ascending:false}).limit(50);
-      if(currentTab==='whale') q = q.in('tier',['whale','royalty']);
-      else if(currentTab==='mine'){
-        if(!wallet){ feed.innerHTML='<div class="empty">Connect wallet to see your posts.</div>'; return; }
-        q = q.eq('wallet', wallet);
-      }
-      var r = await q;
-      if(r.error){
-        if(r.error.code==='PGRST205' || /does not exist/i.test(r.error.message||'')){
-          feed.innerHTML = '<div class="empty">⚠ Supabase tables not created yet.<br><br>Open browser console for the SQL setup script.<br><br>Once tables exist, the feed will load.</div>';
-          console.log('%cMONSHI BOOK SETUP SQL','font-size:14px;font-weight:bold;color:#A855F7');
-          console.log(SETUP_SQL);
-          return;
-        }
-        throw r.error;
-      }
-      if(!r.data.length){ feed.innerHTML='<div class="empty">No posts yet. Be the first ape on the feed.</div>'; return; }
-      feed.innerHTML = r.data.map(renderPost).join('');
-      r.data.forEach(function(p){ wireActions(p.id); loadComments(p.id); loadLikes(p.id); });
-    }catch(e){
-      console.error(e);
-      feed.innerHTML='<div class="empty">Couldn\'t load feed.<br><br>'+(e.message||'')+'</div>';
-    }
+      var q=sb.from('monshi_book_posts').select('*').is('deleted_at',null).order('is_pinned',{ascending:false}).order('created_at',{ascending:false}).limit(50);
+      if(currentTab==='whale')q=q.in('tier',['whale','royalty']);
+      else if(currentTab==='mine'){if(!wallet){feed.innerHTML='<div class="card empty">Connect wallet to see your posts.</div>';return;}q=q.eq('wallet',wallet);}
+      else if(currentTab==='following'){if(!wallet||followingSet.size===0){feed.innerHTML='<div class="card empty">Follow some wallets to fill this feed.</div>';return;}q=q.in('wallet',[...followingSet]);}
+      var r=await q;
+      if(r.error){if(/does not exist|PGRST205/i.test(r.error.message||'')){showSchema();return;}throw r.error;}
+      if(!r.data.length){feed.innerHTML='<div class="card empty">No posts here yet.</div>';return;}
+      await getProfilesBatch(r.data.map(function(p){return p.wallet;}));
+      feed.innerHTML=r.data.map(renderPost).join('');
+      r.data.forEach(function(p){wirePost(p);loadComments(p.id);loadReactions(p.id);});
+    }catch(e){console.error(e);feed.innerHTML='<div class="card empty">Couldn\'t load feed.<br>'+escape(e.message||'')+'</div>';}
+  }
+
+  async function loadFeedFor(w){
+    var feed=$('feed');feed.innerHTML='<div class="skel"></div>';
+    try{
+      var r=await sb.from('monshi_book_posts').select('*').eq('wallet',w).is('deleted_at',null).order('created_at',{ascending:false}).limit(50);
+      if(r.error){if(/does not exist|PGRST205/i.test(r.error.message||'')){showSchema();return;}throw r.error;}
+      if(!r.data.length){feed.innerHTML='<div class="card empty">No posts on this wall yet.</div>';return;}
+      await getProfilesBatch([w]);
+      feed.innerHTML=r.data.map(renderPost).join('');
+      r.data.forEach(function(p){wirePost(p);loadComments(p.id);loadReactions(p.id);});
+    }catch(e){console.error(e);feed.innerHTML='<div class="card empty">Couldn\'t load wall.</div>';}
   }
 
   function renderPost(p){
-    var t = {key:p.tier, name:(p.tier||'shrimp').toUpperCase(), emoji:({royalty:'👑',whale:'🐋',dolphin:'🐬',crab:'🦀',shrimp:'🦐'}[p.tier])||'🦐'};
-    var cls = 'post '+(p.is_pinned?'pinned ':'')+(p.tier==='whale'||p.tier==='royalty'?p.tier:'');
-    var canDelete = wallet && (wallet===p.wallet || wallet===TREASURY.toLowerCase());
-    return '<div class="'+cls+'" data-id="'+p.id+'">'+
-      '<div class="post-head">'+
-        '<div class="post-author">'+tierBadge(t)+' <span>'+shortAddr(p.wallet)+'</span></div>'+
-        '<div class="post-time">'+timeAgo(p.created_at)+'</div>'+
+    var key=p.tier||'shrimp';
+    var pinnedTag=p.is_pinned?'<div class="post-pinned-tag">📌 PINNED · '+escape(displayName(p.wallet))+'</div>':'';
+    var image=p.image_url?'<div class="post-image"><img src="'+escape(p.image_url)+'" alt="" onerror="this.parentElement.style.display=\'none\';"/></div>':'';
+    var canDelete=wallet&&(wallet===p.wallet||wallet===TREASURY);
+    return '<div class="card post '+(p.is_pinned?'pinned ':'')+(key==='royalty'?'royalty ':'')+'" data-id="'+p.id+'">'+
+      pinnedTag+
+      '<div class="post-inner">'+
+        '<div class="post-head">'+
+          '<a class="post-avatar" href="?u='+p.wallet+'" onclick="window.__monshiNav(\''+p.wallet+'\',event)"><img src="'+avatarUrl(p.wallet)+'" alt=""/></a>'+
+          '<div class="post-meta">'+
+            '<div class="post-author">'+
+              '<a class="post-name" href="?u='+p.wallet+'" onclick="window.__monshiNav(\''+p.wallet+'\',event)">'+escape(displayName(p.wallet))+'</a>'+
+              tierPill(key)+
+            '</div>'+
+            '<div class="post-time"><span class="post-handle">'+shortAddr(p.wallet)+'</span> · '+timeAgo(p.created_at)+'</div>'+
+          '</div>'+
+          (canDelete?'<button class="post-menu" data-act="delete" data-id="'+p.id+'" title="Delete">🗑</button>':'')+
+        '</div>'+
+        '<div class="post-body">'+escape(p.body)+'</div>'+
+        image+
+        '<div class="reactions-summary" id="rsum-'+p.id+'"><div class="reactions-summary-l">—</div><div id="rcomment-count-'+p.id+'">0 replies</div></div>'+
+        '<div class="post-actions">'+
+          '<button class="post-action" data-act="react" data-id="'+p.id+'"><span class="ico" id="rico-'+p.id+'">🔥</span><span id="rlbl-'+p.id+'">React</span>'+
+            '<div class="reaction-popup" id="rpop-'+p.id+'">'+
+              REACTION_TYPES.map(function(rx){return '<button class="reaction-btn" data-react="'+rx.key+'" data-id="'+p.id+'">'+rx.emoji+'</button>';}).join('')+
+            '</div>'+
+          '</button>'+
+          '<button class="post-action" data-act="reply" data-id="'+p.id+'"><span class="ico">💬</span>Reply</button>'+
+          '<button class="post-action" data-act="share" data-id="'+p.id+'"><span class="ico">↗</span>Share</button>'+
+        '</div>'+
       '</div>'+
-      '<div class="post-body">'+escape(p.body)+'</div>'+
-      '<div class="post-actions">'+
-        '<button data-act="like" data-id="'+p.id+'">♡ <span class="lk-count">'+(p.likes_count||0)+'</span></button>'+
-        '<button data-act="reply" data-id="'+p.id+'">💬 REPLY</button>'+
-        (canDelete?'<button class="delete" data-act="delete" data-id="'+p.id+'">🗑</button>':'')+
-      '</div>'+
-      '<div class="comments" id="cm-'+p.id+'"></div>'+
+      '<div class="comments-box" id="cm-'+p.id+'"></div>'+
     '</div>';
   }
+  window.__monshiNav = function(w,ev){ev.preventDefault();navTo(w);};
 
-  function wireActions(postId){
-    var post = document.querySelector('[data-id="'+postId+'"]');
-    if(!post) return;
-    post.querySelectorAll('button[data-act]').forEach(function(b){
-      b.onclick = function(){
-        var act = b.dataset.act;
-        if(act==='like') toggleLike(postId, b);
-        if(act==='reply') $('cm-'+postId).classList.toggle('show');
-        if(act==='delete') deletePost(postId);
+  function wirePost(p){
+    var el=document.querySelector('[data-id="'+p.id+'"]');if(!el)return;
+    el.querySelectorAll('.post-action').forEach(function(b){
+      b.onclick=function(ev){
+        ev.stopPropagation();var act=b.dataset.act;
+        if(act==='react'){document.querySelectorAll('.reaction-popup.show').forEach(function(x){if(x.id!=='rpop-'+p.id)x.classList.remove('show');});$('rpop-'+p.id).classList.toggle('show');}
+        if(act==='reply')$('cm-'+p.id).classList.toggle('show');
+        if(act==='share'){navigator.clipboard.writeText(window.location.origin+'/monshi-book.html?u='+p.wallet);toast('Link copied','success');}
       };
     });
+    el.querySelectorAll('.reaction-btn').forEach(function(b){
+      b.onclick=function(ev){ev.stopPropagation();sendReaction(p.id,b.dataset.react);$('rpop-'+p.id).classList.remove('show');};
+    });
+    el.querySelectorAll('.post-menu').forEach(function(b){
+      if(b.dataset.act==='delete')b.onclick=function(){deletePost(p.id);};
+    });
+  }
+  document.addEventListener('click',function(){document.querySelectorAll('.reaction-popup.show').forEach(function(x){x.classList.remove('show');});});
+
+  async function loadReactions(postId){
+    try{
+      var r=await sb.from('monshi_book_reactions').select('reaction,wallet').eq('post_id',postId);
+      if(r.error)return;
+      var counts={};var myReact=null;
+      r.data.forEach(function(rx){counts[rx.reaction]=(counts[rx.reaction]||0)+1;if(wallet&&rx.wallet===wallet)myReact=rx.reaction;});
+      var total=r.data.length;
+      var sorted=Object.entries(counts).sort(function(a,b){return b[1]-a[1];}).slice(0,3);
+      var stack=sorted.map(function(s){var t=REACTION_TYPES.find(function(x){return x.key===s[0];});return t?'<span>'+t.emoji+'</span>':'';}).join('');
+      var sum=$('rsum-'+postId);
+      if(sum)sum.querySelector('.reactions-summary-l').innerHTML=total>0?'<div class="reaction-emoji-stack">'+stack+'</div> '+total:'';
+      var actBtn=document.querySelector('[data-id="'+postId+'"] .post-action[data-act="react"]');
+      if(actBtn){
+        if(myReact){
+          actBtn.classList.add('has-reaction');
+          var t=REACTION_TYPES.find(function(x){return x.key===myReact;});
+          $('rico-'+postId).textContent=t?t.emoji:'🔥';
+          $('rlbl-'+postId).textContent=(t?t.key:'react').toUpperCase();
+        }else{
+          actBtn.classList.remove('has-reaction');
+          $('rico-'+postId).textContent='🔥';$('rlbl-'+postId).textContent='React';
+        }
+      }
+    }catch(e){}
+  }
+  async function sendReaction(postId,type){
+    if(!wallet){toast('Connect first','error');return;}
+    try{
+      var ex=await sb.from('monshi_book_reactions').select('reaction').eq('post_id',postId).eq('wallet',wallet).maybeSingle();
+      if(ex.data&&ex.data.reaction===type)await sb.from('monshi_book_reactions').delete().eq('post_id',postId).eq('wallet',wallet);
+      else if(ex.data)await sb.from('monshi_book_reactions').update({reaction:type}).eq('post_id',postId).eq('wallet',wallet);
+      else await sb.from('monshi_book_reactions').insert({post_id:postId,wallet:wallet,reaction:type});
+      loadReactions(postId);
+    }catch(e){console.error(e);if(/does not exist/i.test(e.message||''))showSchema();else toast('Reaction failed','error');}
   }
 
   async function loadComments(postId){
-    var box = $('cm-'+postId);
-    var r = await sb.from('monshi_book_comments').select('*').eq('post_id', postId).is('deleted_at',null).order('created_at',{ascending:true}).limit(50);
-    if(r.error){ box.innerHTML='<div style="font-size:11px;color:rgba(196,181,253,.4);">comments unavailable</div>'+commentInput(postId); return; }
-    var html = r.data.map(function(c){
-      var t = {key:c.tier||'shrimp', name:(c.tier||'shrimp').toUpperCase(), emoji:({royalty:'👑',whale:'🐋',dolphin:'🐬',crab:'🦀',shrimp:'🦐'}[c.tier])||'🦐'};
-      return '<div class="comment"><div class="comment-head">'+tierBadge(t)+'<span>'+shortAddr(c.wallet)+'</span><span style="margin-left:auto;color:rgba(196,181,253,.4);">'+timeAgo(c.created_at)+'</span></div><div class="comment-body">'+escape(c.body)+'</div></div>';
-    }).join('');
-    box.innerHTML = html + commentInput(postId);
+    var box=$('cm-'+postId);if(!box)return;
+    var r=await sb.from('monshi_book_comments').select('*').eq('post_id',postId).is('deleted_at',null).order('created_at',{ascending:true}).limit(50);
+    if(r.error){box.innerHTML='<div style="font-size:11px;color:rgba(196,181,253,.4);">comments unavailable</div>'+commentInput(postId);return;}
+    await getProfilesBatch(r.data.map(function(c){return c.wallet;}));
+    var rc=$('rcomment-count-'+postId);if(rc)rc.textContent=r.data.length+' '+(r.data.length===1?'reply':'replies');
+    box.innerHTML=r.data.map(function(c){
+      return '<div class="comment">'+
+        '<a class="comment-avatar" href="?u='+c.wallet+'" onclick="window.__monshiNav(\''+c.wallet+'\',event)"><img src="'+avatarUrl(c.wallet)+'" alt=""/></a>'+
+        '<div style="flex:1;">'+
+          '<div class="comment-bubble">'+
+            '<div class="comment-head"><a class="comment-name" href="?u='+c.wallet+'" onclick="window.__monshiNav(\''+c.wallet+'\',event)">'+escape(displayName(c.wallet))+'</a> '+tierPill(c.tier||'shrimp')+'</div>'+
+            '<div class="comment-body">'+escape(c.body)+'</div>'+
+          '</div>'+
+          '<div class="comment-time">'+timeAgo(c.created_at)+'</div>'+
+        '</div>'+
+      '</div>';
+    }).join('')+commentInput(postId);
   }
-
   function commentInput(postId){
-    return '<div class="comment-input">'+
-      '<input id="ci-'+postId+'" maxlength="280" placeholder="'+(wallet?'Reply…':'Connect to reply')+'"'+(wallet?'':' disabled')+'>'+
+    return '<div class="comment-input-row">'+
+      '<img src="'+avatarUrl(wallet)+'" alt=""/>'+
+      '<input id="ci-'+postId+'" maxlength="320" placeholder="'+(wallet?'Write a reply…':'Connect to reply')+'"'+(wallet?'':' disabled')+'>'+
       '<button onclick="window.__monshiSendComment('+postId+')"'+(wallet?'':' disabled')+'>SEND</button>'+
     '</div>';
   }
-
   window.__monshiSendComment = async function(postId){
-    var input = $('ci-'+postId);
-    var body = input.value.trim();
-    if(body.length<1) return;
+    var input=$('ci-'+postId);var body=input.value.trim();if(body.length<1)return;
     input.disabled=true;
     try{
-      var r = await sb.from('monshi_book_comments').insert({post_id:postId, wallet:wallet, body:body, tier:tier.key});
-      if(r.error) throw r.error;
-      input.value='';
-      loadComments(postId);
-    }catch(e){ toast('Comment failed','error'); console.error(e); }
-    finally{ input.disabled=false; }
+      var r=await sb.from('monshi_book_comments').insert({post_id:postId,wallet:wallet,body:body,tier:tier.key});
+      if(r.error)throw r.error;
+      input.value='';loadComments(postId);
+    }catch(e){toast('Comment failed','error');console.error(e);}
+    finally{input.disabled=false;}
   };
-
-  async function loadLikes(postId){
-    if(!wallet) return;
-    var r = await sb.from('monshi_book_likes').select('post_id').eq('post_id', postId).eq('wallet', wallet);
-    if(r.data && r.data.length){
-      var btn = document.querySelector('[data-id="'+postId+'"] button[data-act="like"]');
-      if(btn){ btn.classList.add('liked'); btn.innerHTML='♥ <span class="lk-count">'+btn.querySelector('.lk-count').textContent+'</span>'; }
-    }
-  }
-
-  async function toggleLike(postId, btn){
-    if(!wallet){ toast('Connect first','error'); return; }
-    var liked = btn.classList.contains('liked');
-    var countEl = btn.querySelector('.lk-count');
-    var cur = parseInt(countEl.textContent)||0;
-    try{
-      if(liked){
-        await sb.from('monshi_book_likes').delete().eq('post_id',postId).eq('wallet',wallet);
-        await sb.rpc('decrement_post_likes',{p_id:postId}).catch(function(){
-          return sb.from('monshi_book_posts').update({likes_count: Math.max(0,cur-1)}).eq('id',postId);
-        });
-        btn.classList.remove('liked'); countEl.textContent = Math.max(0,cur-1); btn.innerHTML='♡ <span class="lk-count">'+(Math.max(0,cur-1))+'</span>';
-      }else{
-        await sb.from('monshi_book_likes').insert({post_id:postId, wallet:wallet});
-        await sb.rpc('increment_post_likes',{p_id:postId}).catch(function(){
-          return sb.from('monshi_book_posts').update({likes_count: cur+1}).eq('id',postId);
-        });
-        btn.classList.add('liked'); countEl.textContent = cur+1; btn.innerHTML='♥ <span class="lk-count">'+(cur+1)+'</span>';
-      }
-    }catch(e){ console.error(e); }
-  }
-
   async function deletePost(postId){
-    if(!confirm('Delete this post?')) return;
-    var r = await sb.from('monshi_book_posts').update({deleted_at:new Date().toISOString()}).eq('id',postId);
-    if(r.error){ toast('Delete failed','error'); return; }
-    toast('Deleted','success');
-    loadFeed();
+    if(!confirm('Delete this post?'))return;
+    var r=await sb.from('monshi_book_posts').update({deleted_at:new Date().toISOString()}).eq('id',postId);
+    if(r.error){toast('Delete failed','error');return;}
+    toast('Deleted','success');loadFeed();loadMyProfile();
   }
 
-  // ─── ADS ───
+  async function loadTrending(){
+    try{
+      var since=new Date(Date.now()-86400000).toISOString();
+      var r=await sb.from('monshi_book_posts').select('*').gte('created_at',since).is('deleted_at',null).order('created_at',{ascending:false}).limit(40);
+      if(r.error||!r.data||!r.data.length){
+        var rr=await sb.from('monshi_book_posts').select('*').is('deleted_at',null).order('created_at',{ascending:false}).limit(5);
+        if(rr.error||!rr.data){$('trending').innerHTML='<div class="empty" style="padding:14px;font-size:11px;">No trending yet</div>';return;}
+        renderTrending(rr.data.slice(0,5));return;
+      }
+      var ids=r.data.map(function(p){return p.id;});
+      var rr2=await sb.from('monshi_book_reactions').select('post_id').in('post_id',ids);
+      var counts={};if(rr2.data)rr2.data.forEach(function(x){counts[x.post_id]=(counts[x.post_id]||0)+1;});
+      r.data.forEach(function(p){p._rcount=counts[p.id]||0;});
+      r.data.sort(function(a,b){return (b._rcount-a._rcount)||(new Date(b.created_at)-new Date(a.created_at));});
+      renderTrending(r.data.slice(0,5));
+    }catch(e){$('trending').innerHTML='';}
+  }
+  async function renderTrending(posts){
+    if(!posts.length){$('trending').innerHTML='<div class="empty" style="padding:14px;font-size:11px;">No trending yet</div>';return;}
+    await getProfilesBatch(posts.map(function(p){return p.wallet;}));
+    $('trending').innerHTML=posts.map(function(p){
+      return '<div class="trend-item" onclick="window.__monshiNav(\''+p.wallet+'\',event)">'+
+        '<div class="trend-avatar"><img src="'+avatarUrl(p.wallet)+'" alt=""/></div>'+
+        '<div class="trend-text">'+
+          '<div class="trend-name">'+escape(displayName(p.wallet))+'</div>'+
+          '<div class="trend-snippet">'+escape(p.body.slice(0,80))+'</div>'+
+          '<div class="trend-meta">'+(p._rcount||0)+' reactions · '+timeAgo(p.created_at)+'</div>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  }
+  async function loadActiveWhales(){
+    try{
+      var since=new Date(Date.now()-7*86400000).toISOString();
+      var r=await sb.from('monshi_book_posts').select('wallet,tier,created_at').gte('created_at',since).in('tier',['whale','royalty']).is('deleted_at',null).order('created_at',{ascending:false}).limit(20);
+      if(r.error||!r.data){$('whales').innerHTML='';return;}
+      var seen={},unique=[];r.data.forEach(function(p){if(!seen[p.wallet]){seen[p.wallet]=true;unique.push(p);}});
+      unique=unique.slice(0,5);
+      if(!unique.length){$('whales').innerHTML='<div class="empty" style="padding:14px;font-size:11px;">No active whales</div>';return;}
+      await getProfilesBatch(unique.map(function(p){return p.wallet;}));
+      $('whales').innerHTML=unique.map(function(p){
+        var emo=tierEmoji(p.tier);
+        return '<div class="trend-item" onclick="window.__monshiNav(\''+p.wallet+'\',event)">'+
+          '<div class="trend-avatar"><img src="'+avatarUrl(p.wallet)+'" alt=""/></div>'+
+          '<div class="trend-text">'+
+            '<div class="trend-name">'+escape(displayName(p.wallet))+' '+emo+'</div>'+
+            '<div class="trend-meta">active '+timeAgo(p.created_at)+' ago</div>'+
+          '</div>'+
+        '</div>';
+      }).join('');
+    }catch(e){$('whales').innerHTML='';}
+  }
   async function loadAd(){
     try{
-      var r = await sb.from('monshi_book_ads').select('*').eq('status','active').gt('expires_at', new Date().toISOString()).order('created_at',{ascending:false}).limit(1);
-      if(r.error || !r.data || !r.data.length){ $('adSlot').innerHTML=''; return; }
-      var ad = r.data[0];
-      $('adSlot').innerHTML = '<div class="ad-slot"><div class="ad-content">'+
-        '<div class="ad-emoji">'+(escape(ad.emoji||'⚡'))+'</div>'+
-        '<div class="ad-text"><div class="ad-title">'+escape(ad.title||'')+'</div><div class="ad-body">'+escape(ad.body||'')+'</div></div>'+
-        (ad.target_url ? '<a class="ad-cta" href="'+escape(ad.target_url)+'" target="_blank" rel="noopener">VIEW →</a>' : '')+
-      '</div></div>';
-    }catch(e){ $('adSlot').innerHTML=''; }
+      var r=await sb.from('monshi_book_ads').select('*').eq('status','active').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(1);
+      if(r.error||!r.data||!r.data.length){$('adSlot').innerHTML='';return;}
+      var ad=r.data[0];
+      $('adSlot').innerHTML='<div class="card ad-card"><div class="ad-content"><div class="ad-emoji">'+escape(ad.emoji||'⚡')+'</div><div><div class="ad-title">'+escape(ad.title||'')+'</div><div class="ad-body">'+escape(ad.body||'')+'</div></div></div>'+(ad.target_url?'<a class="buy-ad-link" href="'+escape(ad.target_url)+'" target="_blank" rel="noopener">VIEW →</a>':'')+'</div>';
+    }catch(e){$('adSlot').innerHTML='';}
   }
 
-  // ─── SETUP SQL (logged to console if tables missing) ───
+  function showSchema(){
+    if(schemaShown)return;schemaShown=true;
+    $('feed').innerHTML='<div class="card empty" style="padding:30px 18px;">⚠ <b>Supabase tables not set up yet.</b><br><br>Open the browser console (F12) for the SQL setup script.<br>Paste it into Supabase → SQL Editor → Run → refresh.</div>';
+    console.log('%c┌─── MONSHI BOOK · SUPABASE SCHEMA ────────────────────┐','color:#A855F7;font-weight:bold;font-size:14px;');
+    console.log('%c│ Run this SQL in Supabase SQL Editor (one time setup) │','color:#A855F7;');
+    console.log('%c└──────────────────────────────────────────────────────┘','color:#A855F7;');
+    console.log(SETUP_SQL);
+  }
+
   var SETUP_SQL = `
 -- ════════════════════════════════════════════════════════════
--- MONSHI BOOK · Supabase setup SQL · run once in SQL Editor
+-- MONSHI BOOK · Full Supabase setup · run in SQL Editor (idempotent)
 -- ════════════════════════════════════════════════════════════
-
 create table if not exists public.monshi_book_posts (
   id bigserial primary key,
   wallet text not null,
-  body text not null check (char_length(body) between 1 and 600),
+  body text not null check (char_length(body) between 0 and 600),
   tier text default 'shrimp',
   balance_at_post bigint default 0,
   is_pinned boolean default false,
   is_ad boolean default false,
+  image_url text,
   likes_count int default 0,
   replies_count int default 0,
   created_at timestamptz default now(),
   deleted_at timestamptz
 );
+alter table public.monshi_book_posts add column if not exists image_url text;
 create index if not exists ix_book_posts_created on public.monshi_book_posts(created_at desc) where deleted_at is null;
 create index if not exists ix_book_posts_wallet on public.monshi_book_posts(wallet);
 
@@ -496,12 +841,32 @@ create table if not exists public.monshi_book_comments (
 );
 create index if not exists ix_book_comments_post on public.monshi_book_comments(post_id, created_at);
 
-create table if not exists public.monshi_book_likes (
+create table if not exists public.monshi_book_reactions (
   post_id bigint not null references public.monshi_book_posts(id) on delete cascade,
   wallet text not null,
+  reaction text not null default 'fire',
   created_at timestamptz default now(),
   primary key(post_id, wallet)
 );
+
+create table if not exists public.monshi_book_profiles (
+  wallet text primary key,
+  display_name text,
+  bio text,
+  avatar_url text,
+  cover_url text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+create table if not exists public.monshi_book_follows (
+  follower text not null,
+  following text not null,
+  created_at timestamptz default now(),
+  primary key(follower, following),
+  check (follower <> following)
+);
+create index if not exists ix_book_follows_following on public.monshi_book_follows(following);
 
 create table if not exists public.monshi_book_ads (
   id bigserial primary key,
@@ -517,47 +882,64 @@ create table if not exists public.monshi_book_ads (
   expires_at timestamptz
 );
 
--- RLS: anon CAN read undeleted, insert posts, like, comment, delete own
 alter table public.monshi_book_posts enable row level security;
 alter table public.monshi_book_comments enable row level security;
-alter table public.monshi_book_likes enable row level security;
+alter table public.monshi_book_reactions enable row level security;
+alter table public.monshi_book_profiles enable row level security;
+alter table public.monshi_book_follows enable row level security;
 alter table public.monshi_book_ads enable row level security;
 
+drop policy if exists "read posts" on public.monshi_book_posts;
+drop policy if exists "insert posts" on public.monshi_book_posts;
+drop policy if exists "update posts" on public.monshi_book_posts;
 create policy "read posts" on public.monshi_book_posts for select using (deleted_at is null);
 create policy "insert posts" on public.monshi_book_posts for insert with check (true);
-create policy "update own post (soft delete)" on public.monshi_book_posts for update using (true);
+create policy "update posts" on public.monshi_book_posts for update using (true);
+
+drop policy if exists "read comments" on public.monshi_book_comments;
+drop policy if exists "insert comments" on public.monshi_book_comments;
+drop policy if exists "update comments" on public.monshi_book_comments;
 create policy "read comments" on public.monshi_book_comments for select using (deleted_at is null);
 create policy "insert comments" on public.monshi_book_comments for insert with check (true);
-create policy "update own comment" on public.monshi_book_comments for update using (true);
-create policy "read likes" on public.monshi_book_likes for select using (true);
-create policy "insert likes" on public.monshi_book_likes for insert with check (true);
-create policy "delete own like" on public.monshi_book_likes for delete using (true);
+create policy "update comments" on public.monshi_book_comments for update using (true);
+
+drop policy if exists "read reactions" on public.monshi_book_reactions;
+drop policy if exists "insert reactions" on public.monshi_book_reactions;
+drop policy if exists "update reactions" on public.monshi_book_reactions;
+drop policy if exists "delete reactions" on public.monshi_book_reactions;
+create policy "read reactions" on public.monshi_book_reactions for select using (true);
+create policy "insert reactions" on public.monshi_book_reactions for insert with check (true);
+create policy "update reactions" on public.monshi_book_reactions for update using (true);
+create policy "delete reactions" on public.monshi_book_reactions for delete using (true);
+
+drop policy if exists "read profiles" on public.monshi_book_profiles;
+drop policy if exists "upsert profiles" on public.monshi_book_profiles;
+drop policy if exists "update profiles" on public.monshi_book_profiles;
+create policy "read profiles" on public.monshi_book_profiles for select using (true);
+create policy "upsert profiles" on public.monshi_book_profiles for insert with check (true);
+create policy "update profiles" on public.monshi_book_profiles for update using (true);
+
+drop policy if exists "read follows" on public.monshi_book_follows;
+drop policy if exists "insert follows" on public.monshi_book_follows;
+drop policy if exists "delete follows" on public.monshi_book_follows;
+create policy "read follows" on public.monshi_book_follows for select using (true);
+create policy "insert follows" on public.monshi_book_follows for insert with check (true);
+create policy "delete follows" on public.monshi_book_follows for delete using (true);
+
+drop policy if exists "read active ads" on public.monshi_book_ads;
+drop policy if exists "insert ads" on public.monshi_book_ads;
 create policy "read active ads" on public.monshi_book_ads for select using (status='active');
 create policy "insert ads" on public.monshi_book_ads for insert with check (true);
 
--- like-count helpers (atomic increment/decrement)
-create or replace function public.increment_post_likes(p_id bigint)
-returns void language plpgsql as $$
-begin update public.monshi_book_posts set likes_count = likes_count + 1 where id = p_id; end;$$;
-create or replace function public.decrement_post_likes(p_id bigint)
-returns void language plpgsql as $$
-begin update public.monshi_book_posts set likes_count = greatest(0, likes_count - 1) where id = p_id; end;$$;
-grant execute on function public.increment_post_likes to anon, authenticated;
-grant execute on function public.decrement_post_likes to anon, authenticated;
-
--- ════════════════════════════════════════════════════════════
--- DONE. Refresh the Monshi Book page and the feed will load.
--- ════════════════════════════════════════════════════════════
+-- Done. Refresh /monshi-book.html
 `;
 
-  // ─── BOOT ───
-  loadAd();
-  loadFeed();
-  // Auto-reconnect
+  $('composerAvatar').src=avatarUrl(null);
+  loadAd();loadTrending();loadActiveWhales();
+  setInterval(loadTrending,60000);
+  handleRoute();
   if(window.ethereum && window.ethereum.selectedAddress){
-    window.ethereum.request({method:'eth_accounts'}).then(function(a){
-      if(a && a.length){ $('connectBtn').click(); }
-    });
+    window.ethereum.request({method:'eth_accounts'}).then(function(a){if(a&&a.length)$('connectBtn').click();});
   }
 })();
 </script>

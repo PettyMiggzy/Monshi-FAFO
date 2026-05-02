@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MONSHI CHAT · Live Pack Talk</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#A855F7">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:#02000a;font-family:'Space Mono',monospace;color:#EDE9FF;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 20% 0%,rgba(168,85,247,.18),transparent 50%),radial-gradient(circle at 80% 100%,rgba(74,222,128,.10),transparent 50%);z-index:-1;}
+.wrap{max-width:1000px;margin:0 auto;padding:24px 18px 80px;}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:24px;padding:14px 18px;background:rgba(20,5,50,.6);border:1px solid rgba(139,92,246,.2);border-radius:14px;}
+.nav a.brand{font-family:Orbitron,sans-serif;font-weight:900;font-size:14px;letter-spacing:3px;color:#fff;text-decoration:none;}
+.nav .links{display:flex;gap:8px;flex-wrap:wrap;}
+.nav .links a,.nav .links button{padding:8px 12px;font-family:Orbitron,sans-serif;font-size:10px;letter-spacing:2px;color:#C4B5FD;text-decoration:none;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:6px;cursor:pointer;font-weight:700;}
+.nav .links a:hover,.nav .links button:hover{background:rgba(168,85,247,.18);color:#fff;}
+.nav .links .connect{background:linear-gradient(135deg,#FCD34D,#F59E0B);color:#000;border-color:transparent;font-weight:900;}
+.nav .links .connect.connected{background:linear-gradient(135deg,#A855F7,#7C3AED);color:#fff;}
+
+.hero{text-align:center;padding:24px 0 18px;}
+.hero .eyebrow{font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:5px;font-weight:900;color:#A855F7;}
+.hero h1{font-family:Orbitron,sans-serif;font-weight:900;font-size:clamp(30px,5vw,46px);letter-spacing:3px;margin:8px 0 6px;background:linear-gradient(180deg,#fff 30%,#C4B5FD 70%,#A855F7);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero p{font-size:13px;color:rgba(196,181,253,.7);max-width:520px;margin:0 auto;line-height:1.6;}
+
+.gate{display:inline-block;margin-top:12px;padding:8px 16px;background:rgba(96,165,250,.12);border:1.5px solid rgba(96,165,250,.4);border-radius:30px;font-family:Orbitron,sans-serif;font-weight:800;font-size:10px;letter-spacing:2px;color:#60A5FA;}
+
+.panel{background:linear-gradient(180deg,rgba(20,5,50,.7),rgba(10,2,35,.5));border:1px solid rgba(139,92,246,.2);border-radius:14px;position:relative;overflow:hidden;}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#A855F7,transparent);opacity:.5;}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(139,92,246,.15);font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:2.5px;color:rgba(196,181,253,.7);font-weight:800;}
+.live{display:inline-flex;align-items:center;gap:6px;color:#4ADE80;font-size:10px;}
+.live::before{content:'';width:6px;height:6px;border-radius:50%;background:#4ADE80;animation:p 1.5s infinite;}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
+
+.feed{height:520px;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth;}
+.feed::-webkit-scrollbar{width:8px;}
+.feed::-webkit-scrollbar-track{background:rgba(0,0,0,.3);}
+.feed::-webkit-scrollbar-thumb{background:rgba(168,85,247,.4);border-radius:4px;}
+
+.msg{display:flex;flex-direction:column;gap:4px;animation:fadeIn .3s ease-out;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.msg-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;}
+.msg-tier{padding:2px 7px;border-radius:5px;font-family:Orbitron,sans-serif;font-weight:800;font-size:9px;letter-spacing:1.2px;}
+.msg-tier.tg{background:rgba(96,165,250,.15);color:#60A5FA;border:1px solid rgba(96,165,250,.3);}
+.msg-tier.shrimp{background:rgba(249,115,22,.12);color:#F97316;}
+.msg-tier.crab{background:rgba(252,211,77,.12);color:#FCD34D;}
+.msg-tier.dolphin{background:rgba(96,165,250,.12);color:#60A5FA;}
+.msg-tier.whale{background:rgba(168,85,247,.18);color:#A855F7;}
+.msg-tier.royalty{background:rgba(74,222,128,.18);color:#4ADE80;}
+.msg-wallet{font-family:'JetBrains Mono',monospace;font-weight:700;color:#C4B5FD;font-size:11px;}
+.msg-time{font-family:'Space Mono',monospace;color:rgba(196,181,253,.4);font-size:10px;margin-left:auto;}
+.msg-source{padding:1px 6px;background:rgba(168,85,247,.08);border-radius:4px;font-family:Orbitron,sans-serif;font-size:8px;letter-spacing:1px;font-weight:800;color:rgba(196,181,253,.6);}
+.msg-source.tg{background:rgba(96,165,250,.1);color:#60A5FA;}
+.msg-text{padding:10px 14px;background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.1);border-radius:10px;font-family:'Space Mono',monospace;font-size:13px;color:#EDE9FF;line-height:1.5;word-wrap:break-word;overflow-wrap:break-word;}
+.msg.you .msg-text{background:rgba(74,222,128,.06);border-color:rgba(74,222,128,.2);}
+
+.compose{padding:16px 20px;border-top:1px solid rgba(139,92,246,.15);}
+.compose-disabled{padding:18px;text-align:center;color:rgba(196,181,253,.5);font-family:'Space Mono',monospace;font-size:12px;line-height:1.7;}
+.compose-disabled b{color:#FCD34D;}
+.compose-row{display:flex;gap:10px;align-items:flex-end;}
+.compose textarea{flex:1;padding:12px 14px;background:rgba(0,0,0,.4);border:1.5px solid rgba(139,92,246,.25);border-radius:10px;color:#fff;font-family:'Space Mono',monospace;font-size:13px;resize:none;min-height:48px;max-height:120px;line-height:1.5;}
+.compose textarea:focus{outline:none;border-color:#A855F7;background:rgba(0,0,0,.55);}
+.compose-send{padding:12px 20px;background:linear-gradient(135deg,#A855F7,#7C3AED);color:#fff;border:none;border-radius:10px;font-family:Orbitron,sans-serif;font-weight:900;font-size:11px;letter-spacing:2.5px;cursor:pointer;transition:all .15s;}
+.compose-send:hover:not(:disabled){transform:translateY(-1px);}
+.compose-send:disabled{opacity:.4;cursor:not-allowed;}
+.compose-meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(196,181,253,.5);}
+.compose-meta .count{font-weight:700;}
+.compose-meta .count.warn{color:#FCD34D;}
+.compose-meta .count.over{color:#EF4444;}
+
+.empty{padding:60px 20px;text-align:center;font-family:'Space Mono',monospace;font-size:12px;color:rgba(196,181,253,.4);line-height:1.7;}
+.empty .e-emoji{font-size:42px;margin-bottom:10px;display:block;}
+
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(20,5,50,.95);border:1.5px solid rgba(139,92,246,.5);border-radius:10px;padding:12px 22px;font-size:12px;z-index:1000;display:none;font-family:'Space Mono',monospace;}
+.toast.show{display:block;}
+.toast.success{border-color:rgba(74,222,128,.5);color:#4ADE80;}
+.toast.error{border-color:rgba(239,68,68,.5);color:#EF4444;}
+
+.cooldown{display:inline-block;padding:3px 8px;background:rgba(252,211,77,.1);color:#FCD34D;border-radius:4px;font-weight:800;}
+
+@media(max-width:600px){
+  .feed{height:60vh;padding:14px;}
+  .compose{padding:12px 14px;}
+  .msg-text{font-size:12px;padding:8px 12px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="nav">
+    <a class="brand" href="/">💬 MONSHI · CHAT</a>
+    <div class="links">
+      <a href="/">DEN</a>
+      <a href="/dashboard/">DASHBOARD</a>
+      <a href="/arcade.html">ARCADE</a>
+      <a href="/tools.html">TOOLS</a>
+      <button class="connect" id="connectBtn">CONNECT WALLET</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow">▸ LIVE PACK TALK</div>
+    <h1>MONSHI CHAT</h1>
+    <p>Real-time chat with the Monshi pack. Connect your wallet to post — everyone can read. Synced live with our Telegram group.</p>
+    <div class="gate">🐬 DOLPHIN+ (100K MONSHI) TO POST</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <span><span id="msgCount">—</span> MESSAGES</span>
+      <span class="live">LIVE</span>
+    </div>
+    <div class="feed" id="feed">
+      <div class="empty"><span class="e-emoji">🐱</span>Loading messages...</div>
+    </div>
+    <div class="compose" id="compose">
+      <div class="compose-disabled" id="composeDisabled">
+        <b>CONNECT WALLET</b> to chat with the pack.<br>
+        Need <b>100,000 MONSHI</b> to post (anti-spam). Reading is free.
+      </div>
+      <div id="composeActive" style="display:none;">
+        <div class="compose-row">
+          <textarea id="msgInput" placeholder="Say something..." maxlength="280" rows="1"></textarea>
+          <button class="compose-send" id="sendBtn">SEND</button>
+        </div>
+        <div class="compose-meta">
+          <span id="composeStatus">Ready · <span class="count" id="charCount">0</span>/280</span>
+          <span id="cooldownLabel"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:20px;">
+    <a href="https://t.me/Monshi_Monpad" target="_blank" rel="noopener" style="font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:2px;color:#60A5FA;text-decoration:none;">📱 OPEN IN TELEGRAM →</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  // ─── Config ───
+  var MONSHI = '0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
+  var POST_TIER_MIN = 100_000; // Dolphin+
+  var COOLDOWN_MS = 30_000;    // 30s between messages per wallet
+  var POLL_MS = 4_000;          // poll new messages every 4s
+  var MSG_LIMIT = 280;
+  var FEED_LIMIT = 100;         // show last 100
+
+  var SUPABASE_URL = 'https://cuqhqcmrgpdjlhyqztnc.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
+
+  // RPC pool
+  var ANKR_PREMIUM = '';
+  var RPC_POOL = [ANKR_PREMIUM,'https://rpc.ankr.com/monad','https://rpc.monad.xyz','https://monad-mainnet.drpc.org'].filter(Boolean);
+  var rpcIdx = 0;
+  function rpc(method, params){
+    return new Promise(function(resolve, reject){
+      var attempt=0;
+      function next(){
+        if(attempt>=RPC_POOL.length){reject(new Error('rpc'));return;}
+        var url=RPC_POOL[(rpcIdx+attempt)%RPC_POOL.length]; attempt++;
+        var ctrl=new AbortController(); var to=setTimeout(function(){ctrl.abort();},6000);
+        fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:method,params:params||[]}),signal:ctrl.signal})
+          .then(function(r){clearTimeout(to);if(!r.ok)throw 0;return r.json();})
+          .then(function(j){if(j.error)throw 0; rpcIdx=(rpcIdx+attempt-1)%RPC_POOL.length; resolve(j.result);})
+          .catch(function(){clearTimeout(to);next();});
+      }
+      next();
+    });
+  }
+  function $(id){return document.getElementById(id);}
+  function pad(a){return '0x'+a.toLowerCase().replace('0x','').padStart(64,'0');}
+  function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+  function shortAddr(a){return a.slice(0,6)+'…'+a.slice(-4);}
+  function timeAgo(ts){
+    var now=Date.now(), d=Math.floor((now-new Date(ts).getTime())/1000);
+    if(d<60)return d+'s ago';
+    if(d<3600)return Math.floor(d/60)+'m ago';
+    if(d<86400)return Math.floor(d/3600)+'h ago';
+    return Math.floor(d/86400)+'d ago';
+  }
+  function toast(msg, kind){var t=$('toast'); t.textContent=msg; t.className='toast show '+(kind||''); setTimeout(function(){t.className='toast';},3000);}
+
+  function tierInfo(bal){
+    if(bal >= 10_000_000) return {key:'royalty', label:'👑 ROYALTY'};
+    if(bal >= 1_000_000)  return {key:'whale',   label:'🐋 WHALE'};
+    if(bal >= 100_000)    return {key:'dolphin', label:'🐬 DOLPHIN'};
+    if(bal >= 10_000)     return {key:'crab',    label:'🦀 CRAB'};
+    return {key:'shrimp', label:'🦐 SHRIMP'};
+  }
+
+  // ─── State ───
+  var wallet = null;
+  var monshiBal = 0;
+  var myTier = null;
+  var seenIds = new Set();
+  var lastSentAt = parseInt(localStorage.getItem('monshi_chat_last_sent')||'0',10);
+
+  // ─── Supabase REST ───
+  function sbHeaders(){ return {'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'}; }
+  function fetchMessages(){
+    return fetch(SUPABASE_URL+'/rest/v1/chat_messages?select=*&order=created_at.desc&limit='+FEED_LIMIT, {headers:sbHeaders()})
+      .then(function(r){return r.json();})
+      .catch(function(){return [];});
+  }
+  function postMessage(payload){
+    return fetch(SUPABASE_URL+'/rest/v1/chat_messages', {
+      method:'POST',
+      headers:Object.assign({},sbHeaders(),{'Prefer':'return=representation'}),
+      body:JSON.stringify(payload)
+    });
+  }
+
+  // ─── Render ───
+  function renderMessages(msgs){
+    var feed = $('feed');
+    if(!msgs || !msgs.length){
+      feed.innerHTML = '<div class="empty"><span class="e-emoji">🐱</span>No messages yet.<br>Be the first to say something.</div>';
+      $('msgCount').textContent = '0';
+      return;
+    }
+    msgs = msgs.slice().reverse(); // chronological
+
+    var nearBottom = feed.scrollHeight - feed.scrollTop - feed.clientHeight < 100;
+    var html = msgs.map(function(m){
+      var isYou = wallet && m.source === 'web' && m.wallet.toLowerCase() === wallet.toLowerCase();
+      var name, tierKey, tierLabel, sourceLabel;
+      if(m.source === 'tg'){
+        name = m.tg_user || 'tg-user';
+        tierKey = 'tg';
+        tierLabel = '📱 TG';
+        sourceLabel = '<span class="msg-source tg">TG</span>';
+      } else {
+        name = shortAddr(m.wallet);
+        tierKey = m.tier || 'shrimp';
+        tierLabel = ({royalty:'👑 ROYALTY',whale:'🐋 WHALE',dolphin:'🐬 DOLPHIN',crab:'🦀 CRAB',shrimp:'🦐 SHRIMP'})[tierKey] || '🦐';
+        sourceLabel = '<span class="msg-source">WEB</span>';
+      }
+      return '<div class="msg'+(isYou?' you':'')+'" data-id="'+m.id+'">'+
+        '<div class="msg-head"><span class="msg-tier '+tierKey+'">'+tierLabel+'</span>'+
+        '<span class="msg-wallet">'+escapeHtml(name)+'</span>'+
+        sourceLabel+
+        '<span class="msg-time">'+timeAgo(m.created_at)+'</span></div>'+
+        '<div class="msg-text">'+escapeHtml(m.message)+'</div>'+
+      '</div>';
+    }).join('');
+    feed.innerHTML = html;
+    $('msgCount').textContent = msgs.length;
+    if(nearBottom) feed.scrollTop = feed.scrollHeight;
+  }
+
+  // ─── Wallet flow ───
+  async function connect(){
+    if(!window.ethereum){ toast('No wallet detected','error'); return; }
+    try{
+      var accts = await window.ethereum.request({method:'eth_requestAccounts'});
+      wallet = accts[0];
+      try{ await window.ethereum.request({method:'wallet_switchEthereumChain', params:[{chainId:'0x8f'}]}); }
+      catch(e){ if(e.code===4902){ await window.ethereum.request({method:'wallet_addEthereumChain', params:[{chainId:'0x8f', chainName:'Monad', rpcUrls:['https://rpc.monad.xyz'], nativeCurrency:{name:'MON',symbol:'MON',decimals:18}, blockExplorerUrls:['https://explorer.monad.xyz']}]}); } }
+      $('connectBtn').textContent = shortAddr(wallet);
+      $('connectBtn').classList.add('connected');
+      await refreshBalance();
+      updateComposeUI();
+      toast('Connected ✓','success');
+    }catch(e){ toast('Connect failed','error'); }
+  }
+  function disconnect(){
+    wallet = null; monshiBal = 0; myTier = null;
+    $('connectBtn').textContent = 'CONNECT WALLET';
+    $('connectBtn').classList.remove('connected');
+    updateComposeUI();
+  }
+  async function refreshBalance(){
+    if(!wallet)return;
+    try{
+      var raw = await rpc('eth_call',[{to:MONSHI, data:'0x70a08231'+pad(wallet).slice(2)},'latest']);
+      monshiBal = Number(BigInt(raw))/1e18;
+      myTier = tierInfo(monshiBal);
+    }catch(e){ console.log(e); }
+  }
+  function updateComposeUI(){
+    var canPost = wallet && monshiBal >= POST_TIER_MIN;
+    $('composeDisabled').style.display = canPost ? 'none' : 'block';
+    $('composeActive').style.display = canPost ? 'block' : 'none';
+    if(!canPost && wallet){
+      $('composeDisabled').innerHTML = 'You hold <b>'+(monshiBal>=1e3?(monshiBal/1e3).toFixed(1)+'K':Math.floor(monshiBal))+' MONSHI</b> ('+myTier.label+').<br>Need <b>100,000 MONSHI (Dolphin+)</b> to post.<br><a href="https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777" target="_blank" style="color:#FCD34D;font-weight:800;">→ BUY MORE MONSHI</a>';
+    } else if(!wallet){
+      $('composeDisabled').innerHTML = '<b>CONNECT WALLET</b> to chat with the pack.<br>Need <b>100,000 MONSHI</b> to post (anti-spam). Reading is free.';
+    }
+  }
+
+  // ─── Send ───
+  function cooldownRemaining(){
+    var remaining = COOLDOWN_MS - (Date.now() - lastSentAt);
+    return Math.max(0, remaining);
+  }
+  function tickCooldown(){
+    var rem = cooldownRemaining();
+    var btn = $('sendBtn'); var lbl = $('cooldownLabel');
+    if(rem > 0){
+      btn.disabled = true;
+      lbl.innerHTML = '<span class="cooldown">cooldown '+Math.ceil(rem/1000)+'s</span>';
+      setTimeout(tickCooldown, 500);
+    } else {
+      btn.disabled = false;
+      lbl.textContent = '';
+    }
+  }
+  async function send(){
+    if(!wallet){ toast('Connect first','error'); return; }
+    if(monshiBal < POST_TIER_MIN){ toast('Need 100K MONSHI to post','error'); return; }
+    var text = $('msgInput').value.trim();
+    if(!text){ return; }
+    if(text.length > MSG_LIMIT){ toast('Too long','error'); return; }
+    if(cooldownRemaining() > 0){ toast('Cooldown active','error'); return; }
+
+    var btn = $('sendBtn');
+    btn.disabled = true; btn.textContent = '...';
+
+    try{
+      // refresh balance to make sure they still hold
+      await refreshBalance();
+      if(monshiBal < POST_TIER_MIN) throw new Error('balance dropped below tier');
+
+      var payload = {
+        wallet: wallet,
+        message: text,
+        source: 'web',
+        tier: myTier.key
+      };
+      var r = await postMessage(payload);
+      if(!r.ok){ throw new Error('insert failed '+r.status); }
+
+      $('msgInput').value = '';
+      $('charCount').textContent = '0';
+      lastSentAt = Date.now();
+      localStorage.setItem('monshi_chat_last_sent', String(lastSentAt));
+      tickCooldown();
+      // pull latest immediately
+      pollFeed();
+    }catch(e){
+      toast('Send failed: '+(e.message||'unknown'),'error');
+    }finally{
+      btn.textContent = 'SEND';
+      if(cooldownRemaining() <= 0) btn.disabled = false;
+    }
+  }
+
+  // ─── Poll ───
+  async function pollFeed(){
+    var msgs = await fetchMessages();
+    if(Array.isArray(msgs)) renderMessages(msgs);
+  }
+
+  // ─── Wire ───
+  $('connectBtn').onclick = function(){ if(wallet) disconnect(); else connect(); };
+  $('sendBtn').onclick = send;
+  $('msgInput').addEventListener('input', function(){
+    var l = this.value.length;
+    var c = $('charCount'); c.textContent = l;
+    c.className = 'count' + (l > 240 ? ' over' : l > 200 ? ' warn' : '');
+    // auto-resize
+    this.style.height = '48px';
+    this.style.height = Math.min(120, this.scrollHeight) + 'px';
+  });
+  $('msgInput').addEventListener('keydown', function(e){
+    if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); }
+  });
+
+  // Auto-reconnect
+  if(window.ethereum){
+    window.ethereum.request({method:'eth_accounts'}).then(function(a){ if(a && a.length){ wallet = a[0]; refreshBalance().then(function(){ $('connectBtn').textContent = shortAddr(wallet); $('connectBtn').classList.add('connected'); updateComposeUI(); }); } });
+    if(window.ethereum.on) window.ethereum.on('accountsChanged', function(a){
+      if(a.length){ wallet = a[0]; refreshBalance().then(function(){ $('connectBtn').textContent = shortAddr(wallet); $('connectBtn').classList.add('connected'); updateComposeUI(); }); }
+      else disconnect();
+    });
+  }
+
+  pollFeed();
+  setInterval(pollFeed, POLL_MS);
+  if(cooldownRemaining() > 0) tickCooldown();
+})();
+</script>
+</body>
+</html>
