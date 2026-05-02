@@ -772,10 +772,17 @@ function fmtUsd(n){
 }
 function fmtPrice(n){
   if(!n || isNaN(n)) return '$—';
-  if(n < 0.0001) return '$'+n.toExponential(2);
-  if(n < 0.01) return '$'+n.toFixed(6);
-  if(n < 1) return '$'+n.toFixed(4);
-  return '$'+n.toFixed(2);
+  if(n >= 1)      return '$'+n.toFixed(2);
+  if(n >= 0.01)   return '$'+n.toFixed(4);
+  if(n >= 0.0001) return '$'+n.toFixed(6);
+  // Sub-cent: use subscript-zero crypto convention ($0.0₄320 means 4 zeros then 320)
+  const str = n.toFixed(20).split('.')[1] || '';
+  let zeros = 0;
+  for(const ch of str){ if(ch === '0') zeros++; else break; }
+  const sig = str.slice(zeros, zeros + 4).replace(/0+$/, '') || '0';
+  const subMap = ['₀','₁','₂','₃','₄','₅','₆','₇','₈','₉'];
+  const sub = String(zeros).split('').map(d => subMap[+d]).join('');
+  return `$0.0${sub}${sig}`;
 }
 
 function copyCA(e){
