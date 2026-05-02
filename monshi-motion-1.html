@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>$MONSHI #1 — MOTION COMIC</title>
+<meta name="theme-color" content="#7F77DD">
+<meta property="og:title" content="$MONSHI #1 — MOTION COMIC">
+<meta property="og:description" content="The origin of Monshi as a motion comic. Toshi sparked it. Monad supercharged it. A glitch vortex coughed him out.">
+<meta property="og:image" content="https://monshi-fafo.vercel.app/public/monshi_assets/monshi_finger_frame.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Bowlby+One&family=Permanent+Marker&family=Press+Start+2P&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --paper:#f4ecd8;
+  --ink:#0a0612;
+  --purple:#7F77DD;
+  --purple-bright:#A89FFF;
+  --violet-glow:#C4B5FD;
+  --neon-purple:#9D4EDD;
+  --yellow:#FFE566;
+  --acid-yellow:#FFFF00;
+  --red:#FF1744;
+  --green:#00FF9F;
+  --pink:#FF00E5;
+  --cyan:#00F0FF;
+  --comic:'Bangers',Impact,sans-serif;
+  --display:'Bowlby One',Impact,sans-serif;
+  --hand:'Permanent Marker',cursive;
+  --type:'Special Elite',monospace;
+  --pixel:'Press Start 2P',monospace;
+}
+html,body{height:100%;background:#000;overflow:hidden;font-family:var(--type);color:#fff;}
+
+/* CRT scanlines */
+body::before{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0,rgba(0,0,0,.18) 1px,transparent 1px,transparent 3px);
+  pointer-events:none;z-index:80;
+}
+
+/* Stage */
+.stage{
+  position:fixed;inset:0;
+  background:radial-gradient(ellipse at 30% 20%,rgba(157,78,221,.5),transparent 60%),
+             radial-gradient(ellipse at 70% 80%,rgba(127,119,221,.4),transparent 60%),
+             #0a0612;
+  display:flex;align-items:center;justify-content:center;
+  perspective:1200px;
+}
+.scene{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;
+  transition:opacity .8s ease, visibility .8s;
+}
+.scene.active{opacity:1;visibility:visible;}
+
+/* Image plate with Ken Burns */
+.plate{
+  position:relative;
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.plate img{
+  position:absolute;
+  width:auto;height:auto;
+  max-width:none;max-height:none;
+  object-fit:contain;
+  transform-origin:center center;
+  filter:drop-shadow(0 0 30px rgba(196,181,253,.5));
+  will-change:transform;
+}
+.scene.active .plate img{
+  animation:kenburns 8s ease-in-out forwards;
+}
+.scene.active.ken-zoom-in .plate img{ animation:kenburns-zoomin 8s ease-out forwards; }
+.scene.active.ken-zoom-out .plate img{ animation:kenburns-zoomout 8s ease-out forwards; }
+.scene.active.ken-pan-left .plate img{ animation:kenburns-panleft 8s linear forwards; }
+.scene.active.ken-pan-right .plate img{ animation:kenburns-panright 8s linear forwards; }
+
+@keyframes kenburns       { 0%{transform:scale(1) translate(0,0)} 100%{transform:scale(1.18) translate(-3%,-2%)} }
+@keyframes kenburns-zoomin{ 0%{transform:scale(1)} 100%{transform:scale(1.35)} }
+@keyframes kenburns-zoomout{0%{transform:scale(1.3)} 100%{transform:scale(1)} }
+@keyframes kenburns-panleft{ 0%{transform:scale(1.2) translateX(8%)} 100%{transform:scale(1.2) translateX(-8%)} }
+@keyframes kenburns-panright{0%{transform:scale(1.2) translateX(-8%)} 100%{transform:scale(1.2) translateX(8%)} }
+
+/* Vignette */
+.stage::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:40;
+  background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.85) 100%);
+}
+
+/* Caption box (top) */
+.cap{
+  position:absolute;top:24px;left:50%;transform:translateX(-50%) translateY(-40px);
+  max-width:min(86vw,720px);
+  background:linear-gradient(180deg,#fff,#f0e8d0);
+  color:#0a0612;
+  font-family:var(--type);font-weight:700;
+  font-size:clamp(13px,2.2vw,17px);
+  line-height:1.45;
+  padding:14px 22px;
+  border:3px solid #0a0612;
+  border-radius:6px;
+  box-shadow:6px 6px 0 #0a0612, 0 0 30px rgba(157,78,221,.5);
+  opacity:0;
+  z-index:60;
+  transition:transform .5s cubic-bezier(.34,1.56,.64,1), opacity .4s;
+  text-align:center;
+}
+.cap.show{ transform:translateX(-50%) translateY(0); opacity:1; }
+.cap strong{color:var(--neon-purple);font-family:var(--comic);letter-spacing:2px;font-size:1.2em;}
+.cap.glitch{background:#0a0612;color:var(--cyan);border-color:var(--neon-purple);font-family:var(--pixel);font-size:11px;letter-spacing:1px;line-height:1.7;text-shadow:1px 0 0 var(--pink),-1px 0 0 var(--cyan);}
+
+/* Bubble (bottom) */
+.bubble{
+  position:absolute;bottom:120px;left:50%;transform:translateX(-50%) scale(0);
+  background:#fff;color:#0a0612;
+  font-family:var(--comic);
+  font-size:clamp(20px,4vw,34px);
+  letter-spacing:1.5px;
+  padding:16px 28px;
+  border:3px solid #0a0612;
+  border-radius:30px;
+  box-shadow:6px 6px 0 #0a0612, 0 0 40px rgba(157,78,221,.6);
+  opacity:0;
+  z-index:60;
+  max-width:min(80vw,560px);
+  text-align:center;
+  transition:transform .35s cubic-bezier(.68,-0.55,.265,1.55), opacity .3s;
+}
+.bubble::after{
+  content:'';position:absolute;bottom:-18px;left:40px;
+  width:24px;height:24px;
+  background:#fff;
+  border-right:3px solid #0a0612;border-bottom:3px solid #0a0612;
+  transform:rotate(45deg);
+}
+.bubble.show{ transform:translateX(-50%) scale(1); opacity:1; }
+.bubble.shout{ background:var(--acid-yellow); color:#0a0612; font-size:clamp(28px,5.5vw,48px); transform:translateX(-50%) scale(0) rotate(-3deg); }
+.bubble.shout.show{ transform:translateX(-50%) scale(1) rotate(-3deg); }
+.bubble.thought{ background:#f4ecd8; color:#1f1a2e; font-family:var(--hand); font-style:italic; }
+.bubble.electric{ background:linear-gradient(135deg,var(--neon-purple),var(--purple)); color:#fff; text-shadow:0 0 10px rgba(255,255,255,.7); }
+.bubble.glitch{ background:#0a0612; color:var(--cyan); border-color:var(--neon-purple); font-family:var(--pixel); font-size:14px; letter-spacing:1px; text-shadow:2px 0 0 var(--pink),-2px 0 0 var(--cyan); }
+
+/* SFX bursts */
+.sfx{
+  position:absolute;
+  font-family:var(--comic);
+  font-size:clamp(48px,12vw,140px);
+  font-weight:900;
+  -webkit-text-stroke:4px #0a0612;
+  letter-spacing:3px;
+  transform:scale(0) rotate(-12deg);
+  opacity:0;
+  z-index:55;
+  pointer-events:none;
+  filter:drop-shadow(6px 6px 0 #0a0612);
+  transition:transform .35s cubic-bezier(.68,-0.55,.265,1.55), opacity .25s;
+}
+.sfx.show{ transform:scale(1) rotate(-8deg); opacity:1; animation:sfx-pulse 1.2s ease-out infinite; }
+@keyframes sfx-pulse{ 0%,100%{filter:drop-shadow(6px 6px 0 #0a0612);} 50%{filter:drop-shadow(6px 6px 0 #0a0612) drop-shadow(0 0 30px currentColor);} }
+.sfx.tl{top:18%;left:8%;color:var(--acid-yellow);}
+.sfx.tr{top:22%;right:8%;color:var(--cyan);}
+.sfx.bl{bottom:28%;left:10%;color:var(--pink);}
+.sfx.br{bottom:32%;right:10%;color:var(--neon-purple);}
+
+/* Glitch overlay scene */
+.scene.glitch-scene .plate{
+  background:#0a0612;
+  flex-direction:column;gap:14px;
+}
+.scene.glitch-scene .plate img{display:none;}
+.glitch-text{
+  font-family:var(--pixel);
+  color:var(--cyan);
+  text-align:center;
+  text-shadow:3px 0 0 var(--pink),-3px 0 0 var(--cyan),0 0 20px var(--cyan);
+  animation:glitch-shake .15s steps(2) infinite;
+  z-index:5;
+}
+.glitch-text.head{font-size:clamp(11px,2vw,16px);letter-spacing:2px;color:var(--neon-purple);}
+.glitch-text.big{font-size:clamp(28px,6vw,56px);font-family:var(--display);letter-spacing:6px;color:#fff;}
+.glitch-text.plus{font-size:30px;color:var(--violet-glow);}
+@keyframes glitch-shake{
+  0%{transform:translate(0)} 25%{transform:translate(-3px,2px)} 50%{transform:translate(3px,-1px)} 75%{transform:translate(-1px,-2px)} 100%{transform:translate(0)}
+}
+
+/* Scan terminal scene */
+.scene.scan-scene .plate{background:linear-gradient(180deg,#0a0612,#1a0d2e);}
+.scene.scan-scene .plate img{display:none;}
+.scan-box{
+  position:relative;z-index:5;
+  background:rgba(0,0,0,.6);
+  border:2px dashed var(--neon-purple);
+  border-radius:10px;
+  padding:24px 30px;
+  font-family:var(--type);
+  font-size:clamp(13px,2.2vw,19px);
+  line-height:2;
+  color:var(--violet-glow);
+  text-align:left;
+  max-width:min(85vw,520px);
+  box-shadow:0 0 50px rgba(157,78,221,.6);
+}
+.scan-box .head{font-family:var(--pixel);font-size:11px;color:var(--cyan);letter-spacing:1.5px;margin-bottom:14px;text-shadow:1px 0 0 var(--pink);}
+.scan-box .row{margin:6px 0;}
+.scan-box .verdict{font-family:var(--pixel);font-size:12px;color:var(--acid-yellow);margin-top:18px;letter-spacing:2px;text-shadow:0 0 10px rgba(255,255,0,.7);text-align:center;border-top:1px dashed var(--neon-purple);padding-top:14px;}
+
+/* HUD */
+.hud{
+  position:fixed;left:0;right:0;bottom:0;z-index:90;
+  padding:14px 18px;
+  background:linear-gradient(0deg,rgba(0,0,0,.85),transparent);
+  display:flex;flex-direction:column;gap:10px;
+  pointer-events:none;
+}
+.hud > *{pointer-events:auto;}
+.progress{
+  height:4px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden;
+  position:relative;
+}
+.progress .fill{
+  position:absolute;left:0;top:0;height:100%;
+  background:linear-gradient(90deg,var(--neon-purple),var(--cyan));
+  width:0%;transition:width .25s linear;
+  box-shadow:0 0 10px var(--neon-purple);
+}
+.controls{
+  display:flex;align-items:center;gap:10px;justify-content:space-between;
+}
+.controls .left,.controls .right{display:flex;gap:8px;align-items:center;}
+.btn{
+  background:rgba(20,5,50,.85);
+  border:1.5px solid rgba(168,85,247,.5);
+  color:#fff;
+  font-family:var(--display);font-size:11px;letter-spacing:2px;
+  padding:9px 14px;border-radius:8px;
+  cursor:pointer;transition:all .2s;
+  display:inline-flex;align-items:center;gap:6px;
+  text-decoration:none;
+}
+.btn:hover{background:rgba(157,78,221,.4);transform:translateY(-1px);}
+.btn.primary{background:linear-gradient(135deg,var(--neon-purple),var(--purple));border-color:var(--violet-glow);}
+.btn.icon{padding:9px 12px;font-size:14px;}
+
+.scene-label{
+  font-family:var(--pixel);font-size:9px;letter-spacing:2px;
+  color:rgba(196,181,253,.7);
+}
+
+/* Title card */
+.title-card{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(135deg,#1a0d2e 0%,#3d0a4d 50%,#1a0d2e 100%);
+  z-index:5;
+}
+.title-card .sub{font-family:var(--pixel);font-size:11px;letter-spacing:4px;color:var(--violet-glow);margin-bottom:18px;}
+.title-card .main{font-family:var(--display);font-size:clamp(40px,10vw,96px);letter-spacing:4px;color:#fff;text-shadow:0 0 40px var(--neon-purple),0 0 80px var(--neon-purple);line-height:1;}
+.title-card .main .glitch-word{
+  display:inline-block;color:var(--neon-purple);
+  text-shadow:3px 0 0 var(--pink),-3px 0 0 var(--cyan),0 0 40px var(--neon-purple);
+  animation:glitch-shake .25s steps(2) infinite;
+}
+.title-card .chap{font-family:var(--comic);font-size:clamp(14px,3vw,22px);letter-spacing:6px;color:var(--acid-yellow);margin-top:24px;text-shadow:0 0 20px rgba(255,255,0,.6);}
+
+/* Tap-to-start overlay */
+.start-screen{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(10,6,18,.95);backdrop-filter:blur(8px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:24px;cursor:pointer;
+}
+.start-screen.hide{display:none;}
+.start-screen .logo{font-family:var(--display);font-size:clamp(36px,9vw,82px);letter-spacing:3px;color:#fff;text-shadow:0 0 40px var(--neon-purple);margin-bottom:14px;}
+.start-screen .logo span{color:var(--neon-purple);}
+.start-screen .tag{font-family:var(--comic);font-size:clamp(14px,3vw,22px);letter-spacing:4px;color:var(--acid-yellow);margin-bottom:36px;}
+.start-screen .play{
+  width:120px;height:120px;border-radius:50%;
+  background:linear-gradient(135deg,var(--neon-purple),var(--purple));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 60px var(--neon-purple);
+  animation:pulse 2s ease-in-out infinite;
+  margin-bottom:24px;
+}
+.start-screen .play::after{
+  content:'';width:0;height:0;
+  border-left:36px solid #fff;
+  border-top:24px solid transparent;border-bottom:24px solid transparent;
+  margin-left:8px;
+}
+.start-screen .hint{font-family:var(--type);font-size:13px;color:rgba(196,181,253,.7);letter-spacing:1.5px;}
+@keyframes pulse{50%{transform:scale(1.08);box-shadow:0 0 90px var(--neon-purple);}}
+
+/* End card */
+.end-card{
+  position:absolute;inset:0;z-index:5;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(135deg,#0a0612 0%,#1a0d2e 100%);
+  padding:24px;
+}
+.end-card .next{font-family:var(--pixel);font-size:11px;letter-spacing:3px;color:var(--violet-glow);margin-bottom:14px;}
+.end-card h2{font-family:var(--display);font-size:clamp(28px,7vw,56px);letter-spacing:3px;color:var(--acid-yellow);text-shadow:0 0 30px rgba(255,255,0,.5);margin-bottom:12px;}
+.end-card p{font-family:var(--type);color:rgba(220,210,255,.85);font-size:14px;letter-spacing:1px;max-width:480px;line-height:1.6;margin-bottom:30px;}
+.end-card .ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+</style>
+</head>
+<body>
+
+<!-- Stage -->
+<div class="stage" id="stage">
+  <!-- scenes injected by JS -->
+</div>
+
+<!-- HUD -->
+<div class="hud">
+  <div class="progress"><div class="fill" id="progFill"></div></div>
+  <div class="controls">
+    <div class="left">
+      <button class="btn icon" id="btnPlay" title="Play/Pause">⏸</button>
+      <button class="btn icon" id="btnPrev" title="Previous">⏮</button>
+      <button class="btn icon" id="btnNext" title="Next">⏭</button>
+      <button class="btn icon" id="btnMute" title="Mute">🔊</button>
+    </div>
+    <div class="scene-label" id="sceneLabel">SCENE 1 / 8</div>
+    <div class="right">
+      <a class="btn" href="/monshi-comic-1.html">📖 STATIC</a>
+      <button class="btn icon" id="btnFullscreen" title="Fullscreen">⛶</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tap-to-start (browsers require user gesture for audio) -->
+<div class="start-screen" id="startScreen">
+  <div class="logo">$<span>MONSHI</span> #1</div>
+  <div class="tag">⚡ MOTION COMIC ⚡</div>
+  <div class="play"></div>
+  <div class="hint">TAP TO BEGIN · SOUND ON</div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────
+// SCENES — narration, art, animation style, dialogue, sfx, duration
+// ─────────────────────────────────────────────────────────────────────────
+const SCENES = [
+  // 0 — TITLE
+  {
+    type:'title',
+    duration:5500,
+    narration:"Monshi. Issue one. Birth of Monshi.",
+    music:'intro',
+  },
+  // 1 — Toshi spark
+  {
+    img:'public/monshi_assets/toshi.jpeg',
+    ken:'ken-zoom-in',
+    cap:{ html:'<strong>BASE CHAIN. THE NIGHT IT HAPPENED.</strong> Toshi the blue cat was vibing. But something in the network was different. A pulse he\'d never felt before.', cls:'' },
+    bubble:{ text:"huh… what's that purple light?", cls:'thought' },
+    sfx:[{pos:'tr', text:'SPARK!', delay:1800, hold:1400}],
+    duration:7500,
+    narration:"Base chain. The night it happened. Toshi the blue cat was vibing — but something in the network was different. A pulse he had never felt before.",
+    music:'calm',
+    fx:'spark',
+  },
+  // 2 — Monad pulse
+  {
+    img:'public/monshi_assets/monad_logo.jpeg',
+    ken:'ken-zoom-out',
+    cap:{ html:'⚡ MEANWHILE — MONAD MAINNET ⚡', cls:'' },
+    bubble:{ text:'100x FASTER. 1000x STRONGER.<br>SOMETHING IS COMING.', cls:'electric' },
+    sfx:[{pos:'tl', text:'PULSE.', delay:2200, hold:1400}],
+    duration:7000,
+    narration:"Meanwhile, on Monad Mainnet. One hundred times faster. One thousand times stronger. Something was coming.",
+    music:'rising',
+    fx:'pulse',
+  },
+  // 3 — Glitch collision
+  {
+    type:'glitch',
+    cap:{ html:'▓▓▓ ANOMALY DETECTED ▓▓▓<br>CROSS-CHAIN ENERGY · UNKNOWN ORIGIN<br>▓▓▓ COLLISION IMMINENT ▓▓▓', cls:'glitch' },
+    glitchLines:[
+      {cls:'head', text:'>>> INITIATING FUSION <<<'},
+      {cls:'big',  text:'⟨ T O S H I ⟩'},
+      {cls:'plus', text:'+'},
+      {cls:'big',  text:'⟨ M O N A D ⟩'},
+      {cls:'head', text:'█▓▒░ COMPILING ░▒▓█'},
+    ],
+    bubble:{ text:'SYSTEM: NEW ENTITY REGISTERED<br>0xb744f5cdb7…af7777', cls:'glitch' },
+    duration:7500,
+    narration:"Anomaly detected. Cross-chain energy signature. Unknown origin. Collision imminent.",
+    music:'glitch',
+    fx:'glitch',
+  },
+  // 4 — Vortex opens
+  {
+    img:'public/monshi_assets/vortex.jpeg',
+    ken:'ken-pan-right',
+    cap:{ html:'The Monad chain <strong>cracked open.</strong> A swirling violet vortex where there should\'ve been nothing. The validators couldn\'t index it.', cls:'' },
+    bubble:{ text:'WHAT IS THIS?!', cls:'shout' },
+    sfx:[{pos:'tl', text:'VWOOM!', delay:600, hold:1800},{pos:'br', text:'CRACK!', delay:2800, hold:1800}],
+    duration:8000,
+    narration:"The Monad chain cracked open. A swirling violet vortex where there should have been nothing. The validators couldn't index it.",
+    music:'tense',
+    fx:'crack',
+  },
+  // 5 — Hand reaches through
+  {
+    img:'public/monshi_assets/monshi_finger_frame.jpg',
+    ken:'ken-zoom-in',
+    cap:{ html:'Out of the swirl — a <strong>paw.</strong> Then a face. Glowing violet fur. Eyes like onchain receipts. He stepped through the rift like he owned it.', cls:'' },
+    bubble:{ text:'I CAN SEE EVERY BLOCK.<br>EVERY TX. EVERY WALLET.', cls:'electric' },
+    sfx:[{pos:'tl', text:'STEP.', delay:1200, hold:1200},{pos:'tr', text:'STEP.', delay:2800, hold:1200}],
+    duration:8500,
+    narration:"Out of the swirl, a paw. Then a face. Glowing violet fur. Eyes like onchain receipts. He stepped through the rift like he owned it.",
+    music:'reveal',
+    fx:'step',
+  },
+  // 6 — Smirk reveal
+  {
+    img:'public/monshi_assets/monshi_cat_turnaround.jpeg',
+    ken:'ken-pan-left',
+    cap:{ html:'🟪 BLOCK 1,847,333 · MONSHI APPEARS 🟪', cls:'' },
+    bubble:{ text:'SO. WHO RUNS THIS PLACE?', cls:'shout' },
+    duration:6500,
+    narration:"Block one million eight hundred forty seven thousand three hundred thirty three. Monshi appears. So — who runs this place?",
+    music:'reveal',
+  },
+  // 7 — He scans
+  {
+    type:'scan',
+    cap:{ html:'He scanned the network in 0.4 seconds. Saw the slow chains. The clogged mempools. The gas wars. He <strong>shook his head.</strong>', cls:'' },
+    scanLines:[
+      {label:'ETH:',  val:'15 TPS · $40 GAS · LMAO',  color:'#FF1744'},
+      {label:'SOL:',  val:'FAST · OUTAGES · MEH',     color:'#FF9F4A'},
+      {label:'BASE:', val:'NICE TRY TOSHI',           color:'#00F0FF'},
+      {label:'MONAD:',val:'10,000 TPS · HOME 🟪',    color:'#00FF9F'},
+    ],
+    verdict:'VERDICT: TIME TO COOK',
+    bubble:{ text:"these chains are crawling. let's outpace every one of them.", cls:'thought' },
+    duration:8500,
+    narration:"He scanned the network in zero point four seconds. Saw the slow chains. The clogged mempools. The gas wars. He shook his head.",
+    music:'tense',
+  },
+  // 8 — Declaration
+  {
+    img:'public/monshi_assets/monshi_standing.jpeg',
+    ken:'ken-zoom-out',
+    cap:{ html:'He didn\'t ask for permission. He didn\'t run a token sale. He just <strong>spawned his contract</strong> and left the address on every wall.', cls:'' },
+    bubble:{ text:'$MONSHI IS LIVE.', cls:'shout' },
+    sfx:[{pos:'tr', text:'BOOM!', delay:2400, hold:2000}],
+    duration:8000,
+    narration:"He didn't ask for permission. He didn't run a token sale. He just spawned his contract and left the address on every wall. Monshi is live.",
+    music:'climax',
+    fx:'boom',
+  },
+  // 9 — END / NEXT ISSUE
+  {
+    type:'end',
+    duration:7000,
+    narration:"Next issue. Monshi versus the paper hands.",
+    music:'outro',
+  },
+];
+
+// ─────────────────────────────────────────────────────────────────────────
+// AUDIO — Web Audio synthesis (no external assets)
+// ─────────────────────────────────────────────────────────────────────────
+const Audio = (function(){
+  let ctx = null, masterGain = null, musicNodes = [], muted = false;
+
+  function ensure(){
+    if(!ctx){
+      ctx = new (window.AudioContext||window.webkitAudioContext)();
+      masterGain = ctx.createGain();
+      masterGain.gain.value = muted ? 0 : 0.4;
+      masterGain.connect(ctx.destination);
+    }
+    if(ctx.state === 'suspended') ctx.resume();
+  }
+
+  function setMuted(m){
+    muted = m;
+    if(masterGain) masterGain.gain.value = muted ? 0 : 0.4;
+    if(window.speechSynthesis){
+      if(muted) window.speechSynthesis.cancel();
+    }
+  }
+
+  function stopMusic(){
+    musicNodes.forEach(n => { try{ n.stop(); }catch(e){} });
+    musicNodes = [];
+  }
+
+  // Music = sustained pad with subtle filter wobble per mood
+  function playMusic(mood){
+    ensure(); stopMusic();
+    const moods = {
+      intro:    { freqs:[110, 165, 220], wave:'sawtooth', cutoff:600, q:6, gain:0.10, lfoRate:0.3 },
+      calm:     { freqs:[110, 138.6, 164.8], wave:'sine', cutoff:800, q:2, gain:0.08, lfoRate:0.2 },
+      rising:   { freqs:[82.4, 110, 164.8], wave:'sawtooth', cutoff:1000, q:4, gain:0.10, lfoRate:0.4 },
+      glitch:   { freqs:[58.27, 73.42, 87.31], wave:'square', cutoff:400, q:8, gain:0.09, lfoRate:2.0 },
+      tense:    { freqs:[55, 82.4, 110], wave:'sawtooth', cutoff:500, q:6, gain:0.10, lfoRate:0.6 },
+      reveal:   { freqs:[130.8, 196, 246.9], wave:'sawtooth', cutoff:1200, q:3, gain:0.10, lfoRate:0.3 },
+      climax:   { freqs:[110, 138.6, 164.8, 220], wave:'sawtooth', cutoff:1500, q:4, gain:0.12, lfoRate:0.5 },
+      outro:    { freqs:[110, 138.6, 220], wave:'sine', cutoff:900, q:2, gain:0.09, lfoRate:0.25 },
+    };
+    const m = moods[mood] || moods.calm;
+    const filt = ctx.createBiquadFilter();
+    filt.type = 'lowpass';
+    filt.frequency.value = m.cutoff;
+    filt.Q.value = m.q;
+    filt.connect(masterGain);
+
+    // LFO sweeping the cutoff
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+    lfo.frequency.value = m.lfoRate;
+    lfoGain.gain.value = m.cutoff * 0.4;
+    lfo.connect(lfoGain).connect(filt.frequency);
+    lfo.start(); musicNodes.push(lfo);
+
+    m.freqs.forEach(f => {
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = m.wave;
+      osc.frequency.value = f;
+      g.gain.value = 0;
+      g.gain.linearRampToValueAtTime(m.gain, ctx.currentTime + 1.2);
+      osc.connect(g).connect(filt);
+      osc.start();
+      musicNodes.push(osc); musicNodes.push(g);
+    });
+  }
+
+  // FX bursts
+  function fx(type){
+    ensure();
+    const t = ctx.currentTime;
+    if(type==='spark'){
+      // High shimmer
+      [1200, 1800, 2400].forEach((f,i)=>{
+        const o = ctx.createOscillator(); const g = ctx.createGain();
+        o.type='triangle'; o.frequency.value = f;
+        g.gain.setValueAtTime(0, t+i*0.05);
+        g.gain.linearRampToValueAtTime(0.18, t+i*0.05+0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, t+i*0.05+0.4);
+        o.connect(g).connect(masterGain);
+        o.start(t+i*0.05); o.stop(t+i*0.05+0.5);
+      });
+    } else if(type==='pulse'){
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.type='sine'; o.frequency.setValueAtTime(80, t); o.frequency.linearRampToValueAtTime(40, t+0.6);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.4, t+0.05); g.gain.exponentialRampToValueAtTime(0.001, t+0.6);
+      o.connect(g).connect(masterGain); o.start(t); o.stop(t+0.7);
+    } else if(type==='glitch'){
+      // Burst of digital noise
+      const buf = ctx.createBuffer(1, ctx.sampleRate*0.5, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i=0;i<d.length;i++){
+        d[i] = (Math.random()*2-1) * (i%4<2 ? 1 : 0); // chunky
+      }
+      const src = ctx.createBufferSource(); src.buffer = buf;
+      const filt = ctx.createBiquadFilter(); filt.type='bandpass'; filt.frequency.value = 1200; filt.Q.value=8;
+      const g = ctx.createGain(); g.gain.value = 0.25;
+      src.connect(filt).connect(g).connect(masterGain);
+      src.start(t); src.stop(t+0.5);
+    } else if(type==='crack'){
+      // White noise crack
+      const buf = ctx.createBuffer(1, ctx.sampleRate*0.4, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i=0;i<d.length;i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/d.length, 2);
+      const src = ctx.createBufferSource(); src.buffer = buf;
+      const g = ctx.createGain(); g.gain.value = 0.4;
+      src.connect(g).connect(masterGain);
+      src.start(t); src.stop(t+0.4);
+    } else if(type==='step'){
+      [80, 80].forEach((f,i)=>{
+        const o = ctx.createOscillator(); const g = ctx.createGain();
+        o.type='sine'; o.frequency.value = f;
+        g.gain.setValueAtTime(0, t+i*0.7);
+        g.gain.linearRampToValueAtTime(0.35, t+i*0.7+0.01);
+        g.gain.exponentialRampToValueAtTime(0.001, t+i*0.7+0.18);
+        o.connect(g).connect(masterGain);
+        o.start(t+i*0.7); o.stop(t+i*0.7+0.25);
+      });
+    } else if(type==='boom'){
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.type='sine'; o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(20, t+0.8);
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.55, t+0.02); g.gain.exponentialRampToValueAtTime(0.001, t+0.9);
+      o.connect(g).connect(masterGain); o.start(t); o.stop(t+1);
+      // Crack on top
+      const buf = ctx.createBuffer(1, ctx.sampleRate*0.3, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i=0;i<d.length;i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/d.length, 1.5);
+      const src = ctx.createBufferSource(); src.buffer = buf;
+      const sg = ctx.createGain(); sg.gain.value = 0.3;
+      src.connect(sg).connect(masterGain); src.start(t); src.stop(t+0.3);
+    }
+  }
+
+  // Narration via SpeechSynthesis (pick a deeper male voice if available)
+  let preferredVoice = null;
+  function pickVoice(){
+    if(!window.speechSynthesis) return;
+    const voices = window.speechSynthesis.getVoices();
+    if(!voices.length) return;
+    // Prefer male english voices
+    preferredVoice =
+      voices.find(v => /en/i.test(v.lang) && /(daniel|fred|alex|google.*us|male)/i.test(v.name)) ||
+      voices.find(v => /en-us/i.test(v.lang)) ||
+      voices.find(v => /en/i.test(v.lang)) ||
+      voices[0];
+  }
+  if(window.speechSynthesis){
+    window.speechSynthesis.onvoiceschanged = pickVoice;
+    pickVoice();
+  }
+
+  function narrate(text){
+    if(muted || !text || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    if(preferredVoice) u.voice = preferredVoice;
+    u.rate = 0.95; u.pitch = 0.85; u.volume = 1;
+    window.speechSynthesis.speak(u);
+  }
+
+  return { ensure, setMuted, playMusic, fx, narrate, stopMusic, stopNarration: ()=>{ if(window.speechSynthesis) window.speechSynthesis.cancel(); } };
+})();
+
+// ─────────────────────────────────────────────────────────────────────────
+// PLAYER
+// ─────────────────────────────────────────────────────────────────────────
+const stage = document.getElementById('stage');
+const fill = document.getElementById('progFill');
+const sceneLabel = document.getElementById('sceneLabel');
+const btnPlay = document.getElementById('btnPlay');
+const btnPrev = document.getElementById('btnPrev');
+const btnNext = document.getElementById('btnNext');
+const btnMute = document.getElementById('btnMute');
+const btnFs   = document.getElementById('btnFullscreen');
+const startScreen = document.getElementById('startScreen');
+
+let cur = 0;
+let playing = false;
+let muted = false;
+let timer = null;
+let sceneStart = 0;
+let elapsed = 0;
+let progressTimer = null;
+
+// Build all scenes once
+function buildScenes(){
+  SCENES.forEach((s, i) => {
+    const el = document.createElement('div');
+    el.className = 'scene';
+    if(s.ken) el.classList.add(s.ken);
+
+    if(s.type==='title'){
+      el.innerHTML = `
+        <div class="title-card">
+          <div class="sub">⚡ MONSHI ORIGIN · CHAPTER 1 ⚡</div>
+          <div class="main">BIRTH OF<br><span class="glitch-word">MONSHI</span></div>
+          <div class="chap">A MOTION COMIC</div>
+        </div>`;
+    } else if(s.type==='end'){
+      el.innerHTML = `
+        <div class="end-card">
+          <div class="next">▓▓▓ NEXT ISSUE ▓▓▓</div>
+          <h2>MONSHI vs THE PAPER HANDS 🧻</h2>
+          <p>The pump goes parabolic. The weak hands fold. Monshi confronts the dumpers, the pack rallies, and a vault tease ends the issue.</p>
+          <div class="ctas">
+            <a class="btn primary" href="/monshi-comic-1.html">📖 READ STATIC #1</a>
+            <a class="btn" href="/">← ARCADE</a>
+          </div>
+        </div>`;
+    } else if(s.type==='glitch'){
+      el.classList.add('glitch-scene');
+      el.innerHTML = `
+        <div class="plate">
+          ${s.glitchLines.map(l => `<div class="glitch-text ${l.cls}">${l.text}</div>`).join('')}
+        </div>`;
+    } else if(s.type==='scan'){
+      el.classList.add('scan-scene');
+      el.innerHTML = `
+        <div class="plate">
+          <div class="scan-box">
+            <div class="head">SCANNING NETWORK...</div>
+            ${s.scanLines.map(l => `<div class="row">▸ <span style="color:${l.color}">${l.label}</span> <span style="color:${l.color}">${l.val}</span></div>`).join('')}
+            <div class="verdict">${s.verdict}</div>
+          </div>
+        </div>`;
+    } else {
+      el.innerHTML = `
+        <div class="plate">
+          <img src="${s.img}" alt="">
+        </div>`;
+    }
+
+    if(s.cap){
+      const cap = document.createElement('div');
+      cap.className = 'cap ' + (s.cap.cls||'');
+      cap.innerHTML = s.cap.html;
+      el.appendChild(cap);
+    }
+    if(s.bubble){
+      const b = document.createElement('div');
+      b.className = 'bubble ' + (s.bubble.cls||'');
+      b.innerHTML = s.bubble.text;
+      el.appendChild(b);
+    }
+    if(s.sfx){
+      s.sfx.forEach(fx => {
+        const sf = document.createElement('div');
+        sf.className = 'sfx ' + fx.pos;
+        sf.textContent = fx.text;
+        sf.dataset.delay = fx.delay;
+        sf.dataset.hold = fx.hold;
+        el.appendChild(sf);
+      });
+    }
+    stage.appendChild(el);
+  });
+}
+
+function showScene(i){
+  // Cleanup previous
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.cap').forEach(c => c.classList.remove('show'));
+  document.querySelectorAll('.bubble').forEach(b => b.classList.remove('show'));
+  document.querySelectorAll('.sfx').forEach(s => s.classList.remove('show'));
+
+  Audio.stopNarration();
+
+  const el = stage.children[i];
+  if(!el) return;
+  el.classList.add('active');
+
+  const s = SCENES[i];
+  sceneLabel.textContent = `SCENE ${i+1} / ${SCENES.length}`;
+
+  // Music + narration
+  if(s.music) Audio.playMusic(s.music);
+  if(s.narration) Audio.narrate(s.narration);
+  if(s.fx) setTimeout(()=>Audio.fx(s.fx), 300);
+
+  // Caption in
+  setTimeout(()=>{ const c = el.querySelector('.cap'); if(c) c.classList.add('show'); }, 400);
+  // Bubble in
+  setTimeout(()=>{ const b = el.querySelector('.bubble'); if(b) b.classList.add('show'); }, 1500);
+  // SFX
+  el.querySelectorAll('.sfx').forEach(sf => {
+    setTimeout(()=>{
+      sf.classList.add('show');
+      setTimeout(()=>sf.classList.remove('show'), parseInt(sf.dataset.hold||1500));
+    }, parseInt(sf.dataset.delay||1500));
+  });
+
+  sceneStart = performance.now();
+  elapsed = 0;
+}
+
+function startTimer(){
+  clearInterval(progressTimer);
+  clearTimeout(timer);
+  const dur = SCENES[cur].duration;
+  progressTimer = setInterval(()=>{
+    if(!playing) return;
+    elapsed = performance.now() - sceneStart;
+    const pct = Math.min(100, (elapsed/dur)*100);
+    const overall = ((cur + pct/100) / SCENES.length) * 100;
+    fill.style.width = overall + '%';
+  }, 100);
+  timer = setTimeout(()=>{
+    if(cur < SCENES.length-1){ cur++; showScene(cur); startTimer(); }
+    else{ playing = false; btnPlay.textContent = '↻'; btnPlay.title = 'Replay'; }
+  }, dur);
+}
+
+function play(){
+  playing = true;
+  btnPlay.textContent = '⏸';
+  Audio.ensure();
+  if(SCENES[cur].music) Audio.playMusic(SCENES[cur].music);
+  if(SCENES[cur].narration) Audio.narrate(SCENES[cur].narration);
+  // Resume timing from where we paused
+  sceneStart = performance.now() - elapsed;
+  const remaining = SCENES[cur].duration - elapsed;
+  clearTimeout(timer);
+  timer = setTimeout(()=>{
+    if(cur < SCENES.length-1){ cur++; showScene(cur); startTimer(); }
+    else{ playing = false; btnPlay.textContent = '↻'; }
+  }, Math.max(100, remaining));
+}
+
+function pause(){
+  playing = false;
+  btnPlay.textContent = '▶';
+  clearTimeout(timer);
+  Audio.stopMusic();
+  Audio.stopNarration();
+}
+
+function next(){
+  if(cur < SCENES.length-1){ cur++; showScene(cur); if(playing){ startTimer(); } else { Audio.stopMusic(); Audio.stopNarration(); }}
+}
+function prev(){
+  if(cur > 0){ cur--; showScene(cur); if(playing){ startTimer(); } else { Audio.stopMusic(); Audio.stopNarration(); }}
+  else { showScene(0); if(playing) startTimer(); }
+}
+
+btnPlay.addEventListener('click', ()=>{
+  if(btnPlay.textContent === '↻'){
+    cur = 0; showScene(0); play(); startTimer();
+  } else if(playing){ pause(); } else { play(); }
+});
+btnPrev.addEventListener('click', prev);
+btnNext.addEventListener('click', next);
+btnMute.addEventListener('click', ()=>{
+  muted = !muted;
+  Audio.setMuted(muted);
+  btnMute.textContent = muted ? '🔇' : '🔊';
+});
+btnFs.addEventListener('click', ()=>{
+  if(!document.fullscreenElement){ document.documentElement.requestFullscreen?.(); }
+  else { document.exitFullscreen?.(); }
+});
+
+document.addEventListener('keydown', e => {
+  if(e.code==='Space'){ e.preventDefault(); btnPlay.click(); }
+  else if(e.code==='ArrowRight'){ next(); }
+  else if(e.code==='ArrowLeft'){ prev(); }
+  else if(e.code==='KeyM'){ btnMute.click(); }
+});
+
+// Tap to start (browsers require gesture for AudioContext + speech)
+startScreen.addEventListener('click', ()=>{
+  startScreen.classList.add('hide');
+  Audio.ensure();
+  showScene(0);
+  play();
+  startTimer();
+});
+
+// Build immediately so scenes are ready
+buildScenes();
+</script>
+</body>
+</html>
