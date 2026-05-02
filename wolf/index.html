@@ -570,6 +570,20 @@ nav{
 }
 .lore-attr{ font-family:'JetBrains Mono'; font-size:10px; color:var(--orange-glow); margin-top:4px; letter-spacing:2px; }
 
+/* WOLF WISDOM */
+.wisdom-card{
+  padding:18px 20px;
+  background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(139,92,246,0.06));
+  border:1px solid rgba(245,158,11,0.2); border-radius:14px;
+  position:relative; overflow:hidden;
+}
+.wisdom-card::before{
+  content:'🐺'; position:absolute; top:8px; right:12px; font-size:32px; opacity:0.3;
+}
+.wisdom-eyebrow{ font-family:'JetBrains Mono'; font-size:9px; letter-spacing:3px; color:var(--orange-glow); }
+.wisdom-text{ font-family:'Bowlby One'; font-size:14px; letter-spacing:0.5px; line-height:1.4; margin-top:8px; color:var(--text); }
+.wisdom-attr{ font-family:'JetBrains Mono'; font-size:10px; color:var(--text-low); margin-top:8px; letter-spacing:1px; }
+
 /* TERMINAL TYPING IN HEADER */
 .terminal-line{
   font-family:'JetBrains Mono'; font-size:11px; color:var(--green);
@@ -933,6 +947,15 @@ footer a{ color:var(--purple-glow); text-decoration:none; }
       </div>
 
       <div class="panel">
+        <div class="panel-head"><span>WOLF WISDOM</span><span class="live">LIVE</span></div>
+        <div class="wisdom-card">
+          <div class="wisdom-eyebrow">▸ THE PACK SAYS</div>
+          <div class="wisdom-text" id="wisdomText">Loading...</div>
+          <div class="wisdom-attr" id="wisdomAttr">— monwolf</div>
+        </div>
+      </div>
+
+      <div class="panel">
         <div class="panel-head"><span>QUICK LINKS</span><span></span></div>
         <div style="display:flex; flex-direction:column; gap:8px; font-family:'JetBrains Mono'; font-size:12px;">
           <a href="https://nad.fun/tokens/0x8361a59d340466211ad4aB41C09a32e4530a7777" target="_blank" style="color:var(--purple-glow); text-decoration:none; padding:10px; background:rgba(139,92,246,0.06); border-radius:8px;">▸ Buy on nad.fun</a>
@@ -1233,6 +1256,8 @@ async function connectWallet(){
     loadWhaleWatch();
     loadChainStatus();
     loadMilestone();
+    loadWisdom();
+    setInterval(loadWisdom, 45000);
     startFeedSimulation();
     setInterval(loadChainStatus, 6000);
     setInterval(loadWhaleWatch, 30000);
@@ -1730,6 +1755,32 @@ function loadMilestone(){
     $('msIcon').textContent = '🌕';
     $('msTitle').textContent = 'PACK ROYALTY';
     $('msDesc').textContent = 'You\'ve maxed every milestone. Howl loud.';
+  }
+}
+
+// ─── WOLF WISDOM (free no-key flavor APIs) ───
+async function loadWisdom(){
+  try{
+    // Try icanhazdadjoke first (no key, free)
+    const r = await fetch('https://icanhazdadjoke.com/', { headers:{ 'Accept':'application/json' } });
+    if(r.ok){
+      const j = await r.json();
+      if(j.joke){
+        $('wisdomText').textContent = '"'+j.joke+'"';
+        $('wisdomAttr').textContent = '— monwolf · pack philosophy';
+        return;
+      }
+    }
+  }catch(e){ console.warn('dadjoke fail', e); }
+  // Fallback to useless facts
+  try{
+    const r = await fetch('https://uselessfacts.jsph.pl/api/v2/facts/random');
+    const j = await r.json();
+    $('wisdomText').textContent = '"'+(j.text||'The wolf knows.')+'"';
+    $('wisdomAttr').textContent = '— monwolf · pack lore';
+  }catch{
+    $('wisdomText').textContent = '"The wolf eats either way."';
+    $('wisdomAttr').textContent = '— monwolf';
   }
 }
 
