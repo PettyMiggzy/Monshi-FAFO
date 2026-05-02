@@ -286,9 +286,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
   }
 
   function loadBurn(){
-    rpc('eth_call',[{to:MONSHI, data:'0x70a08231'+pad(DEAD).slice(2)},'latest']).then(function(res){
-      if(!res)return;
-      var burned = Number(BigInt(res))/1e18;
+    var ZERO_ADDR = '0x0000000000000000000000000000000000000000';
+    Promise.all([
+      rpc('eth_call',[{to:MONSHI, data:'0x18160ddd'},'latest']),
+      rpc('eth_call',[{to:MONSHI, data:'0x70a08231'+pad(DEAD).slice(2)},'latest']),
+      rpc('eth_call',[{to:MONSHI, data:'0x70a08231'+pad(ZERO_ADDR).slice(2)},'latest'])
+    ]).then(function(r){
+      if(!r[0])return;
+      var totalSupply = Number(BigInt(r[0]))/1e18;
+      var deadBal     = r[1] ? Number(BigInt(r[1]))/1e18 : 0;
+      var zeroBal     = r[2] ? Number(BigInt(r[2]))/1e18 : 0;
+      var burned = Math.max(0, SUPPLY - totalSupply) + deadBal + zeroBal;
       var pct = (burned/SUPPLY)*100;
       $('sBurned').textContent = fmtNum(burned);
       $('sBurnedPct').textContent = pct.toFixed(3)+'%';

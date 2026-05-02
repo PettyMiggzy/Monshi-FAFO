@@ -577,23 +577,30 @@ h2{font-family:Orbitron,sans-serif;font-size:clamp(20px,3vw,32px);color:#4ADE80;
     meta.textContent = (chg>=0?'+':'')+chg.toFixed(2)+'% · '+fmtNum(txns)+' txns';
   }
 
-  // ─── Burn meter via eth_call balanceOf(0xdead) ───
+  // ─── Burn meter: sums (originalSupply - totalSupply) + balanceOf(dead) + balanceOf(0x0) ───
   function loadBurn(){
-    var data='0x70a08231'+padAddr(DEAD).slice(2);
-    rpcCall('eth_call',[{to:MONSHI_CA, data:data},'latest']).then(function(res){
-      if(!res)return;
-      var burned = Number(BigInt(res))/1e18;
-      var pct = (burned/SUPPLY)*100;
-      $('mhBurnBig').textContent = fmtNum(burned)+' MONSHI';
+    var ZERO_ADDR = '0x0000000000000000000000000000000000000000';
+    Promise.all([
+      rpcCall('eth_call',[{to:MONSHI_CA, data:'0x18160ddd'},'latest']),                           // totalSupply()
+      rpcCall('eth_call',[{to:MONSHI_CA, data:'0x70a08231'+padAddr(DEAD).slice(2)},'latest']),    // balanceOf(0xdead)
+      rpcCall('eth_call',[{to:MONSHI_CA, data:'0x70a08231'+padAddr(ZERO_ADDR).slice(2)},'latest']) // balanceOf(0x0)
+    ]).then(function(r){
+      if(!r[0])return;
+      var totalSupply = Number(BigInt(r[0]))/1e18;
+      var deadBal     = r[1] ? Number(BigInt(r[1]))/1e18 : 0;
+      var zeroBal     = r[2] ? Number(BigInt(r[2]))/1e18 : 0;
+      // permanently-removed tokens = supply that was _burn()'d  +  tokens parked in dead/zero
+      var supplyBurn   = Math.max(0, SUPPLY - totalSupply);
+      var transferBurn = deadBal + zeroBal;
+      var totalBurned  = supplyBurn + transferBurn;
+      var pct          = (totalBurned / SUPPLY) * 100;
+      $('mhBurnBig').textContent = fmtNum(totalBurned)+' MONSHI';
       $('mhBurnFill').style.width = Math.min(pct,100).toFixed(2)+'%';
       $('mhBurnPct').textContent = pct.toFixed(3)+'% gone';
-      $('mhPsBurned').textContent = fmtNum(burned);
-      $('mhPsCirc').textContent = fmtNum(SUPPLY-burned);
-      // estimate burn USD using current price
-      var price=parseFloat($('mhPriceBig').textContent.replace(/[$,₀-₉]/g,''))||0;
-      // use last spark point if available
-      if(sparkPoints.length)price=sparkPoints[sparkPoints.length-1];
-      $('mhBurnUsd').textContent = fmtUsd(burned*price);
+      $('mhPsBurned').textContent = fmtNum(totalBurned);
+      $('mhPsCirc').textContent   = fmtNum(SUPPLY - totalBurned);
+      var price = sparkPoints.length ? sparkPoints[sparkPoints.length-1] : 0;
+      $('mhBurnUsd').textContent = fmtUsd(totalBurned*price);
     }).catch(function(){});
   }
 

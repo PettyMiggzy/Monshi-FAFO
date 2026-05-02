@@ -115,9 +115,10 @@ button{font-family:inherit;}
 .post-image{width:calc(100% + 28px);margin:8px -14px;border-top:1px solid rgba(139,92,246,.1);border-bottom:1px solid rgba(139,92,246,.1);}
 .post-image img{width:100%;display:block;max-height:480px;object-fit:cover;}
 
-.reactions-summary{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(139,92,246,.1);font-size:12px;color:rgba(196,181,253,.6);}
-.reaction-emoji-stack{display:inline-flex;}
-.reaction-emoji-stack span{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#1A0A2E;border:1.5px solid #02000a;font-size:11px;margin-right:-4px;}
+.reactions-summary{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(139,92,246,.1);font-size:13px;color:rgba(237,233,255,.85);min-height:30px;}
+.reaction-emoji-stack{display:inline-flex;align-items:center;}
+.reaction-emoji-stack span{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#1A0A2E;border:2px solid #0a0418;font-size:13px;margin-right:-6px;box-shadow:0 1px 3px rgba(0,0,0,.5);}
+.reactions-summary-l{display:flex;align-items:center;gap:8px;}
 
 .post-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:4px 0 0;}
 .post-action{padding:8px;background:transparent;border:none;color:rgba(196,181,253,.7);font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;border-radius:6px;position:relative;}
@@ -197,6 +198,99 @@ button{font-family:inherit;}
 .toast{position:fixed;bottom:20px;right:20px;padding:11px 18px;background:rgba(168,85,247,.95);color:#fff;border-radius:10px;font-family:Orbitron,sans-serif;font-size:11px;letter-spacing:1.5px;font-weight:800;z-index:1000;}
 .toast.success{background:rgba(74,222,128,.95);color:#000;}
 .toast.error{background:rgba(239,68,68,.95);}
+
+/* ========== STORIES ROW ========== */
+.stories-card{padding:14px 12px;margin-bottom:12px;background:linear-gradient(135deg,rgba(168,85,247,.08),rgba(20,5,50,.5));border:1px solid rgba(168,85,247,.25);border-radius:14px;}
+.stories-row{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 4px;}
+.stories-row::-webkit-scrollbar{display:none;}
+.story-item{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;width:72px;text-decoration:none;color:inherit;}
+.story-ring{width:64px;height:64px;border-radius:50%;padding:3px;background:conic-gradient(from 90deg,#A855F7,#FCD34D,#EC4899,#A855F7);position:relative;transition:transform .15s;}
+.story-item:hover .story-ring{transform:scale(1.05);}
+.story-ring.viewed{background:rgba(168,85,247,.25);}
+.story-ring.add{background:rgba(168,85,247,.2);border:2px dashed rgba(168,85,247,.5);padding:0;display:flex;align-items:center;justify-content:center;color:#A855F7;font-size:30px;font-weight:700;}
+.story-img{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#1a0d2e;border:2px solid #0a0418;display:block;}
+.story-name{font-size:10px;color:rgba(237,233,255,.85);text-align:center;max-width:72px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;}
+.story-modal{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;}
+.story-modal.show{display:flex;}
+.story-modal-card{max-width:420px;width:100%;background:linear-gradient(135deg,#1a0d2e,#0a0418);border:1px solid rgba(168,85,247,.4);border-radius:18px;overflow:hidden;position:relative;}
+.story-progress{height:3px;background:rgba(255,255,255,.15);position:relative;overflow:hidden;}
+.story-progress-fill{position:absolute;inset:0 100% 0 0;background:#A855F7;animation:storyProg 5s linear forwards;}
+@keyframes storyProg{to{inset:0 0 0 0;}}
+.story-modal-header{display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid rgba(168,85,247,.2);}
+.story-modal-avatar{width:40px;height:40px;border-radius:50%;background:#1a0d2e;}
+.story-modal-info{flex:1;}
+.story-modal-name{font-weight:700;color:#fff;font-size:14px;}
+.story-modal-time{font-size:11px;color:rgba(196,181,253,.7);}
+.story-modal-close{background:none;border:none;color:#fff;font-size:24px;cursor:pointer;padding:4px 10px;}
+.story-modal-body{padding:20px;color:#EDE9FF;font-size:15px;line-height:1.5;min-height:180px;text-align:center;}
+.story-modal-body img{max-width:100%;border-radius:8px;margin-top:10px;}
+
+/* ========== NOTIFICATIONS BELL ========== */
+.notif-wrap{position:relative;}
+.notif-btn{background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.3);color:#EDE9FF;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;position:relative;transition:all .15s;}
+.notif-btn:hover{background:rgba(168,85,247,.2);}
+.notif-dot{position:absolute;top:-3px;right:-3px;background:#EF4444;color:#fff;font-size:10px;font-weight:700;border-radius:10px;min-width:18px;height:18px;padding:0 5px;display:none;align-items:center;justify-content:center;border:2px solid #0a0418;animation:notifPulse 1.8s infinite;}
+.notif-dot.show{display:flex;}
+@keyframes notifPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+.notif-dropdown{position:absolute;top:48px;right:0;width:340px;max-width:90vw;background:linear-gradient(135deg,#1a0d2e,#0a0418);border:1px solid rgba(168,85,247,.4);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.7);max-height:480px;overflow:hidden;display:none;z-index:1000;}
+.notif-dropdown.show{display:flex;flex-direction:column;}
+.notif-head{padding:14px 16px;border-bottom:1px solid rgba(168,85,247,.2);display:flex;justify-content:space-between;align-items:center;}
+.notif-head-t{font-family:Orbitron,sans-serif;font-size:12px;letter-spacing:2px;font-weight:800;color:#fff;}
+.notif-mark-read{background:none;border:none;color:#A855F7;font-size:11px;cursor:pointer;font-weight:600;}
+.notif-list{flex:1;overflow-y:auto;}
+.notif-item{display:flex;gap:10px;padding:12px 14px;border-bottom:1px solid rgba(168,85,247,.08);cursor:pointer;transition:background .15s;}
+.notif-item:hover{background:rgba(168,85,247,.06);}
+.notif-item.unread{background:rgba(168,85,247,.1);border-left:3px solid #A855F7;}
+.notif-item-avatar{width:36px;height:36px;border-radius:50%;flex-shrink:0;background:#1a0d2e;}
+.notif-item-body{flex:1;min-width:0;}
+.notif-item-text{font-size:12px;color:#EDE9FF;line-height:1.4;}
+.notif-item-text b{color:#fff;font-weight:700;}
+.notif-item-time{font-size:10px;color:rgba(196,181,253,.6);margin-top:3px;}
+.notif-empty{padding:30px 16px;text-align:center;font-size:11px;color:rgba(196,181,253,.5);}
+
+/* ========== ONLINE DOT ========== */
+.online-dot{position:absolute;bottom:0;right:0;width:11px;height:11px;border-radius:50%;background:#22C55E;border:2px solid #0a0418;box-shadow:0 0 8px rgba(34,197,94,.6);animation:onlinePulse 2s infinite;}
+@keyframes onlinePulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.6);}50%{box-shadow:0 0 0 4px rgba(34,197,94,0);}}
+
+/* ========== PACK ONLINE WIDGET ========== */
+.online-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;text-decoration:none;color:inherit;transition:background .15s;}
+.online-row:hover{background:rgba(168,85,247,.08);}
+.online-row-avatar{width:34px;height:34px;border-radius:50%;background:#1a0d2e;position:relative;flex-shrink:0;}
+.online-row-avatar img{width:100%;height:100%;border-radius:50%;display:block;}
+.online-row-info{flex:1;min-width:0;}
+.online-row-name{font-size:13px;color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.online-row-tier{font-size:10px;color:rgba(196,181,253,.65);}
+
+/* ========== PACK GROUPS WIDGET ========== */
+.group-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;text-decoration:none;color:inherit;transition:background .15s;}
+.group-row:hover{background:rgba(168,85,247,.08);}
+.group-row.active{background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.3);}
+.group-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.group-info{flex:1;min-width:0;}
+.group-name{font-size:13px;color:#fff;font-weight:600;}
+.group-meta{font-size:10px;color:rgba(196,181,253,.6);}
+.group-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;background:rgba(168,85,247,.18);border:1px solid rgba(168,85,247,.4);border-radius:14px;font-size:11px;color:#C4B5FD;font-weight:700;letter-spacing:1px;margin-bottom:10px;}
+.group-pill .x{cursor:pointer;color:#EC4899;font-weight:900;font-size:14px;}
+
+/* ========== REACTION CIRCLE STACK ========== */
+.reaction-stack{display:flex;align-items:center;gap:0;padding:4px 0 6px;font-size:12px;color:rgba(196,181,253,.85);min-height:22px;}
+.reaction-circles{display:flex;align-items:center;}
+.reaction-circle{width:22px;height:22px;border-radius:50%;background:#1a0d2e;border:2px solid #0a0418;display:flex;align-items:center;justify-content:center;font-size:11px;margin-right:-6px;box-shadow:0 1px 3px rgba(0,0,0,.5);}
+.reaction-circle:last-child{margin-right:0;}
+.reaction-count{margin-left:10px;font-weight:600;color:#EDE9FF;cursor:pointer;}
+.reaction-count:hover{text-decoration:underline;}
+
+/* ========== MENTION AUTOCOMPLETE ========== */
+.mention-popup{position:absolute;background:linear-gradient(135deg,#1a0d2e,#0a0418);border:1px solid rgba(168,85,247,.4);border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,.6);max-height:240px;overflow-y:auto;z-index:500;min-width:240px;display:none;}
+.mention-popup.show{display:block;}
+.mention-item{display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;}
+.mention-item:hover,.mention-item.selected{background:rgba(168,85,247,.15);}
+.mention-avatar{width:28px;height:28px;border-radius:50%;background:#1a0d2e;}
+.mention-info{flex:1;min-width:0;}
+.mention-name{font-size:13px;color:#fff;font-weight:600;}
+.mention-handle{font-size:11px;color:rgba(196,181,253,.65);}
+.post-body a.mention,.comment-bubble a.mention{color:#A855F7;font-weight:600;text-decoration:none;}
+.post-body a.mention:hover,.comment-bubble a.mention:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
@@ -209,6 +303,16 @@ button{font-family:inherit;}
   <div class="topbar-r">
     <a class="topbar-link" href="/">DEN</a>
     <a class="topbar-link" href="/arcade.html">ARCADE</a>
+    <div class="notif-wrap" id="notifWrap" style="display:none;">
+      <button class="notif-btn" id="notifBtn">🔔<span class="notif-dot" id="notifDot"></span></button>
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-head">
+          <div class="notif-head-t">NOTIFICATIONS</div>
+          <button class="notif-mark-read" id="notifMarkRead">Mark all read</button>
+        </div>
+        <div class="notif-list" id="notifList"><div class="notif-empty">No notifications yet</div></div>
+      </div>
+    </div>
     <button class="connect" id="connectBtn">CONNECT</button>
   </div>
 </div>
@@ -229,6 +333,17 @@ button{font-family:inherit;}
           <div><div class="me-stat-v" id="meStatFollowing">0</div><div class="me-stat-l">FOLLOW</div></div>
         </div>
         <a class="me-cta" id="meCta" href="#">VIEW MY WALL →</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-h">🐺 PACK GROUPS</div>
+      <div class="groups-list" id="groupsList">
+        <a class="group-row" data-group="whales"><div class="group-icon" style="background:rgba(252,211,77,.15);">🐋</div><div class="group-info"><div class="group-name">$MONSHI Whales</div><div class="group-meta">1M+ holders</div></div></a>
+        <a class="group-row" data-group="nft"><div class="group-icon" style="background:rgba(236,72,153,.15);">🎴</div><div class="group-info"><div class="group-name">NFT Holders</div><div class="group-meta">Monshi NFT pack</div></div></a>
+        <a class="group-row" data-group="diamond"><div class="group-icon" style="background:rgba(168,85,247,.15);">💎</div><div class="group-info"><div class="group-name">Diamond Hands</div><div class="group-meta">Royalty tier</div></div></a>
+        <a class="group-row" data-group="traders"><div class="group-icon" style="background:rgba(34,197,94,.15);">📈</div><div class="group-info"><div class="group-name">Day Traders</div><div class="group-meta">Charts & alpha</div></div></a>
+        <a class="group-row" data-group="dev"><div class="group-icon" style="background:rgba(74,222,128,.15);">⚙️</div><div class="group-info"><div class="group-name">Dev Talk</div><div class="group-meta">Builders only</div></div></a>
       </div>
     </div>
 
@@ -274,6 +389,15 @@ button{font-family:inherit;}
       </div>
     </div>
 
+    <div class="card stories-card" id="storiesCard">
+      <div class="stories-row" id="storiesRow">
+        <a class="story-item" id="addStoryBtn" href="#" title="Post to share with the pack">
+          <div class="story-ring add">+</div>
+          <div class="story-name">Your Story</div>
+        </a>
+      </div>
+    </div>
+
     <div class="card composer" id="composerCard">
       <div class="composer-top">
         <div class="composer-avatar"><img id="composerAvatar" src="" alt=""/></div>
@@ -293,6 +417,10 @@ button{font-family:inherit;}
       </div>
     </div>
 
+    <div id="activeGroupBar" style="display:none;margin-bottom:10px;">
+      <span class="group-pill"><span id="activeGroupLabel"></span><span class="x" id="clearGroupBtn">✕</span></span>
+    </div>
+
     <div class="feed-tabs" id="feedTabs">
       <button class="feed-tab active" data-tab="all">ALL</button>
       <button class="feed-tab" data-tab="following">PACK</button>
@@ -308,6 +436,10 @@ button{font-family:inherit;}
 
   <aside class="col-right">
     <div id="adSlot"></div>
+    <div class="card">
+      <div class="card-h">🟢 PACK ONLINE <span class="live" id="onlineCount">0</span></div>
+      <div id="packOnline"><div class="empty" style="padding:14px;font-size:11px;">No one online right now</div></div>
+    </div>
     <div class="card">
       <div class="card-h">🔥 TRENDING <span class="live">24H</span></div>
       <div id="trending"><div class="empty" style="padding:14px;font-size:11px;">Loading trending posts...</div></div>
@@ -439,6 +571,10 @@ button{font-family:inherit;}
       if(balance>=1_000_000){$('pinToggle').disabled=false;$('pinToggleWrap').classList.remove('disabled');}
       $('composerAvatar').src = avatarUrl(wallet);
       handleRoute();
+      // FB-feature hooks
+      try{await sb.from('monshi_book_presence').upsert({wallet:wallet,last_seen:new Date().toISOString(),display_name:displayName(wallet),tier:tier.key});}catch(_){}
+      if(window.__loadFeed)window.__loadFeed();
+      setTimeout(function(){if(typeof loadNotifs==='function')loadNotifs();if(typeof loadPackOnline==='function')loadPackOnline();},500);
     }catch(e){toast('Connect failed','error');}
   };
 
@@ -484,11 +620,22 @@ button{font-family:inherit;}
       await refreshBalance();
       var r=await sb.from('monshi_book_posts').insert({wallet:wallet,body:body,tier:tier.key,balance_at_post:Math.floor(balance),is_pinned:pin,image_url:imageUrl||null}).select().single();
       if(r.error)throw r.error;
+      var newPostId=r.data&&r.data.id;
+      // scan mentions in body
+      if(newPostId){
+        var mentions=body.match(/@([a-zA-Z0-9_ ]{1,40})/g);
+        if(mentions){
+          for(var i=0;i<mentions.length;i++){
+            var name=mentions[i].slice(1).trim();
+            try{var mr=await sb.from('monshi_book_profiles').select('wallet').eq('display_name',name).maybeSingle();if(mr.data&&mr.data.wallet&&window.__monshiNotify)window.__monshiNotify(mr.data.wallet,'mention',newPostId,body.slice(0,80));}catch(_){}
+          }
+        }
+      }
       $('postBody').value='';$('imageInput').value='';
       $('imageInputWrap').classList.remove('show');
       $('pinToggle').checked=false;
       toast('Posted ✓','success');
-      navTo(null);loadMyProfile();
+      navTo(null);loadMyProfile();loadStories();
     }catch(e){console.error(e);if(/does not exist|PGRST205/i.test(e.message||''))showSchema();else toast('Post failed','error');}
     finally{btn.disabled=false;btn.textContent='POST';}
   };
@@ -563,7 +710,7 @@ button{font-family:inherit;}
     var f=followingSet.has(w);
     try{
       if(f){await sb.from('monshi_book_follows').delete().eq('follower',wallet).eq('following',w);followingSet.delete(w);}
-      else{await sb.from('monshi_book_follows').insert({follower:wallet,following:w});followingSet.add(w);}
+      else{await sb.from('monshi_book_follows').insert({follower:wallet,following:w});followingSet.add(w);if(window.__monshiNotify)window.__monshiNotify(w,'follow',null,null);}
       renderProfile(w);loadMyProfile();
     }catch(e){console.error(e);toast('Follow failed','error');}
   };
@@ -578,18 +725,23 @@ button{font-family:inherit;}
   async function loadFeed(){
     var feed=$('feed');feed.innerHTML='<div class="skel"></div><div class="skel"></div>';
     try{
-      var q=sb.from('monshi_book_posts').select('*').is('deleted_at',null).order('is_pinned',{ascending:false}).order('created_at',{ascending:false}).limit(50);
+      var q=sb.from('monshi_book_posts').select('*').is('deleted_at',null).order('is_pinned',{ascending:false}).order('created_at',{ascending:false}).limit(80);
       if(currentTab==='whale')q=q.in('tier',['whale','royalty']);
       else if(currentTab==='mine'){if(!wallet){feed.innerHTML='<div class="card empty">Connect wallet to see your posts.</div>';return;}q=q.eq('wallet',wallet);}
       else if(currentTab==='following'){if(!wallet||followingSet.size===0){feed.innerHTML='<div class="card empty">Follow some wallets to fill this feed.</div>';return;}q=q.in('wallet',[...followingSet]);}
       var r=await q;
       if(r.error){if(/does not exist|PGRST205/i.test(r.error.message||'')){showSchema();return;}throw r.error;}
-      if(!r.data.length){feed.innerHTML='<div class="card empty">No posts here yet.</div>';return;}
-      await getProfilesBatch(r.data.map(function(p){return p.wallet;}));
-      feed.innerHTML=r.data.map(renderPost).join('');
-      r.data.forEach(function(p){wirePost(p);loadComments(p.id);loadReactions(p.id);});
+      var rows=r.data;
+      var ag=window.__activeGroup&&window.__activeGroup();
+      if(ag)rows=rows.filter(ag.filter);
+      rows=rows.slice(0,50);
+      if(!rows.length){feed.innerHTML='<div class="card empty">No posts here yet.</div>';return;}
+      await getProfilesBatch(rows.map(function(p){return p.wallet;}));
+      feed.innerHTML=rows.map(renderPost).join('');
+      rows.forEach(function(p){wirePost(p);loadComments(p.id);loadReactions(p.id);});
     }catch(e){console.error(e);feed.innerHTML='<div class="card empty">Couldn\'t load feed.<br>'+escape(e.message||'')+'</div>';}
   }
+  window.__loadFeed = loadFeed;
 
   async function loadFeedFor(w){
     var feed=$('feed');feed.innerHTML='<div class="skel"></div>';
@@ -622,7 +774,7 @@ button{font-family:inherit;}
           '</div>'+
           (canDelete?'<button class="post-menu" data-act="delete" data-id="'+p.id+'" title="Delete">🗑</button>':'')+
         '</div>'+
-        '<div class="post-body">'+escape(p.body)+'</div>'+
+        '<div class="post-body">'+(window.__monshiRenderMentions?window.__monshiRenderMentions(p.body):escape(p.body))+'</div>'+
         image+
         '<div class="reactions-summary" id="rsum-'+p.id+'"><div class="reactions-summary-l">—</div><div id="rcomment-count-'+p.id+'">0 replies</div></div>'+
         '<div class="post-actions">'+
@@ -688,10 +840,14 @@ button{font-family:inherit;}
     if(!wallet){toast('Connect first','error');return;}
     try{
       var ex=await sb.from('monshi_book_reactions').select('reaction').eq('post_id',postId).eq('wallet',wallet).maybeSingle();
+      var existed=!!ex.data;
       if(ex.data&&ex.data.reaction===type)await sb.from('monshi_book_reactions').delete().eq('post_id',postId).eq('wallet',wallet);
       else if(ex.data)await sb.from('monshi_book_reactions').update({reaction:type}).eq('post_id',postId).eq('wallet',wallet);
       else await sb.from('monshi_book_reactions').insert({post_id:postId,wallet:wallet,reaction:type});
       loadReactions(postId);
+      if(!existed||(ex.data&&ex.data.reaction!==type)){
+        try{var pr=await sb.from('monshi_book_posts').select('wallet').eq('id',postId).maybeSingle();if(pr.data&&pr.data.wallet)notifyUser(pr.data.wallet,'reaction',postId,type);}catch(e){}
+      }
     }catch(e){console.error(e);if(/does not exist/i.test(e.message||''))showSchema();else toast('Reaction failed','error');}
   }
 
@@ -707,7 +863,7 @@ button{font-family:inherit;}
         '<div style="flex:1;">'+
           '<div class="comment-bubble">'+
             '<div class="comment-head"><a class="comment-name" href="?u='+c.wallet+'" onclick="window.__monshiNav(\''+c.wallet+'\',event)">'+escape(displayName(c.wallet))+'</a> '+tierPill(c.tier||'shrimp')+'</div>'+
-            '<div class="comment-body">'+escape(c.body)+'</div>'+
+            '<div class="comment-body">'+(window.__monshiRenderMentions?window.__monshiRenderMentions(c.body):escape(c.body))+'</div>'+
           '</div>'+
           '<div class="comment-time">'+timeAgo(c.created_at)+'</div>'+
         '</div>'+
@@ -728,6 +884,16 @@ button{font-family:inherit;}
       var r=await sb.from('monshi_book_comments').insert({post_id:postId,wallet:wallet,body:body,tier:tier.key});
       if(r.error)throw r.error;
       input.value='';loadComments(postId);
+      // notify post author
+      try{var pr=await sb.from('monshi_book_posts').select('wallet').eq('id',postId).maybeSingle();if(pr.data&&pr.data.wallet)notifyUser(pr.data.wallet,'comment',postId,body.slice(0,80));}catch(e){}
+      // scan mentions
+      var mentions=body.match(/@([a-zA-Z0-9_ ]{1,40})/g);
+      if(mentions){
+        for(var i=0;i<mentions.length;i++){
+          var name=mentions[i].slice(1).trim();
+          try{var mr=await sb.from('monshi_book_profiles').select('wallet').eq('display_name',name).maybeSingle();if(mr.data&&mr.data.wallet)notifyUser(mr.data.wallet,'mention',postId,body.slice(0,80));}catch(e){}
+        }
+      }
     }catch(e){toast('Comment failed','error');console.error(e);}
     finally{input.disabled=false;}
   };
@@ -931,12 +1097,262 @@ drop policy if exists "insert ads" on public.monshi_book_ads;
 create policy "read active ads" on public.monshi_book_ads for select using (status='active');
 create policy "insert ads" on public.monshi_book_ads for insert with check (true);
 
+create table if not exists public.monshi_book_notifications (
+  id bigserial primary key,
+  recipient text not null,
+  actor text not null,
+  type text not null,
+  target_id bigint,
+  target_type text,
+  body text,
+  read boolean default false,
+  created_at timestamptz default now()
+);
+create index if not exists idx_mbn_recipient on public.monshi_book_notifications(recipient, created_at desc);
+create index if not exists idx_mbn_unread on public.monshi_book_notifications(recipient, read);
+alter table public.monshi_book_notifications enable row level security;
+drop policy if exists "read notifs" on public.monshi_book_notifications;
+drop policy if exists "insert notifs" on public.monshi_book_notifications;
+drop policy if exists "update notifs" on public.monshi_book_notifications;
+create policy "read notifs" on public.monshi_book_notifications for select using (true);
+create policy "insert notifs" on public.monshi_book_notifications for insert with check (true);
+create policy "update notifs" on public.monshi_book_notifications for update using (true);
+
+create table if not exists public.monshi_book_presence (
+  wallet text primary key,
+  last_seen timestamptz default now(),
+  display_name text,
+  tier text
+);
+create index if not exists idx_mbp_seen on public.monshi_book_presence(last_seen desc);
+alter table public.monshi_book_presence enable row level security;
+drop policy if exists "read presence" on public.monshi_book_presence;
+drop policy if exists "upsert presence" on public.monshi_book_presence;
+create policy "read presence" on public.monshi_book_presence for select using (true);
+create policy "upsert presence" on public.monshi_book_presence for all using (true) with check (true);
+
 -- Done. Refresh /monshi-book.html
 `;
 
+  // ============ STORIES (24h posts as story circles) ============
+  async function loadStories(){
+    try{
+      var since=new Date(Date.now()-24*3600*1000).toISOString();
+      var r=await sb.from('monshi_book_posts').select('id,wallet,body,image_url,created_at,tier').is('deleted_at',null).gte('created_at',since).order('created_at',{ascending:false}).limit(40);
+      if(r.error||!r.data||!r.data.length)return;
+      // dedupe by wallet, keep newest per wallet
+      var byW={};r.data.forEach(function(p){if(!byW[p.wallet])byW[p.wallet]=p;});
+      await getProfilesBatch(Object.keys(byW));
+      var arr=Object.values(byW).slice(0,15);
+      var html=arr.map(function(p){
+        return '<a class="story-item" data-pid="'+p.id+'" data-w="'+p.wallet+'" href="#">'+
+          '<div class="story-ring"><img class="story-img" src="'+avatarUrl(p.wallet)+'" alt=""/></div>'+
+          '<div class="story-name">'+escape(displayName(p.wallet))+'</div>'+
+        '</a>';
+      }).join('');
+      var addStory='<a class="story-item" id="addStoryBtn" href="#" title="Post to share with the pack"><div class="story-ring add">+</div><div class="story-name">Your Story</div></a>';
+      $('storiesRow').innerHTML=addStory+html;
+      $('storiesRow').querySelectorAll('.story-item[data-pid]').forEach(function(el){
+        el.onclick=function(ev){ev.preventDefault();showStory(arr.find(function(x){return x.id==el.dataset.pid;}));};
+      });
+      $('addStoryBtn').onclick=function(ev){ev.preventDefault();$('postBody').focus();window.scrollTo({top:$('composerCard').offsetTop-80,behavior:'smooth'});};
+    }catch(e){}
+  }
+  function showStory(p){
+    if(!p)return;
+    var img=p.image_url?'<img src="'+escape(p.image_url)+'" alt=""/>':'';
+    var modal=document.createElement('div');modal.className='story-modal show';
+    modal.innerHTML='<div class="story-modal-card">'+
+      '<div class="story-progress"><div class="story-progress-fill"></div></div>'+
+      '<div class="story-modal-header">'+
+        '<img class="story-modal-avatar" src="'+avatarUrl(p.wallet)+'"/>'+
+        '<div class="story-modal-info"><div class="story-modal-name">'+escape(displayName(p.wallet))+'</div><div class="story-modal-time">'+timeAgo(p.created_at)+'</div></div>'+
+        '<button class="story-modal-close">✕</button>'+
+      '</div>'+
+      '<div class="story-modal-body">'+escape(p.body)+img+'</div>'+
+    '</div>';
+    document.body.appendChild(modal);
+    var close=function(){modal.remove();};
+    modal.querySelector('.story-modal-close').onclick=close;
+    modal.onclick=function(e){if(e.target===modal)close();};
+    setTimeout(close,5500);
+  }
+
+  // ============ NOTIFICATIONS ============
+  var notifPollIv=null;
+  async function loadNotifs(){
+    if(!wallet)return;
+    try{
+      var r=await sb.from('monshi_book_notifications').select('*').eq('recipient',wallet).order('created_at',{ascending:false}).limit(30);
+      if(r.error){if(/does not exist/i.test(r.error.message||''))showSchema();return;}
+      await getProfilesBatch(r.data.map(function(n){return n.actor;}));
+      var unread=r.data.filter(function(n){return !n.read;}).length;
+      var dot=$('notifDot');
+      if(unread>0){dot.textContent=unread>9?'9+':unread;dot.classList.add('show');}else dot.classList.remove('show');
+      var list=$('notifList');
+      if(!r.data.length){list.innerHTML='<div class="notif-empty">No notifications yet</div>';return;}
+      list.innerHTML=r.data.map(function(n){
+        var msg='';
+        if(n.type==='reaction')msg='<b>'+escape(displayName(n.actor))+'</b> reacted to your post';
+        else if(n.type==='comment')msg='<b>'+escape(displayName(n.actor))+'</b> commented on your post';
+        else if(n.type==='follow')msg='<b>'+escape(displayName(n.actor))+'</b> joined your pack';
+        else if(n.type==='mention')msg='<b>'+escape(displayName(n.actor))+'</b> mentioned you';
+        else msg='<b>'+escape(displayName(n.actor))+'</b> '+escape(n.body||'');
+        return '<div class="notif-item '+(n.read?'':'unread')+'" data-id="'+n.id+'" data-w="'+n.actor+'">'+
+          '<img class="notif-item-avatar" src="'+avatarUrl(n.actor)+'"/>'+
+          '<div class="notif-item-body"><div class="notif-item-text">'+msg+'</div><div class="notif-item-time">'+timeAgo(n.created_at)+'</div></div>'+
+        '</div>';
+      }).join('');
+      list.querySelectorAll('.notif-item').forEach(function(el){
+        el.onclick=async function(){
+          var id=el.dataset.id;await sb.from('monshi_book_notifications').update({read:true}).eq('id',id);
+          navTo(el.dataset.w);$('notifDropdown').classList.remove('show');loadNotifs();
+        };
+      });
+    }catch(e){}
+  }
+  async function markAllNotifsRead(){
+    if(!wallet)return;
+    await sb.from('monshi_book_notifications').update({read:true}).eq('recipient',wallet).eq('read',false);
+    loadNotifs();
+  }
+  async function notifyUser(recipient,type,targetId,body){
+    if(!wallet||!recipient||recipient===wallet)return;
+    try{await sb.from('monshi_book_notifications').insert({recipient:recipient,actor:wallet,type:type,target_id:targetId||null,body:body||null});}catch(e){}
+  }
+  window.__monshiNotify = notifyUser;
+
+  // ============ PRESENCE (active now) ============
+  var presenceIv=null;
+  async function pingPresence(){
+    if(!wallet)return;
+    try{await sb.from('monshi_book_presence').upsert({wallet:wallet,last_seen:new Date().toISOString(),display_name:displayName(wallet),tier:tier.key});}catch(e){}
+  }
+  async function loadPackOnline(){
+    try{
+      var since=new Date(Date.now()-15*60*1000).toISOString();
+      var r=await sb.from('monshi_book_presence').select('*').gte('last_seen',since).order('last_seen',{ascending:false}).limit(20);
+      if(r.error){$('packOnline').innerHTML='<div class="empty" style="padding:14px;font-size:11px;">Online list unavailable</div>';return;}
+      var rows=(r.data||[]).filter(function(p){return p.wallet!==wallet;});
+      $('onlineCount').textContent=rows.length;
+      if(!rows.length){$('packOnline').innerHTML='<div class="empty" style="padding:14px;font-size:11px;">No one online right now</div>';return;}
+      await getProfilesBatch(rows.map(function(p){return p.wallet;}));
+      $('packOnline').innerHTML=rows.slice(0,8).map(function(p){
+        var t=TIERS[p.tier]||TIERS.shrimp;
+        return '<a class="online-row" href="?u='+p.wallet+'" onclick="window.__monshiNav(\''+p.wallet+'\',event)">'+
+          '<div class="online-row-avatar"><img src="'+avatarUrl(p.wallet)+'"/><span class="online-dot"></span></div>'+
+          '<div class="online-row-info"><div class="online-row-name">'+escape(displayName(p.wallet))+'</div><div class="online-row-tier">'+t.emoji+' '+t.label+'</div></div>'+
+        '</a>';
+      }).join('');
+    }catch(e){}
+  }
+
+  // ============ GROUPS FILTER ============
+  var GROUP_DEFS={
+    whales:{label:'🐋 $MONSHI WHALES',filter:function(p){return ['whale','royalty'].indexOf(p.tier)>=0;}},
+    nft:{label:'🎴 NFT HOLDERS',filter:function(p){return p.body&&/(nft|holder|monshi nft|🎴|🃏)/i.test(p.body);}},
+    diamond:{label:'💎 DIAMOND HANDS',filter:function(p){return p.tier==='royalty';}},
+    traders:{label:'📈 DAY TRADERS',filter:function(p){return p.body&&/(chart|trade|long|short|entry|exit|tp|sl|alpha|🟢|🔴|📈|📉)/i.test(p.body);}},
+    dev:{label:'⚙️ DEV TALK',filter:function(p){return p.body&&/(contract|deploy|solidity|rpc|abi|build|ship|0x[a-f0-9]{6,}|deploy|test)/i.test(p.body);}}
+  };
+  var activeGroup=null;
+  function applyGroupFilter(g){
+    activeGroup=g||null;
+    document.querySelectorAll('.group-row').forEach(function(el){el.classList.toggle('active',el.dataset.group===g);});
+    if(g){$('activeGroupBar').style.display='block';$('activeGroupLabel').textContent=GROUP_DEFS[g].label;}
+    else $('activeGroupBar').style.display='none';
+    if(window.__loadFeed)window.__loadFeed();
+  }
+  document.querySelectorAll('.group-row').forEach(function(el){
+    el.onclick=function(ev){ev.preventDefault();applyGroupFilter(el.dataset.group===activeGroup?null:el.dataset.group);};
+  });
+  $('clearGroupBtn').onclick=function(){applyGroupFilter(null);};
+  window.__activeGroup = function(){return activeGroup?GROUP_DEFS[activeGroup]:null;};
+
+  // ============ MENTIONS (@ autocomplete) ============
+  var mentionPopup=null;
+  function setupMentionAutocomplete(input){
+    if(!input||input.dataset.mentionWired)return;input.dataset.mentionWired='1';
+    input.addEventListener('input',function(e){
+      var v=input.value;var pos=input.selectionStart;
+      var beforeCursor=v.slice(0,pos);var m=beforeCursor.match(/@([a-zA-Z0-9_]{1,20})$/);
+      if(!m){closeMention();return;}
+      showMentionMatches(input,m[1]);
+    });
+    input.addEventListener('keydown',function(e){
+      if(!mentionPopup||!mentionPopup.classList.contains('show'))return;
+      var items=mentionPopup.querySelectorAll('.mention-item');if(!items.length)return;
+      var sel=mentionPopup.querySelector('.mention-item.selected')||items[0];var idx=Array.from(items).indexOf(sel);
+      if(e.key==='ArrowDown'){e.preventDefault();sel.classList.remove('selected');items[(idx+1)%items.length].classList.add('selected');}
+      if(e.key==='ArrowUp'){e.preventDefault();sel.classList.remove('selected');items[(idx-1+items.length)%items.length].classList.add('selected');}
+      if(e.key==='Enter'||e.key==='Tab'){e.preventDefault();sel.click();}
+      if(e.key==='Escape')closeMention();
+    });
+  }
+  async function showMentionMatches(input,q){
+    if(!mentionPopup){mentionPopup=document.createElement('div');mentionPopup.className='mention-popup';document.body.appendChild(mentionPopup);}
+    var r=await sb.from('monshi_book_profiles').select('wallet,display_name').ilike('display_name','%'+q+'%').limit(6);
+    var matches=(r.data||[]).filter(function(p){return p.display_name;});
+    if(!matches.length){closeMention();return;}
+    mentionPopup.innerHTML=matches.map(function(p,i){
+      return '<div class="mention-item'+(i===0?' selected':'')+'" data-w="'+p.wallet+'" data-name="'+escape(p.display_name)+'">'+
+        '<img class="mention-avatar" src="'+avatarUrl(p.wallet)+'"/>'+
+        '<div class="mention-info"><div class="mention-name">'+escape(p.display_name)+'</div><div class="mention-handle">'+shortAddr(p.wallet)+'</div></div>'+
+      '</div>';
+    }).join('');
+    var rect=input.getBoundingClientRect();
+    mentionPopup.style.left=(rect.left+window.scrollX)+'px';
+    mentionPopup.style.top=(rect.bottom+window.scrollY+4)+'px';
+    mentionPopup.style.width=Math.min(rect.width,320)+'px';
+    mentionPopup.classList.add('show');
+    mentionPopup.querySelectorAll('.mention-item').forEach(function(el){
+      el.onclick=function(){
+        var name=el.dataset.name;var v=input.value;var pos=input.selectionStart;
+        var before=v.slice(0,pos).replace(/@([a-zA-Z0-9_]{1,20})$/,'@'+name+' ');
+        input.value=before+v.slice(pos);input.focus();
+        var newPos=before.length;input.setSelectionRange(newPos,newPos);
+        closeMention();
+      };
+    });
+  }
+  function closeMention(){if(mentionPopup)mentionPopup.classList.remove('show');}
+  document.addEventListener('click',function(e){if(mentionPopup&&!e.target.closest('.mention-popup')&&!e.target.matches('textarea,input'))closeMention();});
+
+  // Render @mentions as links in displayed text
+  function renderMentions(text){
+    return escape(text).replace(/@([a-zA-Z0-9_ ]{1,40}?)(?=\s|$|[.,!?])/g,function(m,name){
+      return '<a class="mention" href="#" onclick="window.__monshiMentionClick(\''+escape(name.trim())+'\',event)">'+m+'</a>';
+    });
+  }
+  window.__monshiMentionClick = async function(name,ev){
+    ev.preventDefault();
+    var r=await sb.from('monshi_book_profiles').select('wallet').eq('display_name',name).maybeSingle();
+    if(r.data&&r.data.wallet)navTo(r.data.wallet);
+    else toast('User not found','error');
+  };
+  window.__monshiRenderMentions = renderMentions;
+
+  // ============ NOTIF DROPDOWN WIRING ============
+  $('notifBtn').onclick=function(ev){ev.stopPropagation();$('notifDropdown').classList.toggle('show');loadNotifs();};
+  $('notifMarkRead').onclick=function(ev){ev.stopPropagation();markAllNotifsRead();};
+  document.addEventListener('click',function(e){if(!e.target.closest('.notif-wrap'))$('notifDropdown').classList.remove('show');});
+
+  // Show notif bell when wallet connects
+  var origConnect=$('connectBtn').onclick;
+  // (connect handler is wired elsewhere — we hook into wallet state via interval)
+  setInterval(function(){if(wallet)$('notifWrap').style.display='block';else $('notifWrap').style.display='none';},1000);
+
+  // Wire mention autocomplete to composer + comment inputs (delegated)
+  setupMentionAutocomplete($('postBody'));
+  document.addEventListener('focusin',function(e){if(e.target.matches('input[id^="ci-"]'))setupMentionAutocomplete(e.target);});
+
   $('composerAvatar').src=avatarUrl(null);
-  loadAd();loadTrending();loadActiveWhales();
+  loadAd();loadTrending();loadActiveWhales();loadStories();loadPackOnline();
   setInterval(loadTrending,60000);
+  setInterval(loadStories,90000);
+  setInterval(loadPackOnline,30000);
+  setInterval(function(){pingPresence();},30000);
+  setInterval(function(){if(wallet)loadNotifs();},45000);
   handleRoute();
   if(window.ethereum && window.ethereum.selectedAddress){
     window.ethereum.request({method:'eth_accounts'}).then(function(a){if(a&&a.length)$('connectBtn').click();});
