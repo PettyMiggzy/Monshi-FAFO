@@ -1,5 +1,5 @@
 /*!
- * Monshi Embed Pack v1.0
+ * Monshi Embed Pack
  * https://monshi.xyz/embed
  *
  * Drop-in widgets for any Monad token. Paste one <script> tag, get live data.
@@ -263,6 +263,21 @@
 .mw-c-chg{font-weight:800;text-align:right;font-size:11px;padding:2px 6px;border-radius:4px;}\
 .mw-c-chg.up{background:rgba(74,222,128,.15);color:#4ade80;}\
 .mw-c-chg.dn{background:rgba(239,68,68,.15);color:#ef4444;}\
+\
+/* BADGE widget — flexable tier badge for personal sites/bios */\
+.mw-badge{padding:14px 18px;display:flex;align-items:center;gap:14px;}\
+.mw-bg-emoji{font-size:36px;line-height:1;flex-shrink:0;}\
+.mw-bg-mid{flex:1;min-width:0;}\
+.mw-bg-tier{font-size:14px;font-weight:900;letter-spacing:1.5px;line-height:1.1;}\
+.mw-bg-tier.shrimp{color:#f97316;}\
+.mw-bg-tier.crab{color:#fcd34d;}\
+.mw-bg-tier.dolphin{color:#60a5fa;}\
+.mw-bg-tier.whale{color:#a855f7;}\
+.mw-bg-tier.royalty{color:#4ade80;text-shadow:0 0 12px rgba(74,222,128,.4);}\
+.mw-bg-bal{font-size:11px;font-weight:700;opacity:.65;margin-top:3px;letter-spacing:.5px;}\
+.mw-bg-addr{font-size:9px;opacity:.45;margin-top:2px;letter-spacing:1px;}\
+.mw-bg-link{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#a855f7,#7c3aed);display:flex;align-items:center;justify-content:center;color:#fff;text-decoration:none;font-size:14px;font-weight:900;}\
+.mw-bg-link:hover{transform:scale(1.05);}\
 ';
     var s = document.createElement('style');
     s.textContent = css;
@@ -589,6 +604,38 @@
     setInterval(refresh, 30000);
   }
 
+  // ─── Widget: BADGE — embeddable MONSHI tier badge for personal sites ──
+  function renderBadge(host, wallet, license) {
+    host.innerHTML = '<div class="mw-badge"><div class="monshi-loading" style="padding:18px;">Loading…</div></div>' + makeFooter(license);
+
+    function refresh() {
+      // Always queries against MONSHI_CA — this widget is specifically for $MONSHI tier flexing
+      rpc('eth_call', [{ to: MONSHI_CA, data: '0x70a08231' + pad(wallet).slice(2) }, 'latest']).then(function (raw) {
+        if (!raw) throw 0;
+        var bal = Number(BigInt(raw)) / 1e18;
+        var tier;
+        if (bal >= 10000000)      tier = { key: 'royalty', emoji: '👑', label: 'ROYALTY' };
+        else if (bal >= 1000000)  tier = { key: 'whale',   emoji: '🐋', label: 'WHALE' };
+        else if (bal >= 100000)   tier = { key: 'dolphin', emoji: '🐬', label: 'DOLPHIN' };
+        else if (bal >= 10000)    tier = { key: 'crab',    emoji: '🦀', label: 'CRAB' };
+        else                      tier = { key: 'shrimp',  emoji: '🦐', label: 'SHRIMP' };
+
+        host.querySelector('.mw-badge').innerHTML =
+          '<div class="mw-bg-emoji">' + tier.emoji + '</div>' +
+          '<div class="mw-bg-mid">' +
+            '<div class="mw-bg-tier ' + tier.key + '">' + tier.label + '</div>' +
+            '<div class="mw-bg-bal">' + fmtNum(bal) + ' $MONSHI</div>' +
+            '<div class="mw-bg-addr">' + shortAddr(wallet) + '</div>' +
+          '</div>' +
+          '<a class="mw-bg-link" href="https://monshi.xyz?ref=badge" target="_blank" rel="noopener" title="Get yours at monshi.xyz">→</a>';
+      }).catch(function () {
+        host.querySelector('.mw-badge').innerHTML = '<div class="monshi-loading" style="padding:18px;">Could not load tier</div>';
+      });
+    }
+    refresh();
+    setInterval(refresh, 60000);
+  }
+
   // ─── Boot ────────────────────────────────────────────────────────────
   function init() {
     injectStyles();
@@ -601,20 +648,30 @@
       var widget = (script.getAttribute('data-widget') || '').toLowerCase();
       var token = (script.getAttribute('data-token') || '').toLowerCase();
       var tokens = script.getAttribute('data-tokens') || ''; // for compare widget
+      var walletAttr = (script.getAttribute('data-wallet') || '').toLowerCase(); // for badge widget
       var style = (script.getAttribute('data-style') || 'dark').toLowerCase();
       var license = script.getAttribute('data-license') || '';
       var accent = script.getAttribute('data-accent') || ''; // Pro-only
 
-      if (widget !== 'compare' && (!token || !/^0x[a-fA-F0-9]{40}$/.test(token))) {
-        console.warn('[monshi-embed] missing or invalid data-token on', script);
-        return;
+      // Validation per widget type
+      if (widget === 'badge') {
+        if (!walletAttr || !/^0x[a-fA-F0-9]{40}$/.test(walletAttr)) {
+          console.warn('[monshi-embed] badge widget requires data-wallet="0x..."');
+          return;
+        }
+      } else if (widget === 'compare') {
+        if (!tokens) {
+          console.warn('[monshi-embed] compare widget requires data-tokens="0xa,0xb,..."');
+          return;
+        }
+      } else {
+        if (!token || !/^0x[a-fA-F0-9]{40}$/.test(token)) {
+          console.warn('[monshi-embed] missing or invalid data-token on', script);
+          return;
+        }
       }
-      if (!['price', 'ticker', 'buy', 'burn', 'holders', 'compare'].includes(widget)) {
-        console.warn('[monshi-embed] unknown data-widget="' + widget + '". Use: price, ticker, buy, burn, holders, compare');
-        return;
-      }
-      if (widget === 'compare' && !tokens) {
-        console.warn('[monshi-embed] compare widget requires data-tokens="0xa,0xb,..."');
+      if (!['price', 'ticker', 'buy', 'burn', 'holders', 'compare', 'badge'].includes(widget)) {
+        console.warn('[monshi-embed] unknown data-widget="' + widget + '". Use: price, ticker, buy, burn, holders, compare, badge');
         return;
       }
 
@@ -634,6 +691,7 @@
         else if (widget === 'burn') renderBurn(host, token, lic);
         else if (widget === 'holders') renderHolders(host, token, lic);
         else if (widget === 'compare') renderCompare(host, tokens, lic);
+        else if (widget === 'badge') renderBadge(host, walletAttr, lic);
       });
     });
   }

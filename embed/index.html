@@ -132,6 +132,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
         <div class="demo-lbl">📊 COMPARE WIDGET <span style="background:rgba(168,85,247,.2);color:#A855F7;padding:2px 6px;border-radius:4px;font-size:8px;letter-spacing:1px;margin-left:4px;">PRO</span></div>
         <div id="d-compare"></div>
       </div>
+      <div class="demo-cell" style="grid-column:span 2;">
+        <div class="demo-lbl">🏆 TIER BADGE WIDGET <span style="background:rgba(74,222,128,.2);color:#4ADE80;padding:2px 6px;border-radius:4px;font-size:8px;letter-spacing:1px;margin-left:4px;">FLEX YOUR BAG</span></div>
+        <div id="d-badge"></div>
+        <div style="margin-top:8px;font-size:10px;color:rgba(196,181,253,.5);letter-spacing:.5px;line-height:1.5;">Paste this on your X bio link, personal site, or forum signature. Auto-updates as your bag grows. Shows the deployer wallet here.</div>
+      </div>
     </div>
   </div>
 
@@ -153,11 +158,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
               <option value="burn">🔥 Burn meter</option>
               <option value="holders">👥 Holders count</option>
               <option value="compare">📊 Compare tokens (PRO only)</option>
+              <option value="badge">🏆 Tier badge (any wallet)</option>
             </select>
           </div>
           <div class="field" id="bTokensField" style="display:none;">
             <label>COMPARE TOKENS (comma-separated CAs, max 10)</label>
             <input id="bTokens" placeholder="0xtoken1, 0xtoken2, 0xtoken3" spellcheck="false">
+          </div>
+          <div class="field" id="bWalletField" style="display:none;">
+            <label>WALLET TO BADGE</label>
+            <input id="bWallet" placeholder="0xyour_wallet..." spellcheck="false">
           </div>
           <div class="field">
             <label>STYLE</label>
@@ -277,6 +287,16 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
   plant('d-holders','holders');
   // Compare needs a Pro license to actually render — demo shows the upgrade prompt
   plant('d-compare','compare', { 'data-tokens':'0xB744F5CDb792d8187640214C4A1c9aCE29af7777,0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A' });
+  // Badge — show the deployer wallet's tier as a demo (uses data-wallet not data-token)
+  (function(){
+    var t = document.getElementById('d-badge'); if (!t) return;
+    var s = document.createElement('script');
+    s.src = '/embed.js';
+    s.setAttribute('data-widget','badge');
+    s.setAttribute('data-wallet','0xB9d4B73bE18914c6d64Bee65a806648370be467f');
+    s.setAttribute('data-style','dark');
+    t.appendChild(s);
+  })();
 })();
 </script>
 
@@ -290,6 +310,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
   function syncFieldVis(){
     var w = $('bWidget').value;
     $('bTokensField').style.display = w === 'compare' ? 'block' : 'none';
+    $('bWalletField').style.display = w === 'badge' ? 'block' : 'none';
+    // Hide token field for compare and badge (they use different attributes)
+    var tokenFieldEl = $('bToken').closest('.field');
+    if (tokenFieldEl) tokenFieldEl.style.display = (w === 'compare' || w === 'badge') ? 'none' : 'block';
     // Accent only useful for Pro — show always but note in label
     $('bAccentField').style.display = $('bLicense').value.trim() ? 'block' : 'none';
   }
@@ -301,10 +325,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
     var license = $('bLicense').value.trim();
     var accent = $('bAccent').value;
     var tokens = $('bTokens').value.trim();
+    var walletAttr = $('bWallet').value.trim();
 
     var attrs = ['src="https://monshi.xyz/embed.js"'];
     if (widget === 'compare') {
       attrs.push('data-tokens="' + (tokens || '0x...,0x...') + '"');
+    } else if (widget === 'badge') {
+      attrs.push('data-wallet="' + (walletAttr || '0xyour_wallet') + '"');
     } else {
       attrs.push('data-token="' + (token || '0x...') + '"');
     }
@@ -315,7 +342,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 
     var html = '&lt;script\n  ' + attrs.join('\n  ') + '&gt;&lt;/script&gt;';
     snippet.innerHTML = html;
-    return { token: token, widget: widget, style: style, license: license, accent: accent, tokens: tokens };
+    return { token: token, widget: widget, style: style, license: license, accent: accent, tokens: tokens, walletAttr: walletAttr };
   }
 
   function refreshPreview(){
@@ -328,6 +355,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
         preview.innerHTML = '<div style="font-family:\'Space Mono\',monospace;font-size:11px;color:rgba(196,181,253,.5);text-align:center;">Enter comma-separated token CAs to preview compare widget</div>';
         return;
       }
+    } else if (cfg.widget === 'badge') {
+      if (!/^0x[a-fA-F0-9]{40}$/.test(cfg.walletAttr)) {
+        preview.innerHTML = '<div style="font-family:\'Space Mono\',monospace;font-size:11px;color:rgba(196,181,253,.5);text-align:center;">Enter a valid wallet address to preview badge</div>';
+        return;
+      }
     } else if (!/^0x[a-fA-F0-9]{40}$/.test(cfg.token)) {
       preview.innerHTML = '<div style="font-family:\'Space Mono\',monospace;font-size:11px;color:rgba(196,181,253,.5);text-align:center;">Enter a valid Monad token CA above to preview</div>';
       return;
@@ -337,6 +369,8 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
     s.src = '/embed.js';
     if (cfg.widget === 'compare') {
       s.setAttribute('data-tokens', cfg.tokens);
+    } else if (cfg.widget === 'badge') {
+      s.setAttribute('data-wallet', cfg.walletAttr);
     } else {
       s.setAttribute('data-token', cfg.token);
     }
@@ -347,7 +381,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
     preview.appendChild(s);
   }
 
-  ['bToken','bTokens','bWidget','bStyle','bLicense','bAccent'].forEach(function(id){
+  ['bToken','bTokens','bWallet','bWidget','bStyle','bLicense','bAccent'].forEach(function(id){
     var el = $(id); if (!el) return;
     el.addEventListener('change', refreshPreview);
     el.addEventListener('input', function(){ buildSnippet(); syncFieldVis(); });
@@ -357,6 +391,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
     var cfg = buildSnippet();
     var lines = ['<script', '  src="https://monshi.xyz/embed.js"'];
     if (cfg.widget === 'compare') lines.push('  data-tokens="' + cfg.tokens + '"');
+    else if (cfg.widget === 'badge') lines.push('  data-wallet="' + cfg.walletAttr + '"');
     else lines.push('  data-token="' + cfg.token + '"');
     lines.push('  data-widget="' + cfg.widget + '"');
     lines.push('  data-style="' + cfg.style + '"');
