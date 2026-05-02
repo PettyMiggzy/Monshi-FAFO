@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>MONSHI LIVE — alive on the chain</title>
+<meta name="theme-color" content="#7F77DD">
+<meta property="og:title" content="MONSHI LIVE">
+<meta property="og:description" content="Monshi's mood, alive on the chain. Updates in real-time.">
+<meta property="og:image" content="https://monshi.xyz/public/monshi_assets/monshi_hero_poster.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Bowlby+One&family=Press+Start+2P&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#000;overflow:hidden;font-family:'Special Elite',monospace;color:#fff;}
+
+body{
+  position:relative;
+  /* Mood-driven CSS variables — JS overrides these */
+  --mood-bg-1:#1a0d2e;
+  --mood-bg-2:#0a0612;
+  --mood-glow:#9D4EDD;
+  --mood-accent:#C4B5FD;
+  --mood-text:#FFFFFF;
+  background:radial-gradient(ellipse at 50% 50%, var(--mood-bg-1), var(--mood-bg-2));
+  transition:background 2s ease;
+}
+
+/* Mood-driven full-bleed glow */
+.mood-glow{
+  position:fixed;inset:-20%;
+  background:radial-gradient(circle at 50% 50%, var(--mood-glow), transparent 60%);
+  opacity:.35;
+  z-index:1;
+  pointer-events:none;
+  transition:background 2s ease, opacity 2s ease;
+  animation:breathe 6s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{opacity:.30;transform:scale(1)} 50%{opacity:.45;transform:scale(1.05)}}
+
+/* Particle canvas */
+canvas#particles{
+  position:fixed;inset:0;width:100%;height:100%;
+  z-index:2;pointer-events:none;
+}
+
+/* CRT scanlines */
+body::before{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0,rgba(0,0,0,.18) 1px,transparent 1px,transparent 3px);
+  pointer-events:none;z-index:60;
+}
+/* Vignette */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:59;
+  background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.85) 100%);
+}
+
+/* TOP STATS BAR */
+.stats{
+  position:fixed;top:0;left:0;right:0;z-index:30;
+  padding:14px 16px;
+  background:linear-gradient(180deg, rgba(10,6,18,.85), transparent);
+  display:flex;justify-content:space-between;align-items:flex-start;
+  flex-wrap:wrap;gap:12px;
+}
+.stats .l, .stats .r{display:flex;flex-direction:column;gap:4px;}
+.stats .r{align-items:flex-end;}
+.stats .label{font-family:'Press Start 2P',monospace;font-size:8px;letter-spacing:2px;color:rgba(196,181,253,.7);}
+.stats .value{font-family:'Bowlby One',Impact,sans-serif;font-size:clamp(14px,3vw,18px);letter-spacing:1.5px;color:var(--mood-accent);transition:color 2s ease;}
+.stats .value.green{color:#4ADE80;}
+.stats .value.red{color:#F87171;}
+.live-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(0,0,0,.6);border:1px solid var(--mood-glow);
+  padding:6px 12px;border-radius:20px;
+  font-family:'Press Start 2P',monospace;font-size:8px;letter-spacing:2px;
+  color:var(--mood-accent);
+  transition:border 2s ease, color 2s ease;
+}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#4ADE80;box-shadow:0 0 8px #4ADE80;animation:dot-pulse 1.5s ease-in-out infinite;}
+@keyframes dot-pulse{50%{opacity:.4}}
+
+/* CENTER STAGE — Monshi character */
+.stage{
+  position:fixed;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  z-index:5;
+}
+.character-wrap{
+  position:relative;
+  height:80vh;max-height:780px;aspect-ratio:1/2;
+  display:flex;align-items:center;justify-content:center;
+  filter:drop-shadow(0 30px 50px rgba(0,0,0,.85));
+}
+.character{
+  position:absolute;
+  height:100%;width:auto;
+  object-fit:contain;
+  filter:drop-shadow(0 0 40px var(--mood-glow));
+  transition:filter 2s ease;
+  animation:idle-bob 4s ease-in-out infinite;
+}
+@keyframes idle-bob{0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-12px) rotate(.5deg)}}
+.character.fading{opacity:0;transition:opacity .8s ease;}
+
+/* Aura ring around character */
+.aura{
+  position:absolute;
+  width:120%;height:60%;top:30%;left:-10%;
+  border-radius:50%;
+  background:radial-gradient(ellipse, var(--mood-glow), transparent 65%);
+  opacity:.4;
+  z-index:-1;
+  animation:aura-pulse 3s ease-in-out infinite;
+  transition:background 2s ease;
+}
+@keyframes aura-pulse{0%,100%{transform:scale(.95);opacity:.35} 50%{transform:scale(1.08);opacity:.55}}
+
+/* MOOD CARD (bottom) */
+.mood-card{
+  position:fixed;bottom:0;left:0;right:0;z-index:30;
+  padding:18px 16px 28px;
+  background:linear-gradient(0deg, rgba(10,6,18,.92) 0%, rgba(10,6,18,.65) 70%, transparent 100%);
+  text-align:center;
+}
+.mood-state{
+  font-family:'Bowlby One',Impact,sans-serif;
+  font-size:clamp(36px,8vw,72px);
+  letter-spacing:6px;
+  color:var(--mood-accent);
+  text-shadow:0 0 40px var(--mood-glow), 0 0 80px var(--mood-glow);
+  line-height:1;
+  margin-bottom:8px;
+  transition:color 2s ease, text-shadow 2s ease;
+  animation:state-shimmer 4s ease-in-out infinite;
+}
+@keyframes state-shimmer{0%,100%{filter:brightness(1)} 50%{filter:brightness(1.25)}}
+.mood-state.flicker{animation:state-flicker .15s steps(2) infinite;}
+@keyframes state-flicker{0%{transform:translate(0)} 33%{transform:translate(-2px,1px)} 66%{transform:translate(2px,-1px)} 100%{transform:translate(0)}}
+
+.mood-line{
+  font-family:'Bangers',cursive;
+  font-size:clamp(16px,3.5vw,26px);
+  letter-spacing:3px;
+  color:#fff;
+  margin-bottom:14px;
+  min-height:1.4em;
+  text-shadow:2px 2px 0 #000;
+}
+
+.bottom-meta{
+  display:flex;justify-content:center;gap:14px;flex-wrap:wrap;
+  font-family:'Press Start 2P',monospace;font-size:8px;letter-spacing:2px;
+  color:rgba(196,181,253,.55);
+}
+.bottom-meta a{color:var(--mood-accent);text-decoration:none;}
+
+/* CTA dock (right side) */
+.dock{
+  position:fixed;right:14px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:8px;z-index:40;
+}
+.dock button, .dock a{
+  display:flex;align-items:center;justify-content:center;
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(10,6,18,.85);
+  border:1.5px solid var(--mood-glow);
+  color:var(--mood-accent);
+  font-size:18px;text-decoration:none;cursor:pointer;
+  transition:all .2s, border-color 2s ease;
+}
+.dock button:hover, .dock a:hover{background:var(--mood-glow);color:#fff;transform:scale(1.08);}
+
+/* BLOCK TICKER (top) */
+.block-ticker{
+  position:fixed;top:64px;left:0;right:0;z-index:25;
+  text-align:center;
+  font-family:'Press Start 2P',monospace;font-size:9px;letter-spacing:3px;
+  color:rgba(196,181,253,.5);
+  pointer-events:none;
+  text-shadow:0 0 10px rgba(0,0,0,.8);
+}
+
+/* MOOD VARIANTS */
+body.mood-cooking { --mood-bg-1:#0d2818; --mood-bg-2:#0a1808; --mood-glow:#22C55E; --mood-accent:#86EFAC; --mood-text:#fff; }
+body.mood-chilling{ --mood-bg-1:#1a0d2e; --mood-bg-2:#0a0612; --mood-glow:#9D4EDD; --mood-accent:#C4B5FD; --mood-text:#fff; }
+body.mood-watching{ --mood-bg-1:#2a1d05; --mood-bg-2:#1a1100; --mood-glow:#FBBF24; --mood-accent:#FDE68A; --mood-text:#fff; }
+body.mood-grinding{ --mood-bg-1:#2a1505; --mood-bg-2:#1a0a00; --mood-glow:#FB923C; --mood-accent:#FED7AA; --mood-text:#fff; }
+body.mood-raging  { --mood-bg-1:#2a0810; --mood-bg-2:#1a0205; --mood-glow:#EF4444; --mood-accent:#FCA5A5; --mood-text:#fff; }
+
+body.mood-raging .mood-state{ animation:state-flicker .12s steps(2) infinite, state-shimmer 4s ease-in-out infinite; }
+
+/* Tap-to-start (for audio) */
+.start-screen{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(10,6,18,.95);backdrop-filter:blur(8px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  padding:24px;cursor:pointer;
+}
+.start-screen.hide{display:none;}
+.start-screen h1{
+  font-family:'Bowlby One',Impact,sans-serif;
+  font-size:clamp(36px,8vw,72px);letter-spacing:4px;color:#fff;
+  text-shadow:0 0 40px #9D4EDD;margin-bottom:10px;
+}
+.start-screen .epi{
+  font-family:'Bangers',cursive;
+  font-size:clamp(16px,3.5vw,24px);letter-spacing:4px;color:#FBBF24;
+  margin-bottom:36px;
+}
+.start-screen .play{
+  width:100px;height:100px;border-radius:50%;
+  background:linear-gradient(135deg,#9D4EDD,#7F77DD);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 60px #9D4EDD;
+  animation:pulse 2s ease-in-out infinite;
+  margin-bottom:18px;
+}
+.start-screen .play::after{content:'';width:0;height:0;border-left:30px solid #fff;border-top:20px solid transparent;border-bottom:20px solid transparent;margin-left:6px;}
+@keyframes pulse{50%{transform:scale(1.08);box-shadow:0 0 90px #9D4EDD;}}
+.start-screen .hint{font-family:'Special Elite',monospace;font-size:12px;color:rgba(196,181,253,.7);letter-spacing:1.5px;}
+.start-screen .preview{width:200px;height:300px;background:url('public/monshi_assets/sprites/pose_front.png') center/contain no-repeat;margin-bottom:18px;filter:drop-shadow(0 0 30px #9D4EDD);}
+</style>
+</head>
+<body class="mood-chilling">
+
+<div class="mood-glow"></div>
+<canvas id="particles"></canvas>
+
+<!-- TOP STATS -->
+<div class="stats">
+  <div class="l">
+    <div class="live-pill"><span class="live-dot"></span> <span id="livePill">LIVE</span></div>
+  </div>
+  <div class="r">
+    <div class="label">PRICE · 24H</div>
+    <div class="value" id="vPrice">--</div>
+    <div class="value" id="vChange" style="font-size:13px;">--</div>
+  </div>
+</div>
+
+<div class="block-ticker" id="blockTicker">▓ MONAD · LIVE ▓</div>
+
+<!-- CHARACTER -->
+<div class="stage">
+  <div class="character-wrap">
+    <div class="aura"></div>
+    <img class="character" id="char" src="public/monshi_assets/sprites/pose_front.png" alt="Monshi">
+  </div>
+</div>
+
+<!-- BOTTOM MOOD CARD -->
+<div class="mood-card">
+  <div class="mood-state" id="moodState">CHILLING</div>
+  <div class="mood-line" id="moodLine">just vibing on the chain.</div>
+  <div class="bottom-meta">
+    <span>⏱ <span id="lastUpdate">syncing…</span></span>
+    <span>·</span>
+    <span>VOL 24H · <span id="vVol">--</span></span>
+    <span>·</span>
+    <span>MC · <span id="vMc">--</span></span>
+    <span>·</span>
+    <a href="/">← ARCADE</a>
+  </div>
+</div>
+
+<!-- DOCK -->
+<div class="dock">
+  <button id="btnMute" title="Mute">🔊</button>
+  <button id="btnShare" title="Share">↗</button>
+  <a href="https://nad.fun/tokens/0xB744F5CDb792d8187640214C4A1c9aCE29af7777" target="_blank" rel="noopener" title="Buy">💰</a>
+  <a href="/" title="Arcade">🎮</a>
+</div>
+
+<!-- Tap-to-start (for audio) -->
+<div class="start-screen" id="startScreen">
+  <div class="preview"></div>
+  <h1>MONSHI LIVE</h1>
+  <div class="epi">⚡ ALIVE ON THE CHAIN ⚡</div>
+  <div class="play"></div>
+  <div class="hint">TAP TO BEGIN</div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────
+// MOOD ENGINE
+// ─────────────────────────────────────────────────────────────────────────
+const TOKEN = '0xB744F5CDb792d8187640214C4A1c9aCE29af7777';
+
+const MOODS = {
+  cooking: {
+    pose: 'pose_front',
+    color: '#22C55E', accent:'#86EFAC',
+    particle: { color:'#4ADE80', count:80, speed:1.4, drift:'up', glow:true },
+    music: { freqs:[164.8, 220, 329.6], wave:'sawtooth', cutoff:1500, q:3, gain:.10, lfo:.4 },
+    lines: [
+      "monshi is cooking.", "chart goes up. vibes go up.",
+      "buyers stepping. monshi pleased.", "we're so back.",
+      "this is the way.", "green candles taste the best.",
+      "every dip got bought. we kept going."
+    ]
+  },
+  chilling: {
+    pose: 'pose_smirk',
+    color:'#9D4EDD', accent:'#C4B5FD',
+    particle: { color:'#A89FFF', count:40, speed:.5, drift:'random', glow:true },
+    music: { freqs:[110, 138.6, 164.8], wave:'sine', cutoff:800, q:2, gain:.08, lfo:.2 },
+    lines: [
+      "just vibing on the chain.", "monshi is chillin'.",
+      "no news is good news.", "stacking. holding. observing.",
+      "everyone breathe. it's fine.", "boring is bullish.",
+      "patience. the chain provides."
+    ]
+  },
+  watching: {
+    pose: 'pose_smirk_l',
+    color:'#FBBF24', accent:'#FDE68A',
+    particle: { color:'#FCD34D', count:55, speed:.8, drift:'random', glow:true },
+    music: { freqs:[130.8, 196, 246.9], wave:'sawtooth', cutoff:1100, q:3, gain:.09, lfo:.35 },
+    lines: [
+      "monshi is watching.", "something's moving. not sure what.",
+      "eyes on the chart. ears on the chain.", "interesting…",
+      "turbulence. assess.", "candles getting spicy.",
+      "monshi sees you, ser."
+    ]
+  },
+  grinding: {
+    pose: 'pose_back',
+    color:'#FB923C', accent:'#FED7AA',
+    particle: { color:'#F97316', count:30, speed:.4, drift:'down', glow:false },
+    music: { freqs:[82.4, 110, 146.8], wave:'sawtooth', cutoff:600, q:5, gain:.10, lfo:.3 },
+    lines: [
+      "monshi is grinding.", "slow bleed. holders unbothered.",
+      "we don't sell. we accumulate.", "patience pays.",
+      "weak hands fold. strong hands stay.", "this too shall pump.",
+      "monshi keeps walking. forward only."
+    ]
+  },
+  raging: {
+    pose: 'pose_front',
+    color:'#EF4444', accent:'#FCA5A5',
+    particle: { color:'#F87171', count:120, speed:2.0, drift:'random', glow:true, jitter:true },
+    music: { freqs:[55, 73.42, 110, 146.8], wave:'square', cutoff:500, q:8, gain:.11, lfo:1.5 },
+    lines: [
+      "MONSHI IS RAGING.", "WHO. SOLD.",
+      "PAPER HANDS WILL ANSWER.", "RED CANDLES. DEEP BREATH.",
+      "the shake-out. happens every time.", "monshi remembers every dumper.",
+      "FUD MEAL. MONSHI FED."
+    ]
+  }
+};
+
+let currentMood = 'chilling';
+let lastData = null;
+let muted = false;
+
+function pickMood(d){
+  if(!d) return 'chilling';
+  const ch = parseFloat(d.priceChange?.h24 || 0);
+  const ch1 = parseFloat(d.priceChange?.h1 || 0);
+  // Raging — fast drop
+  if(ch1 <= -5 || ch <= -15) return 'raging';
+  // Cooking — strong up
+  if(ch1 >= 5 || ch >= 15) return 'cooking';
+  // Watching — moderate movement either way
+  if(Math.abs(ch1) >= 2 || Math.abs(ch) >= 6) return 'watching';
+  // Grinding — slow bleed
+  if(ch < 0) return 'grinding';
+  // Default — chilling
+  return 'chilling';
+}
+
+function setMood(mood){
+  if(mood === currentMood) return;
+  currentMood = mood;
+  const m = MOODS[mood];
+  document.body.className = 'mood-' + mood;
+  const ms = document.getElementById('moodState');
+  ms.textContent = mood.toUpperCase();
+  const charEl = document.getElementById('char');
+  charEl.classList.add('fading');
+  setTimeout(()=>{
+    charEl.src = `public/monshi_assets/sprites/${m.pose}.png`;
+    charEl.classList.remove('fading');
+  }, 350);
+  rotateLine();
+  Particles.configure(m.particle);
+  Audio.playMusic(m.music);
+}
+
+function rotateLine(){
+  const m = MOODS[currentMood];
+  const line = m.lines[Math.floor(Math.random()*m.lines.length)];
+  const el = document.getElementById('moodLine');
+  el.style.opacity = '0';
+  setTimeout(()=>{ el.textContent = line; el.style.opacity = '1'; }, 250);
+}
+setInterval(rotateLine, 9000);
+
+// ─────────────────────────────────────────────────────────────────────────
+// PARTICLE SYSTEM
+// ─────────────────────────────────────────────────────────────────────────
+const Particles = (function(){
+  const cv = document.getElementById('particles');
+  const ctx = cv.getContext('2d');
+  let W = 0, H = 0, dpr = window.devicePixelRatio || 1;
+  let cfg = { color:'#A89FFF', count:40, speed:.5, drift:'random', glow:true, jitter:false };
+  let particles = [];
+  let raf = null;
+
+  function resize(){
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    cv.style.width = W+'px'; cv.style.height = H+'px';
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.scale(dpr, dpr);
+  }
+  resize(); window.addEventListener('resize', resize);
+
+  function spawn(p){
+    p.x = Math.random()*W;
+    p.y = cfg.drift==='up' ? H+10 : (cfg.drift==='down' ? -10 : Math.random()*H);
+    p.vx = (Math.random()-.5) * cfg.speed * 1.4;
+    p.vy = cfg.drift==='up' ? -Math.abs(Math.random()*cfg.speed*2 + .3) :
+           cfg.drift==='down' ? Math.abs(Math.random()*cfg.speed*2 + .3) :
+           (Math.random()-.5) * cfg.speed * 1.4;
+    p.r = 1 + Math.random()*3;
+    p.life = 1;
+    p.fade = .002 + Math.random()*.005;
+  }
+
+  function configure(newCfg){
+    cfg = Object.assign({}, cfg, newCfg);
+    // Resize particle pool
+    while(particles.length < cfg.count){ const p={}; spawn(p); particles.push(p); }
+    while(particles.length > cfg.count) particles.pop();
+  }
+
+  function step(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if(cfg.jitter){ p.x += (Math.random()-.5)*4; p.y += (Math.random()-.5)*4; }
+      p.life -= p.fade;
+      if(p.life<=0 || p.x<-20 || p.x>W+20 || p.y<-20 || p.y>H+20) spawn(p);
+      ctx.globalAlpha = Math.max(0, p.life) * .8;
+      ctx.fillStyle = cfg.color;
+      if(cfg.glow){
+        ctx.shadowColor = cfg.color;
+        ctx.shadowBlur = 12;
+      } else { ctx.shadowBlur = 0; }
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+    });
+    ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+    raf = requestAnimationFrame(step);
+  }
+  step();
+
+  return { configure };
+})();
+
+// ─────────────────────────────────────────────────────────────────────────
+// AUDIO
+// ─────────────────────────────────────────────────────────────────────────
+const Audio = (function(){
+  let ctx = null, master = null, nodes = [], started = false;
+  function ensure(){
+    if(!ctx){
+      ctx = new (window.AudioContext||window.webkitAudioContext)();
+      master = ctx.createGain();
+      master.gain.value = muted ? 0 : .3;
+      master.connect(ctx.destination);
+    }
+    if(ctx.state==='suspended') ctx.resume();
+  }
+  function setMuted(m){ muted = m; if(master) master.gain.value = muted?0:.3; }
+  function stop(){ nodes.forEach(n=>{ try{n.stop()}catch(e){} }); nodes=[]; }
+  function playMusic(cfg){
+    if(!started) return; // wait for user start
+    ensure(); stop();
+    const filt = ctx.createBiquadFilter();
+    filt.type='lowpass'; filt.frequency.value=cfg.cutoff; filt.Q.value=cfg.q;
+    filt.connect(master);
+    const lfo = ctx.createOscillator(), lfoG = ctx.createGain();
+    lfo.frequency.value = cfg.lfo; lfoG.gain.value = cfg.cutoff*.4;
+    lfo.connect(lfoG).connect(filt.frequency); lfo.start(); nodes.push(lfo);
+    cfg.freqs.forEach(f => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = cfg.wave; o.frequency.value = f;
+      g.gain.value = 0;
+      g.gain.linearRampToValueAtTime(cfg.gain, ctx.currentTime + 1.2);
+      o.connect(g).connect(filt); o.start();
+      nodes.push(o); nodes.push(g);
+    });
+  }
+  return { ensure, setMuted, stop, playMusic, start:()=>{ started=true; ensure(); }};
+})();
+
+// ─────────────────────────────────────────────────────────────────────────
+// LIVE DATA — DexScreener
+// ─────────────────────────────────────────────────────────────────────────
+function fmtUsd(n){
+  if(n==null||isNaN(n))return '--';
+  if(n>=1e9)return '$'+(n/1e9).toFixed(2)+'B';
+  if(n>=1e6)return '$'+(n/1e6).toFixed(2)+'M';
+  if(n>=1e3)return '$'+(n/1e3).toFixed(1)+'K';
+  if(n<0.01)return '$'+n.toFixed(6);
+  if(n<1)return '$'+n.toFixed(4);
+  return '$'+n.toFixed(2);
+}
+
+async function refresh(){
+  try {
+    const r = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${TOKEN}`);
+    const d = await r.json();
+    if(!d.pairs || !d.pairs.length){ document.getElementById('livePill').textContent='NO DATA'; return; }
+    const pair = d.pairs.sort((a,b)=>(b.liquidity?.usd||0)-(a.liquidity?.usd||0))[0];
+    lastData = pair;
+    const ch = parseFloat(pair.priceChange?.h24 || 0);
+    document.getElementById('vPrice').textContent = fmtUsd(parseFloat(pair.priceUsd));
+    const cEl = document.getElementById('vChange');
+    cEl.textContent = (ch>=0?'+':'') + ch.toFixed(2) + '%';
+    cEl.className = 'value ' + (ch>=0 ? 'green' : 'red');
+    document.getElementById('vVol').textContent = fmtUsd(pair.volume?.h24);
+    document.getElementById('vMc').textContent = fmtUsd(pair.marketCap || pair.fdv);
+    document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+    document.getElementById('livePill').textContent = 'LIVE';
+
+    setMood(pickMood(pair));
+  } catch(e) {
+    console.log('refresh err', e);
+    document.getElementById('livePill').textContent = 'OFFLINE';
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// BLOCK TICKER — Monad
+// ─────────────────────────────────────────────────────────────────────────
+async function fetchBlock(){
+  if(!window.ethereum) return;
+  try {
+    const hex = await window.ethereum.request({method:'eth_blockNumber',params:[]});
+    const n = Number(BigInt(hex));
+    document.getElementById('blockTicker').textContent = `▓ MONAD · BLOCK ${n.toLocaleString()} · LIVE ▓`;
+  } catch(e) {}
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────────────────
+document.getElementById('btnMute').addEventListener('click', e => {
+  muted = !muted;
+  Audio.setMuted(muted);
+  e.currentTarget.textContent = muted ? '🔇' : '🔊';
+});
+
+document.getElementById('btnShare').addEventListener('click', () => {
+  const url = location.href;
+  const text = `monshi is ${currentMood.toUpperCase()} right now\n${url}`;
+  if(navigator.share){
+    navigator.share({title:'MONSHI LIVE', text, url}).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(url);
+    const b = document.getElementById('btnShare');
+    const orig = b.textContent;
+    b.textContent = '✓';
+    setTimeout(()=>b.textContent=orig, 1200);
+  }
+});
+
+document.getElementById('startScreen').addEventListener('click', () => {
+  document.getElementById('startScreen').classList.add('hide');
+  Audio.start();
+  Audio.playMusic(MOODS[currentMood].music);
+  refresh();
+  fetchBlock();
+  setInterval(refresh, 30000);  // 30s refresh
+  setInterval(fetchBlock, 8000); // 8s block update (best-effort if MetaMask injected)
+});
+
+// Initial setup before tap (silent)
+Particles.configure(MOODS.chilling.particle);
+</script>
+</body>
+</html>
