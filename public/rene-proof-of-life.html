@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PROOF OF LIFE — $RENE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;600;800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg-0: #07100f;
+  --bg-1: #0c1a18;
+  --bg-2: #112523;
+  --line: #1d3835;
+  --ecg: #00ff95;
+  --ecg-dim: #00b86a;
+  --warn: #ffb84d;
+  --danger: #ff3355;
+  --cream: #f3ecd9;
+  --cream-dim: #c4baa3;
+  --rene: #b07eff;
+  --rene-deep: #6b3eb8;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg-0);
+  color: var(--cream);
+  font-family: 'Manrope', sans-serif;
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(0,255,149,0.08), transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(176,126,255,0.05), transparent 50%);
+  pointer-events: none; z-index: 0;
+}
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px);
+  pointer-events: none; z-index: 1;
+}
+main { position: relative; z-index: 2; }
+
+/* ============ HEADER ============ */
+header {
+  position: sticky; top: 0;
+  background: rgba(7,16,15,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  z-index: 100;
+  padding: 14px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 20px; letter-spacing: 0.05em;
+  display: flex; align-items: center; gap: 10px;
+}
+.logo .pulse-dot {
+  width: 10px; height: 10px;
+  background: var(--ecg);
+  border-radius: 50%;
+  animation: pulseDot 1.2s ease-in-out infinite;
+  box-shadow: 0 0 12px var(--ecg);
+}
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+nav { display: flex; gap: 24px; font-family: 'JetBrains Mono', monospace; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; }
+nav a { color: var(--cream-dim); text-decoration: none; transition: color 0.2s; }
+nav a:hover { color: var(--ecg); }
+.live-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ecg);
+  border: 1px solid var(--ecg-dim);
+  padding: 4px 10px;
+  border-radius: 100px;
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(0,255,149,0.05);
+}
+.live-badge::before {
+  content: ''; width: 6px; height: 6px; background: var(--ecg); border-radius: 50%;
+  animation: pulseDot 1s infinite;
+}
+
+/* ============ HERO ============ */
+.hero {
+  min-height: 92vh;
+  padding: 80px 32px 60px;
+  display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px;
+  align-items: center; position: relative;
+}
+.hero-text h1 {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(60px, 9vw, 140px);
+  line-height: 0.88; letter-spacing: -0.03em;
+  color: var(--cream);
+  text-transform: uppercase;
+}
+.hero-text h1 .ecg-word {
+  color: var(--ecg);
+  position: relative; display: inline-block;
+  text-shadow: 0 0 30px rgba(0,255,149,0.3);
+}
+.hero-text .tagline {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px; letter-spacing: 0.15em;
+  color: var(--cream-dim);
+  margin-top: 32px; max-width: 520px;
+  text-transform: uppercase;
+}
+.hero-text .blurb {
+  font-size: 18px; line-height: 1.6;
+  color: var(--cream); opacity: 0.85;
+  margin-top: 20px; max-width: 540px;
+}
+.hero-cta {
+  margin-top: 40px;
+  display: flex; gap: 14px; flex-wrap: wrap;
+}
+.btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 14px 28px;
+  border: none; cursor: pointer;
+  background: var(--ecg); color: var(--bg-0);
+  text-decoration: none; display: inline-block;
+  transition: all 0.2s;
+  box-shadow: 0 0 0 1px var(--ecg), 0 6px 20px rgba(0,255,149,0.2);
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px var(--ecg), 0 10px 30px rgba(0,255,149,0.4);
+}
+.btn.ghost {
+  background: transparent; color: var(--cream);
+  border: 1px solid var(--line); box-shadow: none;
+}
+.btn.ghost:hover { border-color: var(--ecg); color: var(--ecg); box-shadow: 0 0 20px rgba(0,255,149,0.1); }
+
+/* ECG line in hero background */
+.ecg-bg {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 200px; pointer-events: none;
+  opacity: 0.5;
+}
+.ecg-bg svg { width: 100%; height: 100%; }
+.ecg-line { stroke: var(--ecg); stroke-width: 2; fill: none;
+  stroke-dasharray: 2000; stroke-dashoffset: 2000;
+  animation: ecgDraw 6s linear infinite;
+}
+@keyframes ecgDraw {
+  to { stroke-dashoffset: -2000; }
+}
+
+/* ============ SAMPLE PET CARD ============ */
+.pet-card {
+  background: linear-gradient(160deg, var(--bg-1), var(--bg-2));
+  border: 1px solid var(--line);
+  padding: 32px;
+  position: relative;
+  border-radius: 4px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.pet-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: var(--ecg); box-shadow: 0 0 20px var(--ecg);
+}
+.pet-card .card-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 20px; padding-bottom: 16px;
+  border-bottom: 1px dashed var(--line);
+}
+.pet-name {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 32px; letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+.pet-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--cream-dim);
+  letter-spacing: 0.1em;
+}
+.pet-status {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--ecg);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  display: flex; align-items: center; gap: 6px;
+}
+.pet-status::before {
+  content: ''; width: 8px; height: 8px;
+  background: var(--ecg); border-radius: 50%;
+  animation: pulseDot 1.2s infinite;
+}
+
+/* Pet portrait container */
+.portrait-frame {
+  background: radial-gradient(ellipse at center, var(--bg-2) 0%, var(--bg-1) 70%);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  height: 240px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  margin-bottom: 20px;
+}
+.portrait-frame::before {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(0,255,149,0.03) 3px, rgba(0,255,149,0.03) 4px);
+  pointer-events: none;
+}
+.portrait-frame .age-badge {
+  position: absolute; top: 12px; right: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 0.15em;
+  color: var(--cream-dim); text-transform: uppercase;
+  padding: 4px 8px; border: 1px solid var(--line);
+  background: rgba(0,0,0,0.4);
+}
+.portrait-frame .stage-label {
+  position: absolute; bottom: 12px; left: 12px;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 14px; letter-spacing: 0.1em;
+  color: var(--ecg); text-transform: uppercase;
+}
+
+/* ============ Placeholder Rene SVG illustrations ============ */
+.rene-svg {
+  width: 70%; height: 70%;
+  filter: drop-shadow(0 0 20px rgba(176,126,255,0.4));
+  animation: breathe 3s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.02); }
+}
+
+/* Vitals */
+.vitals { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.vital {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--line);
+  padding: 12px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.vital-label {
+  font-size: 10px; letter-spacing: 0.2em;
+  color: var(--cream-dim); text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.vital-value {
+  font-size: 24px; font-weight: 800;
+  color: var(--cream);
+  display: flex; align-items: baseline; gap: 4px;
+}
+.vital-value .unit { font-size: 11px; color: var(--cream-dim); }
+.vital-bar {
+  margin-top: 8px;
+  height: 4px;
+  background: var(--line);
+  position: relative; overflow: hidden;
+}
+.vital-bar-fill {
+  height: 100%;
+  background: var(--ecg);
+  transition: width 0.4s, background 0.4s;
+}
+.vital.warn .vital-bar-fill { background: var(--warn); }
+.vital.warn .vital-value { color: var(--warn); }
+.vital.danger .vital-bar-fill { background: var(--danger); animation: blink 0.6s infinite; }
+.vital.danger .vital-value { color: var(--danger); }
+@keyframes blink { 50% { opacity: 0.4; } }
+
+/* Action area */
+.actions { display: flex; gap: 10px; }
+.actions .btn { flex: 1; }
+.feed-info {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--cream-dim);
+  text-align: center; margin-top: 12px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+
+/* ============ HOW IT WORKS ============ */
+.how-section {
+  padding: 100px 32px;
+  border-top: 1px solid var(--line);
+  position: relative;
+}
+.section-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(40px, 6vw, 80px);
+  text-transform: uppercase; letter-spacing: -0.02em;
+  margin-bottom: 60px; line-height: 0.95;
+}
+.section-title .num {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--ecg);
+  font-size: 0.4em;
+  letter-spacing: 0.2em;
+  display: block; margin-bottom: 12px;
+}
+.how-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.how-card {
+  border: 1px solid var(--line);
+  padding: 32px;
+  position: relative;
+  background: linear-gradient(160deg, var(--bg-1), transparent);
+  transition: all 0.3s;
+}
+.how-card:hover {
+  border-color: var(--ecg);
+  transform: translateY(-4px);
+}
+.how-card .step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--ecg);
+  letter-spacing: 0.2em; margin-bottom: 16px;
+}
+.how-card h3 {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 26px; text-transform: uppercase;
+  margin-bottom: 12px; letter-spacing: -0.01em;
+}
+.how-card p {
+  font-size: 15px; line-height: 1.6;
+  color: var(--cream-dim);
+}
+
+/* ============ LIFE STAGES ============ */
+.stages-section {
+  padding: 100px 32px;
+  border-top: 1px solid var(--line);
+}
+.stages-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 16px; margin-top: 40px;
+}
+.stage-card {
+  border: 1px solid var(--line);
+  padding: 20px 16px;
+  text-align: center;
+  background: var(--bg-1);
+  position: relative;
+}
+.stage-card .stage-portrait {
+  height: 140px;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse, var(--bg-2), transparent);
+  margin-bottom: 16px;
+}
+.stage-card .stage-portrait svg {
+  width: 80%; max-height: 100%;
+  filter: drop-shadow(0 0 12px rgba(176,126,255,0.3));
+}
+.stage-card h4 {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 18px; text-transform: uppercase;
+  margin-bottom: 6px; letter-spacing: 0.05em;
+}
+.stage-card .duration {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--cream-dim);
+  letter-spacing: 0.1em;
+}
+.stage-card.legendary { border-color: var(--ecg); }
+.stage-card.legendary h4 { color: var(--ecg); }
+.stage-card.legendary .stage-portrait svg { filter: drop-shadow(0 0 20px var(--ecg)); }
+
+/* ============ THE PACK DASHBOARD ============ */
+.pack-section {
+  padding: 100px 32px;
+  border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, transparent, rgba(0,255,149,0.02));
+}
+.pack-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  margin-top: 40px;
+}
+.pack-stat-card {
+  background: var(--bg-1);
+  border: 1px solid var(--line);
+  padding: 32px;
+  position: relative;
+}
+.pack-stat-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--line);
+  font-family: 'JetBrains Mono', monospace;
+}
+.pack-stat-row:last-child { border-bottom: none; }
+.pack-stat-row .label {
+  font-size: 12px; letter-spacing: 0.15em;
+  color: var(--cream-dim); text-transform: uppercase;
+}
+.pack-stat-row .value {
+  font-size: 22px; font-weight: 800;
+  color: var(--cream);
+}
+.pack-stat-row .value.alive { color: var(--ecg); }
+.pack-stat-row .value.dead { color: var(--danger); }
+
+/* Death log */
+.death-log {
+  max-height: 300px; overflow-y: auto;
+}
+.death-entry {
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--line);
+  display: grid; grid-template-columns: 1fr auto; gap: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+.death-entry .name { color: var(--cream); font-weight: 600; }
+.death-entry .meta { color: var(--cream-dim); font-size: 10px; }
+.death-entry .age { color: var(--danger); font-size: 11px; text-align: right; }
+
+/* Heartbeat dashboard */
+.heartbeat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 4px; margin-top: 16px;
+}
+.heart-dot {
+  aspect-ratio: 1;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  position: relative;
+}
+.heart-dot.alive {
+  background: var(--ecg);
+  box-shadow: 0 0 8px var(--ecg);
+  animation: heartPulse 1.4s ease-in-out infinite;
+}
+.heart-dot.alive.dim { animation-delay: var(--delay, 0s); }
+@keyframes heartPulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1); }
+}
+.heart-dot.warn { background: var(--warn); box-shadow: 0 0 8px var(--warn); }
+.heart-dot.dead { background: var(--danger); animation: none; opacity: 0.4; }
+
+/* ============ FAQ ============ */
+.faq-section { padding: 100px 32px; border-top: 1px solid var(--line); }
+.faq-list { display: grid; gap: 2px; }
+.faq-item {
+  border: 1px solid var(--line);
+  padding: 24px 28px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--bg-1);
+}
+.faq-item:hover { border-color: var(--ecg); }
+.faq-q {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 18px; text-transform: uppercase;
+  letter-spacing: 0.02em;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.faq-q::after { content: '+'; font-size: 24px; color: var(--ecg); }
+.faq-item.open .faq-q::after { content: '−'; }
+.faq-a {
+  margin-top: 12px;
+  font-size: 15px; line-height: 1.6;
+  color: var(--cream-dim);
+  display: none;
+}
+.faq-item.open .faq-a { display: block; }
+
+/* ============ FOOTER ============ */
+footer {
+  padding: 60px 32px 40px;
+  border-top: 1px solid var(--line);
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--cream-dim);
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+footer .ticker {
+  color: var(--ecg);
+  font-weight: 800;
+}
+footer .draft-stamp {
+  border: 1px dashed var(--warn);
+  color: var(--warn);
+  padding: 6px 12px;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; padding: 40px 20px; }
+  .hero-text h1 { font-size: 56px; }
+  .how-grid { grid-template-columns: 1fr; }
+  .stages-grid { grid-template-columns: repeat(2, 1fr); }
+  .pack-grid { grid-template-columns: 1fr; }
+  header { padding: 12px 16px; }
+  nav { display: none; }
+  .pet-card { padding: 20px; }
+  .vitals { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo"><span class="pulse-dot"></span>PROOF OF LIFE</div>
+  <nav>
+    <a href="#how">How</a>
+    <a href="#stages">Stages</a>
+    <a href="#pack">The Pack</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <div class="live-badge">SYSTEM ONLINE</div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1>EVERY <span class="ecg-word">RENE</span><br/>HAS A PULSE.</h1>
+      <div class="tagline">// burn $rene to keep yours beating</div>
+      <p class="blurb">
+        Adopt a Rene. Keep him alive with $RENE burns. Skip a day, he gets sad.
+        Skip a week, he dies — broadcast on the public ledger forever.
+        The pets who survive evolve through five stages.
+        The ones that don't get a tombstone with your wallet on it.
+      </p>
+      <div class="hero-cta">
+        <button class="btn" onclick="scrollTo({top: document.getElementById('demo').offsetTop - 60, behavior: 'smooth'})">ADOPT YOUR RENE</button>
+        <a href="#how" class="btn ghost">HOW IT WORKS</a>
+      </div>
+    </div>
+
+    <!-- Sample pet card -->
+    <div class="pet-card" id="demo">
+      <div class="card-header">
+        <div>
+          <div class="pet-name">RENE #0421</div>
+          <div class="pet-id">0xb9d4...467f</div>
+        </div>
+        <div class="pet-status">ALIVE</div>
+      </div>
+
+      <div class="portrait-frame">
+        <div class="age-badge" id="ageBadge">DAY 12 · ALIVE</div>
+        <div class="stage-label" id="stageLabel">TEEN</div>
+        <!-- Placeholder Rene illustration: a small purple dog silhouette -->
+        <svg class="rene-svg" id="reneSvg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Body -->
+          <ellipse cx="100" cy="135" rx="55" ry="40" fill="#b07eff"/>
+          <!-- Head -->
+          <circle cx="100" cy="80" r="42" fill="#b07eff"/>
+          <!-- Ears -->
+          <polygon points="65,55 55,25 80,50" fill="#8c5fd9"/>
+          <polygon points="135,55 145,25 120,50" fill="#8c5fd9"/>
+          <!-- Snout -->
+          <ellipse cx="100" cy="92" rx="18" ry="14" fill="#d9c4ff"/>
+          <!-- Nose -->
+          <ellipse cx="100" cy="86" rx="5" ry="4" fill="#1a0d33"/>
+          <!-- Eyes -->
+          <circle cx="86" cy="74" r="4" fill="#1a0d33"/>
+          <circle cx="114" cy="74" r="4" fill="#1a0d33"/>
+          <circle cx="87" cy="73" r="1.5" fill="#fff"/>
+          <circle cx="115" cy="73" r="1.5" fill="#fff"/>
+          <!-- Mouth -->
+          <path d="M 92 96 Q 100 102 108 96" stroke="#1a0d33" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <!-- Tail -->
+          <path d="M 150 130 Q 175 110 170 90" stroke="#b07eff" stroke-width="12" fill="none" stroke-linecap="round"/>
+          <!-- Legs -->
+          <rect x="72" y="160" width="14" height="22" rx="4" fill="#8c5fd9"/>
+          <rect x="114" y="160" width="14" height="22" rx="4" fill="#8c5fd9"/>
+        </svg>
+      </div>
+
+      <div class="vitals">
+        <div class="vital" id="vHunger">
+          <div class="vital-label">HUNGER</div>
+          <div class="vital-value"><span id="vHungerVal">68</span><span class="unit">/100</span></div>
+          <div class="vital-bar"><div class="vital-bar-fill" id="vHungerBar" style="width: 68%"></div></div>
+        </div>
+        <div class="vital" id="vHealth">
+          <div class="vital-label">HEALTH</div>
+          <div class="vital-value"><span id="vHealthVal">82</span><span class="unit">/100</span></div>
+          <div class="vital-bar"><div class="vital-bar-fill" id="vHealthBar" style="width: 82%"></div></div>
+        </div>
+        <div class="vital warn" id="vMood">
+          <div class="vital-label">MOOD</div>
+          <div class="vital-value"><span id="vMoodVal">35</span><span class="unit">/100</span></div>
+          <div class="vital-bar"><div class="vital-bar-fill" id="vMoodBar" style="width: 35%"></div></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="feedBtn">BURN 1 $RENE → FEED</button>
+        <button class="btn ghost" id="playBtn">PLAY</button>
+      </div>
+      <div class="feed-info">+25 to lowest stat · cooldown 4h between actions</div>
+    </div>
+
+    <!-- ECG line in background -->
+    <div class="ecg-bg">
+      <svg viewBox="0 0 1920 200" preserveAspectRatio="none">
+        <path class="ecg-line" d="M 0 100 L 200 100 L 220 100 L 230 60 L 245 140 L 260 100 L 460 100 L 480 100 L 490 60 L 505 140 L 520 100 L 720 100 L 740 100 L 750 60 L 765 140 L 780 100 L 980 100 L 1000 100 L 1010 60 L 1025 140 L 1040 100 L 1240 100 L 1260 100 L 1270 60 L 1285 140 L 1300 100 L 1500 100 L 1520 100 L 1530 60 L 1545 140 L 1560 100 L 1760 100 L 1780 100 L 1790 60 L 1805 140 L 1820 100 L 1920 100"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section" id="how">
+    <h2 class="section-title"><span class="num">// 01</span>HOW IT<br/>WORKS</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="step-num">RITUAL ONE</div>
+        <h3>ADOPT</h3>
+        <p>Mint your Rene NFT. Each one starts as a puppy at full vitals. Costs gas + 1 $RENE burn. Each wallet can adopt one at a time.</p>
+      </div>
+      <div class="how-card">
+        <div class="step-num">RITUAL TWO</div>
+        <h3>FEED</h3>
+        <p>Burn $RENE to refill stats. 1 token = +25 to your lowest vital. Stats decay 4 points/hour while you sleep, work, dump, whatever. Your Rene doesn't care about your excuses.</p>
+      </div>
+      <div class="how-card">
+        <div class="step-num">RITUAL THREE</div>
+        <h3>EVOLVE</h3>
+        <p>Days alive = age. Five stages. Survive long enough and your Rene transcends. Die at any point and the wallet is permanently marked. Public.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIFE STAGES -->
+  <section class="stages-section" id="stages">
+    <h2 class="section-title"><span class="num">// 02</span>FIVE<br/>STAGES.</h2>
+    <p style="font-size: 16px; color: var(--cream-dim); max-width: 700px; line-height: 1.6;">
+      Each stage unlocks new visual states, custom badges, and pack-wide leaderboard ranks. Reach Legendary and your Rene is engraved in the hall forever — even after death.
+    </p>
+    <div class="stages-grid">
+      <div class="stage-card">
+        <div class="stage-portrait">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="55" r="28" fill="#b07eff"/>
+            <circle cx="50" cy="42" r="22" fill="#b07eff"/>
+            <polygon points="36,30 30,18 44,28" fill="#8c5fd9"/>
+            <polygon points="64,30 70,18 56,28" fill="#8c5fd9"/>
+            <ellipse cx="50" cy="48" rx="9" ry="7" fill="#d9c4ff"/>
+            <ellipse cx="50" cy="45" rx="2.5" ry="2" fill="#1a0d33"/>
+            <circle cx="42" cy="38" r="2" fill="#1a0d33"/>
+            <circle cx="58" cy="38" r="2" fill="#1a0d33"/>
+          </svg>
+        </div>
+        <h4>PUPPY</h4>
+        <div class="duration">DAY 0 — 7</div>
+      </div>
+      <div class="stage-card">
+        <div class="stage-portrait">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="65" rx="25" ry="20" fill="#b07eff"/>
+            <circle cx="50" cy="38" r="22" fill="#b07eff"/>
+            <polygon points="34,28 26,8 42,24" fill="#8c5fd9"/>
+            <polygon points="66,28 74,8 58,24" fill="#8c5fd9"/>
+            <ellipse cx="50" cy="44" rx="10" ry="7" fill="#d9c4ff"/>
+            <ellipse cx="50" cy="40" rx="2.5" ry="2" fill="#1a0d33"/>
+            <path d="M 38 32 L 44 34" stroke="#1a0d33" stroke-width="2" fill="none"/>
+            <path d="M 62 32 L 56 34" stroke="#1a0d33" stroke-width="2" fill="none"/>
+            <rect x="40" y="80" width="6" height="14" fill="#8c5fd9"/>
+            <rect x="54" y="80" width="6" height="14" fill="#8c5fd9"/>
+          </svg>
+        </div>
+        <h4>TEEN</h4>
+        <div class="duration">DAY 7 — 30</div>
+      </div>
+      <div class="stage-card">
+        <div class="stage-portrait">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="65" rx="32" ry="22" fill="#b07eff"/>
+            <circle cx="50" cy="38" r="24" fill="#b07eff"/>
+            <polygon points="32,26 24,10 42,22" fill="#8c5fd9"/>
+            <polygon points="68,26 76,10 58,22" fill="#8c5fd9"/>
+            <ellipse cx="50" cy="46" rx="12" ry="8" fill="#d9c4ff"/>
+            <ellipse cx="50" cy="42" rx="3" ry="2.5" fill="#1a0d33"/>
+            <circle cx="40" cy="34" r="2.5" fill="#1a0d33"/>
+            <circle cx="60" cy="34" r="2.5" fill="#1a0d33"/>
+            <path d="M 44 50 Q 50 54 56 50" stroke="#1a0d33" stroke-width="1.5" fill="none"/>
+            <rect x="38" y="84" width="8" height="14" fill="#8c5fd9"/>
+            <rect x="54" y="84" width="8" height="14" fill="#8c5fd9"/>
+          </svg>
+        </div>
+        <h4>GROWN</h4>
+        <div class="duration">DAY 30 — 90</div>
+      </div>
+      <div class="stage-card">
+        <div class="stage-portrait">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="68" rx="30" ry="20" fill="#9270d6"/>
+            <circle cx="50" cy="40" r="22" fill="#9270d6"/>
+            <polygon points="34,30 26,16 42,28" fill="#7050b8"/>
+            <polygon points="66,30 74,16 58,28" fill="#7050b8"/>
+            <ellipse cx="50" cy="48" rx="11" ry="7" fill="#c4b3df"/>
+            <ellipse cx="50" cy="45" rx="2.5" ry="2" fill="#1a0d33"/>
+            <path d="M 38 36 L 44 38" stroke="#1a0d33" stroke-width="1.5"/>
+            <path d="M 62 36 L 56 38" stroke="#1a0d33" stroke-width="1.5"/>
+            <!-- Gray muzzle -->
+            <ellipse cx="50" cy="48" rx="11" ry="3" fill="#e5dcf2" opacity="0.5"/>
+            <rect x="40" y="84" width="6" height="14" fill="#7050b8"/>
+            <rect x="54" y="84" width="6" height="14" fill="#7050b8"/>
+          </svg>
+        </div>
+        <h4>ELDER</h4>
+        <div class="duration">DAY 90 — 365</div>
+      </div>
+      <div class="stage-card legendary">
+        <div class="stage-portrait">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- Halo -->
+            <circle cx="50" cy="20" r="14" fill="none" stroke="#00ff95" stroke-width="2" opacity="0.7"/>
+            <ellipse cx="50" cy="65" rx="32" ry="22" fill="#b07eff"/>
+            <circle cx="50" cy="38" r="24" fill="#b07eff"/>
+            <polygon points="32,26 24,10 42,22" fill="#8c5fd9"/>
+            <polygon points="68,26 76,10 58,22" fill="#8c5fd9"/>
+            <ellipse cx="50" cy="46" rx="12" ry="8" fill="#d9c4ff"/>
+            <ellipse cx="50" cy="42" rx="3" ry="2.5" fill="#1a0d33"/>
+            <!-- Glowing eyes -->
+            <circle cx="40" cy="34" r="3" fill="#00ff95"/>
+            <circle cx="60" cy="34" r="3" fill="#00ff95"/>
+            <!-- Crown/aura sparks -->
+            <path d="M 30 12 L 32 6 L 34 12" stroke="#00ff95" stroke-width="1.5" fill="none"/>
+            <path d="M 50 6 L 50 0" stroke="#00ff95" stroke-width="1.5"/>
+            <path d="M 66 12 L 68 6 L 70 12" stroke="#00ff95" stroke-width="1.5" fill="none"/>
+          </svg>
+        </div>
+        <h4>LEGENDARY</h4>
+        <div class="duration">DAY 365+</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE PACK -->
+  <section class="pack-section" id="pack">
+    <h2 class="section-title"><span class="num">// 03</span>THE PACK.<br/>LIVE.</h2>
+    <p style="font-size: 16px; color: var(--cream-dim); max-width: 700px; line-height: 1.6;">
+      Public dashboard. Every Rene's pulse, every burn, every death. Real-time. Watch the pack breathe.
+    </p>
+
+    <div class="pack-grid">
+      <!-- Stats -->
+      <div class="pack-stat-card">
+        <h3 style="font-family: 'Archivo Black', sans-serif; text-transform: uppercase; margin-bottom: 16px;">PACK VITALS</h3>
+        <div class="pack-stat-row">
+          <span class="label">ALIVE NOW</span>
+          <span class="value alive" id="aliveCount">1,247</span>
+        </div>
+        <div class="pack-stat-row">
+          <span class="label">TOTAL DEATHS</span>
+          <span class="value dead" id="deathCount">3,421</span>
+        </div>
+        <div class="pack-stat-row">
+          <span class="label">$RENE BURNED</span>
+          <span class="value" id="burnCount">2,847,193</span>
+        </div>
+        <div class="pack-stat-row">
+          <span class="label">LEGENDARIES</span>
+          <span class="value" style="color: var(--ecg);">12</span>
+        </div>
+        <div class="pack-stat-row">
+          <span class="label">OLDEST RENE ALIVE</span>
+          <span class="value">428 DAYS</span>
+        </div>
+        <div class="pack-stat-row">
+          <span class="label">BURNS LAST 24H</span>
+          <span class="value" id="burns24h">4,521</span>
+        </div>
+
+        <h3 style="font-family: 'Archivo Black', sans-serif; text-transform: uppercase; margin: 32px 0 12px; font-size: 16px;">LIVE HEARTBEATS</h3>
+        <div class="heartbeat-grid" id="heartGrid"></div>
+      </div>
+
+      <!-- Recent deaths -->
+      <div class="pack-stat-card">
+        <h3 style="font-family: 'Archivo Black', sans-serif; text-transform: uppercase; margin-bottom: 16px; color: var(--danger);">RECENT DEATHS</h3>
+        <div class="death-log" id="deathLog">
+          <div class="death-entry"><div><div class="name">RENE #2891</div><div class="meta">0x7a3...f12 · starvation</div></div><div class="age">DIED DAY 23</div></div>
+          <div class="death-entry"><div><div class="name">RENE #2887</div><div class="meta">0x44b...90c · heartbreak</div></div><div class="age">DIED DAY 8</div></div>
+          <div class="death-entry"><div><div class="name">RENE #2880</div><div class="meta">0x188...ee5 · neglect</div></div><div class="age">DIED DAY 47</div></div>
+          <div class="death-entry"><div><div class="name">RENE #2871</div><div class="meta">0xc01...3a7 · starvation</div></div><div class="age">DIED DAY 12</div></div>
+          <div class="death-entry"><div><div class="name">RENE #2862</div><div class="meta">0xfa9...028 · neglect</div></div><div class="age">DIED DAY 91</div></div>
+          <div class="death-entry"><div><div class="name">RENE #2854</div><div class="meta">0x223...771 · heartbreak</div></div><div class="age">DIED DAY 4</div></div>
+          <div class="death-entry"><div><div class="name">RENE #2847</div><div class="meta">0x6dd...e80 · starvation</div></div><div class="age">DIED DAY 19</div></div>
+          <div class="death-entry"><div><div class="name">RENE #2839</div><div class="meta">0xb02...415 · neglect</div></div><div class="age">DIED DAY 33</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section" id="faq">
+    <h2 class="section-title"><span class="num">// 04</span>QUESTIONS.</h2>
+    <div class="faq-list">
+      <div class="faq-item open">
+        <div class="faq-q">CAN I PAUSE THE GAME?</div>
+        <div class="faq-a">No. Real life doesn't pause. Your Rene's vitals decay 24/7 whether you're at work, on vacation, or asleep. That's the point. Holding $RENE means accepting responsibility.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">WHAT IF MY RENE DIES?</div>
+        <div class="faq-a">It's permanent. The wallet gets a public death badge — visible everywhere in the ecosystem. You can adopt a new Rene after a 7-day grief penalty. The dead one stays in the records forever.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">DO BURNS COUNT TOWARD ANYTHING ELSE?</div>
+        <div class="faq-a">Total burns reduce $RENE supply, period. Beyond that, your wallet's lifetime burn count is on-chain and visible. Top burners get pack ranks and visible badges. Lifetime stats persist even after pet death.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">WHY WOULD I DO THIS?</div>
+        <div class="faq-a">Because if your bag is going to live or die based on your conviction, it might as well do it visibly, with a face, with a name. Either you keep showing up or you don't. The pet is the proof.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">CAN I HAVE MORE THAN ONE?</div>
+        <div class="faq-a">One per wallet. Multi-wallet farming is allowed but obvious — the dashboard ranks per-wallet and per-cluster. You can also gift adoption seats to other wallets via burn.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">IS THIS REAL OR A MOCK?</div>
+        <div class="faq-a">Right now: prototype. Mechanics are spec'd, art slots are placeholder. Live deployment depends on the Rene team's call. If you're seeing this — you're early.</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div>// PROOF OF LIFE · <span class="ticker">$RENE</span></div>
+  <div class="draft-stamp">PROTOTYPE · NOT YET DEPLOYED</div>
+  <div>© 2026 · KEEP IT BEATING</div>
+</footer>
+
+<script>
+// ============ Sample pet vitals demo ============
+let pet = { hunger: 68, health: 82, mood: 35 };
+
+function updateVitals() {
+  document.getElementById('vHungerVal').textContent = Math.round(pet.hunger);
+  document.getElementById('vHealthVal').textContent = Math.round(pet.health);
+  document.getElementById('vMoodVal').textContent = Math.round(pet.mood);
+  document.getElementById('vHungerBar').style.width = pet.hunger + '%';
+  document.getElementById('vHealthBar').style.width = pet.health + '%';
+  document.getElementById('vMoodBar').style.width = pet.mood + '%';
+  
+  // Set status classes
+  ['Hunger','Health','Mood'].forEach(stat => {
+    const el = document.getElementById('v' + stat);
+    const v = pet[stat.toLowerCase()];
+    el.classList.remove('warn','danger');
+    if (v < 25) el.classList.add('danger');
+    else if (v < 50) el.classList.add('warn');
+  });
+}
+
+document.getElementById('feedBtn').addEventListener('click', () => {
+  // Find lowest stat and add 25
+  const lowest = ['hunger','health','mood'].reduce((a,b) => pet[a] < pet[b] ? a : b);
+  pet[lowest] = Math.min(100, pet[lowest] + 25);
+  updateVitals();
+  // Flash effect
+  const card = document.querySelector('.pet-card');
+  card.style.boxShadow = '0 0 0 2px var(--ecg), 0 0 60px rgba(0,255,149,0.5)';
+  setTimeout(() => card.style.boxShadow = '', 600);
+});
+
+document.getElementById('playBtn').addEventListener('click', () => {
+  pet.mood = Math.min(100, pet.mood + 15);
+  pet.hunger = Math.max(0, pet.hunger - 5);
+  updateVitals();
+});
+
+// Slow decay for realism
+setInterval(() => {
+  pet.hunger = Math.max(0, pet.hunger - 0.5);
+  pet.mood = Math.max(0, pet.mood - 0.4);
+  pet.health = Math.max(0, pet.health - 0.2);
+  updateVitals();
+}, 4000);
+
+// ============ Heartbeat dashboard ============
+const grid = document.getElementById('heartGrid');
+for (let i = 0; i < 80; i++) {
+  const dot = document.createElement('div');
+  const r = Math.random();
+  if (r < 0.04) dot.className = 'heart-dot dead';
+  else if (r < 0.15) dot.className = 'heart-dot warn alive';
+  else dot.className = 'heart-dot alive';
+  dot.style.setProperty('--delay', (Math.random() * 1.4) + 's');
+  dot.style.animationDelay = (Math.random() * 1.4) + 's';
+  grid.appendChild(dot);
+}
+
+// ============ FAQ accordion ============
+document.querySelectorAll('.faq-item').forEach(item => {
+  item.addEventListener('click', () => item.classList.toggle('open'));
+});
+
+// ============ Live counters tick ============
+let alive = 1247;
+let burns = 2847193;
+let burns24 = 4521;
+setInterval(() => {
+  if (Math.random() < 0.4) {
+    alive += Math.random() < 0.6 ? 1 : -1;
+    burns += Math.floor(Math.random() * 5) + 1;
+    burns24 += Math.floor(Math.random() * 3);
+    document.getElementById('aliveCount').textContent = alive.toLocaleString();
+    document.getElementById('burnCount').textContent = burns.toLocaleString();
+    document.getElementById('burns24h').textContent = burns24.toLocaleString();
+  }
+}, 2000);
+</script>
+</body>
+</html>
