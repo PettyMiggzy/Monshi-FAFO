@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REVERSE DUST · The Den · MonWolf</title>
+<meta name="theme-color" content="#8B5CF6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0a0612; --bg-2:#120824; --panel:#1a0e2e; --panel-2:#241342;
+  --border:rgba(139,92,246,0.18); --border-hot:rgba(139,92,246,0.5);
+  --purple:#8B5CF6; --purple-glow:#A78BFA; --purple-deep:#6D28D9;
+  --orange:#F59E0B; --orange-glow:#FBBF24; --green:#10D981; --red:#FF4D6D;
+  --text:#E8E5F0; --text-dim:#8A85A0; --text-low:#5A5670;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{ background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; overflow-x:hidden; }
+body{
+  background:
+    radial-gradient(circle at 20% 0%, rgba(245,158,11,0.12), transparent 40%),
+    radial-gradient(circle at 80% 100%, rgba(139,92,246,0.18), transparent 40%),
+    var(--bg);
+  background-attachment:fixed;
+}
+.scan-line{ position:fixed; inset:0; z-index:1; pointer-events:none;
+  background: repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(139,92,246,0.015) 3px, rgba(139,92,246,0.015) 4px); }
+
+nav{ position:sticky; top:0; z-index:50; background:rgba(10,6,18,0.85); backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border); padding:12px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+.brand{ display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; }
+.brand-mark{ width:42px; height:42px; border-radius:12px; background:linear-gradient(135deg,#F59E0B,#EA580C);
+  display:flex; align-items:center; justify-content:center; font-family:'Bowlby One'; font-size:22px; color:#0a0612;
+  box-shadow:0 0 30px rgba(245,158,11,0.6); }
+.brand-text{ font-family:'Bowlby One'; font-size:18px; letter-spacing:1px; }
+.brand-text small{ display:block; font-family:'JetBrains Mono'; font-size:9px; color:var(--text-dim); letter-spacing:2px; font-weight:400; }
+.nav-links{ display:flex; gap:6px; align-items:center; }
+.nav-link{ font-family:'JetBrains Mono'; font-size:11px; font-weight:700; color:var(--text-dim); text-decoration:none;
+  padding:8px 12px; border-radius:8px; letter-spacing:1px; transition:.15s; }
+.nav-link:hover{ color:var(--text); background:rgba(139,92,246,0.1); }
+.nav-link.active{ color:var(--purple-glow); background:rgba(139,92,246,0.15); }
+#connectBtn{ font-family:'JetBrains Mono'; font-weight:800; letter-spacing:1px; font-size:12px;
+  background:linear-gradient(135deg,#F59E0B,#EA580C); color:#0a0612; border:0; padding:11px 20px; border-radius:10px;
+  cursor:pointer; transition:.2s; box-shadow:0 0 20px rgba(245,158,11,0.4); }
+#connectBtn:hover{ transform:translateY(-1px); box-shadow:0 0 30px rgba(245,158,11,0.7); }
+#connectBtn.connected{ background:rgba(139,92,246,0.15); color:var(--purple-glow); border:1px solid var(--border-hot); box-shadow:none; }
+
+.wrap{ position:relative; z-index:2; max-width:1200px; margin:0 auto; padding:30px 24px; }
+
+.title-block{ text-align:center; margin-bottom:30px; }
+.eyebrow{ display:inline-block; font-family:'JetBrains Mono'; font-size:11px; letter-spacing:4px; font-weight:700;
+  color:var(--orange-glow); padding:6px 14px; border:1px solid rgba(245,158,11,0.3);
+  border-radius:30px; background:rgba(245,158,11,0.05); margin-bottom:16px; }
+h1{ font-family:'Bowlby One'; font-size:clamp(40px,7vw,72px); line-height:1; letter-spacing:-1px;
+  background:linear-gradient(180deg,#fff 30%,#A78BFA 70%,#6D28D9);
+  -webkit-background-clip:text; background-clip:text; color:transparent; margin-bottom:14px; }
+.lede{ font-family:'JetBrains Mono'; font-size:13px; color:var(--text-dim); max-width:580px; margin:0 auto 6px; line-height:1.6; }
+
+.flow{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:30px 0; }
+@media(max-width:768px){ .flow{ grid-template-columns:repeat(2,1fr); } }
+.step{
+  padding:18px 14px; background:linear-gradient(180deg,rgba(36,19,66,0.6),rgba(26,14,46,0.4));
+  border:1px solid var(--border); border-radius:14px; text-align:center; position:relative;
+}
+.step-num{ font-family:'JetBrains Mono'; font-size:10px; letter-spacing:2px; color:var(--text-low); }
+.step-emoji{ font-size:38px; margin:8px 0 6px; }
+.step-title{ font-family:'Bowlby One'; font-size:15px; letter-spacing:1px; }
+.step-desc{ font-family:'JetBrains Mono'; font-size:10px; color:var(--text-dim); margin-top:6px; line-height:1.4; }
+
+.panel{ background:linear-gradient(180deg,rgba(36,19,66,0.6),rgba(26,14,46,0.4));
+  border:1px solid var(--border); border-radius:16px; padding:24px; position:relative; overflow:hidden; }
+.panel-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;
+  font-family:'JetBrains Mono'; font-size:11px; letter-spacing:2px; color:var(--text-low); font-weight:700; }
+.live{ display:inline-flex; align-items:center; gap:6px; color:var(--green); }
+.live::before{ content:''; width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 1.5s infinite; }
+@keyframes pulse{ 0%,100%{opacity:1}50%{opacity:0.3} }
+
+.summary{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px;
+}
+@media(max-width:768px){ .summary{ grid-template-columns:repeat(2,1fr); } }
+.summary-card{
+  padding:16px; background:rgba(139,92,246,0.06); border:1px solid var(--border); border-radius:12px;
+}
+.sc-lbl{ font-family:'JetBrains Mono'; font-size:9px; letter-spacing:2px; color:var(--text-low); }
+.sc-val{ font-family:'Bowlby One'; font-size:24px; margin-top:4px; }
+.sc-val.orange{ color:var(--orange-glow); }
+.sc-val.green{ color:var(--green); }
+.sc-val.purple{ color:var(--purple-glow); }
+.sc-meta{ font-family:'JetBrains Mono'; font-size:10px; color:var(--text-dim); margin-top:2px; }
+
+.dust-list{ display:flex; flex-direction:column; gap:10px; }
+.dust-row{
+  display:grid; grid-template-columns:42px 1fr auto auto auto; gap:14px; align-items:center;
+  padding:14px 16px; background:rgba(139,92,246,0.04); border:1px solid var(--border);
+  border-radius:12px; transition:.15s;
+}
+.dust-row:hover{ background:rgba(139,92,246,0.08); border-color:var(--border-hot); }
+.dust-row.selected{ background:rgba(245,158,11,0.08); border-color:rgba(245,158,11,0.4); }
+.dust-check{ width:22px; height:22px; border:2px solid var(--border); border-radius:6px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; transition:.15s; background:transparent; }
+.dust-check.checked{ background:var(--orange); border-color:var(--orange); }
+.dust-check.checked::after{ content:'✓'; color:#0a0612; font-weight:900; font-size:14px; }
+.dust-logo{ width:36px; height:36px; border-radius:50%;
+  background:linear-gradient(135deg,#A78BFA,#6D28D9);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Bowlby One'; font-size:13px; color:#0a0612; }
+.dust-info{ min-width:0; }
+.dust-sym{ font-family:'Bowlby One'; font-size:14px; }
+.dust-name{ font-family:'JetBrains Mono'; font-size:10px; color:var(--text-dim); margin-top:2px; }
+.dust-bal{ font-family:'JetBrains Mono'; font-weight:700; font-size:13px; text-align:right; }
+.dust-val{ font-family:'JetBrains Mono'; font-size:11px; color:var(--text-dim); text-align:right; }
+
+.empty-state{
+  padding:40px 20px; text-align:center; font-family:'JetBrains Mono'; font-size:12px;
+  color:var(--text-low); letter-spacing:1px; line-height:1.8;
+}
+.empty-state .em{ font-size:48px; opacity:0.4; display:block; margin-bottom:14px; }
+
+.sweep-bar{
+  margin-top:24px; padding:20px; background:linear-gradient(135deg,rgba(245,158,11,0.12),rgba(139,92,246,0.12));
+  border:1px solid rgba(245,158,11,0.3); border-radius:14px;
+  display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+}
+.sweep-info{ flex:1; min-width:240px; }
+.sweep-lbl{ font-family:'JetBrains Mono'; font-size:9px; letter-spacing:2px; color:var(--text-low); }
+.sweep-val{ font-family:'Bowlby One'; font-size:22px; color:var(--orange-glow); }
+.sweep-btn{
+  font-family:'JetBrains Mono'; font-weight:800; letter-spacing:2px; font-size:14px;
+  background:linear-gradient(135deg,#F59E0B,#EA580C); color:#0a0612; border:0; padding:18px 38px; border-radius:12px;
+  cursor:pointer; transition:.2s; box-shadow:0 0 30px rgba(245,158,11,0.5);
+}
+.sweep-btn:hover{ transform:translateY(-2px); box-shadow:0 0 50px rgba(245,158,11,0.8); }
+.sweep-btn:disabled{ opacity:0.4; cursor:not-allowed; transform:none; box-shadow:none; }
+
+.connect-state{
+  padding:60px 30px; text-align:center;
+}
+.connect-state .em{ font-size:80px; margin-bottom:20px; opacity:0.6; }
+.connect-state h2{ font-family:'Bowlby One'; font-size:28px; margin-bottom:12px; letter-spacing:1px; }
+.connect-state p{ font-family:'JetBrains Mono'; font-size:13px; color:var(--text-dim); margin-bottom:28px; line-height:1.6; }
+
+.cleanser-card{
+  margin-top:30px; display:grid; grid-template-columns:120px 1fr; gap:18px; align-items:center;
+  padding:24px; background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(139,92,246,0.08));
+  border:1px solid rgba(245,158,11,0.25); border-radius:14px;
+}
+@media(max-width:600px){ .cleanser-card{ grid-template-columns:1fr; text-align:center; } }
+.cleanser-badge{ width:120px; height:120px; border-radius:50%;
+  background:radial-gradient(circle, rgba(245,158,11,0.3), rgba(245,158,11,0.05));
+  border:2px dashed rgba(245,158,11,0.5);
+  display:flex; align-items:center; justify-content:center; font-size:54px;
+  animation:rotate 14s linear infinite;
+}
+@keyframes rotate{ to{transform:rotate(360deg)} }
+.cleanser-info h3{ font-family:'Bowlby One'; font-size:20px; letter-spacing:1px; }
+.cleanser-info p{ font-family:'JetBrains Mono'; font-size:11px; color:var(--text-dim); margin-top:6px; line-height:1.6; }
+
+.lb-list{ display:flex; flex-direction:column; gap:8px; }
+.lb-row{
+  display:grid; grid-template-columns:30px 1fr auto; gap:14px; align-items:center;
+  padding:12px 14px; background:rgba(139,92,246,0.04); border-radius:10px;
+  font-family:'JetBrains Mono'; font-size:12px;
+}
+.lb-rank{ font-family:'Bowlby One'; font-size:14px; color:var(--orange-glow); }
+.lb-rank.top{ color:#FBBF24; text-shadow:0 0 10px rgba(251,191,36,0.5); }
+
+.notice{
+  margin-top:30px; padding:18px 22px; background:rgba(139,92,246,0.06);
+  border-left:3px solid var(--purple); border-radius:8px;
+  font-family:'JetBrains Mono'; font-size:12px; color:var(--text-dim); line-height:1.6;
+}
+.notice strong{ color:var(--purple-glow); }
+
+.tx-status{ display:none; margin-top:20px; padding:18px; border-radius:12px; }
+.tx-status.shown{ display:block; }
+.tx-status.pending{ background:rgba(139,92,246,0.1); border:1px solid var(--border-hot); }
+.tx-status.success{ background:rgba(16,217,129,0.1); border:1px solid rgba(16,217,129,0.3); }
+.tx-status.error  { background:rgba(255,77,109,0.1); border:1px solid rgba(255,77,109,0.3); }
+
+footer{ text-align:center; padding:40px 20px 60px;
+  font-family:'JetBrains Mono'; font-size:10px; color:var(--text-low); letter-spacing:2px; }
+
+@media(max-width:768px){
+  nav{ padding:10px 14px; }
+  .nav-links{ display:none; }
+  .brand-text{ font-size:14px; }
+  .brand-mark{ width:36px; height:36px; font-size:18px; }
+  .wrap{ padding:20px 14px; }
+  .dust-row{ grid-template-columns:30px 32px 1fr auto; gap:10px; }
+  .dust-bal{ font-size:11px; }
+  .dust-val{ display:none; }
+}
+</style>
+</head>
+<body>
+<div class="scan-line"></div>
+
+<nav>
+  <a href="index.html" class="brand">
+    <div class="brand-mark">W</div>
+    <div class="brand-text">THE DEN<small>MONWOLF · MONAD</small></div>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">DEN</a>
+    <a href="dust.html" class="nav-link active">DUST</a>
+    <a href="casino.html" class="nav-link">CASINO</a>
+    <a href="https://dexscreener.com/monad/0x8361a59d340466211ad4aB41C09a32e4530a7777" target="_blank" class="nav-link">CHART</a>
+    <a href="https://monwolf.fun" target="_blank" class="nav-link">SITE</a>
+  </div>
+  <button id="connectBtn" onclick="connectWallet()">CONNECT WALLET</button>
+</nav>
+
+<div class="wrap">
+
+  <div class="title-block">
+    <span class="eyebrow">▸ REVERSE DUST</span>
+    <h1>SWEEP THE GRAVE</h1>
+    <p class="lede">
+      Every dead bag in your wallet — the airdrops, the rugs, the leftovers — gets routed through Crust,<br>
+      auto-buys $WOLF at market, and burns it. Your trash feeds the wolf. The chart eats.
+    </p>
+  </div>
+
+  <div class="flow">
+    <div class="step">
+      <div class="step-num">STEP 01</div>
+      <div class="step-emoji">🧹</div>
+      <div class="step-title">SWEEP</div>
+      <div class="step-desc">Scan wallet for dust bags. Pick what to clean.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">STEP 02</div>
+      <div class="step-emoji">↔️</div>
+      <div class="step-title">SWAP</div>
+      <div class="step-desc">Each token routes to MON via Crust.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">STEP 03</div>
+      <div class="step-emoji">🐺</div>
+      <div class="step-title">BUY WOLF</div>
+      <div class="step-desc">All MON converts to WOLF at market price.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">STEP 04</div>
+      <div class="step-emoji">🔥</div>
+      <div class="step-title">BURN</div>
+      <div class="step-desc">100% of WOLF sent to the dead address. Forever.</div>
+    </div>
+  </div>
+
+  <!-- NOT CONNECTED STATE -->
+  <div id="notConnected" class="panel">
+    <div class="connect-state">
+      <span class="em">🧹</span>
+      <h2>CONNECT WALLET TO SWEEP</h2>
+      <p>The Den scans your wallet for dust under $5,<br>so you can clean and burn in one click.</p>
+      <button class="sweep-btn" onclick="connectWallet()">CONNECT WALLET</button>
+    </div>
+  </div>
+
+  <!-- CONNECTED STATE -->
+  <div id="connected" style="display:none;">
+    <div class="summary">
+      <div class="summary-card">
+        <div class="sc-lbl">DUST FOUND</div>
+        <div class="sc-val orange" id="sumCount">0</div>
+        <div class="sc-meta">tokens detected</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-lbl">EST. VALUE</div>
+        <div class="sc-val green" id="sumValue">$0.00</div>
+        <div class="sc-meta">total dust value</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-lbl">EST. WOLF BURN</div>
+        <div class="sc-val purple" id="sumBurn">0</div>
+        <div class="sc-meta">at current price</div>
+      </div>
+      <div class="summary-card">
+        <div class="sc-lbl">YOUR REWARD</div>
+        <div class="sc-val" id="sumReward">CLEANSER</div>
+        <div class="sc-meta">soulbound badge</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span>DUST DETECTED · WALLET SCAN</span>
+        <span class="live" id="scanLive">SCANNING</span>
+      </div>
+      <div class="dust-list" id="dustList">
+        <div class="empty-state">
+          <span class="em">🔍</span>
+          Scanning your wallet for dust...
+        </div>
+      </div>
+
+      <div class="sweep-bar" id="sweepBar" style="display:none;">
+        <div class="sweep-info">
+          <div class="sweep-lbl">SELECTED · WILL BURN APPROX</div>
+          <div class="sweep-val" id="sweepBurnAmt">0 WOLF</div>
+        </div>
+        <button class="sweep-btn" id="sweepBtn" onclick="executeSweep()" disabled>SWEEP & BURN</button>
+      </div>
+    </div>
+
+    <div class="cleanser-card">
+      <div class="cleanser-badge">🧹</div>
+      <div class="cleanser-info">
+        <h3>THE CLEANSER BADGE</h3>
+        <p>Permanent on-chain proof that you fed the wolf with your trash. Visible on your Den profile, leaderboard ranking, and unlocks future Pack Pass perks. Stack burns, climb the Cleanser leaderboard.</p>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:24px;">
+      <div class="panel-head"><span>TOP CLEANSERS · ALL TIME</span><span style="color:var(--text-low);">PREVIEW</span></div>
+      <div class="lb-list" id="lbList">
+        <div class="empty-state" style="padding:20px;">
+          Leaderboard goes live with first sweep. Be the first feeder.
+        </div>
+      </div>
+    </div>
+
+    <div class="notice">
+      <strong>HOW IT WORKS:</strong> Reverse Dust scans tokens you hold with low balances ($0.01 – $5 range). When you sweep, each selected token swaps to MON on Crust, then MON buys WOLF, then 100% of bought WOLF goes to <code>0x...dEaD</code>. You pay only gas. Every sweep is a market buy + permanent supply burn. The pack eats together.
+    </div>
+
+    <div class="tx-status" id="txStatus"></div>
+  </div>
+</div>
+
+<footer>
+  REVERSE DUST · BUILT FOR THE PACK · MONWOLF · MONAD
+</footer>
+
+<script>
+'use strict';
+
+const WOLF_TOKEN = '0x8361a59d340466211ad4aB41C09a32e4530a7777';
+const MONAD_CHAIN_ID = 143;
+const MONAD_HEX = '0x8f';
+const RPC_URL = 'https://rpc.monad.xyz';
+const EXPLORER = 'https://monadexplorer.com';
+const DEAD_ADDR = '0x000000000000000000000000000000000000dEaD';
+
+// Threshold: anything ≤ $5 USD considered dust
+const DUST_THRESHOLD_USD = 5.0;
+const MIN_VAL_USD = 0.005; // ignore microscopic
+
+// Tokens to scan — common Monad memes/assets that might show up as dust
+const SCAN_LIST = [
+  '0xB744F5CDb792d8187640214C4A1c9aCE29af7777', // MONSHI
+  '0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A', // WMON
+  // Additional tokens auto-discovered via DexScreener if they have a pair
+];
+
+const ABI_ERC20 = [
+  'function name() view returns (string)',
+  'function symbol() view returns (string)',
+  'function decimals() view returns (uint8)',
+  'function balanceOf(address) view returns (uint256)'
+];
+
+let provider=null, signer=null, userAddress=null;
+let wolfPrice=0;
+let dustTokens=[]; // [{addr, sym, decimals, balance, balanceN, priceUsd, valueUsd, logo}]
+let selected = new Set();
+
+const $ = (id) => document.getElementById(id);
+const shortAddr = (a) => a.slice(0,6)+'…'+a.slice(-4);
+
+function fmtNum(n,d=0){
+  if(n===null||n===undefined||isNaN(n)) return '—';
+  if(n===0) return '0';
+  if(n>=1e9) return (n/1e9).toFixed(2)+'B';
+  if(n>=1e6) return (n/1e6).toFixed(2)+'M';
+  if(n>=1e3) return (n/1e3).toFixed(d===0?1:d)+'K';
+  if(n<0.001) return n.toExponential(2);
+  return n.toFixed(d>0?d:2);
+}
+function fmtUsd(n){
+  if(!n||isNaN(n)) return '$0.00';
+  if(n<0.01) return '$<0.01';
+  if(n<1) return '$'+n.toFixed(3);
+  return '$'+n.toFixed(2);
+}
+
+async function loadWolfPrice(){
+  try{
+    const r = await fetch('https://api.dexscreener.com/latest/dex/tokens/'+WOLF_TOKEN);
+    const j = await r.json();
+    if(j.pairs && j.pairs.length){
+      const p = j.pairs.sort((a,b)=>(b.liquidity?.usd||0)-(a.liquidity?.usd||0))[0];
+      wolfPrice = parseFloat(p.priceUsd) || 0;
+    }
+  }catch(e){ console.warn('wolf price', e); }
+}
+
+async function connectWallet(){
+  if(!window.ethereum){ alert('Install an EVM wallet (MetaMask, Rabby).'); return; }
+  try{
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send('eth_requestAccounts',[]);
+    signer = await provider.getSigner();
+    userAddress = await signer.getAddress();
+    const network = await provider.getNetwork();
+    if(Number(network.chainId) !== MONAD_CHAIN_ID){
+      try{
+        await window.ethereum.request({ method:'wallet_switchEthereumChain', params:[{chainId:MONAD_HEX}] });
+      }catch(e){
+        if(e.code===4902){
+          await window.ethereum.request({
+            method:'wallet_addEthereumChain',
+            params:[{
+              chainId:MONAD_HEX, chainName:'Monad',
+              nativeCurrency:{name:'Monad',symbol:'MON',decimals:18},
+              rpcUrls:[RPC_URL], blockExplorerUrls:[EXPLORER]
+            }]
+          });
+        }
+      }
+      provider = new ethers.BrowserProvider(window.ethereum);
+      signer = await provider.getSigner();
+    }
+    $('connectBtn').textContent = shortAddr(userAddress);
+    $('connectBtn').classList.add('connected');
+    $('notConnected').style.display='none';
+    $('connected').style.display='block';
+    await loadWolfPrice();
+    await scanDust();
+    window.ethereum.on('accountsChanged', ()=>location.reload());
+    window.ethereum.on('chainChanged', ()=>location.reload());
+  }catch(e){
+    console.error(e);
+    alert('Connect failed: '+(e.message||e));
+  }
+}
+
+async function scanDust(){
+  $('dustList').innerHTML = '<div class="empty-state"><span class="em">🔍</span>Scanning your wallet...</div>';
+  dustTokens = [];
+
+  // Scan known tokens
+  for(const addr of SCAN_LIST){
+    try{
+      const c = new ethers.Contract(addr, ABI_ERC20, provider);
+      const [sym, decimals, balance] = await Promise.all([
+        c.symbol().catch(()=>'???'),
+        c.decimals().catch(()=>18),
+        c.balanceOf(userAddress)
+      ]);
+      const balN = Number(ethers.formatUnits(balance, decimals));
+      if(balN <= 0) continue;
+      // Get price from DexScreener
+      let priceUsd = 0;
+      try{
+        const r = await fetch('https://api.dexscreener.com/latest/dex/tokens/'+addr);
+        const j = await r.json();
+        if(j.pairs && j.pairs.length){
+          const p = j.pairs.sort((a,b)=>(b.liquidity?.usd||0)-(a.liquidity?.usd||0))[0];
+          priceUsd = parseFloat(p.priceUsd) || 0;
+        }
+      }catch{}
+      const valUsd = balN * priceUsd;
+      // Only count as dust if within threshold
+      if(valUsd >= MIN_VAL_USD && valUsd <= DUST_THRESHOLD_USD){
+        dustTokens.push({
+          addr, sym, decimals, balance, balanceN:balN,
+          priceUsd, valueUsd:valUsd, logo:sym[0] || '?'
+        });
+      }
+    }catch(e){
+      console.warn('token scan failed', addr, e);
+    }
+  }
+
+  $('scanLive').className=''; $('scanLive').textContent='COMPLETE'; $('scanLive').style.color='var(--green)';
+  renderDust();
+  renderLeaderboard();
+}
+
+function renderDust(){
+  const list = $('dustList');
+  if(!dustTokens.length){
+    list.innerHTML = `
+      <div class="empty-state">
+        <span class="em">✨</span>
+        <strong style="color:var(--green); font-size:14px;">CLEAN WALLET</strong><br>
+        No dust under $${DUST_THRESHOLD_USD} found.<br>
+        Either you're already a Cleanser, or your bag is heavy.<br>
+        <span style="opacity:0.5;">More token coverage coming. Add scan list via Pack Pass v1.</span>
+      </div>`;
+    $('sweepBar').style.display='none';
+    return;
+  }
+  list.innerHTML = '';
+  dustTokens.forEach((t, i) => {
+    const isSel = selected.has(i);
+    list.insertAdjacentHTML('beforeend', `
+      <div class="dust-row ${isSel?'selected':''}" onclick="toggleSelect(${i})">
+        <div class="dust-check ${isSel?'checked':''}"></div>
+        <div class="dust-logo">${t.logo}</div>
+        <div class="dust-info">
+          <div class="dust-sym">${t.sym}</div>
+          <div class="dust-name">${shortAddr(t.addr)}</div>
+        </div>
+        <div class="dust-bal">${fmtNum(t.balanceN, 4)}</div>
+        <div class="dust-val">${fmtUsd(t.valueUsd)}</div>
+      </div>`);
+  });
+  updateSummary();
+  $('sweepBar').style.display='flex';
+}
+
+function toggleSelect(i){
+  if(selected.has(i)) selected.delete(i);
+  else selected.add(i);
+  renderDust();
+}
+
+function updateSummary(){
+  $('sumCount').textContent = dustTokens.length;
+  const totalValue = dustTokens.reduce((s,t)=>s+t.valueUsd, 0);
+  $('sumValue').textContent = fmtUsd(totalValue);
+  const selectedValue = [...selected].reduce((s,i)=>s+dustTokens[i].valueUsd, 0);
+  const burnAmt = wolfPrice ? selectedValue / wolfPrice : 0;
+  $('sumBurn').textContent = burnAmt > 0 ? fmtNum(burnAmt) : '0';
+  $('sweepBurnAmt').textContent = burnAmt > 0 ? fmtNum(burnAmt)+' WOLF' : '0 WOLF';
+  const btn = $('sweepBtn');
+  btn.disabled = selected.size === 0;
+  btn.textContent = selected.size === 0 ? 'SELECT DUST FIRST' : `SWEEP & BURN · ${selected.size} TOKEN${selected.size>1?'S':''}`;
+}
+
+async function executeSweep(){
+  // v1: contract not yet deployed. Show pending state with honest messaging.
+  const txs = $('txStatus');
+  txs.className = 'tx-status shown pending';
+  txs.innerHTML = `
+    <div style="font-family:'JetBrains Mono';font-size:13px;line-height:1.7;">
+      <strong style="color:var(--purple-glow);">⚙️ REVERSE DUST CONTRACT NOT YET DEPLOYED</strong><br>
+      The router contract is in audit. Targeting deploy this week.<br><br>
+      Selected: <strong>${selected.size} token${selected.size>1?'s':''}</strong> ·
+      Est. burn: <strong style="color:var(--orange-glow);">${$('sumBurn').textContent} WOLF</strong><br><br>
+      Track on <a href="https://twitter.com/Wolf0x67" target="_blank" style="color:var(--orange-glow);">@Wolf0x67</a>
+      or join the pack on <a href="https://x.com/MonWolfMonad" target="_blank" style="color:var(--orange-glow);">Telegram</a>
+      for the launch.
+    </div>`;
+  txs.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function renderLeaderboard(){
+  // Placeholder — real LB needs indexer
+  const list = $('lbList');
+  list.innerHTML = `
+    <div class="empty-state" style="padding:20px;">
+      Leaderboard activates with first on-chain sweep.<br>
+      Top 10 monthly Cleansers split a MON pool from gas tips.
+    </div>`;
+}
+
+// Auto-connect if previously connected
+(async ()=>{
+  await loadWolfPrice();
+  if(window.ethereum){
+    const accts = await window.ethereum.request({method:'eth_accounts'}).catch(()=>[]);
+    if(accts && accts.length) connectWallet();
+  }
+})();
+</script>
+</body>
+</html>

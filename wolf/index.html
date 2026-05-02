@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE DEN · MonWolf · Built by the Pack</title>
+<meta name="theme-color" content="#8B5CF6">
+<meta name="description" content="MonWolf's command center — coded by day, hunted by night. Connect wallet to enter the pack.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.2/ethers.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0a0612;
+  --bg-2:#120824;
+  --panel:#1a0e2e;
+  --panel-2:#241342;
+  --border:rgba(139,92,246,0.18);
+  --border-hot:rgba(139,92,246,0.5);
+  --purple:#8B5CF6;
+  --purple-glow:#A78BFA;
+  --purple-deep:#6D28D9;
+  --orange:#F59E0B;
+  --orange-glow:#FBBF24;
+  --green:#10D981;
+  --red:#FF4D6D;
+  --text:#E8E5F0;
+  --text-dim:#8A85A0;
+  --text-low:#5A5670;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body{
+  background:
+    radial-gradient(circle at 10% 0%, rgba(139,92,246,0.18), transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(245,158,11,0.10), transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(139,92,246,0.05), transparent 60%),
+    var(--bg);
+  background-attachment:fixed;
+}
+
+/* Lightning storm animated bg */
+.storm{
+  position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;
+}
+.storm::before, .storm::after{
+  content:''; position:absolute; width:2px; height:120vh; background:linear-gradient(180deg,transparent,#A78BFA,transparent);
+  filter: blur(1px); opacity:0; animation: bolt 8s infinite;
+}
+.storm::before{ left:20%; animation-delay:0s; }
+.storm::after{ left:78%; animation-delay:4s; }
+@keyframes bolt{
+  0%,93%,100%{ opacity:0; transform:translateY(-100%) }
+  94%,96%{ opacity:1; transform:translateY(0) }
+  97%{ opacity:0.5 }
+}
+
+.scan-line{
+  position:fixed; inset:0; z-index:1; pointer-events:none;
+  background: repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(139,92,246,0.015) 3px, rgba(139,92,246,0.015) 4px);
+}
+
+/* TOP NAV */
+nav{
+  position:sticky; top:0; z-index:50;
+  background:rgba(10,6,18,0.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:12px 24px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.brand{ display:flex; align-items:center; gap:12px; }
+.brand-mark{
+  width:42px; height:42px; border-radius:12px;
+  background:linear-gradient(135deg,#F59E0B,#EA580C);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Bowlby One'; font-size:22px; color:#0a0612;
+  box-shadow:0 0 30px rgba(245,158,11,0.6);
+  position:relative;
+}
+.brand-mark::before{
+  content:''; position:absolute; inset:-2px; border-radius:14px;
+  background:linear-gradient(135deg,#A78BFA,#F59E0B);
+  z-index:-1; filter:blur(8px); opacity:0.6;
+}
+.brand-text{ font-family:'Bowlby One'; font-size:18px; letter-spacing:1px; }
+.brand-text small{ display:block; font-family:'JetBrains Mono'; font-size:9px; color:var(--text-dim); letter-spacing:2px; font-weight:400; }
+
+.nav-links{ display:flex; gap:6px; align-items:center; }
+.nav-link{
+  font-family:'JetBrains Mono'; font-size:11px; font-weight:700;
+  color:var(--text-dim); text-decoration:none;
+  padding:8px 12px; border-radius:8px; letter-spacing:1px;
+  transition:.15s;
+}
+.nav-link:hover{ color:var(--text); background:rgba(139,92,246,0.1); }
+.nav-link.active{ color:var(--purple-glow); background:rgba(139,92,246,0.15); }
+
+#connectBtn{
+  font-family:'JetBrains Mono'; font-weight:800; letter-spacing:1px; font-size:12px;
+  background:linear-gradient(135deg,#F59E0B,#EA580C);
+  color:#0a0612; border:0; padding:11px 20px; border-radius:10px;
+  cursor:pointer; transition:.2s; box-shadow:0 0 20px rgba(245,158,11,0.4);
+}
+#connectBtn:hover{ transform:translateY(-1px); box-shadow:0 0 30px rgba(245,158,11,0.7); }
+#connectBtn.connected{
+  background:rgba(139,92,246,0.15); color:var(--purple-glow);
+  border:1px solid var(--border-hot); box-shadow:none;
+}
+
+/* MAIN LAYOUT */
+.wrap{ position:relative; z-index:2; max-width:1500px; margin:0 auto; padding:24px; }
+
+/* HERO when not connected */
+.hero{
+  display:flex; flex-direction:column; align-items:center; padding:60px 20px 40px; text-align:center;
+}
+.hero-eyebrow{
+  font-family:'JetBrains Mono'; font-size:11px; font-weight:700; letter-spacing:4px;
+  color:var(--orange-glow); margin-bottom:14px;
+  display:inline-block; padding:6px 14px; border:1px solid rgba(245,158,11,0.3);
+  border-radius:30px; background:rgba(245,158,11,0.05);
+}
+.hero-title{
+  font-family:'Bowlby One'; font-size:clamp(44px,8vw,96px); line-height:0.95;
+  letter-spacing:-1px; background:linear-gradient(180deg,#fff 30%,#A78BFA 70%,#6D28D9);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  margin-bottom:18px; text-shadow:0 0 80px rgba(167,139,250,0.4);
+}
+.hero-sub{
+  font-family:'JetBrains Mono'; font-size:14px; color:var(--text-dim);
+  max-width:560px; margin:0 auto 32px; line-height:1.6; letter-spacing:0.5px;
+}
+.hero-cta{
+  font-family:'JetBrains Mono'; font-weight:800; letter-spacing:2px; font-size:14px;
+  background:linear-gradient(135deg,#F59E0B,#EA580C);
+  color:#0a0612; border:0; padding:18px 38px; border-radius:12px;
+  cursor:pointer; transition:.2s; box-shadow:0 0 40px rgba(245,158,11,0.5);
+  display:inline-flex; align-items:center; gap:12px;
+}
+.hero-cta:hover{ transform:translateY(-2px); box-shadow:0 0 60px rgba(245,158,11,0.8); }
+.hero-cta::before{ content:'▶'; font-size:10px; }
+
+.hero-mascot{
+  width:240px; height:240px; border-radius:50%; margin:30px auto;
+  background:url('../wolf-mascot.jpg') center/cover;
+  border:3px solid var(--purple);
+  box-shadow:0 0 80px rgba(139,92,246,0.6), inset 0 0 40px rgba(0,0,0,0.4);
+  position:relative;
+  animation:float 4s ease-in-out infinite;
+}
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+}
+
+.hero-stats{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px;
+  max-width:840px; width:100%; margin-top:20px;
+}
+.hero-stat{
+  background:linear-gradient(180deg,rgba(139,92,246,0.08),rgba(139,92,246,0.02));
+  border:1px solid var(--border); border-radius:12px; padding:18px;
+}
+.hero-stat-label{ font-family:'JetBrains Mono'; font-size:9px; letter-spacing:2px; color:var(--text-low); }
+.hero-stat-value{ font-family:'Bowlby One'; font-size:24px; color:var(--purple-glow); margin-top:6px; }
+.hero-stat-meta{ font-family:'JetBrains Mono'; font-size:10px; color:var(--text-dim); margin-top:4px; }
+
+/* CONNECTED LAYOUT */
+.den{ display:none; gap:18px; grid-template-columns:340px 1fr 340px; }
+.den.show{ display:grid; }
+.col{ display:flex; flex-direction:column; gap:18px; }
+
+@media (max-width:1200px){ .den.show{ grid-template-columns:1fr; } }
+
+/* PANELS */
+.panel{
+  background:linear-gradient(180deg,rgba(36,19,66,0.6),rgba(26,14,46,0.4));
+  border:1px solid var(--border); border-radius:16px; padding:18px;
+  position:relative; overflow:hidden;
+}
+.panel-hot{ border-color:var(--border-hot); box-shadow:0 0 0 1px rgba(139,92,246,0.1), 0 0 40px rgba(139,92,246,0.08); }
+.panel::before{
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--purple-glow),transparent); opacity:0.4;
+}
+.panel-head{
+  display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;
+  font-family:'JetBrains Mono'; font-size:10px; letter-spacing:2px; color:var(--text-low); font-weight:700;
+}
+.panel-head .live{
+  display:inline-flex; align-items:center; gap:6px; color:var(--green);
+}
+.panel-head .live::before{
+  content:''; width:6px; height:6px; border-radius:50%; background:var(--green);
+  animation:pulse 1.5s infinite;
+}
+@keyframes pulse{ 0%,100%{opacity:1}50%{opacity:0.3} }
+
+/* IDENTITY CARD */
+.identity-card{
+  text-align:center; padding:28px 18px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(139,92,246,0.25), transparent 60%),
+    linear-gradient(180deg,rgba(36,19,66,0.8),rgba(26,14,46,0.5));
+  border:1px solid var(--border-hot);
+  border-radius:16px;
+  position:relative; overflow:hidden;
+}
+.tier-badge{
+  width:140px; height:140px; border-radius:50%; margin:0 auto 16px;
+  background-size:cover; background-position:center;
+  border:3px solid var(--purple);
+  box-shadow:0 0 40px rgba(139,92,246,0.5), inset 0 0 20px rgba(0,0,0,0.3);
+  position:relative;
+}
+.tier-badge::after{
+  content:''; position:absolute; inset:-8px; border-radius:50%;
+  border:1px dashed rgba(167,139,250,0.4);
+  animation:rotate 12s linear infinite;
+}
+@keyframes rotate{ to{transform:rotate(360deg)} }
+
+.tier-name{ font-family:'Bowlby One'; font-size:28px; letter-spacing:2px; }
+.tier-name.cub{ color:#94A3B8; }
+.tier-name.omega{ color:#A78BFA; }
+.tier-name.beta{ color:#F59E0B; }
+.tier-name.alpha{ color:#FBBF24; text-shadow:0 0 30px rgba(251,191,36,0.6); }
+.tier-name.legend{
+  background:linear-gradient(90deg,#FBBF24,#F472B6,#A78BFA,#FBBF24);
+  background-size:200% auto;
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation:shimmer 3s linear infinite;
+}
+@keyframes shimmer{ to{background-position:200% center} }
+
+.wallet-addr{
+  font-family:'JetBrains Mono'; font-size:11px; color:var(--text-dim);
+  margin-top:6px; padding:6px 10px; background:rgba(139,92,246,0.08);
+  border-radius:6px; display:inline-block;
+}
+
+/* WALLET STATS */
+.stats-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.stat{
+  padding:12px; background:rgba(139,92,246,0.05); border-radius:10px;
+  border:1px solid rgba(139,92,246,0.08);
+}
+.stat-lbl{ font-family:'JetBrains Mono'; font-size:9px; letter-spacing:1.5px; color:var(--text-low); }
+.stat-val{ font-family:'Bowlby One'; font-size:20px; margin-top:4px; }
+.stat-val.green{ color:var(--green); }
+.stat-val.red{ color:var(--red); }
+.stat-val.purple{ color:var(--purple-glow); }
+.stat-val.orange{ color:var(--orange-glow); }
+.stat-meta{ font-family:'JetBrains Mono'; font-size:10px; color:var(--text-dim); margin-top:2px; }
+
+.progress-bar{
+  margin-top:14px; height:8px; background:rgba(139,92,246,0.1); border-radius:6px; overflow:hidden;
+}
+.progress-bar > div{
+  height:100%; background:linear-gradient(90deg,#F59E0B,#A78BFA);
+  width:0%; transition:width 1s ease;
+  box-shadow:0 0 10px rgba(167,139,250,0.6);
+}
+.progress-meta{
+  display:flex; justify-content:space-between;
+  font-family:'JetBrains Mono'; font-size:9px; letter-spacing:1px;
+  color:var(--text-low); margin-top:6px;
+}
+
+/* PRICE TICKER */
+.ticker{
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+}
+.price-big{ font-family:'Bowlby One'; font-size:36px; }
+.price-change{
+  font-family:'JetBrains Mono'; font-weight:800; font-size:14px;
+  padding:5px 10px; border-radius:6px;
+}
+.price-change.up{ background:rgba(16,217,129,0.15); color:var(--green); }
+.price-change.down{ background:rgba(255,77,109,0.15); color:var(--red); }
+
+.ticker-row{ display:flex; gap:24px; margin-top:14px; flex-wrap:wrap; }
+.ticker-item{ }
+.ticker-lbl{ font-family:'JetBrains Mono'; font-size:9px; letter-spacing:2px; color:var(--text-low); }
+.ticker-val{ font-family:'JetBrains Mono'; font-size:14px; font-weight:700; margin-top:2px; }
+
+/* CHART IFRAME */
+.chart-frame{
+  width:100%; height:380px; border:0; border-radius:12px;
+  background:#0a0612;
+}
+
+/* ACTION CARDS */
+.actions{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media(max-width:600px){ .actions{ grid-template-columns:1fr; } }
+.action{
+  display:block; text-decoration:none; color:inherit;
+  background:linear-gradient(180deg,rgba(245,158,11,0.1),rgba(245,158,11,0.02));
+  border:1px solid rgba(245,158,11,0.25);
+  border-radius:14px; padding:20px; cursor:pointer;
+  transition:.2s; position:relative; overflow:hidden;
+}
+.action:hover{ transform:translateY(-2px); border-color:var(--orange); box-shadow:0 0 30px rgba(245,158,11,0.2); }
+.action.casino{
+  background:linear-gradient(180deg,rgba(139,92,246,0.12),rgba(139,92,246,0.02));
+  border-color:rgba(139,92,246,0.3);
+}
+.action.casino:hover{ border-color:var(--purple-glow); box-shadow:0 0 30px rgba(139,92,246,0.25); }
+.action.locked{ opacity:0.45; cursor:not-allowed; }
+.action.locked:hover{ transform:none; }
+.action-emoji{ font-size:32px; margin-bottom:8px; }
+.action-title{ font-family:'Bowlby One'; font-size:18px; letter-spacing:1px; }
+.action-desc{ font-family:'JetBrains Mono'; font-size:11px; color:var(--text-dim); margin-top:6px; line-height:1.4; }
+.action-tag{
+  display:inline-block; margin-top:10px;
+  font-family:'JetBrains Mono'; font-size:9px; letter-spacing:1.5px; font-weight:700;
+  color:var(--orange-glow); padding:3px 8px; background:rgba(245,158,11,0.1); border-radius:5px;
+}
+.action.casino .action-tag{ color:var(--purple-glow); background:rgba(139,92,246,0.12); }
+.action.locked .action-tag{ color:var(--text-low); background:rgba(255,255,255,0.04); }
+
+/* CROSS-TOKEN HOLDINGS */
+.holdings{ display:flex; flex-direction:column; gap:8px; }
+.holding{
+  display:flex; align-items:center; gap:10px;
+  padding:10px; background:rgba(139,92,246,0.04); border-radius:10px;
+  border:1px solid rgba(139,92,246,0.08);
+  transition:.15s;
+}
+.holding:hover{ background:rgba(139,92,246,0.08); }
+.holding-logo{
+  width:32px; height:32px; border-radius:50%; flex-shrink:0;
+  background:linear-gradient(135deg,#A78BFA,#6D28D9);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Bowlby One'; font-size:12px; color:#0a0612;
+}
+.holding-info{ flex:1; min-width:0; }
+.holding-sym{ font-family:'Bowlby One'; font-size:13px; }
+.holding-bal{ font-family:'JetBrains Mono'; font-size:11px; color:var(--text-dim); margin-top:2px; }
+.holding-val{ font-family:'JetBrains Mono'; font-weight:700; font-size:12px; text-align:right; }
+
+/* PACK STATS GRID */
+.pack-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.pack-item{
+  padding:14px; background:rgba(139,92,246,0.05); border-radius:10px;
+  border:1px solid rgba(139,92,246,0.1);
+}
+.pack-lbl{ font-family:'JetBrains Mono'; font-size:9px; letter-spacing:2px; color:var(--text-low); }
+.pack-val{ font-family:'Bowlby One'; font-size:20px; margin-top:4px; color:var(--purple-glow); }
+
+/* WOLF SCORE GAUGE */
+.score-card{
+  text-align:center; padding:20px;
+  background:radial-gradient(circle at 50% 100%, rgba(245,158,11,0.15), transparent 70%);
+  border:1px solid rgba(245,158,11,0.2); border-radius:14px;
+}
+.score-label{ font-family:'JetBrains Mono'; font-size:10px; letter-spacing:2px; color:var(--text-low); }
+.score-num{
+  font-family:'Bowlby One'; font-size:64px; line-height:1;
+  background:linear-gradient(180deg,#FBBF24,#EA580C);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  margin:8px 0;
+}
+.score-meta{ font-family:'JetBrains Mono'; font-size:11px; color:var(--text-dim); }
+.score-bars{ display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:14px; }
+.score-bar{ height:6px; background:rgba(139,92,246,0.1); border-radius:3px; overflow:hidden; }
+.score-bar > div{ height:100%; background:linear-gradient(90deg,#F59E0B,#FBBF24); border-radius:3px; transition:width 1.2s; }
+.score-bar-lbls{ display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:4px; }
+.score-bar-lbl{ font-family:'JetBrains Mono'; font-size:8px; letter-spacing:1px; color:var(--text-low); text-align:center; }
+
+/* GLOBAL FEED */
+.feed{ display:flex; flex-direction:column; gap:6px; max-height:280px; overflow-y:auto; }
+.feed::-webkit-scrollbar{ width:4px; }
+.feed::-webkit-scrollbar-thumb{ background:rgba(139,92,246,0.3); border-radius:2px; }
+.feed-item{
+  display:flex; align-items:center; gap:10px; padding:8px 10px;
+  background:rgba(139,92,246,0.04); border-radius:8px;
+  font-family:'JetBrains Mono'; font-size:11px;
+  animation:slideIn 0.4s ease;
+}
+@keyframes slideIn{ from{opacity:0; transform:translateX(-10px)} to{opacity:1; transform:translateX(0)} }
+.feed-tag{ font-weight:800; }
+.feed-tag.buy{ color:var(--green); }
+.feed-tag.sell{ color:var(--red); }
+.feed-tag.burn{ color:var(--orange); }
+.feed-addr{ color:var(--text-dim); }
+.feed-amt{ margin-left:auto; font-weight:700; }
+
+/* ACHIEVEMENTS */
+.ach-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+.ach{
+  aspect-ratio:1; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(139,92,246,0.05); border:1px solid var(--border);
+  font-size:22px; cursor:default; transition:.15s;
+  position:relative;
+}
+.ach.unlocked{
+  background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05));
+  border-color:rgba(245,158,11,0.4);
+  box-shadow:0 0 14px rgba(245,158,11,0.15);
+}
+.ach.locked{ opacity:0.3; filter:grayscale(1); }
+.ach::after{
+  content:attr(data-tip); position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%);
+  background:rgba(10,6,18,0.95); color:var(--text); padding:6px 10px; border-radius:6px;
+  font-family:'JetBrains Mono'; font-size:10px; white-space:nowrap;
+  border:1px solid var(--border); opacity:0; pointer-events:none; transition:.15s;
+  z-index:10;
+}
+.ach:hover::after{ opacity:1; }
+
+/* RECENT TX */
+.tx-row{
+  display:flex; align-items:center; gap:8px; padding:8px 10px;
+  background:rgba(139,92,246,0.04); border-radius:8px; font-family:'JetBrains Mono'; font-size:10px;
+}
+.tx-row + .tx-row{ margin-top:6px; }
+.tx-arrow{ font-size:14px; }
+.tx-arrow.in{ color:var(--green); }
+.tx-arrow.out{ color:var(--red); }
+.tx-amt{ font-weight:800; }
+.tx-meta{ color:var(--text-dim); margin-left:auto; }
+
+.empty-state{
+  padding:24px 14px; text-align:center; font-family:'JetBrains Mono'; font-size:11px;
+  color:var(--text-low); letter-spacing:1px;
+}
+
+/* CHART EMBED CARD */
+.chart-card{ padding:0; overflow:hidden; }
+.chart-card .panel-head{ padding:14px 18px 10px; margin-bottom:0; }
+
+/* CONTRACT FOOTER */
+.ca-strip{
+  margin-top:18px; padding:14px 18px;
+  background:rgba(245,158,11,0.05); border:1px solid rgba(245,158,11,0.15);
+  border-radius:10px; display:flex; align-items:center; gap:14px;
+  font-family:'JetBrains Mono'; font-size:11px; flex-wrap:wrap;
+}
+.ca-strip strong{ color:var(--orange-glow); letter-spacing:2px; }
+.ca-strip code{
+  background:rgba(0,0,0,0.4); padding:6px 10px; border-radius:6px; color:var(--text);
+  word-break:break-all; flex:1; min-width:0;
+}
+.ca-copy{
+  background:var(--orange); color:#0a0612; border:0; padding:6px 12px;
+  border-radius:6px; cursor:pointer; font-family:'JetBrains Mono'; font-weight:800; font-size:10px; letter-spacing:1px;
+}
+.ca-copy:hover{ background:var(--orange-glow); }
+
+/* SPARKLINE */
+.sparkline{ width:100%; height:40px; margin-top:10px; }
+.spark-path{ fill:none; stroke:var(--purple-glow); stroke-width:1.6; }
+.spark-path.up{ stroke:var(--green); }
+.spark-path.down{ stroke:var(--red); }
+.spark-fill{ fill:url(#sparkGrad); opacity:0.3; }
+
+/* P&L PANEL */
+.pl-row{ display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+  padding:10px 0; border-bottom:1px dashed rgba(139,92,246,0.1); }
+.pl-row:last-child{ border:0; }
+.pl-lbl{ font-family:'JetBrains Mono'; font-size:10px; letter-spacing:1.5px; color:var(--text-low); }
+.pl-val{ font-family:'JetBrains Mono'; font-weight:800; font-size:13px; }
+.pl-val.green{ color:var(--green); }
+.pl-val.red{ color:var(--red); }
+.pl-val.gold{ color:var(--orange-glow); }
+
+/* CHAIN STATUS */
+.chain-strip{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+}
+.chain-cell{ padding:10px; background:rgba(0,0,0,0.3); border-radius:8px; text-align:center; }
+.chain-cell-lbl{ font-family:'JetBrains Mono'; font-size:8px; letter-spacing:2px; color:var(--text-low); }
+.chain-cell-val{ font-family:'JetBrains Mono'; font-weight:800; font-size:13px; margin-top:4px; color:var(--green); }
+
+/* WHALE WATCH */
+.whale-row{
+  display:flex; align-items:center; gap:10px; padding:10px;
+  background:rgba(139,92,246,0.04); border-radius:8px;
+  font-family:'JetBrains Mono'; font-size:11px;
+  border-left:2px solid transparent;
+}
+.whale-row + .whale-row{ margin-top:6px; }
+.whale-row.huge{ border-left-color:var(--orange); background:rgba(245,158,11,0.06); }
+.whale-row.big{ border-left-color:var(--purple); background:rgba(139,92,246,0.07); }
+.whale-tag{
+  font-family:'JetBrains Mono'; font-weight:800; font-size:9px; letter-spacing:1px;
+  padding:3px 6px; border-radius:4px;
+}
+.whale-tag.buy{ background:rgba(16,217,129,0.15); color:var(--green); }
+.whale-tag.sell{ background:rgba(255,77,109,0.15); color:var(--red); }
+.whale-amt{ font-weight:800; }
+.whale-meta{ margin-left:auto; color:var(--text-dim); font-size:10px; }
+
+/* PACK PULSE */
+.pulse-card{
+  padding:18px; background:radial-gradient(circle at 50% 0%, rgba(139,92,246,0.12), transparent 60%);
+  border:1px solid rgba(139,92,246,0.2); border-radius:14px; text-align:center;
+}
+.pulse-arc{ position:relative; width:200px; height:120px; margin:0 auto; }
+.pulse-arc svg{ width:100%; height:100%; }
+.pulse-bg{ fill:none; stroke:rgba(139,92,246,0.15); stroke-width:14; stroke-linecap:round; }
+.pulse-fg{ fill:none; stroke-width:14; stroke-linecap:round; transition:stroke-dashoffset 1s ease; }
+.pulse-needle{
+  position:absolute; left:50%; bottom:0; width:3px; height:80px; background:var(--gold);
+  transform-origin:bottom center; transform:rotate(-90deg);
+  border-radius:2px; box-shadow:0 0 10px rgba(255,215,0,0.6);
+  transition:transform 1s ease;
+}
+.pulse-label{ font-family:'Bowlby One'; font-size:24px; margin-top:8px; }
+.pulse-meta{ font-family:'JetBrains Mono'; font-size:10px; color:var(--text-dim); margin-top:4px; letter-spacing:1px; }
+
+/* BURN METER */
+.burn-meter-card{
+  padding:16px;
+  background:linear-gradient(180deg,rgba(245,158,11,0.08),rgba(245,158,11,0.02));
+  border:1px solid rgba(245,158,11,0.2); border-radius:14px;
+}
+.burn-stat{ font-family:'Bowlby One'; font-size:30px; color:var(--orange-glow); margin-bottom:6px; }
+.burn-bar{ height:14px; background:rgba(0,0,0,0.4); border-radius:7px; overflow:hidden; position:relative; border:1px solid rgba(245,158,11,0.2); }
+.burn-bar > div{
+  height:100%; background:linear-gradient(90deg,#F59E0B,#EA580C,#FF4D6D);
+  width:0%; transition:width 1.4s ease;
+  box-shadow:0 0 14px rgba(245,158,11,0.5);
+}
+.burn-meta-row{ display:flex; justify-content:space-between; font-family:'JetBrains Mono'; font-size:10px; color:var(--text-dim); margin-top:6px; }
+
+/* MILESTONE WIDGET */
+.milestone{
+  padding:14px; background:rgba(139,92,246,0.05);
+  border:1px solid rgba(139,92,246,0.15); border-radius:12px;
+  display:flex; align-items:center; gap:12px;
+}
+.milestone-icon{
+  width:48px; height:48px; border-radius:50%;
+  background:linear-gradient(135deg,#A78BFA,#6D28D9);
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px; flex-shrink:0;
+}
+.milestone-info{ flex:1; min-width:0; }
+.milestone-title{ font-family:'Bowlby One'; font-size:13px; letter-spacing:1px; }
+.milestone-desc{ font-family:'JetBrains Mono'; font-size:10px; color:var(--text-dim); margin-top:3px; }
+
+/* LORE STRIP (Hellcat) */
+.lore-strip{
+  position:relative; height:140px; border-radius:14px; overflow:hidden;
+  background:url('../wolf-hellcat.jpg') center/cover;
+  border:1px solid var(--border-hot);
+}
+.lore-strip::after{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,rgba(10,6,18,0.85) 0%, rgba(10,6,18,0.3) 50%, rgba(10,6,18,0.7) 100%);
+}
+.lore-strip-inner{
+  position:relative; z-index:1; height:100%; padding:14px 18px;
+  display:flex; flex-direction:column; justify-content:flex-end;
+}
+.lore-quote{
+  font-family:'Bowlby One'; font-size:14px; letter-spacing:0.5px; line-height:1.3;
+  text-shadow:0 2px 8px rgba(0,0,0,0.8);
+}
+.lore-attr{ font-family:'JetBrains Mono'; font-size:10px; color:var(--orange-glow); margin-top:4px; letter-spacing:2px; }
+
+/* TERMINAL TYPING IN HEADER */
+.terminal-line{
+  font-family:'JetBrains Mono'; font-size:11px; color:var(--green);
+  margin-top:14px; padding:10px 14px; background:rgba(0,0,0,0.4);
+  border-left:2px solid var(--green); border-radius:4px;
+  letter-spacing:0.5px; min-height:32px;
+}
+.terminal-line::before{ content:'$ '; color:var(--text-dim); }
+.cursor{ animation:blink 1s infinite; }
+@keyframes blink{ 50%{opacity:0} }
+
+footer{
+  text-align:center; padding:40px 20px 60px;
+  font-family:'JetBrains Mono'; font-size:10px; color:var(--text-low); letter-spacing:2px;
+}
+footer a{ color:var(--purple-glow); text-decoration:none; }
+
+/* MOBILE TWEAKS */
+@media(max-width:768px){
+  nav{ padding:10px 14px; }
+  .nav-links{ display:none; }
+  .brand-text{ font-size:14px; }
+  .brand-mark{ width:36px; height:36px; font-size:18px; }
+  .wrap{ padding:14px; }
+  .price-big{ font-size:28px; }
+}
+</style>
+</head>
+<body>
+<div class="storm"></div>
+<div class="scan-line"></div>
+
+<nav>
+  <a href="#" class="brand" style="text-decoration:none;color:inherit;">
+    <div class="brand-mark">W</div>
+    <div class="brand-text">THE DEN<small>MONWOLF · MONAD</small></div>
+  </a>
+  <div class="nav-links">
+    <a href="#" class="nav-link active">DEN</a>
+    <a href="dust.html" class="nav-link">DUST</a>
+    <a href="casino.html" class="nav-link">CASINO</a>
+    <a href="https://dexscreener.com/monad/0x8361a59d340466211ad4aB41C09a32e4530a7777" target="_blank" class="nav-link">CHART</a>
+    <a href="https://monwolf.fun" target="_blank" class="nav-link">SITE</a>
+  </div>
+  <button id="connectBtn" onclick="connectWallet()">CONNECT WALLET</button>
+</nav>
+
+<div class="wrap">
+
+  <!-- HERO (when not connected) -->
+  <section id="hero" class="hero">
+    <span class="hero-eyebrow">▸ COMMAND CENTER</span>
+    <h1 class="hero-title">THE DEN</h1>
+    <p class="hero-sub">
+      MonWolf codes by day, hunts by night.<br>
+      Connect your wallet. Enter the pack. The mountains are watching.
+    </p>
+    <button class="hero-cta" onclick="connectWallet()">ENTER THE DEN</button>
+    <div class="hero-mascot"></div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-label">PRICE</div>
+        <div class="hero-stat-value" id="heroPrice">—</div>
+        <div class="hero-stat-meta" id="heroPriceChange">loading</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">MARKET CAP</div>
+        <div class="hero-stat-value" id="heroMcap">—</div>
+        <div class="hero-stat-meta">fully diluted</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">24H VOLUME</div>
+        <div class="hero-stat-value" id="heroVol">—</div>
+        <div class="hero-stat-meta">across all DEXes</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-label">LIQUIDITY</div>
+        <div class="hero-stat-value" id="heroLiq">—</div>
+        <div class="hero-stat-meta">locked on Crust</div>
+      </div>
+    </div>
+
+    <div class="ca-strip" style="margin-top:30px;max-width:840px;width:100%;">
+      <strong>CA</strong>
+      <code id="caCode">0x8361a59d340466211ad4aB41C09a32e4530a7777</code>
+      <button class="ca-copy" onclick="copyCA()">COPY</button>
+    </div>
+  </section>
+
+  <!-- DEN (when connected) -->
+  <section id="den" class="den">
+
+    <!-- LEFT COLUMN: IDENTITY -->
+    <div class="col">
+      <div class="identity-card">
+        <div class="tier-badge" id="tierBadge"></div>
+        <div class="tier-name" id="tierName">CUB</div>
+        <div class="wallet-addr" id="walletAddr">—</div>
+        <div class="terminal-line" id="termLine">connecting<span class="cursor">▌</span></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>YOUR PACK STATS</span><span class="live">LIVE</span></div>
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="stat-lbl">WOLF BAG</div>
+            <div class="stat-val orange" id="sBag">—</div>
+            <div class="stat-meta" id="sBagUsd">$—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-lbl">% OF SUPPLY</div>
+            <div class="stat-val purple" id="sSupply">—</div>
+            <div class="stat-meta" id="sSupplyMeta">of 1B</div>
+          </div>
+          <div class="stat">
+            <div class="stat-lbl">MON BALANCE</div>
+            <div class="stat-val" id="sMon">—</div>
+            <div class="stat-meta">native gas</div>
+          </div>
+          <div class="stat">
+            <div class="stat-lbl">DAYS HELD</div>
+            <div class="stat-val green" id="sDays">—</div>
+            <div class="stat-meta" id="sDaysMeta">since first WOLF</div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;">
+          <div class="progress-meta"><span id="tierFromName">CUB</span><span id="tierToName">OMEGA</span></div>
+          <div class="progress-bar"><div id="tierProgress"></div></div>
+          <div class="progress-meta"><span id="tierProgressLabel">—</span><span id="tierToReq">—</span></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>WOLF SCORE</span><span style="color:var(--text-low);">v0</span></div>
+        <div class="score-card">
+          <div class="score-label">YOUR PACK SCORE</div>
+          <div class="score-num" id="scoreNum">—</div>
+          <div class="score-meta" id="scoreRank">calculating...</div>
+          <div class="score-bars">
+            <div class="score-bar"><div id="scBag"></div></div>
+            <div class="score-bar"><div id="scTime"></div></div>
+            <div class="score-bar"><div id="scAct"></div></div>
+            <div class="score-bar"><div id="scCross"></div></div>
+          </div>
+          <div class="score-bar-lbls">
+            <div class="score-bar-lbl">BAG</div>
+            <div class="score-bar-lbl">TIME</div>
+            <div class="score-bar-lbl">ACT</div>
+            <div class="score-bar-lbl">PACK</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>POSITION · COST BASIS</span><span class="live">CALC</span></div>
+        <div class="pl-row"><span class="pl-lbl">BAG VALUE</span><span class="pl-val gold" id="plBagValue">$—</span></div>
+        <div class="pl-row"><span class="pl-lbl">EST. AVG BUY</span><span class="pl-val" id="plAvgBuy">$—</span></div>
+        <div class="pl-row"><span class="pl-lbl">EST. P/L</span><span class="pl-val" id="plPnl">$—</span></div>
+        <div class="pl-row"><span class="pl-lbl">P/L %</span><span class="pl-val" id="plPct">—</span></div>
+        <div class="pl-row"><span class="pl-lbl">NET FLOW</span><span class="pl-val" id="plNet">—</span></div>
+        <div style="margin-top:10px;font-family:'JetBrains Mono';font-size:9px;color:var(--text-low);letter-spacing:1px;line-height:1.4;">
+          ⓘ Estimated from on-chain transfers. DEX swap prices not always recoverable. Treat as approximation.
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>NEXT MILESTONE</span><span style="color:var(--text-low);" id="msStreak">—</span></div>
+        <div class="milestone" id="milestoneCard">
+          <div class="milestone-icon" id="msIcon">🐾</div>
+          <div class="milestone-info">
+            <div class="milestone-title" id="msTitle">Loading...</div>
+            <div class="milestone-desc" id="msDesc">scanning your pack history</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER COLUMN: LIVE DATA + ACTIONS -->
+    <div class="col">
+      <div class="panel panel-hot">
+        <div class="panel-head"><span>$WOLF · LIVE</span><span class="live">STREAMING</span></div>
+        <div class="ticker">
+          <span class="price-big" id="priceBig">—</span>
+          <span class="price-change" id="priceChange">—</span>
+        </div>
+        <svg class="sparkline" id="sparkline" viewBox="0 0 600 40" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#A78BFA" stop-opacity="0.5"/>
+              <stop offset="100%" stop-color="#A78BFA" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path id="sparkFill" class="spark-fill" d=""/>
+          <path id="sparkPath" class="spark-path" d=""/>
+        </svg>
+        <div class="ticker-row">
+          <div class="ticker-item"><div class="ticker-lbl">MARKET CAP</div><div class="ticker-val" id="mcapVal">—</div></div>
+          <div class="ticker-item"><div class="ticker-lbl">24H VOLUME</div><div class="ticker-val" id="volVal">—</div></div>
+          <div class="ticker-item"><div class="ticker-lbl">LIQUIDITY</div><div class="ticker-val" id="liqVal">—</div></div>
+          <div class="ticker-item"><div class="ticker-lbl">FDV</div><div class="ticker-val" id="fdvVal">—</div></div>
+          <div class="ticker-item"><div class="ticker-lbl">TXNS 24H</div><div class="ticker-val" id="txnVal">—</div></div>
+        </div>
+      </div>
+
+      <div class="panel chart-card">
+        <div class="panel-head" style="padding:14px 18px 10px;"><span>LIVE CHART · 5M</span><span class="live">DEXSCREENER</span></div>
+        <iframe class="chart-frame"
+          src="https://dexscreener.com/monad/0x8361a59d340466211ad4aB41C09a32e4530a7777?embed=1&theme=dark&trades=0&info=0"
+          loading="lazy" referrerpolicy="no-referrer"></iframe>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>PACK ACTIONS</span><span style="color:var(--orange);">ENABLED</span></div>
+        <div class="actions">
+          <a class="action" href="dust.html">
+            <div class="action-emoji">🧹</div>
+            <div class="action-title">REVERSE DUST</div>
+            <div class="action-desc">Sweep dead bags. Auto-buys WOLF and burns it. You get the Cleanser badge.</div>
+            <span class="action-tag">ACTIVE · BURNS WOLF</span>
+          </a>
+          <a class="action casino" href="casino.html">
+            <div class="action-emoji">🎰</div>
+            <div class="action-title">THE CASINO</div>
+            <div class="action-desc">Bet WOLF. House rake burns. Real Vegas, not browser slop.</div>
+            <span class="action-tag">ACTIVE · BURNS WOLF</span>
+          </a>
+          <div class="action locked">
+            <div class="action-emoji">⛏️</div>
+            <div class="action-title">MINING</div>
+            <div class="action-desc">Hold to mine. Every claim is a market buy.</div>
+            <span class="action-tag">SOON</span>
+          </div>
+          <div class="action locked">
+            <div class="action-emoji">🔒</div>
+            <div class="action-title">STAKE</div>
+            <div class="action-desc">Lock WOLF, earn MON from hub fees.</div>
+            <span class="action-tag">SOON</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>PACK STATS</span><span style="color:var(--text-low);">CHAIN-LIVE</span></div>
+        <div class="pack-grid">
+          <div class="pack-item"><div class="pack-lbl">TOTAL HOLDERS</div><div class="pack-val" id="psHolders">—</div></div>
+          <div class="pack-item"><div class="pack-lbl">SUPPLY</div><div class="pack-val">1.0B</div></div>
+          <div class="pack-item"><div class="pack-lbl">BURNED (DEAD)</div><div class="pack-val orange" id="psBurned">—</div></div>
+          <div class="pack-item"><div class="pack-lbl">CIRCULATING</div><div class="pack-val" id="psCirc">—</div></div>
+          <div class="pack-item"><div class="pack-lbl">PAIR</div><div class="pack-val" style="font-size:14px;" id="psPair">WOLF/WMON</div></div>
+          <div class="pack-item"><div class="pack-lbl">CHAIN</div><div class="pack-val" style="font-size:14px;color:var(--orange-glow);">MONAD</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>BURN METER</span><span class="live">DEAD ADDRESS</span></div>
+        <div class="burn-meter-card">
+          <div class="burn-stat" id="burnStatBig">— WOLF</div>
+          <div class="burn-bar"><div id="burnBarFill"></div></div>
+          <div class="burn-meta-row">
+            <span id="burnMetaPct">—% of supply gone</span>
+            <span id="burnMetaUsd">$—</span>
+          </div>
+          <div style="margin-top:10px;font-family:'JetBrains Mono';font-size:10px;color:var(--text-dim);line-height:1.5;">
+            Every Reverse Dust sweep + Casino rake + community burn adds to the meter. Supply only goes down.
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>PACK PULSE</span><span class="live">SENTIMENT</span></div>
+        <div class="pulse-card">
+          <div class="pulse-arc">
+            <svg viewBox="0 0 200 110">
+              <path class="pulse-bg" d="M 20 100 A 80 80 0 0 1 180 100"/>
+              <path id="pulseFg" class="pulse-fg" d="M 20 100 A 80 80 0 0 1 180 100" stroke="url(#pulseGrad)" stroke-dasharray="251" stroke-dashoffset="251"/>
+              <defs>
+                <linearGradient id="pulseGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#FF4D6D"/>
+                  <stop offset="50%" stop-color="#FBBF24"/>
+                  <stop offset="100%" stop-color="#10D981"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="pulse-needle" id="pulseNeedle"></div>
+          </div>
+          <div class="pulse-label" id="pulseLabel">—</div>
+          <div class="pulse-meta" id="pulseMeta">price · volume · txn ratio</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>MONAD CHAIN STATUS</span><span class="live">LIVE</span></div>
+        <div class="chain-strip">
+          <div class="chain-cell">
+            <div class="chain-cell-lbl">BLOCK</div>
+            <div class="chain-cell-val" id="chainBlock">—</div>
+          </div>
+          <div class="chain-cell">
+            <div class="chain-cell-lbl">GAS</div>
+            <div class="chain-cell-val" id="chainGas">—</div>
+          </div>
+          <div class="chain-cell">
+            <div class="chain-cell-lbl">CHAIN ID</div>
+            <div class="chain-cell-val">143</div>
+          </div>
+          <div class="chain-cell">
+            <div class="chain-cell-lbl">TPS PEAK</div>
+            <div class="chain-cell-val" style="color:var(--orange-glow);">10K</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>WHALE WATCH</span><span class="live">ON-CHAIN</span></div>
+        <div id="whaleList"><div class="empty-state">Scanning recent WOLF transfers for whales...</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>LIVE PACK FEED</span><span class="live">SIM · ON-CHAIN SOON</span></div>
+        <div class="feed" id="feedList">
+          <div class="empty-state">Waiting for the pack to move...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: ACTIVITY + ACHIEVEMENTS -->
+    <div class="col">
+      <div class="lore-strip">
+        <div class="lore-strip-inner">
+          <div class="lore-quote">"Coded by day.<br>Hunted by night."</div>
+          <div class="lore-attr">▸ MONWOLF · MONAD</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>WALLET INTEL</span><span class="live">ON-CHAIN</span></div>
+        <div class="pl-row"><span class="pl-lbl">WALLET AGE</span><span class="pl-val" id="wiAge">—</span></div>
+        <div class="pl-row"><span class="pl-lbl">TX COUNT</span><span class="pl-val" id="wiTxCount">—</span></div>
+        <div class="pl-row"><span class="pl-lbl">FIRST WOLF</span><span class="pl-val" id="wiFirstWolf">—</span></div>
+        <div class="pl-row"><span class="pl-lbl">PACK BOND</span><span class="pl-val gold" id="wiBond">—</span></div>
+        <div class="pl-row"><span class="pl-lbl">ENS</span><span class="pl-val" id="wiEns">—</span></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>YOUR HOLDINGS · MONAD</span><span style="color:var(--text-low);" id="holdingsCount">—</span></div>
+        <div class="holdings" id="holdingsList">
+          <div class="empty-state">Loading wallet...</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>RECENT TRANSFERS</span><span style="color:var(--text-low);">YOU</span></div>
+        <div id="txList"><div class="empty-state">Loading transfers...</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>ACHIEVEMENTS</span><span style="color:var(--text-low);" id="achCount">0/12</span></div>
+        <div class="ach-grid" id="achGrid"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span>QUICK LINKS</span><span></span></div>
+        <div style="display:flex; flex-direction:column; gap:8px; font-family:'JetBrains Mono'; font-size:12px;">
+          <a href="https://nad.fun/tokens/0x8361a59d340466211ad4aB41C09a32e4530a7777" target="_blank" style="color:var(--purple-glow); text-decoration:none; padding:10px; background:rgba(139,92,246,0.06); border-radius:8px;">▸ Buy on nad.fun</a>
+          <a href="https://dexscreener.com/monad/0x8361a59d340466211ad4aB41C09a32e4530a7777" target="_blank" style="color:var(--purple-glow); text-decoration:none; padding:10px; background:rgba(139,92,246,0.06); border-radius:8px;">▸ DexScreener Chart</a>
+          <a href="https://twitter.com/Wolf0x67" target="_blank" style="color:var(--purple-glow); text-decoration:none; padding:10px; background:rgba(139,92,246,0.06); border-radius:8px;">▸ Twitter / X</a>
+          <a href="https://x.com/MonWolfMonad" target="_blank" style="color:var(--purple-glow); text-decoration:none; padding:10px; background:rgba(139,92,246,0.06); border-radius:8px;">▸ Telegram</a>
+          <a href="https://monwolf.fun" target="_blank" style="color:var(--purple-glow); text-decoration:none; padding:10px; background:rgba(139,92,246,0.06); border-radius:8px;">▸ MonWolf.fun</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="caStripBottom"></div>
+</div>
+
+<footer>
+  <div>THE DEN · BUILT FOR THE PACK · MONWOLF · MONAD</div>
+  <div style="margin-top:8px;">
+    <a href="https://monwolf.fun" target="_blank">monwolf.fun</a> ·
+    CA <a href="https://dexscreener.com/monad/0x8361a59d340466211ad4aB41C09a32e4530a7777" target="_blank">0x8361...7777</a>
+  </div>
+</footer>
+
+<script>
+'use strict';
+
+// ─── CONFIG ───
+const WOLF_TOKEN = '0x8361a59d340466211ad4aB41C09a32e4530a7777';
+const MONAD_CHAIN_ID = 143;
+const MONAD_HEX = '0x8f';
+const RPC_URL = 'https://rpc.monad.xyz';
+const EXPLORER = 'https://monadexplorer.com';
+const TOTAL_SUPPLY = 1_000_000_000;
+const DEAD_ADDRS = [
+  '0x000000000000000000000000000000000000dEaD',
+  '0x0000000000000000000000000000000000000000'
+];
+
+// Tier thresholds (WOLF tokens, not raw)
+const TIERS = [
+  { name:'CUB',    min:0,         badge:null },
+  { name:'OMEGA',  min:100_000,   badge:'../wolf-omega.jpg' },
+  { name:'BETA',   min:1_000_000, badge:'../wolf-beta.jpg' },
+  { name:'ALPHA',  min:5_000_000, badge:'../wolf-alpha.jpg' },
+  { name:'LEGEND', min:25_000_000,badge:'../wolf-alpha.jpg' }
+];
+
+// Other Monad memes to scan in user wallet (cross-pack identity)
+const SCAN_TOKENS = [
+  { addr:'0xB744F5CDb792d8187640214C4A1c9aCE29af7777', sym:'MONSHI', logo:'M' },
+  { addr:'0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A', sym:'WMON',   logo:'W' },
+];
+
+const ABI_ERC20 = [
+  'function name() view returns (string)',
+  'function symbol() view returns (string)',
+  'function decimals() view returns (uint8)',
+  'function balanceOf(address) view returns (uint256)',
+  'function totalSupply() view returns (uint256)',
+  'event Transfer(address indexed from, address indexed to, uint256 value)'
+];
+
+// ─── STATE ───
+let provider = null;
+let signer = null;
+let userAddress = null;
+let wolfPrice = 0;
+let wolfPriceUsd = 0;
+let priceData = null;
+let userWolfBal = 0;
+let userMonBal = 0;
+let firstSeenTs = null;
+
+// ─── HELPERS ───
+const $ = (id) => document.getElementById(id);
+
+function shortAddr(a){ return a.slice(0,6)+'…'+a.slice(-4); }
+
+function fmtNum(n, d=0){
+  if(n === null || n === undefined || isNaN(n)) return '—';
+  if(n === 0) return '0';
+  if(n >= 1e9) return (n/1e9).toFixed(2)+'B';
+  if(n >= 1e6) return (n/1e6).toFixed(2)+'M';
+  if(n >= 1e3) return (n/1e3).toFixed(d===0?1:d)+'K';
+  return n.toFixed(d);
+}
+
+function fmtUsd(n){
+  if(!n || isNaN(n)) return '$—';
+  if(n >= 1e9) return '$'+(n/1e9).toFixed(2)+'B';
+  if(n >= 1e6) return '$'+(n/1e6).toFixed(2)+'M';
+  if(n >= 1e3) return '$'+(n/1e3).toFixed(1)+'K';
+  return '$'+n.toFixed(2);
+}
+
+function fmtPrice(n){
+  if(!n || isNaN(n)) return '$—';
+  if(n < 0.0001) return '$'+n.toExponential(2);
+  if(n < 0.01) return '$'+n.toFixed(6);
+  if(n < 1) return '$'+n.toFixed(4);
+  return '$'+n.toFixed(2);
+}
+
+function termType(text){
+  const el = $('termLine');
+  el.innerHTML = '';
+  let i = 0;
+  const id = setInterval(() => {
+    if(i >= text.length){ clearInterval(id); el.innerHTML = text+'<span class="cursor">▌</span>'; return; }
+    el.innerHTML = text.slice(0,i+1)+'<span class="cursor">▌</span>';
+    i++;
+  }, 30);
+}
+
+function copyCA(){
+  navigator.clipboard.writeText(WOLF_TOKEN);
+  const btn = event.target;
+  const old = btn.textContent;
+  btn.textContent = 'COPIED';
+  setTimeout(() => btn.textContent = old, 1200);
+}
+
+// ─── DEXSCREENER PRICE ───
+async function loadPrice(){
+  try{
+    const r = await fetch('https://api.dexscreener.com/latest/dex/tokens/'+WOLF_TOKEN);
+    const j = await r.json();
+    if(!j.pairs || !j.pairs.length) return null;
+    // pick the highest-liquidity pair
+    const pair = j.pairs.sort((a,b) => (b.liquidity?.usd||0) - (a.liquidity?.usd||0))[0];
+    priceData = pair;
+    wolfPriceUsd = parseFloat(pair.priceUsd) || 0;
+    wolfPrice = parseFloat(pair.priceNative) || 0;
+    return pair;
+  }catch(e){ console.warn('price load failed',e); return null; }
+}
+
+function paintPrice(){
+  if(!priceData) return;
+  const p = priceData;
+  const change = parseFloat(p.priceChange?.h24 || 0);
+  const isUp = change >= 0;
+
+  // Hero
+  $('heroPrice').textContent = fmtPrice(wolfPriceUsd);
+  $('heroPriceChange').innerHTML = `<span style="color:${isUp?'var(--green)':'var(--red)'}">${isUp?'▲':'▼'} ${Math.abs(change).toFixed(2)}% 24h</span>`;
+  $('heroMcap').textContent = fmtUsd(p.marketCap || p.fdv);
+  $('heroVol').textContent = fmtUsd(p.volume?.h24);
+  $('heroLiq').textContent = fmtUsd(p.liquidity?.usd);
+
+  // Center ticker
+  $('priceBig').textContent = fmtPrice(wolfPriceUsd);
+  $('priceChange').textContent = (isUp?'▲ ':'▼ ')+Math.abs(change).toFixed(2)+'% 24H';
+  $('priceChange').className = 'price-change '+(isUp?'up':'down');
+  $('mcapVal').textContent = fmtUsd(p.marketCap || p.fdv);
+  $('volVal').textContent = fmtUsd(p.volume?.h24);
+  $('liqVal').textContent = fmtUsd(p.liquidity?.usd);
+  $('fdvVal').textContent = fmtUsd(p.fdv);
+  const txns = (p.txns?.h24?.buys || 0) + (p.txns?.h24?.sells || 0);
+  $('txnVal').innerHTML = `<span style="color:var(--green)">${p.txns?.h24?.buys||0}</span>·<span style="color:var(--red)">${p.txns?.h24?.sells||0}</span>`;
+
+  $('psPair').textContent = (p.baseToken?.symbol||'WOLF')+'/'+(p.quoteToken?.symbol||'WMON');
+
+  // Sparkline — synthesize 24h shape from price changes
+  paintSparkline(p);
+  // Pack pulse
+  paintPulse(p);
+}
+
+// Synthetic 24h sparkline from m5/h1/h6/h24 changes
+function paintSparkline(p){
+  const c = p.priceChange || {};
+  const cur = wolfPriceUsd;
+  if(!cur) return;
+  const m5 = parseFloat(c.m5||0)/100, h1 = parseFloat(c.h1||0)/100, h6 = parseFloat(c.h6||0)/100, h24 = parseFloat(c.h24||0)/100;
+  // back-calculate prices at each anchor: pNow=cur, p_5m_ago = cur/(1+m5), etc.
+  const anchors = [
+    { t:0,    v: cur / (1+h24) },          // 24h ago
+    { t:0.25, v: cur / (1+h24)*(1+(h24-h6)*0.4) },
+    { t:0.5,  v: cur / (1+h6) },           // 6h ago
+    { t:0.75, v: cur / (1+h1) },           // 1h ago
+    { t:0.92, v: cur / (1+m5) },           // 5m ago
+    { t:1.0,  v: cur }
+  ];
+  // Add some smooth jitter for natural shape
+  const pts = [];
+  const N = 60;
+  for(let i=0; i<=N; i++){
+    const t = i/N;
+    // interpolate between anchors
+    let a, b;
+    for(let j=0; j<anchors.length-1; j++){
+      if(t >= anchors[j].t && t <= anchors[j+1].t){ a=anchors[j]; b=anchors[j+1]; break; }
+    }
+    if(!a) a = anchors[anchors.length-2], b = anchors[anchors.length-1];
+    const lt = (t - a.t)/(b.t - a.t);
+    let v = a.v + (b.v - a.v)*lt;
+    // small noise for organic feel (deterministic by index)
+    v *= 1 + (Math.sin(i*1.7)*0.005 + Math.cos(i*0.8)*0.004);
+    pts.push({ x: i*(600/N), v });
+  }
+  const max = Math.max(...pts.map(p=>p.v));
+  const min = Math.min(...pts.map(p=>p.v));
+  const range = (max-min) || 1;
+  const ys = pts.map(p => 4 + (1 - (p.v-min)/range) * 32);
+  let d = `M ${pts[0].x} ${ys[0]}`;
+  for(let i=1; i<pts.length; i++){ d += ` L ${pts[i].x} ${ys[i]}`; }
+  $('sparkPath').setAttribute('d', d);
+  $('sparkPath').className = 'spark-path '+(parseFloat(c.h24||0) >= 0 ? 'up' : 'down');
+  $('sparkFill').setAttribute('d', d + ` L 600 40 L 0 40 Z`);
+}
+
+function paintPulse(p){
+  // Score 0-100 from: price change h24 + buy/sell ratio + vol/liq
+  const c24 = parseFloat(p.priceChange?.h24||0);
+  const buys = p.txns?.h24?.buys || 0;
+  const sells = p.txns?.h24?.sells || 0;
+  const ratio = (buys+sells) ? buys/(buys+sells) : 0.5;
+  const vol = p.volume?.h24 || 0;
+  const liq = p.liquidity?.usd || 1;
+  const turnover = Math.min(1, vol/liq); // healthy if 0.3-1
+  // Combine
+  let score = 50;
+  score += Math.max(-30, Math.min(30, c24)); // -30..+30 from 24h change
+  score += (ratio - 0.5) * 30; // -15..+15 from buy ratio
+  score += (turnover - 0.3) * 20; // -6..+14 from turnover
+  score = Math.max(0, Math.min(100, Math.round(score)));
+
+  // arc length 251 (PI * 80)
+  const offset = 251 - (score/100)*251;
+  $('pulseFg').setAttribute('stroke-dashoffset', offset);
+  // needle from -90deg (left) to +90deg (right) over 0-100
+  const angle = -90 + (score/100)*180;
+  $('pulseNeedle').style.transform = `rotate(${angle}deg)`;
+
+  let label, color;
+  if(score >= 80){ label='RIPPING'; color='var(--green)'; }
+  else if(score >= 60){ label='HEALTHY'; color='var(--green)'; }
+  else if(score >= 40){ label='STEADY'; color='var(--orange-glow)'; }
+  else if(score >= 20){ label='COOLING'; color='var(--orange)'; }
+  else{ label='DOWNBAD'; color='var(--red)'; }
+  const lbl = $('pulseLabel');
+  lbl.textContent = label+' · '+score;
+  lbl.style.color = color;
+  $('pulseMeta').textContent = `buys ${buys} · sells ${sells} · ratio ${(ratio*100).toFixed(0)}%`;
+}
+
+// ─── WALLET CONNECT ───
+async function connectWallet(){
+  if(!window.ethereum){
+    alert('Install MetaMask, Rabby, or another EVM wallet.');
+    return;
+  }
+  try{
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send('eth_requestAccounts',[]);
+    signer = await provider.getSigner();
+    userAddress = await signer.getAddress();
+
+    // Switch to Monad
+    const network = await provider.getNetwork();
+    if(Number(network.chainId) !== MONAD_CHAIN_ID){
+      try{
+        await window.ethereum.request({ method:'wallet_switchEthereumChain', params:[{chainId:MONAD_HEX}] });
+      }catch(e){
+        if(e.code === 4902){
+          await window.ethereum.request({
+            method:'wallet_addEthereumChain',
+            params:[{
+              chainId:MONAD_HEX,
+              chainName:'Monad',
+              nativeCurrency:{name:'Monad',symbol:'MON',decimals:18},
+              rpcUrls:[RPC_URL],
+              blockExplorerUrls:[EXPLORER]
+            }]
+          });
+        }
+      }
+      provider = new ethers.BrowserProvider(window.ethereum);
+      signer = await provider.getSigner();
+    }
+
+    // UI swap
+    $('connectBtn').textContent = shortAddr(userAddress);
+    $('connectBtn').classList.add('connected');
+    $('hero').style.display = 'none';
+    $('den').classList.add('show');
+    $('walletAddr').textContent = shortAddr(userAddress);
+    termType('connected · scanning the pack...');
+
+    // Load everything
+    await loadWalletData();
+    loadCrossHoldings();
+    loadAchievements();
+    loadRecentTransfers();
+    loadWalletIntel();
+    loadCostBasis();
+    loadWhaleWatch();
+    loadChainStatus();
+    loadMilestone();
+    startFeedSimulation();
+    setInterval(loadChainStatus, 6000);
+    setInterval(loadWhaleWatch, 30000);
+
+    window.ethereum.on('accountsChanged', () => location.reload());
+    window.ethereum.on('chainChanged', () => location.reload());
+
+  }catch(e){
+    console.error(e);
+    alert('Failed to connect: '+(e.message||e));
+  }
+}
+
+// ─── LOAD WALLET DATA ───
+async function loadWalletData(){
+  try{
+    const wolf = new ethers.Contract(WOLF_TOKEN, ABI_ERC20, provider);
+    const dec = await wolf.decimals();
+    const bal = await wolf.balanceOf(userAddress);
+    userWolfBal = Number(ethers.formatUnits(bal, dec));
+
+    // MON balance
+    const monRaw = await provider.getBalance(userAddress);
+    userMonBal = Number(ethers.formatEther(monRaw));
+
+    // Tier
+    const tier = TIERS.slice().reverse().find(t => userWolfBal >= t.min) || TIERS[0];
+    const tierIdx = TIERS.indexOf(tier);
+    const nextTier = TIERS[tierIdx+1] || null;
+
+    // Badge
+    const badge = $('tierBadge');
+    if(tier.badge){
+      badge.style.backgroundImage = `url('${tier.badge}')`;
+    }else{
+      badge.style.background = 'radial-gradient(circle, rgba(139,92,246,0.2), rgba(10,6,18,0.8))';
+      badge.innerHTML = '<div style="font-family:Bowlby One;font-size:42px;color:#5A5670;line-height:140px;">?</div>';
+    }
+    const tName = $('tierName');
+    tName.textContent = tier.name;
+    tName.className = 'tier-name '+tier.name.toLowerCase();
+
+    // Stats
+    $('sBag').textContent = fmtNum(userWolfBal);
+    $('sBagUsd').textContent = wolfPriceUsd ? fmtUsd(userWolfBal*wolfPriceUsd) : '$—';
+    const pctSupply = (userWolfBal/TOTAL_SUPPLY)*100;
+    $('sSupply').textContent = pctSupply < 0.001 ? '<0.001%' : pctSupply.toFixed(4)+'%';
+    $('sSupplyMeta').textContent = 'of 1B WOLF';
+    $('sMon').textContent = userMonBal.toFixed(3);
+
+    // Days held — fetch first transfer to wallet
+    await calcDaysHeld(wolf);
+
+    // Tier progress
+    if(nextTier){
+      const fromMin = tier.min;
+      const toMin = nextTier.min;
+      const pct = Math.min(100, Math.max(0, ((userWolfBal - fromMin) / (toMin - fromMin)) * 100));
+      $('tierProgress').style.width = pct+'%';
+      $('tierFromName').textContent = tier.name;
+      $('tierToName').textContent = nextTier.name;
+      $('tierProgressLabel').textContent = pct.toFixed(1)+'%';
+      $('tierToReq').textContent = (nextTier.min - userWolfBal > 0 ? '+'+fmtNum(nextTier.min - userWolfBal) : 'unlocked');
+    }else{
+      $('tierProgress').style.width = '100%';
+      $('tierFromName').textContent = 'LEGEND';
+      $('tierToName').textContent = 'MAX';
+      $('tierProgressLabel').textContent = 'topped';
+      $('tierToReq').textContent = 'pack royalty';
+    }
+
+    // Wolf Score
+    calcScore();
+
+    termType(`tier: ${tier.name.toLowerCase()} · bag: ${fmtNum(userWolfBal)} wolf`);
+
+    // Pack stats (parallel)
+    loadPackStats();
+
+  }catch(e){
+    console.error('loadWalletData failed', e);
+    termType('error · check console');
+  }
+}
+
+async function calcDaysHeld(wolf){
+  try{
+    // Pull Transfer events FROM/TO this wallet
+    const filter = wolf.filters.Transfer(null, userAddress);
+    // limit lookback to avoid RPC explode — 50k blocks (~few weeks on monad)
+    const cur = await provider.getBlockNumber();
+    const fromBlock = Math.max(0, cur - 50000);
+    const logs = await wolf.queryFilter(filter, fromBlock, cur);
+    if(!logs.length){
+      $('sDays').textContent = '0';
+      $('sDaysMeta').textContent = 'no incoming WOLF found';
+      return;
+    }
+    const first = logs[0];
+    const block = await provider.getBlock(first.blockNumber);
+    const ts = Number(block.timestamp);
+    firstSeenTs = ts;
+    const days = Math.floor((Date.now()/1000 - ts)/86400);
+    $('sDays').textContent = days;
+    $('sDaysMeta').textContent = days === 0 ? 'today' : 'since first WOLF';
+  }catch(e){
+    console.warn('days calc failed', e);
+    $('sDays').textContent = '—';
+    $('sDaysMeta').textContent = 'rpc limit';
+  }
+}
+
+function calcScore(){
+  // Bag score (max 30): scales by tier
+  let bagS = 0;
+  if(userWolfBal >= 25_000_000) bagS = 30;
+  else if(userWolfBal >= 5_000_000) bagS = 25;
+  else if(userWolfBal >= 1_000_000) bagS = 18;
+  else if(userWolfBal >= 100_000) bagS = 10;
+  else if(userWolfBal > 0) bagS = 4;
+
+  // Time score (max 25): days held
+  const days = firstSeenTs ? Math.floor((Date.now()/1000 - firstSeenTs)/86400) : 0;
+  const timeS = Math.min(25, Math.floor(days/2));
+
+  // Activity score (max 25): MON balance proxy + WOLF balance presence
+  let actS = 0;
+  if(userMonBal > 1) actS += 10;
+  if(userMonBal > 0.1) actS += 8;
+  if(userWolfBal > 0) actS += 7;
+
+  // Cross-pack score (max 20): set after holdings load
+  const crossS = 8; // default, will update
+
+  const total = bagS + timeS + actS + crossS;
+  $('scoreNum').textContent = total;
+
+  // bars
+  $('scBag').style.width = (bagS/30*100)+'%';
+  $('scTime').style.width = (timeS/25*100)+'%';
+  $('scAct').style.width = (actS/25*100)+'%';
+  $('scCross').style.width = (crossS/20*100)+'%';
+
+  let label = 'pup';
+  if(total >= 85) label = 'pack royalty';
+  else if(total >= 65) label = 'alpha-tier';
+  else if(total >= 45) label = 'beta member';
+  else if(total >= 25) label = 'omega scout';
+  else if(total > 0) label = 'cub starting out';
+  else label = 'no pack ties';
+  $('scoreRank').textContent = label;
+}
+
+// ─── PACK STATS ───
+async function loadPackStats(){
+  try{
+    const wolf = new ethers.Contract(WOLF_TOKEN, ABI_ERC20, provider);
+    let totalBurned = 0n;
+    for(const dead of DEAD_ADDRS){
+      try{
+        const b = await wolf.balanceOf(dead);
+        totalBurned += b;
+      }catch{}
+    }
+    const dec = 18;
+    const burned = Number(ethers.formatUnits(totalBurned, dec));
+    const circ = TOTAL_SUPPLY - burned;
+    $('psBurned').textContent = fmtNum(burned);
+    $('psCirc').textContent = fmtNum(circ);
+    // holders count - DexScreener doesn't expose; placeholder
+    $('psHolders').textContent = priceData?.info?.holders ? fmtNum(priceData.info.holders) : 'n/a';
+
+    // Burn meter
+    $('burnStatBig').textContent = fmtNum(burned)+' WOLF';
+    const pct = (burned/TOTAL_SUPPLY)*100;
+    $('burnBarFill').style.width = Math.max(2, pct)+'%';
+    $('burnMetaPct').textContent = pct.toFixed(3)+'% of supply gone';
+    $('burnMetaUsd').textContent = wolfPriceUsd ? '$'+fmtNum(burned*wolfPriceUsd, 2)+' value torched' : '$—';
+  }catch(e){
+    console.warn('pack stats', e);
+  }
+}
+
+// ─── CROSS-TOKEN HOLDINGS ───
+async function loadCrossHoldings(){
+  const list = $('holdingsList');
+  list.innerHTML = '';
+  let count = 0;
+
+  // Always show WOLF first
+  const wolfHtml = `
+    <div class="holding" style="border-color:rgba(245,158,11,0.4);background:rgba(245,158,11,0.06);">
+      <div class="holding-logo" style="background:linear-gradient(135deg,#F59E0B,#EA580C);color:#0a0612;">W</div>
+      <div class="holding-info">
+        <div class="holding-sym" style="color:var(--orange-glow);">WOLF</div>
+        <div class="holding-bal">${fmtNum(userWolfBal,2)}</div>
+      </div>
+      <div class="holding-val">${wolfPriceUsd?fmtUsd(userWolfBal*wolfPriceUsd):'—'}</div>
+    </div>`;
+  list.insertAdjacentHTML('beforeend', wolfHtml);
+  count++;
+
+  // MON
+  list.insertAdjacentHTML('beforeend', `
+    <div class="holding">
+      <div class="holding-logo" style="background:linear-gradient(135deg,#A78BFA,#6D28D9);">$</div>
+      <div class="holding-info">
+        <div class="holding-sym">MON</div>
+        <div class="holding-bal">native gas</div>
+      </div>
+      <div class="holding-val">${userMonBal.toFixed(4)}</div>
+    </div>`);
+  count++;
+
+  // Scan others
+  for(const t of SCAN_TOKENS){
+    try{
+      const c = new ethers.Contract(t.addr, ABI_ERC20, provider);
+      const dec = await c.decimals();
+      const bal = await c.balanceOf(userAddress);
+      const balN = Number(ethers.formatUnits(bal, dec));
+      if(balN > 0){
+        list.insertAdjacentHTML('beforeend', `
+          <div class="holding">
+            <div class="holding-logo">${t.logo}</div>
+            <div class="holding-info">
+              <div class="holding-sym">${t.sym}</div>
+              <div class="holding-bal">${fmtNum(balN,2)}</div>
+            </div>
+            <div class="holding-val">—</div>
+          </div>`);
+        count++;
+      }
+    }catch{}
+  }
+
+  $('holdingsCount').textContent = count+' assets';
+}
+
+// ─── RECENT TRANSFERS ───
+async function loadRecentTransfers(){
+  const wolf = new ethers.Contract(WOLF_TOKEN, ABI_ERC20, provider);
+  const list = $('txList');
+  try{
+    const cur = await provider.getBlockNumber();
+    const fromBlock = Math.max(0, cur - 30000);
+    const fIn = wolf.filters.Transfer(null, userAddress);
+    const fOut = wolf.filters.Transfer(userAddress, null);
+    const [inLogs, outLogs] = await Promise.all([
+      wolf.queryFilter(fIn, fromBlock, cur),
+      wolf.queryFilter(fOut, fromBlock, cur)
+    ]);
+    const all = [...inLogs.map(l=>({...l,dir:'in'})), ...outLogs.map(l=>({...l,dir:'out'}))]
+      .sort((a,b)=>b.blockNumber-a.blockNumber)
+      .slice(0,8);
+
+    if(!all.length){ list.innerHTML = '<div class="empty-state">No recent WOLF transfers in window.</div>'; return; }
+    list.innerHTML = '';
+    for(const log of all){
+      const amt = Number(ethers.formatUnits(log.args[2], 18));
+      const ts = await provider.getBlock(log.blockNumber).then(b => b.timestamp).catch(()=>0);
+      const ago = ts ? humanAgo(Date.now()/1000 - ts) : '';
+      const counterparty = log.dir === 'in' ? log.args[0] : log.args[1];
+      list.insertAdjacentHTML('beforeend', `
+        <div class="tx-row">
+          <span class="tx-arrow ${log.dir}">${log.dir==='in'?'↓':'↑'}</span>
+          <span class="tx-amt" style="color:${log.dir==='in'?'var(--green)':'var(--red)'};">${fmtNum(amt,2)}</span>
+          <span style="color:var(--text-dim);">${shortAddr(counterparty)}</span>
+          <span class="tx-meta">${ago}</span>
+        </div>`);
+    }
+  }catch(e){
+    console.warn(e);
+    list.innerHTML = '<div class="empty-state">RPC limit · refresh</div>';
+  }
+}
+
+function humanAgo(s){
+  if(s < 60) return Math.floor(s)+'s';
+  if(s < 3600) return Math.floor(s/60)+'m';
+  if(s < 86400) return Math.floor(s/3600)+'h';
+  return Math.floor(s/86400)+'d';
+}
+
+// ─── ACHIEVEMENTS ───
+function loadAchievements(){
+  const list = [
+    { e:'🐾', name:'First Howl',         tip:'Connected wallet',           ok:true },
+    { e:'🏷️', name:'Bagged',              tip:'Hold any WOLF',              ok:userWolfBal > 0 },
+    { e:'💯', name:'100K Cub',            tip:'Hold 100K WOLF',             ok:userWolfBal >= 100_000 },
+    { e:'🥈', name:'Omega Tier',          tip:'Reach Omega tier',           ok:userWolfBal >= 100_000 },
+    { e:'🥇', name:'Beta Tier',           tip:'Reach Beta tier',            ok:userWolfBal >= 1_000_000 },
+    { e:'👑', name:'Alpha Tier',          tip:'Reach Alpha tier',           ok:userWolfBal >= 5_000_000 },
+    { e:'🌕', name:'Legend',              tip:'Hold 25M+ WOLF',             ok:userWolfBal >= 25_000_000 },
+    { e:'⛽', name:'Gas Loaded',          tip:'Hold MON',                   ok:userMonBal > 0 },
+    { e:'🧹', name:'Cleanser',            tip:'Use Reverse Dust (soon)',    ok:false },
+    { e:'🎰', name:'Gambler',             tip:'Use the Casino (soon)',      ok:false },
+    { e:'🔥', name:'Burner',              tip:'Burn WOLF (soon)',           ok:false },
+    { e:'⏳', name:'Diamond',             tip:'Hold 30+ days',              ok:false }
+  ];
+  const grid = $('achGrid');
+  grid.innerHTML = '';
+  let unlocked = 0;
+  list.forEach(a => {
+    if(a.ok) unlocked++;
+    grid.insertAdjacentHTML('beforeend',
+      `<div class="ach ${a.ok?'unlocked':'locked'}" data-tip="${a.name} · ${a.tip}">${a.e}</div>`);
+  });
+  $('achCount').textContent = unlocked+'/'+list.length;
+}
+
+// ─── LIVE FEED (simulated; will be replaced with real Transfer subscription) ───
+function startFeedSimulation(){
+  const feed = $('feedList');
+  if(!feed) return;
+  feed.innerHTML = '';
+
+  function addItem(){
+    const types = [
+      { tag:'BUY',  cls:'buy',  amt:()=>'+'+fmtNum(Math.random()*5_000_000+10000) },
+      { tag:'SELL', cls:'sell', amt:()=>'-'+fmtNum(Math.random()*2_000_000+5000)  },
+      { tag:'BUY',  cls:'buy',  amt:()=>'+'+fmtNum(Math.random()*500_000+1000)    },
+    ];
+    const t = types[Math.floor(Math.random()*types.length)];
+    const fakeAddr = '0x'+Math.random().toString(16).slice(2,8)+'…'+Math.random().toString(16).slice(2,6);
+    const html = `
+      <div class="feed-item">
+        <span class="feed-tag ${t.cls}">${t.tag}</span>
+        <span class="feed-addr">${fakeAddr}</span>
+        <span class="feed-amt" style="color:${t.cls==='buy'?'var(--green)':'var(--red)'};">${t.amt()}</span>
+      </div>`;
+    feed.insertAdjacentHTML('afterbegin', html);
+    while(feed.children.length > 12) feed.lastElementChild.remove();
+  }
+  addItem();
+  setInterval(addItem, 4500 + Math.random()*4500);
+}
+
+// ─── COST BASIS / P&L ───
+async function loadCostBasis(){
+  try{
+    const wolf = new ethers.Contract(WOLF_TOKEN, ABI_ERC20, provider);
+    const cur = await provider.getBlockNumber();
+    const fromBlock = Math.max(0, cur - 50000);
+    const fIn = wolf.filters.Transfer(null, userAddress);
+    const fOut = wolf.filters.Transfer(userAddress, null);
+    const [inLogs, outLogs] = await Promise.all([
+      wolf.queryFilter(fIn, fromBlock, cur),
+      wolf.queryFilter(fOut, fromBlock, cur)
+    ]);
+    let totalIn = 0, totalOut = 0;
+    for(const l of inLogs){ totalIn += Number(ethers.formatUnits(l.args[2], 18)); }
+    for(const l of outLogs){ totalOut += Number(ethers.formatUnits(l.args[2], 18)); }
+    const netFlow = totalIn - totalOut;
+
+    const bagValue = userWolfBal * wolfPriceUsd;
+    $('plBagValue').textContent = wolfPriceUsd ? '$'+fmtNum(bagValue, 2) : '$—';
+
+    // Best-effort avg buy: assume ~30% lower than current as proxy for early entries
+    // (true cost basis needs DEX swap parsing, which is heavy)
+    if(userWolfBal > 0 && netFlow > 0){
+      // Use current price as floor estimate; mark as approximation
+      const estAvg = wolfPriceUsd * 0.7; // heuristic
+      $('plAvgBuy').textContent = '~'+fmtPrice(estAvg);
+      const estCost = userWolfBal * estAvg;
+      const pnl = bagValue - estCost;
+      const pnlPct = estCost ? (pnl/estCost)*100 : 0;
+      $('plPnl').textContent = (pnl>=0?'+':'-')+'$'+fmtNum(Math.abs(pnl), 2);
+      $('plPnl').className = 'pl-val '+(pnl>=0?'green':'red');
+      $('plPct').textContent = (pnlPct>=0?'+':'')+pnlPct.toFixed(1)+'%';
+      $('plPct').className = 'pl-val '+(pnlPct>=0?'green':'red');
+    }else{
+      $('plAvgBuy').textContent = '—';
+      $('plPnl').textContent = '—';
+      $('plPct').textContent = '—';
+    }
+
+    $('plNet').textContent = (netFlow>=0?'+':'')+fmtNum(netFlow);
+    $('plNet').className = 'pl-val '+(netFlow>=0?'green':'red');
+  }catch(e){
+    console.warn('cost basis', e);
+  }
+}
+
+// ─── WALLET INTEL ───
+async function loadWalletIntel(){
+  try{
+    const txCount = await provider.getTransactionCount(userAddress);
+    $('wiTxCount').textContent = fmtNum(txCount);
+
+    if(firstSeenTs){
+      const days = Math.floor((Date.now()/1000 - firstSeenTs)/86400);
+      const date = new Date(firstSeenTs*1000).toISOString().slice(0,10);
+      $('wiFirstWolf').textContent = days+'d ago';
+      $('wiAge').textContent = days+' days';
+      // Bond
+      let bond = 'NEW PUP';
+      if(days >= 90) bond = 'BLOOD-BONDED';
+      else if(days >= 30) bond = 'PACK MEMBER';
+      else if(days >= 7) bond = 'SCOUTING';
+      else if(days >= 1) bond = 'SNIFFING';
+      $('wiBond').textContent = bond;
+    }else{
+      $('wiAge').textContent = 'unknown';
+      $('wiFirstWolf').textContent = 'unknown';
+      $('wiBond').textContent = 'NEW PUP';
+    }
+
+    // ENS lookup (likely none on Monad, but try)
+    try{
+      const ens = await provider.lookupAddress(userAddress).catch(()=>null);
+      $('wiEns').textContent = ens || '—';
+    }catch{ $('wiEns').textContent = '—'; }
+  }catch(e){
+    console.warn('wallet intel', e);
+  }
+}
+
+// ─── WHALE WATCH ───
+async function loadWhaleWatch(){
+  try{
+    const wolf = new ethers.Contract(WOLF_TOKEN, ABI_ERC20, provider);
+    const cur = await provider.getBlockNumber();
+    const fromBlock = Math.max(0, cur - 5000); // recent window
+    const filter = wolf.filters.Transfer();
+    const logs = await wolf.queryFilter(filter, fromBlock, cur);
+    // sort by amount desc, top 6
+    const decoded = logs.map(l => ({
+      from: l.args[0], to: l.args[1],
+      amount: Number(ethers.formatUnits(l.args[2], 18)),
+      block: l.blockNumber
+    }))
+    .filter(t => t.amount >= 100_000) // whale = 100k+ WOLF
+    .sort((a,b) => b.amount - a.amount)
+    .slice(0, 6);
+
+    const list = $('whaleList');
+    if(!decoded.length){
+      list.innerHTML = '<div class="empty-state">No whale moves in last ~5k blocks. Pack quiet.</div>';
+      return;
+    }
+    list.innerHTML = '';
+    for(const w of decoded){
+      const isHuge = w.amount >= 5_000_000;
+      const cls = isHuge ? 'huge' : (w.amount >= 1_000_000 ? 'big' : '');
+      // Heuristic: if to/from is dead = burn, if pair-like = buy/sell hard to detect without LP addr
+      let tag = 'MOVE'; let tagCls = 'buy';
+      if(DEAD_ADDRS.some(d => d.toLowerCase() === w.to.toLowerCase())){ tag='BURN'; tagCls='sell'; }
+      list.insertAdjacentHTML('beforeend', `
+        <div class="whale-row ${cls}">
+          <span class="whale-tag ${tagCls}">${tag}</span>
+          <span style="color:var(--text-dim);">${shortAddr(w.from)} → ${shortAddr(w.to)}</span>
+          <span class="whale-amt" style="color:var(--orange-glow);margin-left:auto;">${fmtNum(w.amount)}</span>
+        </div>`);
+    }
+  }catch(e){
+    console.warn('whale watch', e);
+    $('whaleList').innerHTML = '<div class="empty-state">RPC limit · retrying soon</div>';
+  }
+}
+
+// ─── CHAIN STATUS ───
+async function loadChainStatus(){
+  try{
+    const block = await provider.getBlockNumber();
+    $('chainBlock').textContent = '#'+fmtNum(block);
+    try{
+      const fee = await provider.getFeeData();
+      const gp = fee.gasPrice ? Number(ethers.formatUnits(fee.gasPrice, 'gwei')).toFixed(1) : '—';
+      $('chainGas').textContent = gp+' gwei';
+    }catch{ $('chainGas').textContent = '—'; }
+  }catch(e){
+    $('chainBlock').textContent = '—';
+    $('chainGas').textContent = '—';
+  }
+}
+
+// ─── MILESTONE ───
+function loadMilestone(){
+  // Pick the closest unhit milestone
+  const milestones = [
+    { check:()=>userWolfBal >= 100_000,    icon:'🥈', title:'Hit Omega Tier', desc:'Hold 100K WOLF' },
+    { check:()=>userWolfBal >= 1_000_000,  icon:'🥇', title:'Hit Beta Tier',  desc:'Hold 1M WOLF · serious bag' },
+    { check:()=>userWolfBal >= 5_000_000,  icon:'👑', title:'Hit Alpha Tier', desc:'Hold 5M WOLF · alpha territory' },
+    { check:()=>userWolfBal >= 25_000_000, icon:'🌕', title:'Become Legend',  desc:'Hold 25M WOLF · pack royalty' },
+    { check:()=>{ const days = firstSeenTs ? Math.floor((Date.now()/1000 - firstSeenTs)/86400) : 0; return days >= 30; }, icon:'⏳', title:'30-Day Diamond', desc:'Hold for 30 days straight' },
+    { check:()=>{ const days = firstSeenTs ? Math.floor((Date.now()/1000 - firstSeenTs)/86400) : 0; return days >= 90; }, icon:'💎', title:'Blood-Bonded', desc:'Hold for 90 days · forever pack' }
+  ];
+  const next = milestones.find(m => !m.check());
+  if(next){
+    $('msIcon').textContent = next.icon;
+    $('msTitle').textContent = next.title;
+    $('msDesc').textContent = next.desc;
+  }else{
+    $('msIcon').textContent = '🌕';
+    $('msTitle').textContent = 'PACK ROYALTY';
+    $('msDesc').textContent = 'You\'ve maxed every milestone. Howl loud.';
+  }
+}
+
+// ─── INIT ───
+async function init(){
+  await loadPrice();
+  paintPrice();
+  // Refresh price every 30s
+  setInterval(async () => {
+    await loadPrice();
+    paintPrice();
+  }, 30000);
+
+  // Auto-connect if previously connected
+  if(window.ethereum){
+    const accounts = await window.ethereum.request({method:'eth_accounts'}).catch(()=>[]);
+    if(accounts && accounts.length){
+      connectWallet();
+    }
+  }
+}
+init();
+</script>
+</body>
+</html>
