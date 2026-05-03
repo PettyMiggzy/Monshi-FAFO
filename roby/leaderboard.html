@@ -216,7 +216,7 @@
 }
 </style>
 </head>
-<body>
+<body class="roby-body">
 
 <div id="roby-shell"></div>
 
@@ -250,41 +250,15 @@
 
 <script>
 (function(){
-  // Mock leaderboard data — Roby will populate real data from his lounge later
-  var DATA = {
-    raiders: [
-      { handle:'@PhuckMc', title:'KNIGHT OF THE PHUCK', pts: 4280, init:'P' },
-      { handle:'@Simply_K', title:'DUCHESS OF DROPS', pts: 3950, init:'S' },
-      { handle:'@Monshi_Monpad', title:'COURT BUILDER', pts: 3720, init:'M' },
-      { handle:'@chogi_mon', title:'CTO OF CHAOS', pts: 3410, init:'C' },
-      { handle:'@miggzyonbase', title:'KING PETTY', pts: 3180, init:'👑' },
-      { handle:'@RaiderSeven', title:'KNIGHT', pts: 2890, init:'R' },
-      { handle:'@LoudCommenter', title:'BARON OF BANTER', pts: 2640, init:'L' },
-      { handle:'@SilentRT', title:'SHADOWBLADE', pts: 2410, init:'S' },
-      { handle:'@DailyDropper', title:'COURIER', pts: 2200, init:'D' },
-      { handle:'@LateButLoyal', title:'SQUIRE', pts: 1980, init:'L' }
-    ],
-    callers: [
-      { handle:'@RobyCalls', title:'THE KING HIMSELF', pts: 12400, init:'👑' },
-      { handle:'@miggzyonbase', title:'PETTY THE PROPHET', pts: 5840, init:'P' },
-      { handle:'@AlphaWhisper', title:'EARLY BIRD', pts: 4220, init:'A' },
-      { handle:'@ChartReader42', title:'THE ANALYST', pts: 3760, init:'C' },
-      { handle:'@DipBuyer', title:'THE PATIENT ONE', pts: 2980, init:'D' },
-      { handle:'@MoonHunter', title:'THE OPTIMIST', pts: 2540, init:'M' },
-      { handle:'@RugSpotter', title:'THE SKEPTIC', pts: 2310, init:'R' }
-    ],
-    scribes: [
-      { handle:'@ThreadMaster', title:'COURT POET', pts: 6420, init:'T' },
-      { handle:'@DegenWordsmith', title:'INK MASTER', pts: 4870, init:'D' },
-      { handle:'@MemeMonarch', title:'JESTER LAUREATE', pts: 3950, init:'M' },
-      { handle:'@SharpReplies', title:'WIT WIELDER', pts: 3220, init:'S' },
-      { handle:'@LoreKeeper', title:'CHRONICLER', pts: 2840, init:'L' }
-    ]
-  };
+  var DATA = { raiders: [], callers: [], scribes: [] };
 
   function render(tab) {
     var roster = document.getElementById('roster');
     var data = DATA[tab] || [];
+    if (!data.length) {
+      roster.innerHTML = '<div style="text-align:center;padding:40px;font-family:\'JetBrains Mono\',monospace;color:rgba(245,230,204,.4);font-size:12px;letter-spacing:1.5px;">loading the court...</div>';
+      return;
+    }
     roster.innerHTML = data.map(function(m, i){
       var rank = i + 1;
       var rankCls = rank <= 3 ? 'rank-' + rank : '';
@@ -315,7 +289,24 @@
     });
   });
 
+  // Initial render with empty (loading state)
   render('raiders');
+
+  // Fetch real data from JSON
+  fetch('/roby/data/court.json')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      DATA = {
+        raiders: (d.raiders || []).slice().sort(function(a,b){return b.pts-a.pts;}),
+        callers: (d.callers || []).slice().sort(function(a,b){return b.pts-a.pts;}),
+        scribes: (d.scribes || []).slice().sort(function(a,b){return b.pts-a.pts;})
+      };
+      var activeTab = document.querySelector('.tab.active');
+      render(activeTab ? activeTab.dataset.tab : 'raiders');
+    })
+    .catch(function(){
+      document.getElementById('roster').innerHTML = '<div style="text-align:center;padding:40px;font-family:\'JetBrains Mono\',monospace;color:rgba(245,230,204,.4);font-size:12px;letter-spacing:1.5px;">court data unavailable · check back later</div>';
+    });
 })();
 </script>
 </body>
