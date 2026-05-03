@@ -12,6 +12,19 @@
     "status": "open",
     "note": "why this play..."
   },
-  "lastUpdate": "",
-  "calls": []
+  "lastUpdate": "2026-05-03",
+  "calls": [
+    {
+      "id": "rc-monshi",
+      "symbol": "MONSHI",
+      "contract": "0xB744F5CDb792d8187640214C4A1c9aCE29af7777",
+      "chain": "monad",
+      "entryPrice": 0.00004,
+      "target": 0.0002,
+      "stopLoss": 0.00002,
+      "callDate": "2026-05-01",
+      "status": "open",
+      "note": "Full arcade ecosystem, 27 games live, MonPad V2 deployed, real builders behind it. Ground floor."
+    }
+  ]
 }
