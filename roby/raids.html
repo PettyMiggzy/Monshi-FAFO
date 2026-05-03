@@ -270,52 +270,20 @@
 
   <div>
     <h2 class="section-h">⚡ Active Raid</h2>
-    <div class="active-raid">
-      <div class="active-tag">⚡ LIVE RAID</div>
-      <div class="active-target">
-        <h3>$CHOGI · Containment Breach Post</h3>
-        <p>"Sister of Chog has officially been promoted to CTO. Lock in the family narrative — like, RT, comment chaos."</p>
-        <a class="raid-link" href="https://x.com/chogi_mon" target="_blank" rel="noopener">→ x.com/chogi_mon (latest CTO post)</a>
-        <div class="raid-actions">
-          <a class="raid-btn raid-btn-rt" href="https://x.com/chogi_mon" target="_blank" rel="noopener">🔄 RT POST</a>
-          <a class="raid-btn raid-btn-cmt" href="https://x.com/chogi_mon" target="_blank" rel="noopener">💬 COMMENT</a>
-          <a class="raid-btn raid-btn-tg" href="https://t.me/robyslounge" target="_blank" rel="noopener">📱 LOUNGE CHAT</a>
-        </div>
+    <div id="activeRaidMount">
+      <div style="padding:40px 20px;text-align:center;background:linear-gradient(180deg,rgba(252,196,25,.04),rgba(0,0,0,.2));border:1.5px dashed rgba(252,196,25,.3);border-radius:18px;font-family:'Cinzel',serif;font-style:italic;color:rgba(245,230,204,.55);font-size:14px;line-height:1.7;">
+        no raid active right now.<br>
+        <span style="color:#FCC419;">— the next call drops in the lounge —</span>
       </div>
     </div>
   </div>
 
   <div>
     <h2 class="section-h">📋 Recent Raids</h2>
-    <div class="raid-grid">
-      <div class="raid-card">
-        <div class="when">📅 2 days ago · COMPLETE</div>
-        <h4>$MONSHI · Pad Launch Post</h4>
-        <p>Full lounge mobilized. Hit top of Monad timeline.</p>
-        <div class="raid-card-meta">
-          <span>🔄 ~140 RTs</span>
-          <span>💬 ~85 comments</span>
-        </div>
-      </div>
-
-      <div class="raid-card">
-        <div class="when">📅 5 days ago · COMPLETE</div>
-        <h4>$RENE · Community Drop</h4>
-        <p>Coordinated push for partner project announcement.</p>
-        <div class="raid-card-meta">
-          <span>🔄 ~95 RTs</span>
-          <span>💬 ~52 comments</span>
-        </div>
-      </div>
-
-      <div class="raid-card">
-        <div class="when">📅 1 week ago · COMPLETE</div>
-        <h4>$CHOG · World Order Push</h4>
-        <p>Big bro shoutout. Solid engagement from the family.</p>
-        <div class="raid-card-meta">
-          <span>🔄 ~210 RTs</span>
-          <span>💬 ~130 comments</span>
-        </div>
+    <div class="raid-grid" id="recentRaidsMount">
+      <div style="grid-column:1/-1;padding:40px 20px;text-align:center;font-family:'Cinzel',serif;font-style:italic;color:rgba(245,230,204,.5);font-size:13px;letter-spacing:.5px;">
+        raid history is being chronicled.<br>
+        <span style="color:#FCC419;font-size:11px;letter-spacing:1.5px;">CHECK BACK SOON</span>
       </div>
     </div>
   </div>
@@ -358,5 +326,66 @@
 
 <div id="roby-footer"></div>
 <script src="/roby/roby-shell.js"></script>
+
+<script>
+(function(){
+  function fmtDateAgo(iso){
+    var d = new Date(iso);
+    var diff = Math.floor((Date.now() - d.getTime()) / (1000*60*60*24));
+    if (diff <= 0) return 'today';
+    if (diff === 1) return '1 day ago';
+    if (diff < 7) return diff + ' days ago';
+    if (diff < 14) return '1 week ago';
+    if (diff < 30) return Math.floor(diff/7) + ' weeks ago';
+    return Math.floor(diff/30) + ' month' + (diff>=60?'s':'') + ' ago';
+  }
+
+  fetch('/roby/data/raids.json')
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){
+      if (!d) return;
+
+      // Active raid
+      if (d.active && d.active.title) {
+        var a = d.active;
+        var actionsHtml = '';
+        if (a.url) {
+          actionsHtml += '<a class="raid-btn raid-btn-rt" href="' + a.url + '" target="_blank" rel="noopener">🔄 RT POST</a>';
+          actionsHtml += '<a class="raid-btn raid-btn-cmt" href="' + a.url + '" target="_blank" rel="noopener">💬 COMMENT</a>';
+        }
+        actionsHtml += '<a class="raid-btn raid-btn-tg" href="https://t.me/robyslounge" target="_blank" rel="noopener">📱 LOUNGE CHAT</a>';
+
+        document.getElementById('activeRaidMount').innerHTML =
+          '<div class="active-raid">' +
+            '<div class="active-tag">⚡ LIVE RAID</div>' +
+            '<div class="active-target">' +
+              '<h3>' + a.title + '</h3>' +
+              (a.note ? '<p>"' + a.note + '"</p>' : '') +
+              (a.url ? '<a class="raid-link" href="' + a.url + '" target="_blank" rel="noopener">→ ' + a.url + '</a>' : '') +
+              '<div class="raid-actions">' + actionsHtml + '</div>' +
+            '</div>' +
+          '</div>';
+      }
+
+      // Recent raids
+      if (d.recent && d.recent.length) {
+        document.getElementById('recentRaidsMount').innerHTML = d.recent.map(function(r){
+          var meta = '';
+          if (r.rts) meta += '<span>🔄 ~' + r.rts + ' RTs</span>';
+          if (r.comments) meta += '<span>💬 ~' + r.comments + ' comments</span>';
+          return (
+            '<div class="raid-card">' +
+              '<div class="when">📅 ' + (r.date ? fmtDateAgo(r.date) : 'past') + ' · ' + (r.status || 'COMPLETE') + '</div>' +
+              '<h4>' + r.title + '</h4>' +
+              (r.note ? '<p>' + r.note + '</p>' : '') +
+              (meta ? '<div class="raid-card-meta">' + meta + '</div>' : '') +
+            '</div>'
+          );
+        }).join('');
+      }
+    })
+    .catch(function(){});
+})();
+</script>
 </body>
 </html>

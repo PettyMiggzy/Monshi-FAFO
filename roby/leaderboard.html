@@ -251,12 +251,16 @@
 <script>
 (function(){
   var DATA = { raiders: [], callers: [], scribes: [] };
+  var DATA_LOADED = false;
 
   function render(tab) {
     var roster = document.getElementById('roster');
     var data = DATA[tab] || [];
     if (!data.length) {
-      roster.innerHTML = '<div style="text-align:center;padding:40px;font-family:\'JetBrains Mono\',monospace;color:rgba(245,230,204,.4);font-size:12px;letter-spacing:1.5px;">loading the court...</div>';
+      var msg = DATA_LOADED
+        ? 'the court has not yet been knighted in this tier.<br><span style="color:#FCC419;">— show up. earn your seat. —</span>'
+        : 'loading the court...';
+      roster.innerHTML = '<div style="text-align:center;padding:50px 20px;font-family:\'Cinzel\',serif;font-style:italic;color:rgba(245,230,204,.55);font-size:14px;letter-spacing:.5px;line-height:1.8;">' + msg + '</div>';
       return;
     }
     roster.innerHTML = data.map(function(m, i){
@@ -301,11 +305,14 @@
         callers: (d.callers || []).slice().sort(function(a,b){return b.pts-a.pts;}),
         scribes: (d.scribes || []).slice().sort(function(a,b){return b.pts-a.pts;})
       };
+      DATA_LOADED = true;
       var activeTab = document.querySelector('.tab.active');
       render(activeTab ? activeTab.dataset.tab : 'raiders');
     })
     .catch(function(){
-      document.getElementById('roster').innerHTML = '<div style="text-align:center;padding:40px;font-family:\'JetBrains Mono\',monospace;color:rgba(245,230,204,.4);font-size:12px;letter-spacing:1.5px;">court data unavailable · check back later</div>';
+      DATA_LOADED = true;
+      var activeTab = document.querySelector('.tab.active');
+      render(activeTab ? activeTab.dataset.tab : 'raiders');
     });
 })();
 </script>

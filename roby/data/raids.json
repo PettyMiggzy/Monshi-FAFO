@@ -1,0 +1,18 @@
+{
+  "_note": "Roby's raid data. Edit to add active raid + recent raid history.",
+  "_template_active": {
+    "title": "$TICKER · Post Description",
+    "note": "what to push / why this raid matters",
+    "url": "https://x.com/handle/status/..."
+  },
+  "_template_recent_item": {
+    "title": "$TICKER · Post",
+    "note": "outcome summary",
+    "date": "2026-05-01",
+    "status": "COMPLETE",
+    "rts": 100,
+    "comments": 50
+  },
+  "active": null,
+  "recent": []
+}
