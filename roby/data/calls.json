@@ -1,0 +1,66 @@
+{
+  "_note": "Roby's call ledger. Update this file to add/edit calls. Status: 'open', 'hit', 'stop', 'closed'.",
+  "lastUpdate": "2026-05-03",
+  "calls": [
+    {
+      "id": "rc-001",
+      "symbol": "MONSHI",
+      "contract": "0xB744F5CDb792d8187640214C4A1c9aCE29af7777",
+      "chain": "monad",
+      "entryPrice": 0.00012,
+      "target": 0.0005,
+      "stopLoss": 0.00008,
+      "callDate": "2026-04-15",
+      "status": "open",
+      "note": "Strong arcade ecosystem, 27 games live, MonPad V2 deployed."
+    },
+    {
+      "id": "rc-002",
+      "symbol": "CHOG",
+      "contract": "0x350035555E10d9AfAF1566AaebfCeD5BA6C27777",
+      "chain": "monad",
+      "entryPrice": 0.0085,
+      "target": 0.025,
+      "stopLoss": 0.005,
+      "callDate": "2026-03-20",
+      "status": "hit",
+      "note": "Hit 3x in 4 weeks. Strong community, real branding."
+    },
+    {
+      "id": "rc-003",
+      "symbol": "CHOGI",
+      "contract": "0x5E1b1A14c8758104B8560514e94ab8320e587777",
+      "chain": "monad",
+      "entryPrice": 0.0001,
+      "target": 0.001,
+      "stopLoss": 0.00005,
+      "callDate": "2026-04-28",
+      "status": "open",
+      "note": "Sister of Chog, lab-themed, CTO promoted. Early."
+    },
+    {
+      "id": "rc-004",
+      "symbol": "PHUCK",
+      "contract": "0x148a3a811979e5BF8366FC279B2d67742Fe17777",
+      "chain": "monad",
+      "entryPrice": 0.000045,
+      "target": 0.00018,
+      "stopLoss": 0.00002,
+      "callDate": "2026-04-10",
+      "status": "open",
+      "note": "Meme energy, low cap, watching."
+    },
+    {
+      "id": "rc-005",
+      "symbol": "RENE",
+      "contract": "0xaCA86430cCCEdbedB35910fC8A5AFEF07dA37777",
+      "chain": "monad",
+      "entryPrice": 0.0002,
+      "target": 0.0008,
+      "stopLoss": 0.0001,
+      "callDate": "2026-04-22",
+      "status": "open",
+      "note": "Partner project, strong dev team."
+    }
+  ]
+}

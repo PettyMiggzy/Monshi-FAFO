@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>THE COURT · Roby's Royal Roster</title>
+<meta name="description" content="The royal court of Roby's Lounge. Top raiders, top callers, top scribes.">
+<link rel="icon" type="image/png" href="/roby/data/roby-pfp.png">
+<meta name="theme-color" content="#FCC419">
+<style>
+.page-head {
+  padding:50px 22px 24px;
+  text-align:center;
+}
+.eyebrow {
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px; letter-spacing:4px;
+  color:#FCC419;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.page-head h1 {
+  font-family:'Cinzel', serif;
+  font-weight:900;
+  font-size:clamp(38px, 7vw, 64px);
+  letter-spacing:4px;
+  color:#FCC419;
+  text-shadow:0 0 60px rgba(252,196,25,.4);
+  margin-bottom:8px;
+}
+.page-head p {
+  font-family:'Cinzel', serif;
+  font-style:italic;
+  color:rgba(245,230,204,.7);
+  max-width:620px;
+  margin:0 auto;
+  font-size:15px;
+  line-height:1.7;
+}
+
+.content {
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 20px 60px;
+}
+
+/* Tabs */
+.tabs {
+  display:flex; gap:6px;
+  margin-bottom:24px;
+  border-bottom:1.5px solid rgba(252,196,25,.25);
+  padding-bottom:0;
+  flex-wrap:wrap;
+}
+.tab {
+  padding:12px 18px;
+  font-family:'Cinzel', serif;
+  font-weight:700;
+  font-size:12px;
+  letter-spacing:2px;
+  color:rgba(245,230,204,.6);
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  border-bottom:3px solid transparent;
+  margin-bottom:-1.5px;
+  text-transform:uppercase;
+  transition:all .15s;
+}
+.tab:hover { color:#FCC419; }
+.tab.active {
+  color:#FCC419;
+  border-bottom-color:#FCC419;
+}
+
+/* Roster */
+.roster {
+  display:grid;
+  gap:8px;
+}
+.member {
+  display:grid;
+  grid-template-columns:60px 60px 1fr auto;
+  gap:14px;
+  align-items:center;
+  padding:14px 18px;
+  background:linear-gradient(90deg, rgba(252,196,25,.06), rgba(0,0,0,.3));
+  border:1.5px solid rgba(252,196,25,.2);
+  border-radius:12px;
+  transition:all .15s;
+}
+.member:hover {
+  border-color:#FCC419;
+  background:linear-gradient(90deg, rgba(252,196,25,.12), rgba(0,0,0,.3));
+}
+.member.rank-1 {
+  border-color:#FCC419;
+  background:linear-gradient(90deg, rgba(252,196,25,.18), rgba(155,44,44,.06));
+  box-shadow:0 0 20px rgba(252,196,25,.2);
+}
+.member.rank-2 { border-color:rgba(192,192,192,.5); }
+.member.rank-3 { border-color:rgba(205,127,50,.5); }
+
+.rank-num {
+  font-family:'Cinzel', serif;
+  font-weight:900;
+  font-size:24px;
+  text-align:center;
+  color:rgba(245,230,204,.5);
+}
+.member.rank-1 .rank-num { color:#FCC419; font-size:28px; text-shadow:0 0 14px rgba(252,196,25,.6); }
+.member.rank-2 .rank-num { color:#C0C0C0; font-size:26px; }
+.member.rank-3 .rank-num { color:#CD7F32; font-size:26px; }
+
+.member-pfp {
+  width:48px; height:48px;
+  border-radius:50%;
+  background:linear-gradient(135deg, #FCC419, #9B2C2C);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Cinzel', serif;
+  font-weight:900;
+  font-size:18px;
+  color:#0d0a06;
+  border:2px solid rgba(252,196,25,.5);
+}
+.member.rank-1 .member-pfp { border-color:#FCC419; box-shadow:0 0 16px rgba(252,196,25,.5); }
+
+.member-info {
+  min-width:0;
+}
+.member-handle {
+  font-family:'Cinzel', serif;
+  font-weight:700;
+  font-size:16px;
+  color:#fff;
+  letter-spacing:.5px;
+  margin-bottom:3px;
+}
+.member-title {
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px;
+  letter-spacing:1.5px;
+  color:rgba(245,230,204,.55);
+  font-weight:700;
+  text-transform:uppercase;
+}
+.member-title.gold { color:#FCC419; }
+.member-title.silver { color:#C0C0C0; }
+.member-title.bronze { color:#CD7F32; }
+
+.member-pts {
+  text-align:right;
+}
+.member-pts-v {
+  font-family:'Cinzel', serif;
+  font-weight:900;
+  font-size:22px;
+  color:#FCC419;
+  letter-spacing:.5px;
+}
+.member-pts-l {
+  font-family:'JetBrains Mono', monospace;
+  font-size:9px;
+  color:rgba(245,230,204,.5);
+  letter-spacing:1px;
+  font-weight:700;
+}
+
+/* INFO BLOCK */
+.info-block {
+  margin-top:30px;
+  padding:24px;
+  background:linear-gradient(135deg, rgba(74,107,166,.12), rgba(155,44,44,.08));
+  border:1.5px solid rgba(74,107,166,.4);
+  border-radius:18px;
+  text-align:center;
+}
+.info-block h3 {
+  font-family:'Cinzel', serif;
+  font-weight:900;
+  font-size:22px;
+  color:#FCC419;
+  letter-spacing:1.5px;
+  margin-bottom:10px;
+}
+.info-block p {
+  font-size:14px;
+  color:rgba(245,230,204,.75);
+  line-height:1.6;
+  max-width:560px;
+  margin:0 auto 16px;
+}
+.info-block .btn {
+  padding:13px 24px;
+  background:linear-gradient(135deg, #4A6BA6, #2C4A7C);
+  color:#fff;
+  text-decoration:none;
+  font-family:'Cinzel', serif;
+  font-weight:700;
+  font-size:12px;
+  letter-spacing:2px;
+  border-radius:10px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  text-transform:uppercase;
+}
+.info-block .btn:hover { transform:translateY(-2px); }
+
+@media(max-width:540px) {
+  .member { grid-template-columns:36px 44px 1fr auto; padding:12px 14px; gap:10px; }
+  .rank-num { font-size:18px !important; }
+  .member-pfp { width:44px; height:44px; font-size:15px; }
+  .member-handle { font-size:14px; }
+  .member-pts-v { font-size:18px; }
+}
+</style>
+</head>
+<body>
+
+<div id="roby-shell"></div>
+
+<section class="page-head">
+  <div class="eyebrow">👑 THE ROYAL COURT</div>
+  <h1>THE COURT</h1>
+  <p>"Loyalty is earned, not granted. The court is the lounge's sharpest blades — top raiders, callers, and scribes who show up when it matters."</p>
+</section>
+
+<div class="content">
+
+  <div class="tabs">
+    <button class="tab active" data-tab="raiders">⚔️ TOP RAIDERS</button>
+    <button class="tab" data-tab="callers">📜 TOP CALLERS</button>
+    <button class="tab" data-tab="scribes">✍️ TOP SCRIBES</button>
+  </div>
+
+  <div class="roster" id="roster">
+    <!-- populated by JS -->
+  </div>
+
+  <div class="info-block">
+    <h3>How to enter the court</h3>
+    <p>Show up to raids. Drop sharp calls. Write threads that move bags. The court watches, the king rewards — climb the ranks and earn your place at the table.</p>
+    <a class="btn" href="https://t.me/robyslounge" target="_blank" rel="noopener">📱 ENTER THE LOUNGE</a>
+  </div>
+</div>
+
+<div id="roby-footer"></div>
+<script src="/roby/roby-shell.js"></script>
+
+<script>
+(function(){
+  // Mock leaderboard data — Roby will populate real data from his lounge later
+  var DATA = {
+    raiders: [
+      { handle:'@PhuckMc', title:'KNIGHT OF THE PHUCK', pts: 4280, init:'P' },
+      { handle:'@Simply_K', title:'DUCHESS OF DROPS', pts: 3950, init:'S' },
+      { handle:'@Monshi_Monpad', title:'COURT BUILDER', pts: 3720, init:'M' },
+      { handle:'@chogi_mon', title:'CTO OF CHAOS', pts: 3410, init:'C' },
+      { handle:'@miggzyonbase', title:'KING PETTY', pts: 3180, init:'👑' },
+      { handle:'@RaiderSeven', title:'KNIGHT', pts: 2890, init:'R' },
+      { handle:'@LoudCommenter', title:'BARON OF BANTER', pts: 2640, init:'L' },
+      { handle:'@SilentRT', title:'SHADOWBLADE', pts: 2410, init:'S' },
+      { handle:'@DailyDropper', title:'COURIER', pts: 2200, init:'D' },
+      { handle:'@LateButLoyal', title:'SQUIRE', pts: 1980, init:'L' }
+    ],
+    callers: [
+      { handle:'@RobyCalls', title:'THE KING HIMSELF', pts: 12400, init:'👑' },
+      { handle:'@miggzyonbase', title:'PETTY THE PROPHET', pts: 5840, init:'P' },
+      { handle:'@AlphaWhisper', title:'EARLY BIRD', pts: 4220, init:'A' },
+      { handle:'@ChartReader42', title:'THE ANALYST', pts: 3760, init:'C' },
+      { handle:'@DipBuyer', title:'THE PATIENT ONE', pts: 2980, init:'D' },
+      { handle:'@MoonHunter', title:'THE OPTIMIST', pts: 2540, init:'M' },
+      { handle:'@RugSpotter', title:'THE SKEPTIC', pts: 2310, init:'R' }
+    ],
+    scribes: [
+      { handle:'@ThreadMaster', title:'COURT POET', pts: 6420, init:'T' },
+      { handle:'@DegenWordsmith', title:'INK MASTER', pts: 4870, init:'D' },
+      { handle:'@MemeMonarch', title:'JESTER LAUREATE', pts: 3950, init:'M' },
+      { handle:'@SharpReplies', title:'WIT WIELDER', pts: 3220, init:'S' },
+      { handle:'@LoreKeeper', title:'CHRONICLER', pts: 2840, init:'L' }
+    ]
+  };
+
+  function render(tab) {
+    var roster = document.getElementById('roster');
+    var data = DATA[tab] || [];
+    roster.innerHTML = data.map(function(m, i){
+      var rank = i + 1;
+      var rankCls = rank <= 3 ? 'rank-' + rank : '';
+      var titleCls = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : '';
+      var crown = rank === 1 ? '👑 ' : rank === 2 ? '🥈 ' : rank === 3 ? '🥉 ' : '';
+      return (
+        '<div class="member ' + rankCls + '">' +
+          '<div class="rank-num">' + (rank === 1 ? '👑' : '#' + rank) + '</div>' +
+          '<div class="member-pfp">' + m.init + '</div>' +
+          '<div class="member-info">' +
+            '<div class="member-handle">' + m.handle + '</div>' +
+            '<div class="member-title ' + titleCls + '">' + crown + m.title + '</div>' +
+          '</div>' +
+          '<div class="member-pts">' +
+            '<div class="member-pts-v">' + m.pts.toLocaleString() + '</div>' +
+            '<div class="member-pts-l">CROWN PTS</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  document.querySelectorAll('.tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
+      t.classList.add('active');
+      render(t.dataset.tab);
+    });
+  });
+
+  render('raiders');
+})();
+</script>
+</body>
+</html>

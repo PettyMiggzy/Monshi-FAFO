@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RAID HUB · Roby Calls</title>
+<meta name="description" content="Active raids, queued targets, top raiders. The lounge moves as one.">
+<link rel="icon" type="image/png" href="/roby/data/roby-pfp.png">
+<meta name="theme-color" content="#FCC419">
+<style>
+.page-head {
+  padding:50px 22px 24px;
+  text-align:center;
+}
+.eyebrow {
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px; letter-spacing:4px;
+  color:#FCC419;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.page-head h1 {
+  font-family:'Cinzel', serif;
+  font-weight:900;
+  font-size:clamp(38px, 7vw, 64px);
+  letter-spacing:4px;
+  color:#FCC419;
+  text-shadow:0 0 60px rgba(252,196,25,.4);
+  margin-bottom:8px;
+}
+.page-head p {
+  font-family:'Cinzel', serif;
+  font-style:italic;
+  color:rgba(245,230,204,.7);
+  max-width:560px;
+  margin:0 auto;
+  font-size:15px;
+  line-height:1.7;
+}
+
+.content {
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 20px 60px;
+  display:grid;
+  gap:24px;
+}
+
+.section-h {
+  font-family:'Cinzel', serif;
+  font-weight:900;
+  font-size:22px;
+  letter-spacing:2px;
+  color:#FCC419;
+  margin-bottom:14px;
+  text-transform:uppercase;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.section-h::before {
+  content:'';
+  display:inline-block;
+  width:24px; height:2px;
+  background:#FCC419;
+}
+
+/* ACTIVE RAID */
+.active-raid {
+  background:linear-gradient(180deg, rgba(155,44,44,.18), rgba(252,196,25,.06));
+  border:2px solid #9B2C2C;
+  border-radius:18px;
+  padding:24px;
+  position:relative;
+  overflow:hidden;
+}
+.active-raid::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0;
+  height:2px;
+  background:linear-gradient(90deg, transparent, #EF4444, transparent);
+  animation:liveBar 2s linear infinite;
+}
+@keyframes liveBar {
+  0% { transform:translateX(-100%); }
+  100% { transform:translateX(100%); }
+}
+.active-tag {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:5px 12px;
+  background:#EF4444;
+  color:#fff;
+  border-radius:30px;
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:1.5px;
+  margin-bottom:14px;
+  animation:pulse 1.4s infinite;
+}
+@keyframes pulse{50%{opacity:.6;}}
+.active-tag::before {
+  content:'';
+  width:6px; height:6px; border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 6px #fff;
+}
+.active-target h3 {
+  font-family:'Cinzel', serif;
+  font-weight:900;
+  font-size:24px;
+  letter-spacing:1px;
+  color:#fff;
+  margin-bottom:8px;
+}
+.active-target p {
+  font-family:'JetBrains Mono', monospace;
+  font-size:12px;
+  color:rgba(245,230,204,.7);
+  margin-bottom:18px;
+  line-height:1.6;
+}
+.raid-link {
+  display:block;
+  padding:12px 16px;
+  background:#000;
+  border:1px solid rgba(252,196,25,.4);
+  border-radius:10px;
+  font-family:'JetBrains Mono', monospace;
+  font-size:12px;
+  color:#FCC419;
+  word-break:break-all;
+  margin-bottom:18px;
+  text-decoration:none;
+}
+.raid-link:hover { border-color:#FCC419; background:rgba(252,196,25,.05); }
+.raid-actions {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.raid-btn {
+  padding:11px 18px;
+  text-decoration:none;
+  font-family:'Cinzel', serif;
+  font-weight:700;
+  font-size:11px;
+  letter-spacing:2px;
+  border-radius:8px;
+  display:inline-flex; align-items:center; gap:6px;
+  text-transform:uppercase;
+  transition:transform .12s;
+}
+.raid-btn:hover { transform:translateY(-2px); }
+.raid-btn-rt {
+  background:linear-gradient(135deg, #4A6BA6, #2C4A7C);
+  color:#fff;
+}
+.raid-btn-cmt {
+  background:linear-gradient(135deg, #FCC419, #E0A800);
+  color:#0d0a06;
+}
+.raid-btn-tg {
+  background:rgba(245,230,204,.06);
+  border:1.5px solid rgba(245,230,204,.25);
+  color:var(--r-cream);
+}
+
+/* RAID GRID */
+.raid-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+  gap:14px;
+}
+.raid-card {
+  background:linear-gradient(180deg, rgba(252,196,25,.05), rgba(0,0,0,.3));
+  border:1.5px solid rgba(252,196,25,.2);
+  border-radius:14px;
+  padding:18px;
+}
+.raid-card .when {
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px;
+  color:rgba(245,230,204,.5);
+  letter-spacing:1.5px;
+  font-weight:700;
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.raid-card h4 {
+  font-family:'Cinzel', serif;
+  font-weight:900;
+  font-size:16px;
+  color:#FCC419;
+  margin-bottom:6px;
+}
+.raid-card p {
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px;
+  color:rgba(245,230,204,.6);
+  line-height:1.5;
+}
+.raid-card-meta {
+  display:flex; gap:12px;
+  margin-top:12px;
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px;
+  color:rgba(245,230,204,.4);
+}
+
+/* HOW IT WORKS */
+.how-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  gap:14px;
+}
+.how-step {
+  padding:18px;
+  background:rgba(252,196,25,.04);
+  border:1px solid rgba(252,196,25,.2);
+  border-left:3px solid #FCC419;
+  border-radius:10px;
+}
+.how-step .num {
+  font-family:'Cinzel', serif;
+  font-weight:900;
+  font-size:32px;
+  color:#FCC419;
+  line-height:1;
+  margin-bottom:8px;
+}
+.how-step h4 {
+  font-family:'Cinzel', serif;
+  font-weight:700;
+  font-size:14px;
+  color:#fff;
+  letter-spacing:1px;
+  margin-bottom:6px;
+  text-transform:uppercase;
+}
+.how-step p {
+  font-size:12px;
+  color:rgba(245,230,204,.65);
+  line-height:1.5;
+}
+
+.coming-soon {
+  text-align:center;
+  padding:40px 20px;
+  font-family:'Cinzel', serif;
+  font-style:italic;
+  color:rgba(245,230,204,.4);
+  font-size:14px;
+  border:1px dashed rgba(252,196,25,.25);
+  border-radius:14px;
+}
+</style>
+</head>
+<body>
+
+<div id="roby-shell"></div>
+
+<section class="page-head">
+  <div class="eyebrow">⚔️ THE RAID HUB</div>
+  <h1>RAID HUB</h1>
+  <p>"One king. One court. One target at a time. The lounge moves as one."</p>
+</section>
+
+<div class="content">
+
+  <div>
+    <h2 class="section-h">⚡ Active Raid</h2>
+    <div class="active-raid">
+      <div class="active-tag">⚡ LIVE RAID</div>
+      <div class="active-target">
+        <h3>$CHOGI · Containment Breach Post</h3>
+        <p>"Sister of Chog has officially been promoted to CTO. Lock in the family narrative — like, RT, comment chaos."</p>
+        <a class="raid-link" href="https://x.com/chogi_mon" target="_blank" rel="noopener">→ x.com/chogi_mon (latest CTO post)</a>
+        <div class="raid-actions">
+          <a class="raid-btn raid-btn-rt" href="https://x.com/chogi_mon" target="_blank" rel="noopener">🔄 RT POST</a>
+          <a class="raid-btn raid-btn-cmt" href="https://x.com/chogi_mon" target="_blank" rel="noopener">💬 COMMENT</a>
+          <a class="raid-btn raid-btn-tg" href="https://t.me/robyslounge" target="_blank" rel="noopener">📱 LOUNGE CHAT</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h2 class="section-h">📋 Recent Raids</h2>
+    <div class="raid-grid">
+      <div class="raid-card">
+        <div class="when">📅 2 days ago · COMPLETE</div>
+        <h4>$MONSHI · Pad Launch Post</h4>
+        <p>Full lounge mobilized. Hit top of Monad timeline.</p>
+        <div class="raid-card-meta">
+          <span>🔄 ~140 RTs</span>
+          <span>💬 ~85 comments</span>
+        </div>
+      </div>
+
+      <div class="raid-card">
+        <div class="when">📅 5 days ago · COMPLETE</div>
+        <h4>$RENE · Community Drop</h4>
+        <p>Coordinated push for partner project announcement.</p>
+        <div class="raid-card-meta">
+          <span>🔄 ~95 RTs</span>
+          <span>💬 ~52 comments</span>
+        </div>
+      </div>
+
+      <div class="raid-card">
+        <div class="when">📅 1 week ago · COMPLETE</div>
+        <h4>$CHOG · World Order Push</h4>
+        <p>Big bro shoutout. Solid engagement from the family.</p>
+        <div class="raid-card-meta">
+          <span>🔄 ~210 RTs</span>
+          <span>💬 ~130 comments</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h2 class="section-h">📜 How a Raid Works</h2>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="num">1</div>
+        <h4>Roby drops a target</h4>
+        <p>Posted in the lounge. A specific X post + the angle to push.</p>
+      </div>
+      <div class="how-step">
+        <div class="num">2</div>
+        <h4>Court mobilizes</h4>
+        <p>Lounge members RT, like, comment. Coordinated within ~10 mins of drop.</p>
+      </div>
+      <div class="how-step">
+        <div class="num">3</div>
+        <h4>Engagement compounds</h4>
+        <p>Algorithm sees the spike, post hits broader timeline. Raids work.</p>
+      </div>
+      <div class="how-step">
+        <div class="num">4</div>
+        <h4>Top raiders earn rank</h4>
+        <p>Show up consistently → climb the Court leaderboard. Get noticed.</p>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h2 class="section-h">🎯 Queued Targets</h2>
+    <div class="coming-soon">
+      raid queue coming soon — roby will post next 3 targets here<br>
+      <span style="color:#FCC419;">until then, watch the lounge</span>
+    </div>
+  </div>
+
+</div>
+
+<div id="roby-footer"></div>
+<script src="/roby/roby-shell.js"></script>
+</body>
+</html>

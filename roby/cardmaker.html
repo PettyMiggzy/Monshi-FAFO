@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CARD MAKER · Roby Calls</title>
+<meta name="description" content="Generate a royal call card for any token. Branded, verifiable, ready for X.">
+<link rel="icon" type="image/png" href="/roby/data/roby-pfp.png">
+<meta name="theme-color" content="#FCC419">
+<style>
+.page-head {
+  padding:50px 22px 24px;
+  text-align:center;
+}
+.eyebrow {
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px; letter-spacing:4px;
+  color:#FCC419;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.page-head h1 {
+  font-family:'Cinzel', serif;
+  font-weight:900;
+  font-size:clamp(38px, 7vw, 64px);
+  letter-spacing:4px;
+  color:#FCC419;
+  text-shadow:0 0 60px rgba(252,196,25,.4);
+  margin-bottom:8px;
+}
+.page-head p {
+  font-family:'Cinzel', serif;
+  font-style:italic;
+  color:rgba(245,230,204,.7);
+  max-width:560px;
+  margin:0 auto;
+  font-size:15px;
+  line-height:1.7;
+}
+
+.workspace {
+  max-width:880px;
+  margin:24px auto 60px;
+  padding:0 20px;
+}
+
+.input-row {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-bottom:14px;
+}
+.input-row label {
+  font-family:'Cinzel', serif;
+  font-weight:700;
+  font-size:11px;
+  letter-spacing:2px;
+  color:rgba(245,230,204,.6);
+  text-transform:uppercase;
+}
+.input-row input, .input-row textarea {
+  padding:14px 16px;
+  background:rgba(0,0,0,.4);
+  border:1.5px solid rgba(252,196,25,.3);
+  border-radius:10px;
+  color:#fff;
+  font-family:'JetBrains Mono', monospace;
+  font-size:13px;
+  letter-spacing:.5px;
+  font-weight:400;
+}
+.input-row input:focus, .input-row textarea:focus {
+  outline:none;
+  border-color:#FCC419;
+  box-shadow:0 0 14px rgba(252,196,25,.3);
+}
+.input-row .input-hint {
+  font-family:'JetBrains Mono', monospace;
+  font-size:9px;
+  letter-spacing:1.5px;
+  color:rgba(245,230,204,.4);
+  margin-top:-2px;
+}
+
+.input-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+@media(max-width:540px) {
+  .input-grid { grid-template-columns:1fr; }
+}
+
+.btn-row {
+  display:flex; gap:10px; flex-wrap:wrap;
+  justify-content:center;
+  margin:20px 0;
+}
+.btn {
+  padding:13px 22px;
+  text-decoration:none;
+  font-family:'Cinzel', serif;
+  font-weight:700;
+  font-size:12px;
+  letter-spacing:2px;
+  border-radius:10px;
+  cursor:pointer;
+  border:none;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition:transform .15s;
+  color:#fff;
+  text-transform:uppercase;
+}
+.btn:hover:not(:disabled) { transform:translateY(-2px); }
+.btn:disabled { opacity:.5; cursor:not-allowed; }
+.btn-primary {
+  background:linear-gradient(135deg, #FCC419, #E0A800);
+  color:#0d0a06;
+  box-shadow:0 0 24px rgba(252,196,25,.3);
+}
+.btn-secondary {
+  background:transparent;
+  border:1.5px solid rgba(245,230,204,.3);
+  color:var(--r-cream);
+}
+.btn-tweet {
+  background:linear-gradient(135deg, #4A6BA6, #2C4A7C);
+  box-shadow:0 0 24px rgba(74,107,166,.3);
+}
+
+.status {
+  padding:10px 14px;
+  background:rgba(252,196,25,.06);
+  border:1px solid rgba(252,196,25,.25);
+  border-radius:8px;
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px;
+  letter-spacing:1px;
+  color:rgba(245,230,204,.7);
+  text-align:center;
+  margin-bottom:14px;
+}
+.status.error { background:rgba(239,68,68,.1); border-color:rgba(239,68,68,.4); color:#FCA5A5; }
+.status.success { background:rgba(74,222,128,.1); border-color:rgba(74,222,128,.4); color:#4ADE80; }
+
+.card-wrap {
+  position:relative;
+  width:100%;
+  aspect-ratio:1.91/1;
+  background:#000;
+  border-radius:18px;
+  overflow:hidden;
+  border:2px solid rgba(252,196,25,.4);
+  box-shadow:0 0 40px rgba(252,196,25,.2);
+  margin-top:14px;
+}
+.card-wrap canvas {
+  width:100%;
+  height:100%;
+  display:block;
+}
+</style>
+</head>
+<body>
+
+<div id="roby-shell"></div>
+
+<section class="page-head">
+  <div class="eyebrow">🃏 ROYAL CARD MAKER</div>
+  <h1>MAKE A CARD</h1>
+  <p>"A king doesn't shill — he decrees. Drop a contract, get a card worthy of the throne."</p>
+</section>
+
+<div class="workspace">
+  <div class="input-row">
+    <label>Token Contract</label>
+    <input type="text" id="contract" placeholder="0x..." spellcheck="false" autocomplete="off">
+    <div class="input-hint">paste any monad token contract — DexScreener pulls live price</div>
+  </div>
+
+  <div class="input-grid">
+    <div class="input-row">
+      <label>Target Price (optional)</label>
+      <input type="text" id="target" placeholder="0.0008" spellcheck="false" autocomplete="off">
+    </div>
+    <div class="input-row">
+      <label>Conviction</label>
+      <select id="conviction" style="padding:14px 16px;background:rgba(0,0,0,.4);border:1.5px solid rgba(252,196,25,.3);border-radius:10px;color:#fff;font-family:'JetBrains Mono', monospace;font-size:13px;">
+        <option value="WATCH">👁 WATCHING</option>
+        <option value="CALL" selected>📣 CALLED</option>
+        <option value="ROYAL">👑 ROYAL DECREE</option>
+        <option value="NUKE">⚡ NUKE INCOMING</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="input-row">
+    <label>Note (optional)</label>
+    <textarea id="note" rows="2" placeholder="why this play..."></textarea>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" id="generateBtn">⚡ FORGE CARD</button>
+  </div>
+
+  <div class="status" id="status">paste a contract address to begin</div>
+
+  <div class="card-wrap">
+    <canvas id="card" width="1200" height="630"></canvas>
+  </div>
+
+  <div class="btn-row" style="margin-top:18px;">
+    <button class="btn btn-primary" id="downloadBtn" disabled>⬇️ DOWNLOAD PNG</button>
+    <button class="btn btn-tweet" id="shareBtn" disabled>𝕏 POST CARD</button>
+  </div>
+</div>
+
+<div id="roby-footer"></div>
+<script src="/roby/roby-shell.js"></script>
+
+<script>
+(async function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var canvas = $('card');
+  var ctx = canvas.getContext('2d');
+
+  var pfpImg = new Image();
+  pfpImg.crossOrigin = 'anonymous';
+  pfpImg.src = '/roby/data/roby-pfp.png';
+
+  function fmtPrice(n){
+    if(!n||isNaN(n))return '—';
+    if(n>=1)return '$'+n.toFixed(2);
+    if(n>=0.01)return '$'+n.toFixed(4);
+    if(n>=0.0001)return '$'+n.toFixed(6);
+    var s=n.toFixed(20).split('.')[1]||''; var z=0;
+    for(var i=0;i<s.length;i++){if(s[i]==='0')z++;else break;}
+    var sig=s.slice(z,z+4).replace(/0+$/,'')||'0';
+    var sub=String(z).split('').map(function(d){return '₀₁₂₃₄₅₆₇₈₉'[+d];}).join('');
+    return '$0.0'+sub+sig;
+  }
+  function fmtUsd(n){if(!n||isNaN(n))return '—';if(n>=1e9)return '$'+(n/1e9).toFixed(2)+'B';if(n>=1e6)return '$'+(n/1e6).toFixed(2)+'M';if(n>=1e3)return '$'+(n/1e3).toFixed(1)+'K';return '$'+n.toFixed(2);}
+  function shortAddr(a){return a.slice(0,6)+'…'+a.slice(-4);}
+
+  function renderCard(opts){
+    var W = canvas.width, H = canvas.height;
+    ctx.clearRect(0,0,W,H);
+
+    // Background gradient (royal: deep red to gold to deep red)
+    var bg = ctx.createLinearGradient(0, 0, W, H);
+    bg.addColorStop(0, '#1a0d05');
+    bg.addColorStop(0.5, '#2e1a0a');
+    bg.addColorStop(1, '#1a0d05');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,W,H);
+
+    // Gold radial glow
+    var glow = ctx.createRadialGradient(W*0.5, H*0.4, 0, W*0.5, H*0.4, W*0.6);
+    glow.addColorStop(0, 'rgba(252,196,25,0.15)');
+    glow.addColorStop(1, 'rgba(252,196,25,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0,0,W,H);
+
+    // Bg grid
+    ctx.strokeStyle = 'rgba(252,196,25,0.05)';
+    ctx.lineWidth = 1;
+    for(var y=0; y<H; y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+    for(var x=0; x<W; x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+
+    // Outer gold border
+    ctx.strokeStyle = '#FCC419';
+    ctx.lineWidth = 5;
+    ctx.strokeRect(10, 10, W-20, H-20);
+    // Inner thin border
+    ctx.strokeStyle = 'rgba(252,196,25,0.4)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(24, 24, W-48, H-48);
+
+    // Top header strip
+    ctx.fillStyle = 'rgba(155,44,44,0.4)';
+    ctx.fillRect(24, 24, W-48, 64);
+    ctx.fillStyle = '#FCC419';
+    ctx.font = '900 30px Cinzel, serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('👑 ROBY CALLS', 50, 67);
+    ctx.font = 'bold 14px JetBrains Mono, monospace';
+    ctx.fillStyle = 'rgba(245,230,204,0.6)';
+    ctx.textAlign = 'right';
+    ctx.fillText(opts.conviction || 'CALLED', W-50, 67);
+
+    // Main content area
+    if (opts.symbol) {
+      // Symbol bubble (left side)
+      ctx.fillStyle = '#FCC419';
+      ctx.fillRect(60, 130, 150, 150);
+      ctx.fillStyle = '#0d0a06';
+      ctx.font = '900 ' + (opts.symbol.length > 5 ? '32px' : '48px') + ' Cinzel, serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('$' + opts.symbol, 135, 205);
+      ctx.textBaseline = 'alphabetic';
+
+      // Right side data block
+      var rightX = 240;
+
+      // Token info
+      ctx.fillStyle = '#fff';
+      ctx.font = '900 56px Cinzel, serif';
+      ctx.textAlign = 'left';
+      var name = opts.symbol;
+      ctx.fillText(name, rightX, 175);
+
+      // Contract
+      ctx.fillStyle = 'rgba(245,230,204,0.5)';
+      ctx.font = '14px JetBrains Mono, monospace';
+      ctx.fillText(shortAddr(opts.contract || '0x...'), rightX, 200);
+
+      // Conviction note
+      if (opts.note) {
+        ctx.fillStyle = 'rgba(245,230,204,0.85)';
+        ctx.font = 'italic 18px Cinzel, serif';
+        // Wrap text
+        var words = opts.note.split(' ');
+        var line = '';
+        var lines = [];
+        for (var i = 0; i < words.length; i++) {
+          var test = line + words[i] + ' ';
+          if (ctx.measureText(test).width > W - rightX - 60 && line) {
+            lines.push(line);
+            line = words[i] + ' ';
+          } else {
+            line = test;
+          }
+        }
+        if (line) lines.push(line);
+        lines.slice(0, 2).forEach(function(l, idx){
+          ctx.fillText('"' + l.trim() + (idx === lines.length - 1 ? '"' : ''), rightX, 245 + idx * 24);
+        });
+      }
+
+      // Bottom row: price, target, ROI (3 columns)
+      var statY = 360;
+      var statH = 120;
+      var col = (W - 100) / 3;
+
+      function drawStat(x, label, value, valueColor) {
+        ctx.fillStyle = 'rgba(252,196,25,0.06)';
+        ctx.fillRect(x, statY, col - 12, statH);
+        ctx.strokeStyle = 'rgba(252,196,25,0.3)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x, statY, col - 12, statH);
+        // Top accent
+        ctx.fillStyle = '#FCC419';
+        ctx.fillRect(x, statY, col - 12, 2);
+        ctx.fillStyle = 'rgba(245,230,204,0.5)';
+        ctx.font = 'bold 12px JetBrains Mono, monospace';
+        ctx.fillText(label, x + 16, statY + 28);
+        ctx.fillStyle = valueColor || '#fff';
+        ctx.font = '900 32px Cinzel, serif';
+        ctx.fillText(value, x + 16, statY + 75);
+      }
+
+      drawStat(50, 'PRICE', fmtPrice(opts.price), '#FCC419');
+      drawStat(50 + col, 'MARKET CAP', fmtUsd(opts.mcap || 0), '#fff');
+      var roi24h = opts.change24h || 0;
+      drawStat(50 + col*2, '24H', (roi24h >= 0 ? '+' : '') + roi24h.toFixed(1) + '%', roi24h >= 0 ? '#4ADE80' : '#EF4444');
+    } else {
+      // Empty state
+      ctx.fillStyle = 'rgba(245,230,204,0.3)';
+      ctx.font = 'italic 22px Cinzel, serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('paste a contract to forge a card', W/2, H/2);
+    }
+
+    // Bottom band — Roby's signature
+    ctx.fillStyle = 'rgba(155,44,44,0.4)';
+    ctx.fillRect(24, H-66, W-48, 42);
+    // Pfp on left
+    if (pfpImg.complete && pfpImg.naturalWidth > 0) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(60, H-45, 20, 0, Math.PI*2);
+      ctx.clip();
+      ctx.drawImage(pfpImg, 40, H-65, 40, 40);
+      ctx.restore();
+    }
+    ctx.fillStyle = '#FCC419';
+    ctx.font = 'bold 14px JetBrains Mono, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('@RobyCalls · the throne sees all', 90, H-39);
+    ctx.fillStyle = 'rgba(245,230,204,0.5)';
+    ctx.font = '11px JetBrains Mono, monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('t.me/robyslounge', W-50, H-39);
+  }
+
+  pfpImg.onload = function(){ renderCard({}); };
+  if (pfpImg.complete) renderCard({});
+
+  $('generateBtn').addEventListener('click', async function(){
+    var contract = $('contract').value.trim();
+    if (!/^0x[a-fA-F0-9]{40}$/.test(contract)) {
+      $('status').textContent = '⚠ invalid contract (must be 0x... 40 hex chars)';
+      $('status').className = 'status error';
+      return;
+    }
+    $('status').textContent = '⚡ pulling live data from DexScreener...';
+    $('status').className = 'status';
+
+    try {
+      var resp = await fetch('https://api.dexscreener.com/latest/dex/tokens/' + contract);
+      var data = await resp.json();
+      if (!data.pairs || !data.pairs.length) {
+        $('status').textContent = '⚠ no pairs found on DexScreener';
+        $('status').className = 'status error';
+        return;
+      }
+      var p = data.pairs.sort(function(a,b){return (b.liquidity?.usd||0)-(a.liquidity?.usd||0);})[0];
+      var symbol = p.baseToken?.symbol || 'UNKNOWN';
+      var price = parseFloat(p.priceUsd || 0);
+      var mcap = p.marketCap || p.fdv || 0;
+      var change24h = parseFloat(p.priceChange?.h24 || 0);
+      var conviction = $('conviction').value;
+      var note = $('note').value.trim();
+
+      renderCard({
+        contract: contract,
+        symbol: symbol,
+        price: price,
+        mcap: mcap,
+        change24h: change24h,
+        conviction: conviction,
+        note: note
+      });
+      $('status').textContent = '✓ card forged · ' + symbol + ' · ' + fmtPrice(price);
+      $('status').className = 'status success';
+      $('downloadBtn').disabled = false;
+      $('shareBtn').disabled = false;
+
+      // Save context for share
+      window._cardSymbol = symbol;
+      window._cardPrice = price;
+      window._cardChange = change24h;
+    } catch (e) {
+      $('status').textContent = '⚠ failed to load token data';
+      $('status').className = 'status error';
+      console.error(e);
+    }
+  });
+
+  $('downloadBtn').addEventListener('click', function(){
+    var name = (window._cardSymbol || 'call') + '-card';
+    var link = document.createElement('a');
+    link.download = 'roby-' + name + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+
+  $('shareBtn').addEventListener('click', function(){
+    var sym = window._cardSymbol || 'TOKEN';
+    var chg = window._cardChange || 0;
+    var text = "👑 Royal Decree · $" + sym + " " + (chg >= 0 ? '+' : '') + chg.toFixed(1) + "% 24h\n\nthe throne is watching.\n\n— @RobyCalls\nlive: ";
+    var url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent('https://t.me/robyslounge');
+    window.open(url, '_blank', 'noopener');
+  });
+
+  ['contract','target','note'].forEach(function(id){
+    var el = $(id);
+    if (el) el.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' && id !== 'note') $('generateBtn').click();
+    });
+  });
+})();
+</script>
+</body>
+</html>
