@@ -199,6 +199,18 @@
   color:#fff;
   border:none;
 }
+.roby-nav-links a.bot {
+  background:linear-gradient(135deg, #9B2C2C, #FCC419);
+  color:#fff;
+  border:none;
+  font-weight:900;
+  position:relative;
+  animation:botBlink 2.5s ease-in-out infinite;
+}
+@keyframes botBlink {
+  0%,100% { box-shadow:0 0 0 rgba(252,196,25,0); }
+  50% { box-shadow:0 0 14px rgba(252,196,25,.6); }
+}
 
 /* FOOTER */
 .roby-footer {
@@ -286,6 +298,7 @@
     var cls = isCurrent(item.match) ? 'current' : '';
     return '<a href="' + item.href + '" class="' + cls + '">' + item.label + '</a>';
   }).join('') +
+    '<a href="https://t.me/RobysRaidBot" target="_blank" rel="noopener" class="bot">🤖 BOT</a>' +
     '<a href="https://t.me/robyslounge" target="_blank" rel="noopener" class="tg">📱 LOUNGE</a>' +
     '<a href="https://x.com/RobyCalls" target="_blank" rel="noopener">𝕏</a>';
 

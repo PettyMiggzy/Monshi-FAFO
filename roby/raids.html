@@ -254,6 +254,196 @@
   border:1px dashed rgba(252,196,25,.25);
   border-radius:14px;
 }
+
+/* RAID BOT EARN SECTION */
+.bot-hero {
+  position:relative;
+  padding:30px 26px;
+  background:
+    linear-gradient(135deg, rgba(252,196,25,.16), rgba(155,44,44,.18) 50%, rgba(74,107,166,.16)),
+    linear-gradient(180deg, rgba(0,0,0,.4), rgba(0,0,0,.2));
+  border:2px solid #FCC419;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 0 50px rgba(252,196,25,.18);
+}
+.bot-hero::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0;
+  height:3px;
+  background:linear-gradient(90deg, #FCC419, #9B2C2C, #FCC419);
+  background-size:200% 100%;
+  animation:botGlow 3s linear infinite;
+}
+@keyframes botGlow {
+  0% { background-position:0% 0; }
+  100% { background-position:200% 0; }
+}
+.bot-tag {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:6px 14px;
+  background:#9B2C2C;
+  color:#FCC419;
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:2px;
+  border-radius:30px;
+  margin-bottom:14px;
+}
+.bot-tag::before {
+  content:'';
+  width:6px; height:6px; border-radius:50%;
+  background:#4ADE80;
+  box-shadow:0 0 8px #4ADE80;
+  animation:pulse 1.5s infinite;
+}
+.bot-hero h2 {
+  font-family:'Cinzel', serif;
+  font-weight:900;
+  font-size:clamp(26px, 4.5vw, 40px);
+  letter-spacing:2px;
+  color:#fff;
+  line-height:1.15;
+  margin-bottom:10px;
+}
+.bot-hero h2 em {
+  font-style:normal;
+  color:#FCC419;
+  text-shadow:0 0 18px rgba(252,196,25,.5);
+}
+.bot-hero p {
+  font-family:'Cinzel', serif;
+  font-style:italic;
+  font-size:15px;
+  color:rgba(245,230,204,.85);
+  line-height:1.7;
+  margin-bottom:20px;
+  max-width:640px;
+}
+
+.bot-cta-row {
+  display:flex; gap:10px; flex-wrap:wrap;
+  margin-bottom:24px;
+}
+.bot-btn {
+  padding:14px 22px;
+  text-decoration:none;
+  font-family:'Cinzel', serif;
+  font-weight:700;
+  font-size:12px;
+  letter-spacing:2px;
+  border-radius:10px;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  text-transform:uppercase;
+  transition:transform .15s;
+}
+.bot-btn:hover { transform:translateY(-2px); }
+.bot-btn-primary {
+  background:linear-gradient(135deg, #FCC419, #E0A800);
+  color:#0d0a06;
+  box-shadow:0 0 24px rgba(252,196,25,.4);
+}
+.bot-btn-secondary {
+  background:linear-gradient(135deg, #4A6BA6, #2C4A7C);
+  color:#fff;
+}
+
+/* TIER GRID */
+.tier-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+  gap:10px;
+  margin-bottom:18px;
+}
+.tier-card {
+  position:relative;
+  padding:16px 14px;
+  background:rgba(0,0,0,.45);
+  border:1.5px solid rgba(252,196,25,.25);
+  border-radius:12px;
+  transition:all .15s;
+  overflow:hidden;
+}
+.tier-card:hover {
+  border-color:#FCC419;
+  background:rgba(252,196,25,.06);
+}
+.tier-card .icon {
+  font-size:24px;
+  margin-bottom:6px;
+}
+.tier-card .label {
+  font-family:'Cinzel', serif;
+  font-weight:900;
+  font-size:13px;
+  letter-spacing:1.5px;
+  color:#FCC419;
+  margin-bottom:4px;
+  text-transform:uppercase;
+}
+.tier-card .req {
+  font-family:'JetBrains Mono', monospace;
+  font-size:10px;
+  letter-spacing:.5px;
+  color:rgba(245,230,204,.6);
+  font-weight:700;
+}
+.tier-card.standard { border-color:rgba(192,192,192,.4); }
+.tier-card.standard .label { color:#C0C0C0; }
+.tier-card.advanced { border-color:rgba(74,222,128,.4); }
+.tier-card.advanced .label { color:#4ADE80; }
+.tier-card.premium { border-color:rgba(252,196,25,.6); background:rgba(252,196,25,.06); }
+.tier-card.premium .label { color:#FCC419; }
+.tier-card.ultra {
+  border-color:#FCC419;
+  background:linear-gradient(135deg, rgba(252,196,25,.18), rgba(155,44,44,.1));
+  box-shadow:0 0 20px rgba(252,196,25,.25);
+}
+.tier-card.ultra .label {
+  background:linear-gradient(135deg, #FCC419, #fff, #FCC419);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  animation:tierShimmer 2s linear infinite;
+}
+@keyframes tierShimmer { 0%{background-position:0% 0;} 100%{background-position:200% 0;} }
+
+/* PERKS */
+.bot-perks {
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+  gap:10px;
+}
+.bot-perk {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 14px;
+  background:rgba(252,196,25,.04);
+  border:1px solid rgba(252,196,25,.2);
+  border-radius:10px;
+}
+.bot-perk .perk-icon {
+  font-size:20px;
+  flex-shrink:0;
+}
+.bot-perk .perk-text {
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px;
+  color:rgba(245,230,204,.85);
+  font-weight:700;
+  line-height:1.4;
+  letter-spacing:.3px;
+}
+.bot-perk .perk-text b { color:#FCC419; }
+
+@media(max-width:540px) {
+  .bot-hero { padding:24px 18px; }
+}
 </style>
 </head>
 <body class="roby-body">
@@ -267,6 +457,64 @@
 </section>
 
 <div class="content">
+
+  <!-- ─── EARN BY RAIDING ─── -->
+  <div>
+    <div class="bot-hero">
+      <div class="bot-tag">⚡ NOW HIRING · INSTANT PAYOUT</div>
+      <h2>Earn by <em>raiding</em>.<br>Standard team to <em>ultra court</em>.</h2>
+      <p>"A king pays his soldiers. Set up your profile, pick your tier, and get paid for every raid you complete. Referrals earn 2.5% + 2.5% from revenue."</p>
+
+      <div class="bot-cta-row">
+        <a class="bot-btn bot-btn-primary" href="https://t.me/RobysRaidBot" target="_blank" rel="noopener">⚙️ SET UP PROFILE</a>
+        <a class="bot-btn bot-btn-secondary" href="https://t.me/RobysRaidBot" target="_blank" rel="noopener">📩 PLACE AN ORDER</a>
+      </div>
+
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:rgba(245,230,204,.5);font-weight:700;margin-bottom:10px;">▸ TIER REQUIREMENTS · MINIMUM FOLLOWERS</div>
+      <div class="tier-grid">
+        <div class="tier-card standard">
+          <div class="icon">🛡️</div>
+          <div class="label">STANDARD</div>
+          <div class="req">FROM 5 FOLLOWERS</div>
+        </div>
+        <div class="tier-card advanced">
+          <div class="icon">⚔️</div>
+          <div class="label">ADVANCED</div>
+          <div class="req">FROM 250 FOLLOWERS</div>
+        </div>
+        <div class="tier-card premium">
+          <div class="icon">🔥</div>
+          <div class="label">PREMIUM</div>
+          <div class="req">FROM 500 FOLLOWERS</div>
+        </div>
+        <div class="tier-card ultra">
+          <div class="icon">👑</div>
+          <div class="label">ULTRA</div>
+          <div class="req">FROM 1,000 FOLLOWERS</div>
+        </div>
+      </div>
+
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:rgba(245,230,204,.5);font-weight:700;margin-bottom:10px;">▸ RAIDER PERKS</div>
+      <div class="bot-perks">
+        <div class="bot-perk">
+          <span class="perk-icon">💸</span>
+          <span class="perk-text"><b>INSTANT PAYOUT</b> after every completed raid</span>
+        </div>
+        <div class="bot-perk">
+          <span class="perk-icon">📈</span>
+          <span class="perk-text"><b>2.5% + 2.5%</b> from referral revenue</span>
+        </div>
+        <div class="bot-perk">
+          <span class="perk-icon">🤝</span>
+          <span class="perk-text">Refer friends, earn on every order they place</span>
+        </div>
+        <div class="bot-perk">
+          <span class="perk-icon">🚀</span>
+          <span class="perk-text">Climb tiers as your follower count grows</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div>
     <h2 class="section-h">⚡ Active Raid</h2>
