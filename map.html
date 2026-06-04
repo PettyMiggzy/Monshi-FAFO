@@ -409,7 +409,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
   // Auto-reconnect
   if(window.ethereum){
     window.ethereum.request({method:'eth_accounts'}).then(function(a){
-      if(a && a.length){ wallet = a[0]; $('connectBtn').textContent = shortAddr(wallet); $('connectBtn').classList.add('connected'); $('pinStatus').textContent = 'Wallet connected · ready to pin'; $('pinStatus').className = 'pin-status ok'; }
+      /* auto-connect disabled */
     });
   }
 

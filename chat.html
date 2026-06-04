@@ -374,7 +374,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 
   // Auto-reconnect
   if(window.ethereum){
-    window.ethereum.request({method:'eth_accounts'}).then(function(a){ if(a && a.length){ wallet = a[0]; refreshBalance().then(function(){ $('connectBtn').textContent = shortAddr(wallet); $('connectBtn').classList.add('connected'); updateComposeUI(); }); } });
+    /* auto-connect disabled */
     if(window.ethereum.on) window.ethereum.on('accountsChanged', function(a){
       if(a.length){ wallet = a[0]; refreshBalance().then(function(){ $('connectBtn').textContent = shortAddr(wallet); $('connectBtn').classList.add('connected'); updateComposeUI(); }); }
       else disconnect();

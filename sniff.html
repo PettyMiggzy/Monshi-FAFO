@@ -754,9 +754,7 @@ function renderResult(data) {
 $('connectBtn').addEventListener('click', connectWallet);
 
 window.addEventListener('load', () => {
-  if (window.ethereum && window.ethereum.selectedAddress) {
-    setTimeout(() => connectWallet(), 200);
-  }
+  /* auto-connect disabled */
 });
 </script>
 

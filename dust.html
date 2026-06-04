@@ -407,7 +407,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
   }
 
   if(window.ethereum){
-    window.ethereum.request({method:'eth_accounts'}).then(function(a){ if(a && a.length) connect(); });
+    /* auto-connect disabled */
     if(window.ethereum.on){
       window.ethereum.on('accountsChanged', function(a){
         if(a.length){ wallet = a[0]; scan(); }

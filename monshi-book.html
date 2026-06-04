@@ -1354,9 +1354,7 @@ create policy "upsert presence" on public.monshi_book_presence for all using (tr
   setInterval(function(){pingPresence();},30000);
   setInterval(function(){if(wallet)loadNotifs();},45000);
   handleRoute();
-  if(window.ethereum && window.ethereum.selectedAddress){
-    window.ethereum.request({method:'eth_accounts'}).then(function(a){if(a&&a.length)$('connectBtn').click();});
-  }
+  /* auto-connect disabled */
 })();
 </script>
 </body>

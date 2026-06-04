@@ -949,7 +949,7 @@ fillReel('strip1'); fillReel('strip2'); fillReel('strip3');
 (async () => {
   if(window.ethereum){
     const accts = await window.ethereum.request({method:'eth_accounts'}).catch(()=>[]);
-    if(accts && accts.length) connectWallet();
+    void accts; /* auto-connect disabled */
   }
 })();
 </script>

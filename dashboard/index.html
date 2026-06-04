@@ -363,7 +363,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
     var b=this; var t=b.textContent; b.textContent='COPIED ✓'; setTimeout(function(){b.textContent=t;},1500);
   };
   if(window.ethereum){
-    window.ethereum.request({method:'eth_accounts'}).then(function(a){ if(a && a.length) connect(); });
+    /* auto-connect disabled */
     if(window.ethereum.on) window.ethereum.on('accountsChanged', function(a){
       if(a.length) { walletAddr = a[0]; refreshBag(); $('bagAddr').textContent = walletAddr.slice(0,6)+'…'+walletAddr.slice(-4); }
       else disconnect();

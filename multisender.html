@@ -1041,10 +1041,7 @@ $('connectBtn').addEventListener('click', connectWallet);
 // Default: pick MONSHI preset
 window.addEventListener('load', () => {
   document.querySelector('.preset-btn[data-preset="monshi"]').click();
-  // Auto-connect if previously connected
-  if (window.ethereum && window.ethereum.selectedAddress) {
-    setTimeout(() => connectWallet(), 200);
-  }
+  // auto-connect disabled
 });
 </script>
 
