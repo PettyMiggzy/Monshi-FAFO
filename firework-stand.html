@@ -1,0 +1,237 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
+<link rel="shortcut icon" href="/favicon.ico?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0a0320">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MONSHI STAND">
+<meta property="og:title" content="Monshi Firework Stand — NFT Showroom">
+<meta property="og:description" content="Walk the floor. Inspect the fireworks. Mint your launcher.">
+<meta property="og:image" content="/public/fireworks-nft/nft_unclesam.jpg">
+<title>MONSHI FIREWORK STAND 🎆</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;}
+html,body{width:100%;height:100%;overflow:hidden;background:#05010f;font-family:'Space Mono',monospace;color:#fff;}
+#c{position:fixed;inset:0;display:block;touch-action:none;z-index:1;}
+#top{position:fixed;top:calc(env(safe-area-inset-top,0) + 12px);left:0;right:0;z-index:3;text-align:center;pointer-events:none;}
+#top .h{font-family:Orbitron;font-weight:900;font-size:clamp(18px,4vw,30px);letter-spacing:2px;
+  background:linear-gradient(90deg,#ff6b6b,#fff,#6aa8ff);-webkit-background-clip:text;background-clip:text;color:transparent;}
+#top .s{font-size:10px;letter-spacing:3px;color:#a99cd6;margin-top:3px;}
+a.hub{position:fixed;top:calc(env(safe-area-inset-top,0) + 12px);left:14px;z-index:5;color:#c4b5fd;text-decoration:none;font-size:13px;
+  background:rgba(20,10,44,.5);border:1px solid rgba(168,85,247,.35);border-radius:20px;padding:6px 12px;pointer-events:all;}
+/* nav arrows */
+.nav{position:fixed;top:50%;transform:translateY(-50%);z-index:4;width:52px;height:52px;border-radius:50%;
+  background:rgba(30,15,60,.6);border:1px solid rgba(168,85,247,.5);color:#fff;font-size:22px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);pointer-events:all;}
+#prev{left:12px;} #next{right:12px;} .nav:active{transform:translateY(-50%) scale(.9);}
+#counter{position:fixed;bottom:calc(env(safe-area-inset-bottom,0) + 210px);left:50%;transform:translateX(-50%);z-index:3;
+  font-family:Orbitron;font-size:11px;color:#c4b5fd;letter-spacing:2px;pointer-events:none;}
+/* detail / mint card */
+#card{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0) + 16px);transform:translateX(-50%);z-index:4;
+  width:min(460px,94vw);background:linear-gradient(180deg,rgba(34,16,68,.92),rgba(16,8,36,.96));
+  border:1px solid rgba(168,85,247,.5);border-radius:18px;padding:14px 16px;box-shadow:0 0 40px rgba(124,58,237,.4);
+  backdrop-filter:blur(10px);display:flex;gap:14px;align-items:center;}
+#card .thumb{width:74px;height:74px;border-radius:12px;object-fit:cover;border:2px solid var(--rc,#a855f7);box-shadow:0 0 16px var(--rc,#a855f7);flex:0 0 auto;}
+#card .info{flex:1;min-width:0;}
+#card .nm{font-family:Orbitron;font-weight:900;font-size:clamp(16px,4.4vw,22px);line-height:1;}
+#card .rr{display:inline-block;margin-top:5px;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 9px;border-radius:20px;
+  color:#0a0320;background:var(--rc,#a855f7);}
+#card .tr{font-size:10px;color:#c4b5fd;margin-top:6px;line-height:1.5;}
+#card .price{font-family:Orbitron;font-weight:700;font-size:13px;color:#FCD34D;margin-top:4px;}
+#mint{margin-top:8px;width:100%;cursor:pointer;font-family:Orbitron;font-weight:700;font-size:15px;letter-spacing:1px;color:#fff;
+  background:linear-gradient(180deg,#7C3AED,#6D28D9);border:1px solid #A855F7;border-radius:11px;padding:12px;
+  box-shadow:0 0 20px rgba(124,58,237,.5);transition:.12s;}
+#mint:active{transform:scale(.97);}
+#mint.done{background:linear-gradient(180deg,#16a34a,#15803d);border-color:#4ade80;}
+.right{flex:0 0 auto;width:150px;}
+@media(max-width:520px){#card{flex-direction:column;align-items:stretch;} .right{width:100%;} #card .thumb{width:100%;height:120px;}}
+#toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-14px);z-index:6;opacity:0;transition:.25s;
+  background:rgba(16,8,36,.95);border:1px solid rgba(74,222,128,.5);border-radius:26px;padding:9px 18px;font-size:12px;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#loading{position:fixed;inset:0;z-index:9;background:#05010f;display:flex;align-items:center;justify-content:center;
+  font-family:Orbitron;letter-spacing:2px;color:#a855f7;}
+</style></head>
+<body>
+<canvas id="c"></canvas>
+<a class="hub" href="/">← HUB</a>
+<div id="top"><div class="h">MONSHI FIREWORK STAND</div><div class="s">NFT SHOWROOM · TAP AN ITEM · MINT YOUR LAUNCHER</div></div>
+<div id="prev" class="nav">‹</div><div id="next" class="nav">›</div>
+<div id="counter">1 / 6</div>
+<div id="card">
+  <img id="cThumb" class="thumb" alt=""/>
+  <div class="info">
+    <div class="nm" id="cName">—</div>
+    <span class="rr" id="cRar">—</span>
+    <div class="tr" id="cTraits">—</div>
+    <div class="price" id="cPrice">—</div>
+  </div>
+  <div class="right"><button id="mint">MINT 🎆</button></div>
+</div>
+<div id="toast"></div>
+<div id="loading">ENTERING THE STAND…</div>
+
+<script src="//unpkg.com/three@0.150.0/build/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+if(!window.THREE){document.getElementById('loading').textContent='3D failed to load';return;}
+var RC={Common:'#9ca3af',Uncommon:'#5aa2ff',Rare:'#ffcf4a',Epic:'#c084fc',Legendary:'#ec4899'};
+// collection manifest
+var ITEMS=[
+ {name:'RED ROCKET',    rar:'Common',   file:'nft_redrocket',  traits:'Rocket · Red Peony · RWB',      price:'0.05 MON'},
+ {name:'SPARKLER KIT',  rar:'Common',   file:'nft_sparkler',   traits:'Sparkler · RWB Burst · City',    price:'0.05 MON'},
+ {name:'BLUE WILLOW',   rar:'Uncommon', file:'nft_bluewillow', traits:'Willow · Blue Cascade',          price:'0.12 MON'},
+ {name:'GOLD CHRYS',    rar:'Rare',     file:'nft_goldchrys',  traits:'Chrysanthemum · Gold · Big',     price:'0.35 MON'},
+ {name:'UNCLE SAM',     rar:'Rare',     file:'nft_unclesam',   traits:'Top Hat · Star Shades · Gold FW', price:'0.35 MON'},
+ {name:'MONAD PEONY',   rar:'Epic',     file:'nft_monadpeony', traits:'Peony · Monad Purple · Cosmic',   price:'0.7 MON'}
+];
+var SPACING=4.2;
+
+var canvas=document.getElementById('c');
+var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+var scene=new THREE.Scene(); scene.background=new THREE.Color(0x05010f);
+scene.fog=new THREE.Fog(0x08021c,10,42);
+var camera=new THREE.PerspectiveCamera(55,1,0.1,120);
+scene.add(new THREE.AmbientLight(0x40306a,0.8));
+var back=new THREE.DirectionalLight(0x6a7cff,0.35); back.position.set(0,6,-10); scene.add(back);
+function resize(){var w=innerWidth,h=innerHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();}
+addEventListener('resize',resize); resize();
+
+// floor — glossy dark showroom with grid glow
+var floorMat=new THREE.MeshStandardMaterial({color:0x0a0620,metalness:0.7,roughness:0.35});
+var floor=new THREE.Mesh(new THREE.PlaneGeometry(200,200),floorMat);
+floor.rotation.x=-Math.PI/2; floor.position.y=0; scene.add(floor);
+// grid lines
+var grid=new THREE.GridHelper(200,80,0x3a1f6a,0x1a0f38); grid.position.y=0.01; scene.add(grid);
+// starfield backdrop
+var sg=new THREE.BufferGeometry(),sv=[];for(var i=0;i<300;i++)sv.push((Math.random()-.5)*160,Math.random()*40+4,-30-Math.random()*60);
+sg.setAttribute('position',new THREE.Float32BufferAttribute(sv,3));
+scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0x9d6bff,size:.5,transparent:true,opacity:.7})));
+
+// text texture (nameplate)
+function textTex(txt,col){var cv=document.createElement('canvas');cv.width=256;cv.height=64;var g=cv.getContext('2d');
+  g.fillStyle='rgba(10,4,25,0.85)';g.fillRect(0,0,256,64);g.strokeStyle=col;g.lineWidth=3;g.strokeRect(2,2,252,60);
+  g.fillStyle=col;g.font='bold 26px Orbitron, sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(txt,128,34);
+  var t=new THREE.CanvasTexture(cv);return t;}
+function cardBackTex(col){var cv=document.createElement('canvas');cv.width=cv.height=256;var g=cv.getContext('2d');
+  g.fillStyle='#0e0726';g.fillRect(0,0,256,256);g.strokeStyle=col;g.lineWidth=6;g.strokeRect(8,8,240,240);
+  g.fillStyle=col;g.globalAlpha=.9;g.beginPath();
+  g.translate(128,128);g.rotate(Math.PI/4);g.roundRect(-42,-42,84,84,14);g.fill();
+  var t=new THREE.CanvasTexture(cv);return t;}
+
+var texLoader=new THREE.TextureLoader();
+var pedestals=[], planes=[];
+ITEMS.forEach(function(it,idx){
+  var rc=new THREE.Color(RC[it.rar]);
+  var grp=new THREE.Group(); grp.position.set(idx*SPACING,0,0);
+  // plinth
+  var plinth=new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.35,0.9,40),
+    new THREE.MeshStandardMaterial({color:0x140a2e,metalness:0.6,roughness:0.4}));
+  plinth.position.y=0.45; grp.add(plinth);
+  // glowing base ring (rarity color)
+  var ring=new THREE.Mesh(new THREE.CylinderGeometry(1.2,1.2,0.08,40),
+    new THREE.MeshBasicMaterial({color:rc})); ring.position.y=0.92; grp.add(ring);
+  var baseGlow=new THREE.PointLight(rc,1.1,6); baseGlow.position.set(0,1.3,0); grp.add(baseGlow);
+  // rotating turntable + framed NFT
+  var turn=new THREE.Group(); turn.position.y=2.35; grp.add(turn);
+  var frame=new THREE.Mesh(new THREE.BoxGeometry(1.9,1.9,0.08),
+    new THREE.MeshBasicMaterial({color:rc})); turn.add(frame);
+  var placeholder=new THREE.MeshBasicMaterial({color:0x2a1550,side:THREE.DoubleSide});
+  var plane=new THREE.Mesh(new THREE.PlaneGeometry(1.66,1.66),placeholder);
+  plane.position.z=0.05; turn.add(plane);
+  // load NFT texture (fallback to card back on error)
+  texLoader.load('/public/fireworks-nft/'+it.file+'.jpg',
+    function(tx){tx.anisotropy=4; plane.material=new THREE.MeshBasicMaterial({map:tx,side:THREE.DoubleSide}); plane.material.needsUpdate=true;},
+    undefined,
+    function(){ plane.material=new THREE.MeshBasicMaterial({map:cardBackTex(RC[it.rar]),side:THREE.DoubleSide}); });
+  plane.userData.index=idx; planes.push(plane);
+  // light shaft (cone) + spotlight
+  var shaft=new THREE.Mesh(new THREE.ConeGeometry(1.5,4.5,24,1,true),
+    new THREE.MeshBasicMaterial({color:rc,transparent:true,opacity:0.06,side:THREE.DoubleSide,depthWrite:false}));
+  shaft.position.y=4.7; grp.add(shaft);
+  var spot=new THREE.SpotLight(0xffffff,1.3,14,0.5,0.5,1.2); spot.position.set(0,7,1.2);
+  spot.target=turn; grp.add(spot); grp.add(spot.target);
+  // nameplate
+  var np=new THREE.Mesh(new THREE.PlaneGeometry(1.7,0.42),
+    new THREE.MeshBasicMaterial({map:textTex(it.name,RC[it.rar]),transparent:true}));
+  np.position.set(0,1.15,1.25); grp.add(np);
+  grp.userData={turn:turn,ring:ring,baseGlow:baseGlow}; scene.add(grp); pedestals.push(grp);
+});
+
+// ambient background fireworks (simple)
+var bf=[];
+function bgFirework(){var x=(Math.random()-.5)*30, y=8+Math.random()*8, z=-18-Math.random()*20, col=new THREE.Color(['#ff5a5a','#5aa2ff','#ffcf4a','#c084fc','#ffffff'][(Math.random()*5)|0]);
+  for(var i=0;i<40;i++){var a=Math.random()*6.28,b=Math.random()*3.14,s=1+Math.random()*2;
+    var p=new THREE.Mesh(new THREE.SphereGeometry(0.06,4,4),new THREE.MeshBasicMaterial({color:col,transparent:true}));
+    p.position.set(x,y,z); p.userData={vx:Math.cos(a)*Math.sin(b)*s*0.05,vy:Math.sin(a)*Math.sin(b)*s*0.05,vz:Math.cos(b)*s*0.05,life:1}; scene.add(p); bf.push(p);}}
+
+// camera / focus
+var focus=0, camX=0;
+function focusOn(i){focus=Math.max(0,Math.min(ITEMS.length-1,i)); updateCard();}
+function updateCard(){var it=ITEMS[focus]; var rc=RC[it.rar];
+  document.documentElement.style.setProperty('--rc',rc);
+  document.getElementById('cName').textContent=it.name;
+  var r=document.getElementById('cRar'); r.textContent=it.rar; r.style.background=rc;
+  document.getElementById('cTraits').textContent='Traits: '+it.traits;
+  document.getElementById('cPrice').textContent=it.price+'  ·  #'+(focus+1)+'/'+ITEMS.length;
+  var th=document.getElementById('cThumb'); th.src='/public/fireworks-nft/'+it.file+'.jpg'; th.style.setProperty('--rc',rc);
+  document.getElementById('counter').textContent=(focus+1)+' / '+ITEMS.length;
+  var mb=document.getElementById('mint'); mb.classList.remove('done'); mb.textContent='MINT 🎆';
+}
+document.getElementById('prev').onclick=function(){focusOn(focus-1);};
+document.getElementById('next').onclick=function(){focusOn(focus+1);};
+// swipe
+var sx=0; canvas.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;},{passive:true});
+canvas.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>40)focusOn(focus+(dx<0?1:-1));},{passive:true});
+addEventListener('keydown',function(e){if(e.key==='ArrowLeft')focusOn(focus-1);else if(e.key==='ArrowRight')focusOn(focus+1);});
+// raycast click to focus a pedestal
+var ray=new THREE.Raycaster(), mouse=new THREE.Vector2();
+canvas.addEventListener('pointerdown',function(e){
+  mouse.x=(e.clientX/innerWidth)*2-1; mouse.y=-(e.clientY/innerHeight)*2+1;
+  ray.setFromCamera(mouse,camera); var hit=ray.intersectObjects(planes);
+  if(hit.length){ focusOn(hit[0].object.userData.index); }
+});
+// mint (demo)
+document.getElementById('mint').onclick=function(){
+  var it=ITEMS[focus]; var mb=this;
+  mb.textContent='MINTING…';
+  setTimeout(function(){ mb.textContent='✓ MINTED'; mb.classList.add('done');
+    var t=document.getElementById('toast'); t.textContent='✓ Minted '+it.name+' — check your launcher on Live Sky'; t.classList.add('show');
+    setTimeout(function(){t.classList.remove('show');},2600);
+    for(var k=0;k<3;k++)setTimeout(bgFirework,k*160);
+  },700);
+};
+
+// loop
+var clock=new THREE.Clock(); var loaded=false;
+function tick(){
+  requestAnimationFrame(tick);
+  var dt=Math.min(clock.getDelta(),0.05), t=clock.elapsedTime;
+  // camera glides to focused pedestal
+  var targetX=focus*SPACING;
+  camX+=(targetX-camX)*Math.min(1,dt*4);
+  camera.position.set(camX+Math.sin(t*0.2)*0.3, 3.0, 7.2);
+  camera.lookAt(camX, 2.2, 0);
+  // pedestals: rotate focused faster + brighten; dim others
+  for(var i=0;i<pedestals.length;i++){var pd=pedestals[i];var isF=(i===focus);
+    pd.userData.turn.rotation.y+= dt*(isF?0.7:0.25);
+    var tgt=isF?1.7:0.7; pd.userData.baseGlow.intensity+=(tgt-pd.userData.baseGlow.intensity)*Math.min(1,dt*4);
+    pd.userData.turn.position.y=2.35+Math.sin(t*1.5+i)*(isF?0.08:0.03);
+  }
+  // ambient fireworks
+  if(Math.random()<0.02)bgFirework();
+  for(var b=bf.length-1;b>=0;b--){var p=bf[b];p.position.x+=p.userData.vx;p.position.y+=p.userData.vy;p.position.z+=p.userData.vz;
+    p.userData.vy-=0.002;p.userData.life-=0.012;p.material.opacity=Math.max(0,p.userData.life);
+    if(p.userData.life<=0){scene.remove(p);bf.splice(b,1);}}
+  renderer.render(scene,camera);
+  if(!loaded){loaded=true; document.getElementById('loading').style.display='none';}
+}
+updateCard(); tick();
+for(var o=0;o<4;o++)setTimeout(bgFirework,300+o*300);
+})();
+</script>
+</body></html>
