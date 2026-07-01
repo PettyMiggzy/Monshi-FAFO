@@ -1,69 +1,71 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-<title>MONSHI LIVE SKY — demo</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
+<link rel="shortcut icon" href="/favicon.ico?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#05010f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="HOLDER FIREWORKS">
+<meta property="og:title" content="Monshi Holder Fireworks 🎆 — 4th of July">
+<meta property="og:description" content="Connect your wallet. The more $MONSHI you hold, the more badass your fireworks. Free for holders. Gone July 5.">
+<meta property="og:image" content="/public/monshi-run/keyart.jpg">
+<title>MONSHI · HOLDER FIREWORKS 🎆</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;font-family:'Space Mono',monospace;}
-html,body{width:100%;height:100%;overflow:hidden;background:#05010f;color:#fff;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;}
+html,body{width:100%;height:100%;overflow:hidden;background:#05010f;font-family:'Space Mono',monospace;color:#fff;}
 #sky{position:fixed;inset:0;z-index:1;}
-/* header */
-#top{position:fixed;top:14px;left:0;right:0;z-index:3;text-align:center;pointer-events:none;}
-#top .h{font-family:Orbitron;font-weight:900;font-size:clamp(20px,4vw,34px);letter-spacing:2px;
+a.hub{position:fixed;top:calc(env(safe-area-inset-top,0) + 12px);left:14px;z-index:6;color:#c4b5fd;text-decoration:none;font-size:13px;
+  background:rgba(20,10,44,.5);border:1px solid rgba(168,85,247,.35);border-radius:20px;padding:6px 12px;pointer-events:all;}
+#ribbon{position:fixed;top:calc(env(safe-area-inset-top,0) + 12px);left:50%;transform:translateX(-50%);z-index:4;
+  font-size:10px;letter-spacing:2px;color:#fecaca;background:rgba(60,10,20,.5);border:1px solid rgba(248,113,113,.4);
+  border-radius:20px;padding:5px 12px;pointer-events:none;white-space:nowrap;}
+#tier{position:fixed;top:calc(env(safe-area-inset-top,0) + 50px);left:14px;z-index:4;display:none;align-items:center;gap:9px;
+  background:rgba(20,12,40,.66);border:1px solid var(--tc,#a855f7);border-radius:14px;padding:8px 12px;backdrop-filter:blur(6px);}
+#tier .em{font-size:24px;} #tier .nm{font-family:Orbitron;font-weight:900;font-size:14px;color:var(--tc,#fff);line-height:1;}
+#tier .bal{font-size:10px;color:#c4b5fd;margin-top:2px;}
+#credits{position:fixed;top:calc(env(safe-area-inset-top,0) + 50px);right:14px;z-index:4;display:none;text-align:right;
+  background:rgba(20,12,40,.66);border:1px solid rgba(252,211,77,.5);border-radius:14px;padding:8px 12px;backdrop-filter:blur(6px);}
+#credits .n{font-family:Orbitron;font-weight:900;font-size:18px;color:#FCD34D;line-height:1;} #credits .l{font-size:8px;letter-spacing:2px;color:#a99cd6;margin-top:2px;}
+#arsenal{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0) + 12px);z-index:4;display:none;gap:8px;justify-content:center;flex-wrap:wrap;padding:0 10px;}
+.fw{cursor:pointer;min-width:82px;border-radius:13px;padding:9px 8px;text-align:center;transition:transform .1s,opacity .2s;
+  background:rgba(24,14,48,.8);border:1px solid rgba(120,90,200,.4);backdrop-filter:blur(6px);}
+.fw:active{transform:scale(.93);} .fw .ic{font-size:20px;} .fw .fn{font-family:Orbitron;font-weight:700;font-size:10px;margin-top:2px;}
+.fw .cost{font-size:9px;color:#FCD34D;margin-top:2px;} .fw.locked{opacity:.45;filter:grayscale(.6);} .fw.locked .cost{color:#f87171;}
+.fw.badass{border-color:#4ade80;box-shadow:0 0 18px rgba(74,222,128,.5);animation:glow 1.4s infinite;}
+@keyframes glow{50%{box-shadow:0 0 26px rgba(74,222,128,.85);}}
+#overlay{position:fixed;inset:0;z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  background:radial-gradient(ellipse at 50% 35%,rgba(30,20,80,.55),rgba(2,0,10,.9));padding:24px;}
+#overlay.hide{display:none;}
+#overlay .logo{font-family:Orbitron;font-weight:900;font-size:clamp(28px,7.5vw,54px);line-height:1;letter-spacing:1px;
   background:linear-gradient(90deg,#ff6b6b,#fff,#6aa8ff);-webkit-background-clip:text;background-clip:text;color:transparent;}
-#top .s{font-size:11px;letter-spacing:3px;color:#9fb4ff;margin-top:4px;}
-#top .s b{color:#c084fc;}
-#counter{margin-top:6px;font-family:Orbitron;font-size:13px;color:#FCD34D;}
-/* live feed */
-#feed{position:fixed;top:96px;right:14px;width:min(280px,44vw);z-index:3;display:flex;flex-direction:column;gap:6px;}
-#feed .row{background:rgba(20,12,40,.66);border:1px solid rgba(140,110,220,.35);border-radius:10px;padding:7px 10px;
-  font-size:11px;backdrop-filter:blur(6px);animation:slidein .3s ease;display:flex;align-items:center;gap:8px;}
-@keyframes slidein{from{opacity:0;transform:translateX(20px)}}
-#feed .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;box-shadow:0 0 8px currentColor;}
-#feed .nm{color:#fff;font-weight:700;}
-#feed .fw{color:#c4b5fd;}
-#feed .lv{margin-left:auto;color:#FCD34D;font-size:10px;}
-.feedlbl{font-size:9px;letter-spacing:3px;color:#8a7fb5;margin-bottom:2px;text-align:right;}
-/* your firework card */
-#mine{position:fixed;bottom:16px;left:14px;width:min(300px,80vw);z-index:3;
-  background:linear-gradient(180deg,rgba(40,20,80,.85),rgba(20,10,44,.9));border:1px solid rgba(168,85,247,.5);border-radius:16px;padding:14px;
-  box-shadow:0 0 30px rgba(124,58,237,.4);backdrop-filter:blur(8px);}
-#mine .lbl{font-size:9px;letter-spacing:2px;color:#a99cd6;}
-#mine .nm{font-family:Orbitron;font-weight:900;font-size:20px;margin-top:2px;
-  background:linear-gradient(90deg,#f3e8ff,#c084fc);-webkit-background-clip:text;background-clip:text;color:transparent;}
-#mine .meta{display:flex;gap:8px;margin-top:6px;font-size:10px;flex-wrap:wrap;}
-#mine .tag{background:rgba(168,85,247,.2);border:1px solid rgba(168,85,247,.4);border-radius:20px;padding:3px 9px;color:#e9d5ff;}
-#mine .tag.epic{background:rgba(236,72,153,.2);border-color:rgba(236,72,153,.5);color:#fbcfe8;}
-#chargeBar{height:7px;border-radius:5px;background:rgba(80,40,140,.4);overflow:hidden;margin-top:10px;border:1px solid rgba(168,85,247,.3);}
-#chargeFill{height:100%;width:78%;background:linear-gradient(90deg,#7C3AED,#EC4899);}
-#chargeTxt{font-size:9px;color:#c4b5fd;margin-top:4px;}
-#launch{margin-top:11px;width:100%;cursor:pointer;font-family:Orbitron;font-weight:700;font-size:15px;letter-spacing:1px;color:#fff;
-  background:linear-gradient(180deg,#7C3AED,#6D28D9);border:1px solid #A855F7;border-radius:11px;padding:12px;box-shadow:0 0 20px rgba(124,58,237,.5);transition:.12s;}
-#launch:active{transform:scale(.96);}
-/* toaster */
-#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(20px);z-index:4;opacity:0;transition:.25s;
-  background:rgba(20,12,40,.9);border:1px solid rgba(168,85,247,.5);border-radius:30px;padding:9px 18px;font-size:12px;white-space:nowrap;}
+#overlay .s{color:#c4b5fd;font-size:12px;letter-spacing:1px;margin:14px 0 4px;max-width:360px;line-height:1.7;}
+#overlay .tiers{font-size:11px;color:#8a7fb5;margin:12px 0 20px;line-height:1.9;}
+.cbtn{cursor:pointer;font-family:Orbitron;font-weight:700;font-size:17px;letter-spacing:1px;color:#fff;
+  background:linear-gradient(180deg,#7C3AED,#6D28D9);border:1px solid #A855F7;border-radius:14px;padding:15px 38px;box-shadow:0 0 26px rgba(124,58,237,.6);transition:.12s;}
+.cbtn:active{transform:scale(.95);} .watch{margin-top:14px;color:#8a7fb5;font-size:11px;cursor:pointer;text-decoration:underline;}
+#toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0) + 96px);left:50%;transform:translateX(-50%) translateY(14px);z-index:7;opacity:0;transition:.25s;
+  background:rgba(16,8,36,.94);border:1px solid rgba(168,85,247,.5);border-radius:26px;padding:9px 18px;font-size:12px;white-space:nowrap;text-align:center;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-#toast b{color:#c084fc;}
-.badge{position:fixed;top:14px;left:14px;z-index:3;font-size:10px;letter-spacing:1px;color:#7dd3fc;
-  background:rgba(12,20,40,.6);border:1px solid rgba(56,189,248,.35);border-radius:20px;padding:5px 10px;}
 </style></head>
 <body>
 <canvas id="sky"></canvas>
-<div class="badge">◉ LIVE · MONAD</div>
-<div id="top"><div class="h">MONSHI LIVE SKY</div>
-  <div class="s">real-time on-chain fireworks · every launch is a <b>tx on Monad</b></div>
-  <div id="counter">🎆 1,247 launched tonight</div></div>
-<div id="feed"><div class="feedlbl">LIVE LAUNCHES</div></div>
-<div id="mine">
-  <div class="lbl">YOUR FIREWORK</div>
-  <div class="nm">MONAD PEONY</div>
-  <div class="meta"><span class="tag epic">EPIC</span><span class="tag">Lv 4</span><span class="tag">#0042 / 50</span></div>
-  <div id="chargeBar"><div id="chargeFill"></div></div>
-  <div id="chargeTxt">🔋 78% charged — play the arcade to charge · fires on your wins</div>
-  <button id="launch">LAUNCH 🎆</button>
-</div>
+<a class="hub" href="/">← HUB</a>
+<div id="ribbon">🇺🇸 4TH OF JULY · LIMITED — GONE JULY 5</div>
+<div id="tier"><span class="em" id="tEm">🦐</span><div><div class="nm" id="tNm">SHRIMP</div><div class="bal" id="tBal">0 $MONSHI</div></div></div>
+<div id="credits"><div class="n" id="cN">0</div><div class="l">CREDITS</div></div>
+<div id="arsenal"></div>
 <div id="toast"></div>
+<div id="overlay">
+  <div class="logo">HOLDER<br>FIREWORKS</div>
+  <div class="s">Connect your wallet to light up the sky. The more <b style="color:#c084fc">$MONSHI</b> you hold, the more <b style="color:#4ade80">badass</b> your arsenal. Free for holders.</div>
+  <div class="tiers">🦐 Sparklers · 🐬 Willows &amp; Rings · 🐋 Gold &amp; Monad Peony · 👑 <b style="color:#4ade80">GRAND FINALE</b></div>
+  <button class="cbtn" id="connectBtn">CONNECT WALLET 🎆</button>
+  <div class="watch" id="watchBtn">just watch the show →</div>
+</div>
 
+<script src="/monshi-shared.js"></script>
 <script>
 (function(){
 "use strict";
@@ -73,53 +75,74 @@ var W,H,DPR=Math.min(devicePixelRatio||1,2);
 function resize(){W=innerWidth;H=innerHeight;view.width=W*DPR;view.height=H*DPR;view.style.width=W+'px';view.style.height=H+'px';vctx.setTransform(DPR,0,0,DPR,0,0);
   fx.width=W*DPR;fx.height=H*DPR;fctx.setTransform(DPR,0,0,DPR,0,0);buildStars();}
 addEventListener('resize',resize);
-// firework catalog (the "NFT types")
-var TYPES=[
- {name:'Red Rocket',    rarity:'Common',   col:{core:'#fff2f2',mid:'#ff5a5a',edge:'#ff2d2d'},style:'peony'},
- {name:'Blue Willow',   rarity:'Uncommon', col:{core:'#eef4ff',mid:'#5aa2ff',edge:'#2f6bff'},style:'willow'},
- {name:'Silver Ring',   rarity:'Uncommon', col:{core:'#ffffff',mid:'#e7ecff',edge:'#bcd0ff'},style:'ring'},
- {name:'Gold Chrys',    rarity:'Rare',     col:{core:'#fff6d5',mid:'#ffcf4a',edge:'#ff9e12'},style:'willow'},
- {name:'Monad Peony',   rarity:'Epic',     col:{core:'#f3e8ff',mid:'#c084fc',edge:'#9333ea'},style:'peony'},
- {name:'Grand Finale',  rarity:'Legendary',col:{core:'#ffe9f6',mid:'#ff7ad1',edge:'#ec4899'},style:'double'}
+var $=function(i){return document.getElementById(i);};
+var glow={};function mkGlow(hex){var s=48,c=document.createElement('canvas');c.width=c.height=s;var g=c.getContext('2d');var r=g.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);r.addColorStop(0,hex);r.addColorStop(.35,hex+'cc');r.addColorStop(.7,hex+'33');r.addColorStop(1,hex+'00');g.fillStyle=r;g.fillRect(0,0,s,s);return c;}
+var CAT=[
+ {id:'sparkler',name:'Sparkler',ic:'✨',rar:'Common',lvl:0,cost:1,col:{core:'#fff',mid:'#ffd54a',edge:'#ff9e12'},style:'peony',scale:.7},
+ {id:'red',name:'Red Rocket',ic:'🧨',rar:'Common',lvl:0,cost:1,col:{core:'#fff2f2',mid:'#ff5a5a',edge:'#ff2d2d'},style:'peony',scale:1},
+ {id:'blue',name:'Blue Willow',ic:'🌊',rar:'Uncommon',lvl:2,cost:2,col:{core:'#eef4ff',mid:'#5aa2ff',edge:'#2f6bff'},style:'willow',scale:1},
+ {id:'silver',name:'Silver Ring',ic:'💍',rar:'Uncommon',lvl:2,cost:2,col:{core:'#fff',mid:'#e7ecff',edge:'#bcd0ff'},style:'ring',scale:1},
+ {id:'gold',name:'Gold Chrys',ic:'🌟',rar:'Rare',lvl:3,cost:3,col:{core:'#fff6d5',mid:'#ffcf4a',edge:'#ff9e12'},style:'willow',scale:1.3},
+ {id:'peony',name:'Monad Peony',ic:'🟣',rar:'Epic',lvl:3,cost:4,col:{core:'#f3e8ff',mid:'#c084fc',edge:'#9333ea'},style:'peony',scale:1.4},
+ {id:'finale',name:'GRAND FINALE',ic:'👑',rar:'Legendary',lvl:4,cost:10,col:{core:'#ffe9f6',mid:'#ff7ad1',edge:'#ec4899'},style:'finale',scale:1.7}
 ];
-var NAMES=['0xB9…467f','pettyking.mon','whale.mon','shrimp42','0xdead…beef','monfan','royaltycat','dolphin.mon','0x81…bBA7','gm_ser','purplepilled','runner1'];
-function pick(a){return a[(Math.random()*a.length)|0];}
-var glow={};function makeGlow(hex){var s=48,c=document.createElement('canvas');c.width=c.height=s;var g=c.getContext('2d');var r=g.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);r.addColorStop(0,hex);r.addColorStop(.35,hex+'cc');r.addColorStop(.7,hex+'33');r.addColorStop(1,hex+'00');g.fillStyle=r;g.fillRect(0,0,s,s);return c;}
-TYPES.forEach(function(t){glow[t.col.edge]=makeGlow(t.col.edge);glow[t.col.mid]=makeGlow(t.col.mid);});
-['#ffffff','#ffd54a','#fff5cc'].forEach(function(h){glow[h]=makeGlow(h);});
+CAT.forEach(function(t){glow[t.col.edge]=mkGlow(t.col.edge);glow[t.col.mid]=mkGlow(t.col.mid);});
+['#ffffff','#ffd54a','#fff5cc','#c084fc','#ffcf4a'].forEach(function(h){glow[h]=mkGlow(h);});
 var GW=glow['#ffffff'];
-var stars=[];function buildStars(){stars=[];var n=(W*H)/10000;for(var i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H*0.85,r:Math.random()*1.2+.2,tw:Math.random()*6.28});}
-var rockets=[],sparks=[],MAX=1600;
-function rocket(type,name,mine){var sx=W*0.12+Math.random()*W*0.76,ty=H*0.14+Math.random()*H*0.34;
-  rockets.push({x:sx,y:H+8,vx:(Math.random()-.5)*.5,vy:-(6.2+Math.random()*2.4),ty:ty,type:type,trail:[]});
-  addFeed(name,type,mine);}
-function addSpark(x,y,vx,vy,col,o){o=o||{};if(sparks.length>MAX)return;sparks.push({x:x,y:y,vx:vx,vy:vy,col:col,life:1,decay:o.decay||(0.006+Math.random()*0.01),grav:o.grav==null?0.03:o.grav,drag:o.drag||0.985,size:o.size||(1.6+Math.random()*1.1),tw:o.tw||0,twp:Math.random()*6.28});}
-function burst(x,y,type){var col=type.col,st=type.style,n=type.rarity==='Legendary'?150:(80+((Math.random()*40)|0));
-  addSpark(x,y,0,0,{core:'#fff',mid:'#fff',edge:'#ffffff'},{decay:0.06,grav:0,size:type.rarity==='Legendary'?16:11,drag:.9});
-  if(st==='ring'){for(var i=0;i<n;i++){var a=6.283*i/n,s=3.1+Math.random()*.4;addSpark(x,y,Math.cos(a)*s,Math.sin(a)*s,col,{decay:.01});}}
-  else if(st==='willow'){for(var i2=0;i2<n;i2++){var a2=6.283*i2/n+Math.random()*.1,s2=1.4+Math.random()*2.4;addSpark(x,y,Math.cos(a2)*s2,Math.sin(a2)*s2,col,{grav:.06,decay:.005,size:1.9});}}
-  else if(st==='double'){for(var i3=0;i3<n;i3++){var a3=6.283*i3/n,s3=2.6+Math.random()*2.2;addSpark(x,y,Math.cos(a3)*s3,Math.sin(a3)*s3,col,{});}
-    for(var k=0;k<5;k++){(function(kk){setTimeout(function(){var ox=x+(Math.random()-.5)*110,oy=y+(Math.random()-.5)*80;for(var m=0;m<28;m++){var am=Math.random()*6.28,sm=1.4+Math.random()*2.2;addSpark(ox,oy,Math.cos(am)*sm,Math.sin(am)*sm,col,{});}},130+kk*90);})(k);}}
-  else {for(var i4=0;i4<n;i4++){var a4=6.283*i4/n+Math.random()*.08,s4=2.2+Math.random()*3.1;addSpark(x,y,Math.cos(a4)*s4,Math.sin(a4)*s4,col,{tw:Math.random()<.4?1:0});}}
-  for(var c=0;c<18;c++){var ac=Math.random()*6.28,sc=Math.random()*1.5;addSpark(x,y,Math.cos(ac)*sc,Math.sin(ac)*sc,{core:'#fff',mid:'#fff5cc',edge:'#ffd54a'},{decay:.03,size:.9,tw:1});}}
-var RCOL={Common:'#9ca3af',Uncommon:'#5aa2ff',Rare:'#ffcf4a',Epic:'#c084fc',Legendary:'#ec4899'};
-function addFeed(name,type,mine){var f=document.getElementById('feed');
-  var row=document.createElement('div');row.className='row';
-  row.innerHTML='<span class="dot" style="color:'+type.col.edge+';background:'+type.col.edge+'"></span>'+
-    '<span class="nm">'+(mine?'YOU':name)+'</span><span class="fw">'+type.name+'</span>'+
-    '<span class="lv" style="color:'+RCOL[type.rarity]+'">'+type.rarity+'</span>';
-  f.appendChild(row);while(f.children.length>7)f.removeChild(f.children[1]);
-  var c=document.getElementById('counter');var n=parseInt(c.textContent.replace(/[^0-9]/g,''))+1;c.textContent='🎆 '+n.toLocaleString()+' launched tonight';
-  if(mine){var t=document.getElementById('toast');t.innerHTML='<b>YOU</b> launched '+type.name+' 🎆';t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}}
-// draw
+var stars=[];function buildStars(){stars=[];var n=(W*H)/10000;for(var i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H*.85,r:Math.random()*1.2+.2,tw:Math.random()*6.28});}
+var rockets=[],sparks=[],MAX=1800;
+function launchRocket(type,tx,ty){var sx=(tx!=null?tx:W*.14+Math.random()*W*.72),y2=(ty!=null?ty:H*.14+Math.random()*H*.32);
+  rockets.push({x:sx,y:H+8,vx:(Math.random()-.5)*.5,vy:-(6.2+Math.random()*2.4),ty:y2,type:type,trail:[]});}
+function addSpark(x,y,vx,vy,col,o){o=o||{};if(sparks.length>MAX)return;sparks.push({x:x,y:y,vx:vx,vy:vy,col:col,life:1,decay:o.decay||(.006+Math.random()*.01),grav:o.grav==null?.03:o.grav,drag:o.drag||.985,size:o.size||(1.6+Math.random()*1.1),tw:o.tw||0,twp:Math.random()*6.28});}
+function burst(x,y,type){var col=type.col,st=type.style,sc=type.scale||1,n=Math.round((70+((Math.random()*40)|0))*Math.min(1.6,sc));
+  addSpark(x,y,0,0,{core:'#fff',mid:'#fff',edge:'#ffffff'},{decay:.06,grav:0,size:11*sc,drag:.9});
+  if(st==='ring'){for(var i=0;i<n;i++){var a=6.283*i/n,s=(3.1+Math.random()*.4)*sc;addSpark(x,y,Math.cos(a)*s,Math.sin(a)*s,col,{decay:.01});}}
+  else if(st==='willow'){for(var i2=0;i2<n;i2++){var a2=6.283*i2/n+Math.random()*.1,s2=(1.4+Math.random()*2.4)*sc;addSpark(x,y,Math.cos(a2)*s2,Math.sin(a2)*s2,col,{grav:.06,decay:.005,size:1.9*sc});}}
+  else {for(var i4=0;i4<n;i4++){var a4=6.283*i4/n+Math.random()*.08,s4=(2.2+Math.random()*3.1)*sc;addSpark(x,y,Math.cos(a4)*s4,Math.sin(a4)*s4,col,{tw:Math.random()<.4?1:0,size:(1.6+Math.random())*sc});}}
+  for(var c=0;c<18;c++){var ac=Math.random()*6.28,scc=Math.random()*1.5;addSpark(x,y,Math.cos(ac)*scc,Math.sin(ac)*scc,{core:'#fff',mid:'#fff5cc',edge:'#ffd54a'},{decay:.03,size:.9,tw:1});}}
+function launchType(type){ if(type.style==='finale'){
+    for(var k=0;k<10;k++){(function(kk){setTimeout(function(){launchRocket(CAT[[1,2,4,5,6][kk%5]]);},kk*140);})(k);}
+    setTimeout(function(){launchRocket(type,W/2,H*.28);},700);
+  } else launchRocket(type); }
+var TMETA=[{n:'SHRIMP',e:'🦐',c:'#F97316'},{n:'CRAB',e:'🦀',c:'#FCD34D'},{n:'DOLPHIN',e:'🐬',c:'#60A5FA'},{n:'WHALE',e:'🐋',c:'#A855F7'},{n:'ROYALTY',e:'👑',c:'#4ADE80'}];
+var CREDITS_BY_LVL=[6,12,25,60,999];
+var state={connected:false,lvl:0,credits:0,max:0};
+function balStr(b){return b>=1e9?(b/1e9).toFixed(1)+'B':b>=1e6?(b/1e6).toFixed(1)+'M':b>=1e3?(b/1e3).toFixed(0)+'K':Math.floor(b);}
+function computeLevel(){var b=(window.MONSHI&&MONSHI.balance)||0,lvl=0;
+  if(b>=1e4)lvl=1; if(b>=1e5)lvl=2; if(b>=1e6)lvl=3; if(b>=1e7)lvl=4;
+  try{if(MONSHI.isRoyalty&&MONSHI.isRoyalty())lvl=Math.max(lvl,4); if(MONSHI.isWhale&&MONSHI.isWhale())lvl=Math.max(lvl,3);}catch(e){}
+  return lvl;}
+function renderArsenal(){var a=$('arsenal');a.innerHTML='';
+  CAT.forEach(function(t){var locked=state.lvl<t.lvl;var el=document.createElement('div');el.className='fw'+(locked?' locked':'')+(t.style==='finale'&&!locked?' badass':'');
+    el.innerHTML='<div class="ic">'+t.ic+'</div><div class="fn">'+t.name+'</div><div class="cost">'+(locked?('🔒 '+TMETA[t.lvl].e+' '+TMETA[t.lvl].n):(t.cost+' cr'))+'</div>';
+    el.onclick=function(){ if(locked){toast('Hold more $MONSHI — '+t.name+' needs '+TMETA[t.lvl].e+' '+TMETA[t.lvl].n);return;}
+      if(state.credits<t.cost){toast('Not enough credits — they refill over time');return;}
+      state.credits-=t.cost; updateCredits(); launchType(t); if(t.style==='finale')toast('👑 GRAND FINALE!'); };
+    a.appendChild(el);});}
+function updateCredits(){$('cN').textContent=state.credits>=999?'∞':state.credits;}
+function onConnected(){state.connected=true;var lvl=computeLevel();state.lvl=lvl;state.max=CREDITS_BY_LVL[lvl];state.credits=state.max;
+  var m=TMETA[lvl];document.documentElement.style.setProperty('--tc',m.c);
+  $('tEm').textContent=m.e;$('tNm').textContent=m.n;$('tNm').style.color=m.c;
+  $('tBal').textContent=balStr((window.MONSHI&&MONSHI.balance)||0)+' $MONSHI';
+  $('tier').style.display='flex';$('credits').style.display='block';$('arsenal').style.display='flex';
+  updateCredits();renderArsenal();$('overlay').classList.add('hide');
+  toast(m.e+' '+m.n+' — arsenal unlocked'); if(lvl>=4)setTimeout(function(){launchType(CAT[6]);},600);}
+function toast(t){var el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},2400);}
+$('connectBtn').onclick=async function(){this.textContent='CONNECTING…';
+  try{ if(window.MONSHI&&MONSHI.connectWallet){var w=await MONSHI.connectWallet(); if(w){onConnected();return;}} }catch(e){}
+  this.textContent='CONNECT WALLET 🎆'; toast('No wallet found — install MetaMask/Rabby'); };
+$('watchBtn').onclick=function(){$('overlay').classList.add('hide');};
+setInterval(function(){if(state.connected&&state.credits<state.max){state.credits=Math.min(state.max,state.credits+1);updateCredits();}},4000);
+view.addEventListener('pointerdown',function(e){if(!state.connected)return;var t=CAT[state.lvl>=1?1:0];if(state.credits>=t.cost){state.credits-=t.cost;updateCredits();launchRocket(t,e.clientX,e.clientY);}});
 var last=performance.now();
 function frame(now){requestAnimationFrame(frame);var dt=Math.min((now-last)/1000,.05);last=now;var t=now/1000;
   var g=vctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#05010f');g.addColorStop(.5,'#0b0524');g.addColorStop(1,'#1a0b3a');vctx.fillStyle=g;vctx.fillRect(0,0,W,H);
   for(var i=0;i<stars.length;i++){var s=stars[i];vctx.globalAlpha=.35+.5*Math.abs(Math.sin(t*1.4+s.tw));vctx.fillStyle='#dfe6ff';vctx.beginPath();vctx.arc(s.x,s.y,s.r,0,7);vctx.fill();}
   vctx.globalAlpha=1;
   fctx.globalCompositeOperation='source-over';fctx.fillStyle='rgba(0,0,0,0.16)';fctx.fillRect(0,0,W,H);fctx.globalCompositeOperation='lighter';
+  if(Math.random()<0.02)launchRocket(CAT[[0,1,2,3][(Math.random()*4)|0]]);
   for(var r=rockets.length-1;r>=0;r--){var ro=rockets[r];ro.x+=ro.vx;ro.y+=ro.vy;ro.vy+=.05;ro.trail.push({x:ro.x,y:ro.y});if(ro.trail.length>7)ro.trail.shift();
-    for(var k=0;k<ro.trail.length;k++){var tp=ro.trail[k],a=k/ro.trail.length,im=glow[ro.type.col.mid],sz=3*a+1;fctx.globalAlpha=a*.7;fctx.drawImage(im,tp.x-sz,tp.y-sz,sz*2,sz*2);}
+    for(var k=0;k<ro.trail.length;k++){var tp=ro.trail[k],a=k/ro.trail.length,im=glow[ro.type.col.mid]||GW,sz=3*a+1;fctx.globalAlpha=a*.7;fctx.drawImage(im,tp.x-sz,tp.y-sz,sz*2,sz*2);}
     fctx.globalAlpha=1;fctx.fillStyle=ro.type.col.core;fctx.beginPath();fctx.arc(ro.x,ro.y,2,0,7);fctx.fill();
     if(ro.vy>=-1.2||ro.y<=ro.ty){burst(ro.x,ro.y,ro.type);rockets.splice(r,1);}}
   for(var j=sparks.length-1;j>=0;j--){var sp=sparks[j];sp.vx*=sp.drag;sp.vy=sp.vy*sp.drag+sp.grav;sp.x+=sp.vx;sp.y+=sp.vy;sp.life-=sp.decay;if(sp.life<=0){sparks.splice(j,1);continue;}
@@ -133,11 +156,7 @@ function frame(now){requestAnimationFrame(frame);var dt=Math.min((now-last)/1000
   var vg=vctx.createRadialGradient(W/2,H*.45,H*.3,W/2,H*.5,H*.85);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,0.5)');vctx.fillStyle=vg;vctx.fillRect(0,0,W,H);
 }
 resize();requestAnimationFrame(frame);
-// simulate other holders launching on-chain
-setInterval(function(){var t=pick(TYPES);rocket(t,pick(NAMES),false);},900);
-for(var o=0;o<4;o++)setTimeout(function(){rocket(pick(TYPES),pick(NAMES),false);},300+o*300);
-// your launch
-document.getElementById('launch').onclick=function(){var mine=TYPES[4];rocket(mine,'YOU',true);};
+for(var o=0;o<4;o++)setTimeout(function(){launchRocket(CAT[(Math.random()*4)|0]);},300+o*300);
 })();
 </script>
 </body></html>
