@@ -63,7 +63,7 @@ a.hub{position:fixed;top:calc(env(safe-area-inset-top,0) + 12px);left:14px;z-ind
 <div id="wallet">CONNECT</div>
 <div id="top"><div class="h">MONSHI MARKETPLACE</div><div class="s" id="sub">FIREWORK NFTs · 4TH OF JULY DROP</div></div>
 <div id="hint" style="bottom:calc(env(safe-area-inset-bottom,0) + 112px)">DRAG to look · TAP a piece to buy · SPIN the wheel to gamble</div>
-<button id="spin">🎡 SPIN · 500 MON</button>
+<button id="spin">🎡 SPIN · 250 MON</button>
 <div id="fwd" class="move">↑</div><div id="bwd" class="move">↓</div>
 <div id="card"><span id="close">✕</span>
   <img id="cThumb" class="thumb" alt=""/>
@@ -158,7 +158,8 @@ function buildGallery(items){
     var refl=grp.clone(); refl.position.y=-y; refl.scale.y=-1; refl.traverse(function(o){if(o.material){o.material=o.material.clone();o.material.opacity=(o.material.opacity||1)*0.18;o.material.transparent=true;o.material.depthWrite=false;}}); scene.add(refl);
     panels.push({grp:grp,plane:plane,it:it});
   });
-  $('sub').textContent='FIREWORK NFTs · '+N+' LIVE · 4TH OF JULY DROP';
+  var ph=phase();
+  $('sub').textContent='FIREWORK NFTs · '+N+' PIECES · '+(ph==='preview'?'🔒 MINT OPENS JULY 4':(ph==='closed'?'SEASON CLOSED':'LIVE NOW — GONE JULY 5'));
 }
 function spawnPanelSpark(grp){var rc=new THREE.Color(RC[grp.userData.item.rarity]||'#c084fc');
   for(var i=0;i<10;i++){var a=Math.random()*6.28,sp=0.6+Math.random()*1.3;
@@ -181,18 +182,23 @@ for(var wp=0;wp<WN;wp++){var peg=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,
 var hub=new THREE.Mesh(new THREE.CircleGeometry(1.25,40),new THREE.MeshBasicMaterial({color:0x2a1560}));hub.position.z=0.15;wheel.add(hub);
 texLoader.load('/public/monshi-face.jpg',function(tx){tx.anisotropy=4;hub.material=new THREE.MeshBasicMaterial({map:tx});});
 var ptr=new THREE.Mesh(new THREE.ConeGeometry(0.4,0.85,3),new THREE.MeshBasicMaterial({color:0xffffff}));ptr.position.set(0,WR+0.35,0.2);ptr.rotation.z=Math.PI;wheel.add(ptr);
-var wlab=new THREE.Mesh(new THREE.PlaneGeometry(4.2,0.7),new THREE.MeshBasicMaterial({map:textTex('SPIN · 500 MON','#ffd54a'),transparent:true}));wlab.position.set(0,-WR-0.7,0.2);wheel.add(wlab);
+var wlab=new THREE.Mesh(new THREE.PlaneGeometry(4.2,0.7),new THREE.MeshBasicMaterial({map:textTex('SPIN · 250 MON','#ffd54a'),transparent:true}));wlab.position.set(0,-WR-0.7,0.2);wheel.add(wlab);
 var spinVel=0,spinning=false;
 function segUnderPointer(){var best=0,bd=99;for(var i=0;i<WN;i++){var cc=(i*wstep+wstep/2+disc.rotation.z)%(2*Math.PI);var dd=Math.abs(((cc-Math.PI/2+Math.PI)%(2*Math.PI))-Math.PI);if(dd<bd){bd=dd;best=i;}}return best;}
+// July 4th drop window: preview before Jul 4, live Jul 4-5, closed after
+function phase(){var n=new Date(),y=n.getFullYear(),open=new Date(y,6,4),close=new Date(y,6,6);
+  return n<open?'preview':(n>=close?'closed':'live');}
+function gateToast(ph){toast(ph==='preview'?'🔒 PREVIEW — mint opens July 4':'🎆 Season closed — the 4th of July drop is gone');}
 async function doSpin(){if(spinning)return;var btn=$('spin');
+  var ph=phase(); if(ph!=='live'){gateToast(ph);return;}
   if(!WALLET){try{WALLET=await MONSHI.connectWallet();$('wallet').textContent=WALLET?WALLET.slice(0,6)+'…'+WALLET.slice(-4):'CONNECT';}catch(e){}}
   if(!WALLET){toast('Connect a wallet to spin');return;}
-  var wei='0x'+(BigInt(500)*(BigInt(10)**BigInt(18))).toString(16);
-  btn.disabled=true;btn.textContent='CONFIRM 500 MON…';
+  var wei='0x'+(BigInt(250)*(BigInt(10)**BigInt(18))).toString(16);
+  btn.disabled=true;btn.textContent='CONFIRM 250 MON…';
   try{await window.ethereum.request({method:'eth_sendTransaction',params:[{from:WALLET,to:TREASURY,value:wei}]});}
-  catch(e){toast('Spin cancelled');btn.disabled=false;btn.textContent='🎡 SPIN · 500 MON';return;}
+  catch(e){toast('Spin cancelled');btn.disabled=false;btn.textContent='🎡 SPIN · 250 MON';return;}
   spinVel=0.4+Math.random()*0.18;spinning=true;btn.textContent='SPINNING…';}
-function resolveSpin(){spinning=false;var btn=$('spin');btn.disabled=false;btn.textContent='🎡 SPIN · 500 MON';
+function resolveSpin(){spinning=false;var btn=$('spin');btn.disabled=false;btn.textContent='🎡 SPIN · 250 MON';
   var rar=WHEEL_SEG[segUnderPointer()];var pool=ITEMS.filter(function(it){return it.rarity===rar;});if(!pool.length)pool=ITEMS;
   var win=pool[(Math.random()*pool.length)|0];var p=panels.find(function(x){return x.it===win;});if(p){openCard(p);focus=p.grp;}
   toast('🎉 You won '+win.name+' ('+rar+')! Sent to treasury.');}
@@ -222,7 +228,9 @@ $('close').onclick=function(){$('card').classList.remove('show');focus=null;};
 function toast(t){var el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},3200);}
 var WALLET=null;
 $('wallet').onclick=async function(){try{if(window.MONSHI&&MONSHI.connectWallet){var w=await MONSHI.connectWallet();if(w){WALLET=w;this.textContent=w.slice(0,6)+'…'+w.slice(-4);toast('Wallet connected');return;}}}catch(e){}toast('No wallet found — install MetaMask/Rabby');};
-$('buy').onclick=async function(){var it=this._it;if(!it)return;if(!WALLET){try{WALLET=await MONSHI.connectWallet();$('wallet').textContent=WALLET?WALLET.slice(0,6)+'…'+WALLET.slice(-4):'CONNECT';}catch(e){}}if(!WALLET){toast('Connect a wallet first');return;}var wei='0x'+BigInt(Math.round(it.price*1e18)).toString(16);this.classList.add('busy');this.textContent='CONFIRM IN WALLET…';var btn=this;try{var tx=await window.ethereum.request({method:'eth_sendTransaction',params:[{from:WALLET,to:TREASURY,value:wei}]});toast('✅ Purchased '+it.name+' · tx '+tx.slice(0,10)+'…');btn.textContent='✓ PURCHASED';}catch(e){toast('Purchase cancelled');btn.classList.remove('busy');btn.textContent='BUY · '+it.price+' MON';}};
+$('buy').onclick=async function(){var it=this._it;if(!it)return;
+  var ph=phase(); if(ph!=='live'){gateToast(ph);return;}
+  if(!WALLET){try{WALLET=await MONSHI.connectWallet();$('wallet').textContent=WALLET?WALLET.slice(0,6)+'…'+WALLET.slice(-4):'CONNECT';}catch(e){}}if(!WALLET){toast('Connect a wallet first');return;}var wei='0x'+BigInt(Math.round(it.price*1e18)).toString(16);this.classList.add('busy');this.textContent='CONFIRM IN WALLET…';var btn=this;try{var tx=await window.ethereum.request({method:'eth_sendTransaction',params:[{from:WALLET,to:TREASURY,value:wei}]});toast('✅ Purchased '+it.name+' · tx '+tx.slice(0,10)+'…');btn.textContent='✓ PURCHASED';}catch(e){toast('Purchase cancelled');btn.classList.remove('busy');btn.textContent='BUY · '+it.price+' MON';}};
 // ── loop ──
 var clock=new THREE.Clock(),ready=false;
 function tick(){requestAnimationFrame(tick);var dt=Math.min(clock.getDelta(),0.05),t=clock.elapsedTime;
