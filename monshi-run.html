@@ -87,11 +87,11 @@ a.back.show{display:block;}
   <div class="sub">RIDE THE PURPLE WAVE</div>
   <div id="chars">
     <div class="charCard monshi sel" data-char="monshi">
-      <img src="/public/monshi-run/monshi.png" alt="Monshi"/>
+      <img src="/public/monshi-run/run_0.png" alt="Monshi"/>
       <div class="cn" style="color:#C084FC">MONSHI</div><div class="ct">MONAD · PURPLE</div>
     </div>
     <div class="charCard toshi" data-char="toshi">
-      <img src="/public/monshi-run/toshi.png" alt="Toshi"/>
+      <img src="/public/monshi-run/trun_0.png" alt="Toshi"/>
       <div class="cn" style="color:#60A5FA">TOSHI</div><div class="ct">BASE · BLUE</div>
     </div>
   </div>
@@ -123,9 +123,10 @@ var startBestEl=document.getElementById('startBest');
 if(!window.THREE){startBestEl.textContent='3D engine failed to load — check connection';return;}
 
 var LANES=[-2.3,0,2.3];
+function frameList(prefix){var a=[];for(var i=0;i<10;i++)a.push('/public/monshi-run/'+prefix+i+'.png');return a;}
 var CHAR={
-  monshi:{frames:['/public/monshi-run/monshi.png','/public/monshi-run/monshi_b.png'], prim:0xA855F7, glow:0xA855F7, boost:0xC084FC, boost2:0xEC4899, name:'MONSHI'},
-  toshi :{frames:['/public/monshi-run/toshi.png','/public/monshi-run/toshi_b.png'],   prim:0x3B82F6, glow:0x3B82F6, boost:0x60A5FA, boost2:0x22D3EE, name:'TOSHI'}
+  monshi:{frames:frameList('run_'),  prim:0xA855F7, glow:0xA855F7, boost:0xC084FC, boost2:0xEC4899, name:'MONSHI'},
+  toshi :{frames:frameList('trun_'), prim:0x3B82F6, glow:0x3B82F6, boost:0x60A5FA, boost2:0x22D3EE, name:'TOSHI'}
 };
 var SUPA='https://cuqhqcmrgpdjlhyqztnc.supabase.co', SKEY='sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
 var $=function(id){return document.getElementById(id);};
@@ -451,18 +452,18 @@ function tick(){
   player.position.x+=(targetX-player.position.x)*Math.min(1,dt*14);
   if(!onGround){jumpV-=27*dt;jumpY+=jumpV*dt;if(jumpY<=0){jumpY=0;jumpV=0;onGround=true;}}
   player.position.y=1.45+jumpY;
-  // run-cycle: swap stride frames + subtle bob; bank only when switching lanes
+  // 10-frame run cycle (aligned video frames -> no shake, legs animate -> no slide)
   runT+=dt*(G.speed*0.5);
   if(onGround){
-    player.position.y+=Math.abs(Math.sin(runT*2))*0.1;
+    player.position.y+=Math.abs(Math.sin(runT*2))*0.05; // tiny bob; legs carry the motion
     player.material.rotation=(targetX-player.position.x)*0.05;
-    var idx=Math.floor(runT*1.9)%2;
+    var idx=Math.floor(runT*2.2)%curFrames.length;
     if(idx!==frameIdx){frameIdx=idx;player.material.map=curFrames[idx];player.material.needsUpdate=true;}
   } else {
-    player.material.rotation=-0.08;
-    if(frameIdx!==0){frameIdx=0;player.material.map=curFrames[0];player.material.needsUpdate=true;}
+    player.material.rotation=-0.06;
+    var jf=3; if(frameIdx!==jf){frameIdx=jf;player.material.map=curFrames[jf];player.material.needsUpdate=true;}
   }
-  player.scale.set(2.2,2.2+Math.sin(runT*2)*0.04,1);
+  player.scale.set(2.2,2.2,1);
   // invuln flicker
   if(G.invuln>0){G.invuln-=dt;player.material.opacity=(Math.floor(t*14)%2)?0.35:1;}else player.material.opacity=1;
   // overdrive
