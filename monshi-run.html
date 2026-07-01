@@ -124,8 +124,8 @@ if(!window.THREE){startBestEl.textContent='3D engine failed to load — check co
 
 var LANES=[-2.3,0,2.3];
 var CHAR={
-  monshi:{sprite:'/public/monshi-run/monshi.png', prim:0xA855F7, glow:0xA855F7, boost:0xC084FC, boost2:0xEC4899, name:'MONSHI'},
-  toshi :{sprite:'/public/monshi-run/toshi.png',  prim:0x3B82F6, glow:0x3B82F6, boost:0x60A5FA, boost2:0x22D3EE, name:'TOSHI'}
+  monshi:{frames:['/public/monshi-run/monshi.png','/public/monshi-run/monshi_b.png'], prim:0xA855F7, glow:0xA855F7, boost:0xC084FC, boost2:0xEC4899, name:'MONSHI'},
+  toshi :{frames:['/public/monshi-run/toshi.png','/public/monshi-run/toshi_b.png'],   prim:0x3B82F6, glow:0x3B82F6, boost:0x60A5FA, boost2:0x22D3EE, name:'TOSHI'}
 };
 var SUPA='https://cuqhqcmrgpdjlhyqztnc.supabase.co', SKEY='sb_publishable_nu-E2mvgdQ0l1DsSsOswWA_ma2RbV4z';
 var $=function(id){return document.getElementById(id);};
@@ -155,8 +155,9 @@ var flameTex=softTex([[0,'#ffffff'],[.3,'#ffffffcc'],[.65,'#ffffff55'],[1,'#ffff
 var glowTex =softTex([[0,'#ffffff'],[.4,'#ffffffaa'],[1,'#ffffff00']]);
 var texLoader=new THREE.TextureLoader();
 var coinTex=texLoader.load('/public/monshi-run/monad-coin.png');
-var charTex={monshi:texLoader.load(CHAR.monshi.sprite), toshi:texLoader.load(CHAR.toshi.sprite)};
-charTex.monshi.anisotropy=charTex.toshi.anisotropy=4;
+var FRAMES={monshi:[],toshi:[]};
+['monshi','toshi'].forEach(function(ch){CHAR[ch].frames.forEach(function(src){var t=texLoader.load(src);t.anisotropy=4;FRAMES[ch].push(t);});});
+var curFrames=FRAMES.monshi, frameIdx=0;
 
 // ── world container (curve applies here) ──
 var world=new THREE.Group(); scene.add(world);
@@ -210,7 +211,7 @@ starGeo.setAttribute('position',new THREE.Float32BufferAttribute(sv,3));
 scene.add(new THREE.Points(starGeo,new THREE.PointsMaterial({color:0x9d6bff,size:.4,transparent:true,opacity:.7})));
 
 // ── player (back-view billboard) ──
-var player=new THREE.Sprite(new THREE.SpriteMaterial({map:charTex.monshi,transparent:true}));
+var player=new THREE.Sprite(new THREE.SpriteMaterial({map:FRAMES.monshi[0],transparent:true}));
 player.scale.set(2.2,2.2,1); player.position.set(0,1.45,3.2); scene.add(player);
 var shadow=new THREE.Mesh(new THREE.CircleGeometry(0.9,20),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.4}));
 shadow.rotation.x=-Math.PI/2; scene.add(shadow);
@@ -261,7 +262,7 @@ function applyTheme(){
   document.documentElement.style.setProperty('--prim','#'+theme.prim.toString(16).padStart(6,'0'));
   document.documentElement.style.setProperty('--glow','#'+theme.glow.toString(16).padStart(6,'0'));
   document.documentElement.style.setProperty('--acc','rgba('+[(theme.prim>>16)&255,(theme.prim>>8)&255,theme.prim&255].join(',')+',.45)');
-  player.material.map=charTex[selChar];
+  curFrames=FRAMES[selChar]; frameIdx=0; player.material.map=curFrames[0]; player.material.needsUpdate=true;
   glowLight.color.setHex(theme.prim);
   coins.forEach(function(c){c.userData.halo.material.color.setHex(theme.prim);});
 }
@@ -450,11 +451,18 @@ function tick(){
   player.position.x+=(targetX-player.position.x)*Math.min(1,dt*14);
   if(!onGround){jumpV-=27*dt;jumpY+=jumpV*dt;if(jumpY<=0){jumpY=0;jumpV=0;onGround=true;}}
   player.position.y=1.45+jumpY;
-  // run bob + lean
+  // run-cycle: swap stride frames + subtle bob; bank only when switching lanes
   runT+=dt*(G.speed*0.5);
-  if(onGround){player.position.y+=Math.abs(Math.sin(runT))*0.12; player.material.rotation=Math.sin(runT)*0.04+(targetX-player.position.x)*0.06;}
-  else{player.material.rotation=-0.12;}
-  player.scale.set(2.2,2.2+Math.sin(runT)*0.05,1);
+  if(onGround){
+    player.position.y+=Math.abs(Math.sin(runT*2))*0.1;
+    player.material.rotation=(targetX-player.position.x)*0.05;
+    var idx=Math.floor(runT*1.9)%2;
+    if(idx!==frameIdx){frameIdx=idx;player.material.map=curFrames[idx];player.material.needsUpdate=true;}
+  } else {
+    player.material.rotation=-0.08;
+    if(frameIdx!==0){frameIdx=0;player.material.map=curFrames[0];player.material.needsUpdate=true;}
+  }
+  player.scale.set(2.2,2.2+Math.sin(runT*2)*0.04,1);
   // invuln flicker
   if(G.invuln>0){G.invuln-=dt;player.material.opacity=(Math.floor(t*14)%2)?0.35:1;}else player.material.opacity=1;
   // overdrive
