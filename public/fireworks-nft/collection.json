@@ -1,0 +1,10 @@
+{ "treasury":"0xece5d15e567c801c835029a49b2e4067b0eb63aa",
+  "total":50,
+  "items":[
+   {"id":1,"file":"c01","name":"Sparkler #001","rarity":"Common","price":0.05,"traits":"Sparkler · RWB Burst · City"},
+   {"id":2,"file":"c02","name":"Red Rocket #002","rarity":"Common","price":0.05,"traits":"Red Rocket · Peony · Night"},
+   {"id":3,"file":"c03","name":"Blue Willow #003","rarity":"Uncommon","price":0.12,"traits":"Blue Willow · Cascade"},
+   {"id":4,"file":"c04","name":"Gold Chrysanthemum #004","rarity":"Rare","price":0.35,"traits":"Gold Chrys · Big Burst"},
+   {"id":5,"file":"c05","name":"Star-Spangled #005","rarity":"Rare","price":0.35,"traits":"Uncle Sam Hat · Star Shades"},
+   {"id":6,"file":"c06","name":"Monad Peony #006","rarity":"Epic","price":0.7,"traits":"Monad Peony · Cosmic Purple"}
+  ]}

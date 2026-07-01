@@ -1,0 +1,199 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
+<link rel="shortcut icon" href="/favicon.ico?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#05010f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MONSHI MARKET">
+<meta property="og:title" content="Monshi Marketplace — Firework NFTs">
+<meta property="og:description" content="Walk the gallery. Buy living firework NFTs. 4th of July drop.">
+<meta property="og:image" content="/public/fireworks-nft/nft_bluewillow.jpg">
+<title>MONSHI MARKETPLACE 🎆</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;}
+html,body{width:100%;height:100%;overflow:hidden;background:#05010f;font-family:'Space Mono',monospace;color:#fff;}
+#c{position:fixed;inset:0;display:block;touch-action:none;z-index:1;cursor:grab;}
+#c:active{cursor:grabbing;}
+#top{position:fixed;top:calc(env(safe-area-inset-top,0) + 12px);left:0;right:0;z-index:3;text-align:center;pointer-events:none;}
+#top .h{font-family:Orbitron;font-weight:900;font-size:clamp(18px,4vw,30px);letter-spacing:2px;
+  background:linear-gradient(90deg,#ff6b6b,#fff,#6aa8ff);-webkit-background-clip:text;background-clip:text;color:transparent;}
+#top .s{font-size:10px;letter-spacing:2px;color:#a99cd6;margin-top:3px;}
+a.hub{position:fixed;top:calc(env(safe-area-inset-top,0) + 12px);left:14px;z-index:5;color:#c4b5fd;text-decoration:none;font-size:13px;
+  background:rgba(20,10,44,.5);border:1px solid rgba(168,85,247,.35);border-radius:20px;padding:6px 12px;pointer-events:all;}
+#wallet{position:fixed;top:calc(env(safe-area-inset-top,0) + 12px);right:14px;z-index:5;cursor:pointer;font-family:Orbitron;font-weight:700;
+  font-size:11px;letter-spacing:1px;color:#fff;background:linear-gradient(180deg,#7C3AED,#6D28D9);border:1px solid #A855F7;border-radius:20px;padding:8px 14px;box-shadow:0 0 18px rgba(124,58,237,.5);}
+#hint{position:fixed;bottom:calc(env(safe-area-inset-bottom,0) + 96px);left:50%;transform:translateX(-50%);z-index:3;
+  font-size:11px;letter-spacing:2px;color:rgba(196,181,253,.6);pointer-events:none;animation:pulse 2.4s infinite;text-align:center;}
+@keyframes pulse{50%{opacity:.35}}
+/* move buttons (mobile) */
+.move{position:fixed;bottom:calc(env(safe-area-inset-bottom,0) + 90px);z-index:4;width:48px;height:48px;border-radius:50%;
+  background:rgba(30,15,60,.55);border:1px solid rgba(168,85,247,.5);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;pointer-events:all;backdrop-filter:blur(5px);}
+#fwd{right:16px;bottom:calc(env(safe-area-inset-bottom,0) + 150px);} #bwd{right:16px;}
+.move:active{transform:scale(.9);}
+/* detail / buy card */
+#card{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0) + 16px);transform:translateX(-50%) translateY(140%);z-index:6;
+  width:min(460px,94vw);background:linear-gradient(180deg,rgba(34,16,68,.94),rgba(16,8,36,.97));
+  border:1px solid var(--rc,#a855f7);border-radius:18px;padding:14px 16px;box-shadow:0 0 40px rgba(124,58,237,.4);
+  backdrop-filter:blur(10px);display:flex;gap:14px;align-items:center;transition:transform .3s;}
+#card.show{transform:translateX(-50%) translateY(0);}
+#card .thumb{width:78px;height:78px;border-radius:12px;object-fit:cover;border:2px solid var(--rc,#a855f7);box-shadow:0 0 16px var(--rc);flex:0 0 auto;}
+#card .info{flex:1;min-width:0;} #card .nm{font-family:Orbitron;font-weight:900;font-size:clamp(15px,4vw,20px);line-height:1;}
+#card .rr{display:inline-block;margin-top:5px;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 9px;border-radius:20px;color:#0a0320;background:var(--rc);}
+#card .tr{font-size:10px;color:#c4b5fd;margin-top:6px;} #card .price{font-family:Orbitron;font-weight:700;font-size:14px;color:#FCD34D;margin-top:4px;}
+#buy{margin-top:8px;width:150px;cursor:pointer;font-family:Orbitron;font-weight:700;font-size:15px;letter-spacing:1px;color:#fff;
+  background:linear-gradient(180deg,#16a34a,#15803d);border:1px solid #4ade80;border-radius:11px;padding:12px;box-shadow:0 0 20px rgba(22,163,74,.5);transition:.12s;}
+#buy:active{transform:scale(.97);} #buy.busy{opacity:.6;}
+#close{position:absolute;top:8px;right:12px;cursor:pointer;color:#8a7fb5;font-size:16px;}
+#toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-14px);z-index:7;opacity:0;transition:.25s;
+  background:rgba(16,8,36,.95);border:1px solid rgba(168,85,247,.5);border-radius:26px;padding:9px 18px;font-size:12px;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#loading{position:fixed;inset:0;z-index:9;background:#05010f;display:flex;align-items:center;justify-content:center;font-family:Orbitron;letter-spacing:2px;color:#a855f7;}
+@media(max-width:520px){#card{flex-direction:column;align-items:stretch;} #card .thumb{width:100%;height:120px;} #buy{width:100%;}}
+</style></head>
+<body>
+<canvas id="c"></canvas>
+<a class="hub" href="/">← HUB</a>
+<div id="wallet">CONNECT</div>
+<div id="top"><div class="h">MONSHI MARKETPLACE</div><div class="s" id="sub">FIREWORK NFTs · 4TH OF JULY DROP</div></div>
+<div id="hint">DRAG to look · SCROLL / buttons to move · TAP a piece to buy</div>
+<div id="fwd" class="move">↑</div><div id="bwd" class="move">↓</div>
+<div id="card">
+  <span id="close">✕</span>
+  <img id="cThumb" class="thumb" alt=""/>
+  <div class="info"><div class="nm" id="cName">—</div><span class="rr" id="cRar">—</span>
+    <div class="tr" id="cTr">—</div><div class="price" id="cPrice">—</div></div>
+  <button id="buy">BUY</button>
+</div>
+<div id="toast"></div>
+<div id="loading">ENTERING THE MARKETPLACE…</div>
+
+<script src="/monshi-shared.js"></script>
+<script src="//unpkg.com/three@0.150.0/build/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+if(!window.THREE){document.getElementById('loading').textContent='3D failed to load';return;}
+var RC={Common:'#9ca3af',Uncommon:'#5aa2ff',Rare:'#ffcf4a',Epic:'#c084fc',Legendary:'#ec4899'};
+var $=function(i){return document.getElementById(i);};
+var TREASURY='0xece5d15e567c801c835029a49b2e4067b0eb63aa';
+var canvas=$('c');
+var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+var scene=new THREE.Scene();scene.background=new THREE.Color(0x05010f);scene.fog=new THREE.Fog(0x08021c,14,70);
+var camera=new THREE.PerspectiveCamera(60,1,0.1,200);
+scene.add(new THREE.AmbientLight(0x40306a,0.9));
+var d=new THREE.DirectionalLight(0x8a9cff,0.4);d.position.set(0,10,0);scene.add(d);
+function resize(){var w=innerWidth,h=innerHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();}
+addEventListener('resize',resize);resize();
+// floor + stars
+var floor=new THREE.Mesh(new THREE.PlaneGeometry(400,400),new THREE.MeshStandardMaterial({color:0x0a0620,metalness:.7,roughness:.4}));
+floor.rotation.x=-Math.PI/2;scene.add(floor);
+scene.add(new THREE.GridHelper(400,120,0x3a1f6a,0x160c32));
+var sg=new THREE.BufferGeometry(),sv=[];for(var i=0;i<400;i++)sv.push((Math.random()-.5)*200,Math.random()*50+3,(Math.random()-.5)*200);
+sg.setAttribute('position',new THREE.Float32BufferAttribute(sv,3));scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0x9d6bff,size:.5,transparent:true,opacity:.6})));
+// firework glow sprite for "living" panels
+function glowSprite(){var s=48,cv=document.createElement('canvas');cv.width=cv.height=s;var g=cv.getContext('2d');var r=g.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);r.addColorStop(0,'#ffffff');r.addColorStop(.4,'#ffffffaa');r.addColorStop(1,'#ffffff00');g.fillStyle=r;g.fillRect(0,0,s,s);return new THREE.CanvasTexture(cv);}
+var GTEX=glowSprite();
+function textTex(txt,col){var cv=document.createElement('canvas');cv.width=256;cv.height=52;var g=cv.getContext('2d');g.fillStyle='rgba(10,4,25,.85)';g.fillRect(0,0,256,52);g.strokeStyle=col;g.lineWidth=3;g.strokeRect(2,2,252,48);g.fillStyle=col;g.font='bold 22px Orbitron,sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(txt.slice(0,20),128,28);return new THREE.CanvasTexture(cv);}
+var texLoader=new THREE.TextureLoader();
+var panels=[], sparks=[], ITEMS=[];
+function buildGallery(items){
+  ITEMS=items; var N=items.length;
+  var cols=Math.min(N,10), rows=Math.ceil(N/cols);
+  var Rr=Math.max(9, cols*1.4);
+  var rowH=3.4, baseY=2.6;
+  items.forEach(function(it,idx){
+    var col=idx%cols, row=Math.floor(idx/cols);
+    var az=(col/cols)*Math.PI*2;
+    var y=baseY+(rows-1-row)*rowH;
+    var rc=new THREE.Color(RC[it.rarity]||'#a855f7');
+    var grp=new THREE.Group();
+    grp.position.set(Math.sin(az)*Rr,y,Math.cos(az)*Rr);
+    grp.rotation.y=az+Math.PI; // face inward (toward center where camera roams)
+    var frame=new THREE.Mesh(new THREE.BoxGeometry(2.4,2.4,0.12),new THREE.MeshBasicMaterial({color:rc}));grp.add(frame);
+    var ph=new THREE.MeshBasicMaterial({color:0x1a0f38,side:THREE.DoubleSide});
+    var plane=new THREE.Mesh(new THREE.PlaneGeometry(2.1,2.1),ph);plane.position.z=0.07;grp.add(plane);
+    texLoader.load('/public/fireworks-nft/collection/'+it.file+'.jpg',function(tx){tx.anisotropy=4;plane.material=new THREE.MeshBasicMaterial({map:tx,side:THREE.DoubleSide});},undefined,function(){});
+    var glow=new THREE.PointLight(rc,0.8,7);glow.position.set(0,0,1.5);grp.add(glow);
+    var np=new THREE.Mesh(new THREE.PlaneGeometry(2.1,0.42),new THREE.MeshBasicMaterial({map:textTex(it.name,RC[it.rarity]),transparent:true}));np.position.set(0,-1.5,0.1);grp.add(np);
+    grp.userData={item:it,idx:idx,plane:plane,glow:glow,az:az,y:y,burstT:Math.random()*3};
+    scene.add(grp);panels.push({grp:grp,plane:plane,it:it});
+  });
+  $('sub').textContent='FIREWORK NFTs · '+N+' LIVE / '+ (items.length>N?items.length:50) +' · 4TH OF JULY DROP';
+}
+function spawnPanelSpark(grp){var rc=new THREE.Color(RC[grp.userData.item.rarity]||'#c084fc');
+  for(var i=0;i<14;i++){var a=Math.random()*6.28,sp=0.6+Math.random()*1.4;
+    var m=new THREE.Sprite(new THREE.SpriteMaterial({map:GTEX,color:rc,transparent:true,opacity:1,blending:THREE.AdditiveBlending,depthWrite:false}));
+    m.scale.set(.4,.4,1);
+    var wp=grp.localToWorld(new THREE.Vector3(0,0.2,1.2));m.position.copy(wp);
+    m.userData={vx:Math.cos(a)*sp*0.04,vy:Math.sin(a)*sp*0.04+0.02,vz:(Math.random()-.5)*0.02,life:1};
+    scene.add(m);sparks.push(m);}}
+// ── camera free-look ──
+var yaw=0,pitch=0,pos=new THREE.Vector3(0,3,0),focus=null;
+var drag=false,lx=0,ly=0,moved=0;
+canvas.addEventListener('pointerdown',function(e){drag=true;lx=e.clientX;ly=e.clientY;moved=0;});
+addEventListener('pointermove',function(e){if(!drag)return;var dx=e.clientX-lx,dy=e.clientY-ly;lx=e.clientX;ly=e.clientY;moved+=Math.abs(dx)+Math.abs(dy);
+  yaw-=dx*0.004;pitch=Math.max(-0.9,Math.min(0.9,pitch-dy*0.004));focus=null;});
+addEventListener('pointerup',function(e){drag=false; if(moved<6)pick(e);});
+canvas.addEventListener('wheel',function(e){moveFwd(-e.deltaY*0.01);},{passive:true});
+// pinch
+var pd=0;canvas.addEventListener('touchmove',function(e){if(e.touches.length===2){var a=e.touches[0],b=e.touches[1];var dd=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);if(pd)moveFwd((dd-pd)*0.02);pd=dd;}},{passive:true});
+canvas.addEventListener('touchend',function(){pd=0;});
+function dir(){return new THREE.Vector3(Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),Math.cos(yaw)*Math.cos(pitch));}
+function moveFwd(a){var dv=dir().multiplyScalar(a*3);pos.add(dv);pos.y=Math.max(1.2,Math.min(14,pos.y));var R=Math.hypot(pos.x,pos.z);if(R>60){pos.x*=60/R;pos.z*=60/R;}focus=null;}
+addEventListener('keydown',function(e){var k=e.key.toLowerCase();if(k==='w'||e.key==='ArrowUp')moveFwd(1);else if(k==='s'||e.key==='ArrowDown')moveFwd(-1);else if(k==='a'||e.key==='ArrowLeft')yaw+=0.1;else if(k==='d'||e.key==='ArrowRight')yaw-=0.1;});
+$('fwd').addEventListener('pointerdown',function(){this._i=setInterval(function(){moveFwd(0.5);},30);});
+$('bwd').addEventListener('pointerdown',function(){this._i=setInterval(function(){moveFwd(-0.5);},30);});
+['fwd','bwd'].forEach(function(id){$(id).addEventListener('pointerup',function(){clearInterval(this._i);});$(id).addEventListener('pointerleave',function(){clearInterval(this._i);});});
+// ── pick / buy ──
+var ray=new THREE.Raycaster(),m2=new THREE.Vector2();
+function pick(e){m2.x=(e.clientX/innerWidth)*2-1;m2.y=-(e.clientY/innerHeight)*2+1;ray.setFromCamera(m2,camera);
+  var hit=ray.intersectObjects(panels.map(function(p){return p.plane;}));
+  if(hit.length){var pl=hit[0].object;var p=panels.find(function(x){return x.plane===pl;});if(p){openCard(p);focusPanel(p.grp);}}}
+function focusPanel(grp){focus=grp;}
+function openCard(p){var it=p.it,rc=RC[it.rarity];document.documentElement.style.setProperty('--rc',rc);
+  $('cName').textContent=it.name;var r=$('cRar');r.textContent=it.rarity;r.style.background=rc;
+  $('cTr').textContent='Traits: '+it.traits;$('cPrice').textContent=it.price+' MON';
+  var th=$('cThumb');th.src='/public/fireworks-nft/collection/'+it.file+'.jpg';th.style.setProperty('--rc',rc);
+  var bb=$('buy');bb.textContent='BUY · '+it.price+' MON';bb.classList.remove('busy');bb._it=it;$('card').classList.add('show');}
+$('close').onclick=function(){$('card').classList.remove('show');};
+function toast(t){var el=$('toast');el.textContent=t;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show');},3200);}
+// wallet
+var WALLET=null;
+$('wallet').onclick=async function(){try{if(window.MONSHI&&MONSHI.connectWallet){var w=await MONSHI.connectWallet();if(w){WALLET=w;this.textContent=w.slice(0,6)+'…'+w.slice(-4);toast('Wallet connected');return;}}}catch(e){}toast('No wallet found — install MetaMask/Rabby');};
+$('buy').onclick=async function(){var it=this._it;if(!it)return;
+  if(!WALLET){try{WALLET=await MONSHI.connectWallet();$('wallet').textContent=WALLET?WALLET.slice(0,6)+'…'+WALLET.slice(-4):'CONNECT';}catch(e){}}
+  if(!WALLET){toast('Connect a wallet first');return;}
+  var wei='0x'+BigInt(Math.round(it.price*1e18)).toString(16);
+  this.classList.add('busy');this.textContent='CONFIRM IN WALLET…';var btn=this;
+  try{var tx=await window.ethereum.request({method:'eth_sendTransaction',params:[{from:WALLET,to:TREASURY,value:wei}]});
+    toast('✅ Purchased '+it.name+' — sent to treasury · tx '+tx.slice(0,10)+'…');
+    btn.textContent='✓ PURCHASED';btn.style.background='linear-gradient(180deg,#15803d,#166534)';
+  }catch(e){toast('Purchase cancelled');btn.classList.remove('busy');btn.textContent='BUY · '+it.price+' MON';}
+};
+// ── loop ──
+var clock=new THREE.Clock(),ready=false;
+function tick(){requestAnimationFrame(tick);var dt=Math.min(clock.getDelta(),0.05),t=clock.elapsedTime;
+  if(!focus && !drag)yaw+=dt*0.05; // gentle idle drift
+  camera.position.copy(pos);
+  if(focus){var fp=focus.getWorldPosition(new THREE.Vector3());camera.lookAt(fp);
+    // ease toward facing it
+    var want=Math.atan2(fp.x-pos.x,fp.z-pos.z);yaw+=(want-yaw)*Math.min(1,dt*3);
+  } else {var lookAt=pos.clone().add(dir());camera.lookAt(lookAt);}
+  // living panels: periodic sparks + glow pulse
+  for(var i=0;i<panels.length;i++){var g=panels[i].grp;g.userData.burstT-=dt;
+    g.userData.glow.intensity=0.7+Math.sin(t*2+i)*0.3;
+    if(g.userData.burstT<=0){spawnPanelSpark(g);g.userData.burstT=2+Math.random()*3;}}
+  for(var s=sparks.length-1;s>=0;s--){var sp=sparks[s];sp.position.x+=sp.userData.vx;sp.position.y+=sp.userData.vy;sp.position.z+=sp.userData.vz;sp.userData.vy-=0.0015;sp.userData.life-=0.02;sp.material.opacity=Math.max(0,sp.userData.life);if(sp.userData.life<=0){scene.remove(sp);sparks.splice(s,1);}}
+  renderer.render(scene,camera);
+  if(!ready){ready=true;$('loading').style.display='none';}
+}
+// load collection
+fetch('/public/fireworks-nft/collection.json').then(function(r){return r.json();}).then(function(d){
+  if(d.treasury)TREASURY=d.treasury; buildGallery(d.items||[]); pos.set(0,3,0); tick();
+}).catch(function(){buildGallery([]);tick();toast('Could not load collection');});
+})();
+</script>
+</body></html>
