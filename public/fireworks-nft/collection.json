@@ -1,7 +1,7 @@
 {
  "treasury": "0xece5d15e567c801c835029a49b2e4067b0eb63aa",
  "total": 50,
- "live": 17,
+ "live": 21,
  "items": [
   {
    "id": 1,
@@ -138,6 +138,38 @@
    "rarity": "Common",
    "price": 0.05,
    "traits": "Sparkler \u00b7 None \u00b7 gold-and-black luxury sky"
+  },
+  {
+   "id": 18,
+   "file": "mfw_018",
+   "name": "Monshi Firework #018",
+   "rarity": "Common",
+   "price": 0.05,
+   "traits": "Red Rocket \u00b7 patriotic Uncle Sam top hat \u00b7 harbor at night with water reflections"
+  },
+  {
+   "id": 19,
+   "file": "mfw_019",
+   "name": "Monshi Firework #019",
+   "rarity": "Common",
+   "price": 0.05,
+   "traits": "Sparkler \u00b7 party cone hat \u00b7 cosmic purple nebulsky"
+  },
+  {
+   "id": 20,
+   "file": "mfw_020",
+   "name": "Monshi Firework #020",
+   "rarity": "Common",
+   "price": 0.05,
+   "traits": "Red Rocket \u00b7 red baseball cap \u00b7 night city skyline"
+  },
+  {
+   "id": 21,
+   "file": "mfw_021",
+   "name": "Monshi Firework #021",
+   "rarity": "Common",
+   "price": 0.05,
+   "traits": "Sparkler \u00b7 cowboy hat \u00b7 starry countryside"
   }
  ]
 }
