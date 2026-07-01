@@ -131,19 +131,69 @@ var GTEX=glowSprite();
 function textTex(txt,col){var cv=document.createElement('canvas');cv.width=256;cv.height=48;var g=cv.getContext('2d');g.fillStyle='rgba(10,6,30,.85)';g.fillRect(0,0,256,48);g.strokeStyle=col;g.lineWidth=2.5;g.strokeRect(2,2,252,44);g.fillStyle=col;g.font='bold 20px Orbitron,sans-serif';g.textAlign='center';g.textBaseline='middle';g.fillText(txt.slice(0,22),128,26);return new THREE.CanvasTexture(cv);}
 var texLoader=new THREE.TextureLoader();
 var panels=[], sparks=[], ITEMS=[];
+
+// ── JULY 4TH DRESSING ─────────────────────────────────────────────
+// Monshi & Toshi on a gold-ringed launch pad, firing real fireworks
+var padX=-16, padZ=-13;
+var pad=new THREE.Mesh(new THREE.CylinderGeometry(4.6,5.2,0.7,32),new THREE.MeshStandardMaterial({color:0x1c1044,metalness:.6,roughness:.4}));
+pad.position.set(padX,0.35,padZ);scene.add(pad);
+var padRing=new THREE.Mesh(new THREE.TorusGeometry(4.6,0.09,10,48),new THREE.MeshBasicMaterial({color:0xffd54a}));
+padRing.rotation.x=Math.PI/2;padRing.position.set(padX,0.72,padZ);scene.add(padRing);
+var padGlow=new THREE.PointLight(0xffd54a,1.1,14);padGlow.position.set(padX,2,padZ);scene.add(padGlow);
+function standee(src,x,scale){var sp=new THREE.Sprite(new THREE.SpriteMaterial({map:texLoader.load(src),transparent:true}));
+  sp.scale.set(scale*0.78,scale,1);sp.position.set(padX+x,0.7+scale/2,padZ);scene.add(sp);return sp;}
+var monshiS=standee('/public/monshi-run/run_0.png',-1.6,3.7);
+var toshiS=standee('/public/monshi-run/trun_0.png',1.7,3.5);
+for(var mt=0;mt<3;mt++){var tube=new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.24,1.2,10),
+  new THREE.MeshStandardMaterial({color:[0x8a1f1f,0xdddddd,0x1f3a8a][mt]}));
+  tube.position.set(padX-0.5+mt*0.5,1.25,padZ+1.7);tube.rotation.z=(mt-1)*0.12;scene.add(tube);}
+// festoon lights (red-white-blue) hung around the gallery
+for(var fl=0;fl<42;fl++){var fa=fl/42*Math.PI*2,fc=[0xff4d4d,0xffffff,0x4d7dff][fl%3];
+  var bulb=new THREE.Sprite(new THREE.SpriteMaterial({map:GTEX,color:fc,transparent:true,opacity:.85,blending:THREE.AdditiveBlending,depthWrite:false}));
+  bulb.scale.set(.55,.55,1);bulb.position.set(Math.sin(fa)*16.6,10.8+Math.sin(fa*5)*0.35,Math.cos(fa)*16.6);scene.add(bulb);}
+// event banner above the wheel
+var banner=new THREE.Mesh(new THREE.PlaneGeometry(9.5,1.15),
+  new THREE.MeshBasicMaterial({map:textTex('★ 4TH OF JULY DROP ★','#ffffff'),transparent:true,side:THREE.DoubleSide}));
+banner.position.set(0,10.6,0);scene.add(banner);
+// live 3D fireworks show
+var FWCOLS=[0xff4d4d,0xffffff,0x4d7dff,0xffd54a,0xc084fc,0x00d2c7];
+var fwSparks=[],rocketsUp=[];
+function skyBurst(x,y,z,col,big){var n=big?46:30;
+  for(var i=0;i<n;i++){var a=Math.random()*Math.PI*2,b2=Math.random()*Math.PI,sp=(big?0.1:0.065)*(0.5+Math.random());
+    var m=new THREE.Sprite(new THREE.SpriteMaterial({map:GTEX,color:col,transparent:true,opacity:1,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
+    m.scale.set(big?1.7:1.1,big?1.7:1.1,1);m.position.set(x,y,z);
+    m.userData={vx:Math.sin(b2)*Math.cos(a)*sp,vy:Math.cos(b2)*sp,vz:Math.sin(b2)*Math.sin(a)*sp,life:1,dec:0.008+Math.random()*0.006};
+    scene.add(m);fwSparks.push(m);}}
+function launchSky(fromX,fromZ){var col=FWCOLS[(Math.random()*FWCOLS.length)|0];
+  var m=new THREE.Sprite(new THREE.SpriteMaterial({map:GTEX,color:col,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
+  m.scale.set(.7,.7,1);m.position.set(fromX,2,fromZ);
+  m.userData={vy:0.3+Math.random()*0.12,vx:(Math.random()-.5)*0.04,vz:(Math.random()-.5)*0.04,col:col,apex:18+Math.random()*16};
+  scene.add(m);rocketsUp.push(m);}
+function updateSkyShow(dt,t){
+  if(Math.random()<0.028)launchSky((Math.random()-.5)*70,padZ-8-Math.random()*34);   // city show
+  if(Math.random()<0.014)launchSky(padX+(Math.random()-.5)*2.4,padZ+1.7);            // the duo fires one
+  monshiS.position.y=0.7+3.7/2+Math.sin(t*1.6)*0.07; toshiS.position.y=0.7+3.5/2+Math.sin(t*1.6+1.3)*0.07;
+  for(var r2=rocketsUp.length-1;r2>=0;r2--){var rk=rocketsUp[r2];
+    rk.position.y+=rk.userData.vy;rk.position.x+=rk.userData.vx;rk.position.z+=rk.userData.vz;rk.userData.vy-=0.0016;
+    if(rk.position.y>=rk.userData.apex||rk.userData.vy<0.05){skyBurst(rk.position.x,rk.position.y,rk.position.z,rk.userData.col,Math.random()<0.3);scene.remove(rk);rocketsUp.splice(r2,1);}}
+  for(var f2=fwSparks.length-1;f2>=0;f2--){var fs=fwSparks[f2];
+    fs.position.x+=fs.userData.vx;fs.position.y+=fs.userData.vy;fs.position.z+=fs.userData.vz;
+    fs.userData.vy-=0.0012;fs.userData.life-=fs.userData.dec;fs.material.opacity=Math.max(0,fs.userData.life);
+    if(fs.userData.life<=0){scene.remove(fs);fwSparks.splice(f2,1);}}}
+// ──────────────────────────────────────────────────────────────────
 function buildGallery(items){
   // sort rarest-first so top pieces land front & center
   items=items.slice().sort(function(a,b){return (RANK[b.rarity]||0)-(RANK[a.rarity]||0);});
   ITEMS=items; var N=items.length;
   var cols=Math.min(N,10), rows=Math.ceil(N/cols);
-  var Rr=Math.max(11, cols*1.5), rowH=3.2, centerRow=(rows-1)/2, eyeY=3.4;
-  // prominence-ordered slots (front & center first)
+  var Rr=Math.max(11, cols*1.5), rowH=3.0, baseRowY=2.4;
+  // prominence-ordered slots: front & center, eye-level rows first (rows stack UP from the floor)
   var slots=[];
   for(var c=0;c<cols;c++)for(var r=0;r<rows;r++){var az=c/cols*Math.PI*2;var saz=az>Math.PI?az-2*Math.PI:az;
-    slots.push({c:c,r:r,az:az,prom:Math.abs(saz)+Math.abs(r-centerRow)*0.45});}
+    slots.push({c:c,r:r,az:az,prom:Math.abs(saz)+(rows-1-r)*0.5});}
   slots.sort(function(a,b){return a.prom-b.prom;});
   items.forEach(function(it,idx){
-    var sl=slots[idx]; var az=sl.az; var y=eyeY+(centerRow-sl.r)*rowH;
+    var sl=slots[idx]; var az=sl.az; var y=baseRowY+(rows-1-sl.r)*rowH;
     var rc=new THREE.Color(RC[it.rarity]||'#7d69ed'); var leg=it.rarity==='Legendary'; var sz=leg?3.0:(it.rarity==='Epic'?2.6:2.3);
     var grp=new THREE.Group(); grp.position.set(Math.sin(az)*Rr,y,Math.cos(az)*Rr); grp.rotation.y=az+Math.PI;
     var frame=new THREE.Mesh(new THREE.BoxGeometry(sz,sz,0.12),new THREE.MeshBasicMaterial({color:rc}));grp.add(frame);
@@ -183,8 +233,11 @@ var hub=new THREE.Mesh(new THREE.CircleGeometry(1.25,40),new THREE.MeshBasicMate
 texLoader.load('/public/monshi-face.jpg',function(tx){tx.anisotropy=4;hub.material=new THREE.MeshBasicMaterial({map:tx});});
 var ptr=new THREE.Mesh(new THREE.ConeGeometry(0.4,0.85,3),new THREE.MeshBasicMaterial({color:0xffffff}));ptr.position.set(0,WR+0.35,0.2);ptr.rotation.z=Math.PI;wheel.add(ptr);
 var wlab=new THREE.Mesh(new THREE.PlaneGeometry(4.2,0.7),new THREE.MeshBasicMaterial({map:textTex('SPIN · 250 MON','#ffd54a'),transparent:true}));wlab.position.set(0,-WR-0.7,0.2);wheel.add(wlab);
-var spinVel=0,spinning=false;
-function segUnderPointer(){var best=0,bd=99;for(var i=0;i<WN;i++){var cc=(i*wstep+wstep/2+disc.rotation.z)%(2*Math.PI);var dd=Math.abs(((cc-Math.PI/2+Math.PI)%(2*Math.PI))-Math.PI);if(dd<bd){bd=dd;best=i;}}return best;}
+// Weighted odds (per 1000): high tiers are genuinely rare. The draw decides
+// the outcome FIRST, then the wheel animates to land on a matching segment.
+var ODDS=[['Common',700],['Uncommon',200],['Rare',72],['Epic',23],['Legendary',5]];
+function drawRarity(){var r=Math.random()*1000,acc=0;for(var i=0;i<ODDS.length;i++){acc+=ODDS[i][1];if(r<acc)return ODDS[i][0];}return 'Common';}
+var spinning=false,spinFrom=0,spinTo=0,spinT=0,spinDur=5.2,spinRarity=null;
 // July 4th drop window: preview before Jul 4, live Jul 4-5, closed after
 function phase(){var n=new Date(),y=n.getFullYear(),open=new Date(y,6,4),close=new Date(y,6,6);
   return n<open?'preview':(n>=close?'closed':'live');}
@@ -197,13 +250,24 @@ async function doSpin(){if(spinning)return;var btn=$('spin');
   btn.disabled=true;btn.textContent='CONFIRM 250 MON…';
   try{await window.ethereum.request({method:'eth_sendTransaction',params:[{from:WALLET,to:TREASURY,value:wei}]});}
   catch(e){toast('Spin cancelled');btn.disabled=false;btn.textContent='🎡 SPIN · 250 MON';return;}
-  spinVel=0.4+Math.random()*0.18;spinning=true;btn.textContent='SPINNING…';}
+  spinRarity=drawRarity();
+  var opts=[];for(var si=0;si<WN;si++)if(WHEEL_SEG[si]===spinRarity)opts.push(si);
+  var seg=opts[(Math.random()*opts.length)|0];
+  var center=seg*wstep+wstep/2, want=Math.PI/2-center; // pointer sits at top (pi/2)
+  spinFrom=disc.rotation.z;
+  var delta=((want-spinFrom)%(2*Math.PI)+2*Math.PI)%(2*Math.PI);
+  spinTo=spinFrom+Math.PI*2*5+delta; spinT=0; spinning=true; btn.textContent='SPINNING…';}
 function resolveSpin(){spinning=false;var btn=$('spin');btn.disabled=false;btn.textContent='🎡 SPIN · 250 MON';
-  var rar=WHEEL_SEG[segUnderPointer()];var pool=ITEMS.filter(function(it){return it.rarity===rar;});if(!pool.length)pool=ITEMS;
+  var rar=spinRarity||'Common';var pool=ITEMS.filter(function(it){return it.rarity===rar;});if(!pool.length)pool=ITEMS;
   var win=pool[(Math.random()*pool.length)|0];var p=panels.find(function(x){return x.it===win;});if(p){openCard(p);focus=p.grp;}
-  toast('🎉 You won '+win.name+' ('+rar+')! Sent to treasury.');}
+  if(rar==='Legendary'||rar==='Epic'){toast('👑 JACKPOT! '+win.name+' ('+rar+')!!');
+    for(var k=0;k<8;k++)setTimeout(function(){launchSky(padX-2+Math.random()*4,padZ+1.6);},k*200);}
+  else toast('🎉 You won '+win.name+' ('+rar+')!');}
 function updateWheel(dt){wheel.rotation.y=Math.atan2(pos.x-wheel.position.x,pos.z-wheel.position.z);
-  if(spinning){disc.rotation.z+=spinVel;spinVel*=0.986;if(spinVel<0.0025){resolveSpin();}}else{disc.rotation.z+=dt*0.12;}
+  banner.rotation.y=wheel.rotation.y;
+  if(spinning){spinT+=dt;var k=Math.min(1,spinT/spinDur);var e=1-Math.pow(1-k,3);
+    disc.rotation.z=spinFrom+(spinTo-spinFrom)*e;if(k>=1)resolveSpin();}
+  else disc.rotation.z+=dt*0.12;
   wglow.material.opacity=0.45+Math.sin(clock.elapsedTime*2)*0.15;}
 
 // ── free-look controls ──
@@ -238,7 +302,7 @@ function tick(){requestAnimationFrame(tick);var dt=Math.min(clock.getDelta(),0.0
   camera.position.copy(pos);
   if(focus){var fp=focus.getWorldPosition(new THREE.Vector3());var want=Math.atan2(fp.x-pos.x,fp.z-pos.z);yaw+=(want-yaw)*Math.min(1,dt*3);camera.lookAt(fp);}
   else camera.lookAt(pos.clone().add(dir()));
-  orb.material.rotation+=dt*0.02; updateWheel(dt);
+  orb.material.rotation+=dt*0.02; updateWheel(dt); updateSkyShow(dt,t);
   for(var i=0;i<panels.length;i++){var g=panels[i].grp;g.userData.burstT-=dt;g.userData.halo.material.opacity=0.4+Math.sin(t*2+i)*0.2;g.position.y=g.userData.baseY+Math.sin(t*1.2+i)*0.05;if(g.userData.burstT<=0){spawnPanelSpark(g);g.userData.burstT=2.5+Math.random()*3;}}
   for(var s=sparks.length-1;s>=0;s--){var sp=sparks[s];sp.position.x+=sp.userData.vx;sp.position.y+=sp.userData.vy;sp.position.z+=sp.userData.vz;sp.userData.vy-=0.0015;sp.userData.life-=0.02;sp.material.opacity=Math.max(0,sp.userData.life);if(sp.userData.life<=0){scene.remove(sp);sparks.splice(s,1);}}
   renderer.render(scene,camera);
