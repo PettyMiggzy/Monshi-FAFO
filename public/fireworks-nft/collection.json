@@ -1,7 +1,7 @@
 {
  "treasury": "0xece5d15e567c801c835029a49b2e4067b0eb63aa",
  "total": 50,
- "live": 21,
+ "live": 50,
  "items": [
   {
    "id": 1,
@@ -170,6 +170,238 @@
    "rarity": "Common",
    "price": 0.05,
    "traits": "Sparkler \u00b7 cowboy hat \u00b7 starry countryside"
+  },
+  {
+   "id": 22,
+   "file": "mfw_022",
+   "name": "Monshi Firework #022",
+   "rarity": "Common",
+   "price": 0.05,
+   "traits": "Red Rocket \u00b7 None \u00b7 gold-and-black luxury sky"
+  },
+  {
+   "id": 23,
+   "file": "mfw_023",
+   "name": "Monshi Firework #023",
+   "rarity": "Common",
+   "price": 0.05,
+   "traits": "Sparkler \u00b7 patriotic Uncle Sam top hat \u00b7 harbor at night with water reflections"
+  },
+  {
+   "id": 24,
+   "file": "mfw_024",
+   "name": "Monshi Firework #024",
+   "rarity": "Common",
+   "price": 0.05,
+   "traits": "Red Rocket \u00b7 party cone hat \u00b7 cosmic purple nebulsky"
+  },
+  {
+   "id": 25,
+   "file": "mfw_025",
+   "name": "Monshi Firework #025",
+   "rarity": "Common",
+   "price": 0.05,
+   "traits": "Sparkler \u00b7 red baseball cap \u00b7 night city skyline"
+  },
+  {
+   "id": 26,
+   "file": "mfw_026",
+   "name": "Monshi Firework #026",
+   "rarity": "Common",
+   "price": 0.05,
+   "traits": "Red Rocket \u00b7 cowboy hat \u00b7 starry countryside"
+  },
+  {
+   "id": 27,
+   "file": "mfw_027",
+   "name": "Monshi Firework #027",
+   "rarity": "Common",
+   "price": 0.05,
+   "traits": "Sparkler \u00b7 None \u00b7 gold-and-black luxury sky"
+  },
+  {
+   "id": 28,
+   "file": "mfw_028",
+   "name": "Monshi Firework #028",
+   "rarity": "Common",
+   "price": 0.05,
+   "traits": "Red Rocket \u00b7 patriotic Uncle Sam top hat \u00b7 harbor at night with water reflections"
+  },
+  {
+   "id": 29,
+   "file": "mfw_029",
+   "name": "Monshi Firework #029",
+   "rarity": "Uncommon",
+   "price": 0.12,
+   "traits": "Blue Willow \u00b7 party cone hat \u00b7 cosmic purple nebulsky"
+  },
+  {
+   "id": 30,
+   "file": "mfw_030",
+   "name": "Monshi Firework #030",
+   "rarity": "Uncommon",
+   "price": 0.12,
+   "traits": "Silver Ring \u00b7 red baseball cap \u00b7 night city skyline"
+  },
+  {
+   "id": 31,
+   "file": "mfw_031",
+   "name": "Monshi Firework #031",
+   "rarity": "Uncommon",
+   "price": 0.12,
+   "traits": "Blue Willow \u00b7 cowboy hat \u00b7 starry countryside"
+  },
+  {
+   "id": 32,
+   "file": "mfw_032",
+   "name": "Monshi Firework #032",
+   "rarity": "Uncommon",
+   "price": 0.12,
+   "traits": "Silver Ring \u00b7 None \u00b7 gold-and-black luxury sky"
+  },
+  {
+   "id": 33,
+   "file": "mfw_033",
+   "name": "Monshi Firework #033",
+   "rarity": "Uncommon",
+   "price": 0.12,
+   "traits": "Blue Willow \u00b7 patriotic Uncle Sam top hat \u00b7 harbor at night with water reflections"
+  },
+  {
+   "id": 34,
+   "file": "mfw_034",
+   "name": "Monshi Firework #034",
+   "rarity": "Uncommon",
+   "price": 0.12,
+   "traits": "Silver Ring \u00b7 party cone hat \u00b7 cosmic purple nebulsky"
+  },
+  {
+   "id": 35,
+   "file": "mfw_035",
+   "name": "Monshi Firework #035",
+   "rarity": "Uncommon",
+   "price": 0.12,
+   "traits": "Blue Willow \u00b7 red baseball cap \u00b7 night city skyline"
+  },
+  {
+   "id": 36,
+   "file": "mfw_036",
+   "name": "Monshi Firework #036",
+   "rarity": "Uncommon",
+   "price": 0.12,
+   "traits": "Silver Ring \u00b7 cowboy hat \u00b7 starry countryside"
+  },
+  {
+   "id": 37,
+   "file": "mfw_037",
+   "name": "Monshi Firework #037",
+   "rarity": "Uncommon",
+   "price": 0.12,
+   "traits": "Blue Willow \u00b7 None \u00b7 gold-and-black luxury sky"
+  },
+  {
+   "id": 38,
+   "file": "mfw_038",
+   "name": "Monshi Firework #038",
+   "rarity": "Uncommon",
+   "price": 0.12,
+   "traits": "Silver Ring \u00b7 patriotic Uncle Sam top hat \u00b7 harbor at night with water reflections"
+  },
+  {
+   "id": 39,
+   "file": "mfw_039",
+   "name": "Monshi Firework #039",
+   "rarity": "Uncommon",
+   "price": 0.12,
+   "traits": "Blue Willow \u00b7 party cone hat \u00b7 cosmic purple nebulsky"
+  },
+  {
+   "id": 40,
+   "file": "mfw_040",
+   "name": "Monshi Firework #040",
+   "rarity": "Uncommon",
+   "price": 0.12,
+   "traits": "Silver Ring \u00b7 red baseball cap \u00b7 night city skyline"
+  },
+  {
+   "id": 41,
+   "file": "mfw_041",
+   "name": "Monshi Firework #041",
+   "rarity": "Rare",
+   "price": 0.35,
+   "traits": "Gold Chrysanthemum \u00b7 cowboy hat \u00b7 starry countryside"
+  },
+  {
+   "id": 42,
+   "file": "mfw_042",
+   "name": "Monshi Firework #042",
+   "rarity": "Rare",
+   "price": 0.35,
+   "traits": "Gold Chrysanthemum \u00b7 None \u00b7 gold-and-black luxury sky"
+  },
+  {
+   "id": 43,
+   "file": "mfw_043",
+   "name": "Monshi Firework #043",
+   "rarity": "Rare",
+   "price": 0.35,
+   "traits": "Gold Chrysanthemum \u00b7 patriotic Uncle Sam top hat \u00b7 harbor at night with water reflections"
+  },
+  {
+   "id": 44,
+   "file": "mfw_044",
+   "name": "Monshi Firework #044",
+   "rarity": "Rare",
+   "price": 0.35,
+   "traits": "Gold Chrysanthemum \u00b7 party cone hat \u00b7 cosmic purple nebulsky"
+  },
+  {
+   "id": 45,
+   "file": "mfw_045",
+   "name": "Monshi Firework #045",
+   "rarity": "Rare",
+   "price": 0.35,
+   "traits": "Gold Chrysanthemum \u00b7 red baseball cap \u00b7 night city skyline"
+  },
+  {
+   "id": 46,
+   "file": "mfw_046",
+   "name": "Monshi Firework #046",
+   "rarity": "Rare",
+   "price": 0.35,
+   "traits": "Gold Chrysanthemum \u00b7 cowboy hat \u00b7 starry countryside"
+  },
+  {
+   "id": 47,
+   "file": "mfw_047",
+   "name": "Monshi Firework #047",
+   "rarity": "Rare",
+   "price": 0.35,
+   "traits": "Gold Chrysanthemum \u00b7 None \u00b7 gold-and-black luxury sky"
+  },
+  {
+   "id": 48,
+   "file": "mfw_048",
+   "name": "Monshi Firework #048",
+   "rarity": "Epic",
+   "price": 0.7,
+   "traits": "Monad Peony \u00b7 patriotic Uncle Sam top hat \u00b7 harbor at night with water reflections"
+  },
+  {
+   "id": 49,
+   "file": "mfw_049",
+   "name": "Monshi Firework #049",
+   "rarity": "Epic",
+   "price": 0.7,
+   "traits": "Monad Peony \u00b7 party cone hat \u00b7 cosmic purple nebulsky"
+  },
+  {
+   "id": 50,
+   "file": "mfw_050",
+   "name": "Monshi Firework #050",
+   "rarity": "Legendary",
+   "price": 2.0,
+   "traits": "Grand Finale \u00b7 patriotic Uncle Sam top hat \u00b7 gold-and-black luxury sky"
   }
  ]
 }
