@@ -1,0 +1,143 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>MONSHI LIVE SKY — demo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;font-family:'Space Mono',monospace;}
+html,body{width:100%;height:100%;overflow:hidden;background:#05010f;color:#fff;}
+#sky{position:fixed;inset:0;z-index:1;}
+/* header */
+#top{position:fixed;top:14px;left:0;right:0;z-index:3;text-align:center;pointer-events:none;}
+#top .h{font-family:Orbitron;font-weight:900;font-size:clamp(20px,4vw,34px);letter-spacing:2px;
+  background:linear-gradient(90deg,#ff6b6b,#fff,#6aa8ff);-webkit-background-clip:text;background-clip:text;color:transparent;}
+#top .s{font-size:11px;letter-spacing:3px;color:#9fb4ff;margin-top:4px;}
+#top .s b{color:#c084fc;}
+#counter{margin-top:6px;font-family:Orbitron;font-size:13px;color:#FCD34D;}
+/* live feed */
+#feed{position:fixed;top:96px;right:14px;width:min(280px,44vw);z-index:3;display:flex;flex-direction:column;gap:6px;}
+#feed .row{background:rgba(20,12,40,.66);border:1px solid rgba(140,110,220,.35);border-radius:10px;padding:7px 10px;
+  font-size:11px;backdrop-filter:blur(6px);animation:slidein .3s ease;display:flex;align-items:center;gap:8px;}
+@keyframes slidein{from{opacity:0;transform:translateX(20px)}}
+#feed .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;box-shadow:0 0 8px currentColor;}
+#feed .nm{color:#fff;font-weight:700;}
+#feed .fw{color:#c4b5fd;}
+#feed .lv{margin-left:auto;color:#FCD34D;font-size:10px;}
+.feedlbl{font-size:9px;letter-spacing:3px;color:#8a7fb5;margin-bottom:2px;text-align:right;}
+/* your firework card */
+#mine{position:fixed;bottom:16px;left:14px;width:min(300px,80vw);z-index:3;
+  background:linear-gradient(180deg,rgba(40,20,80,.85),rgba(20,10,44,.9));border:1px solid rgba(168,85,247,.5);border-radius:16px;padding:14px;
+  box-shadow:0 0 30px rgba(124,58,237,.4);backdrop-filter:blur(8px);}
+#mine .lbl{font-size:9px;letter-spacing:2px;color:#a99cd6;}
+#mine .nm{font-family:Orbitron;font-weight:900;font-size:20px;margin-top:2px;
+  background:linear-gradient(90deg,#f3e8ff,#c084fc);-webkit-background-clip:text;background-clip:text;color:transparent;}
+#mine .meta{display:flex;gap:8px;margin-top:6px;font-size:10px;flex-wrap:wrap;}
+#mine .tag{background:rgba(168,85,247,.2);border:1px solid rgba(168,85,247,.4);border-radius:20px;padding:3px 9px;color:#e9d5ff;}
+#mine .tag.epic{background:rgba(236,72,153,.2);border-color:rgba(236,72,153,.5);color:#fbcfe8;}
+#chargeBar{height:7px;border-radius:5px;background:rgba(80,40,140,.4);overflow:hidden;margin-top:10px;border:1px solid rgba(168,85,247,.3);}
+#chargeFill{height:100%;width:78%;background:linear-gradient(90deg,#7C3AED,#EC4899);}
+#chargeTxt{font-size:9px;color:#c4b5fd;margin-top:4px;}
+#launch{margin-top:11px;width:100%;cursor:pointer;font-family:Orbitron;font-weight:700;font-size:15px;letter-spacing:1px;color:#fff;
+  background:linear-gradient(180deg,#7C3AED,#6D28D9);border:1px solid #A855F7;border-radius:11px;padding:12px;box-shadow:0 0 20px rgba(124,58,237,.5);transition:.12s;}
+#launch:active{transform:scale(.96);}
+/* toaster */
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%) translateY(20px);z-index:4;opacity:0;transition:.25s;
+  background:rgba(20,12,40,.9);border:1px solid rgba(168,85,247,.5);border-radius:30px;padding:9px 18px;font-size:12px;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#toast b{color:#c084fc;}
+.badge{position:fixed;top:14px;left:14px;z-index:3;font-size:10px;letter-spacing:1px;color:#7dd3fc;
+  background:rgba(12,20,40,.6);border:1px solid rgba(56,189,248,.35);border-radius:20px;padding:5px 10px;}
+</style></head>
+<body>
+<canvas id="sky"></canvas>
+<div class="badge">◉ LIVE · MONAD</div>
+<div id="top"><div class="h">MONSHI LIVE SKY</div>
+  <div class="s">real-time on-chain fireworks · every launch is a <b>tx on Monad</b></div>
+  <div id="counter">🎆 1,247 launched tonight</div></div>
+<div id="feed"><div class="feedlbl">LIVE LAUNCHES</div></div>
+<div id="mine">
+  <div class="lbl">YOUR FIREWORK</div>
+  <div class="nm">MONAD PEONY</div>
+  <div class="meta"><span class="tag epic">EPIC</span><span class="tag">Lv 4</span><span class="tag">#0042 / 50</span></div>
+  <div id="chargeBar"><div id="chargeFill"></div></div>
+  <div id="chargeTxt">🔋 78% charged — play the arcade to charge · fires on your wins</div>
+  <button id="launch">LAUNCH 🎆</button>
+</div>
+<div id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+var view=document.getElementById('sky'),vctx=view.getContext('2d');
+var fx=document.createElement('canvas'),fctx=fx.getContext('2d');
+var W,H,DPR=Math.min(devicePixelRatio||1,2);
+function resize(){W=innerWidth;H=innerHeight;view.width=W*DPR;view.height=H*DPR;view.style.width=W+'px';view.style.height=H+'px';vctx.setTransform(DPR,0,0,DPR,0,0);
+  fx.width=W*DPR;fx.height=H*DPR;fctx.setTransform(DPR,0,0,DPR,0,0);buildStars();}
+addEventListener('resize',resize);
+// firework catalog (the "NFT types")
+var TYPES=[
+ {name:'Red Rocket',    rarity:'Common',   col:{core:'#fff2f2',mid:'#ff5a5a',edge:'#ff2d2d'},style:'peony'},
+ {name:'Blue Willow',   rarity:'Uncommon', col:{core:'#eef4ff',mid:'#5aa2ff',edge:'#2f6bff'},style:'willow'},
+ {name:'Silver Ring',   rarity:'Uncommon', col:{core:'#ffffff',mid:'#e7ecff',edge:'#bcd0ff'},style:'ring'},
+ {name:'Gold Chrys',    rarity:'Rare',     col:{core:'#fff6d5',mid:'#ffcf4a',edge:'#ff9e12'},style:'willow'},
+ {name:'Monad Peony',   rarity:'Epic',     col:{core:'#f3e8ff',mid:'#c084fc',edge:'#9333ea'},style:'peony'},
+ {name:'Grand Finale',  rarity:'Legendary',col:{core:'#ffe9f6',mid:'#ff7ad1',edge:'#ec4899'},style:'double'}
+];
+var NAMES=['0xB9…467f','pettyking.mon','whale.mon','shrimp42','0xdead…beef','monfan','royaltycat','dolphin.mon','0x81…bBA7','gm_ser','purplepilled','runner1'];
+function pick(a){return a[(Math.random()*a.length)|0];}
+var glow={};function makeGlow(hex){var s=48,c=document.createElement('canvas');c.width=c.height=s;var g=c.getContext('2d');var r=g.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);r.addColorStop(0,hex);r.addColorStop(.35,hex+'cc');r.addColorStop(.7,hex+'33');r.addColorStop(1,hex+'00');g.fillStyle=r;g.fillRect(0,0,s,s);return c;}
+TYPES.forEach(function(t){glow[t.col.edge]=makeGlow(t.col.edge);glow[t.col.mid]=makeGlow(t.col.mid);});
+['#ffffff','#ffd54a','#fff5cc'].forEach(function(h){glow[h]=makeGlow(h);});
+var GW=glow['#ffffff'];
+var stars=[];function buildStars(){stars=[];var n=(W*H)/10000;for(var i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H*0.85,r:Math.random()*1.2+.2,tw:Math.random()*6.28});}
+var rockets=[],sparks=[],MAX=1600;
+function rocket(type,name,mine){var sx=W*0.12+Math.random()*W*0.76,ty=H*0.14+Math.random()*H*0.34;
+  rockets.push({x:sx,y:H+8,vx:(Math.random()-.5)*.5,vy:-(6.2+Math.random()*2.4),ty:ty,type:type,trail:[]});
+  addFeed(name,type,mine);}
+function addSpark(x,y,vx,vy,col,o){o=o||{};if(sparks.length>MAX)return;sparks.push({x:x,y:y,vx:vx,vy:vy,col:col,life:1,decay:o.decay||(0.006+Math.random()*0.01),grav:o.grav==null?0.03:o.grav,drag:o.drag||0.985,size:o.size||(1.6+Math.random()*1.1),tw:o.tw||0,twp:Math.random()*6.28});}
+function burst(x,y,type){var col=type.col,st=type.style,n=type.rarity==='Legendary'?150:(80+((Math.random()*40)|0));
+  addSpark(x,y,0,0,{core:'#fff',mid:'#fff',edge:'#ffffff'},{decay:0.06,grav:0,size:type.rarity==='Legendary'?16:11,drag:.9});
+  if(st==='ring'){for(var i=0;i<n;i++){var a=6.283*i/n,s=3.1+Math.random()*.4;addSpark(x,y,Math.cos(a)*s,Math.sin(a)*s,col,{decay:.01});}}
+  else if(st==='willow'){for(var i2=0;i2<n;i2++){var a2=6.283*i2/n+Math.random()*.1,s2=1.4+Math.random()*2.4;addSpark(x,y,Math.cos(a2)*s2,Math.sin(a2)*s2,col,{grav:.06,decay:.005,size:1.9});}}
+  else if(st==='double'){for(var i3=0;i3<n;i3++){var a3=6.283*i3/n,s3=2.6+Math.random()*2.2;addSpark(x,y,Math.cos(a3)*s3,Math.sin(a3)*s3,col,{});}
+    for(var k=0;k<5;k++){(function(kk){setTimeout(function(){var ox=x+(Math.random()-.5)*110,oy=y+(Math.random()-.5)*80;for(var m=0;m<28;m++){var am=Math.random()*6.28,sm=1.4+Math.random()*2.2;addSpark(ox,oy,Math.cos(am)*sm,Math.sin(am)*sm,col,{});}},130+kk*90);})(k);}}
+  else {for(var i4=0;i4<n;i4++){var a4=6.283*i4/n+Math.random()*.08,s4=2.2+Math.random()*3.1;addSpark(x,y,Math.cos(a4)*s4,Math.sin(a4)*s4,col,{tw:Math.random()<.4?1:0});}}
+  for(var c=0;c<18;c++){var ac=Math.random()*6.28,sc=Math.random()*1.5;addSpark(x,y,Math.cos(ac)*sc,Math.sin(ac)*sc,{core:'#fff',mid:'#fff5cc',edge:'#ffd54a'},{decay:.03,size:.9,tw:1});}}
+var RCOL={Common:'#9ca3af',Uncommon:'#5aa2ff',Rare:'#ffcf4a',Epic:'#c084fc',Legendary:'#ec4899'};
+function addFeed(name,type,mine){var f=document.getElementById('feed');
+  var row=document.createElement('div');row.className='row';
+  row.innerHTML='<span class="dot" style="color:'+type.col.edge+';background:'+type.col.edge+'"></span>'+
+    '<span class="nm">'+(mine?'YOU':name)+'</span><span class="fw">'+type.name+'</span>'+
+    '<span class="lv" style="color:'+RCOL[type.rarity]+'">'+type.rarity+'</span>';
+  f.appendChild(row);while(f.children.length>7)f.removeChild(f.children[1]);
+  var c=document.getElementById('counter');var n=parseInt(c.textContent.replace(/[^0-9]/g,''))+1;c.textContent='🎆 '+n.toLocaleString()+' launched tonight';
+  if(mine){var t=document.getElementById('toast');t.innerHTML='<b>YOU</b> launched '+type.name+' 🎆';t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2200);}}
+// draw
+var last=performance.now();
+function frame(now){requestAnimationFrame(frame);var dt=Math.min((now-last)/1000,.05);last=now;var t=now/1000;
+  var g=vctx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#05010f');g.addColorStop(.5,'#0b0524');g.addColorStop(1,'#1a0b3a');vctx.fillStyle=g;vctx.fillRect(0,0,W,H);
+  for(var i=0;i<stars.length;i++){var s=stars[i];vctx.globalAlpha=.35+.5*Math.abs(Math.sin(t*1.4+s.tw));vctx.fillStyle='#dfe6ff';vctx.beginPath();vctx.arc(s.x,s.y,s.r,0,7);vctx.fill();}
+  vctx.globalAlpha=1;
+  fctx.globalCompositeOperation='source-over';fctx.fillStyle='rgba(0,0,0,0.16)';fctx.fillRect(0,0,W,H);fctx.globalCompositeOperation='lighter';
+  for(var r=rockets.length-1;r>=0;r--){var ro=rockets[r];ro.x+=ro.vx;ro.y+=ro.vy;ro.vy+=.05;ro.trail.push({x:ro.x,y:ro.y});if(ro.trail.length>7)ro.trail.shift();
+    for(var k=0;k<ro.trail.length;k++){var tp=ro.trail[k],a=k/ro.trail.length,im=glow[ro.type.col.mid],sz=3*a+1;fctx.globalAlpha=a*.7;fctx.drawImage(im,tp.x-sz,tp.y-sz,sz*2,sz*2);}
+    fctx.globalAlpha=1;fctx.fillStyle=ro.type.col.core;fctx.beginPath();fctx.arc(ro.x,ro.y,2,0,7);fctx.fill();
+    if(ro.vy>=-1.2||ro.y<=ro.ty){burst(ro.x,ro.y,ro.type);rockets.splice(r,1);}}
+  for(var j=sparks.length-1;j>=0;j--){var sp=sparks[j];sp.vx*=sp.drag;sp.vy=sp.vy*sp.drag+sp.grav;sp.x+=sp.vx;sp.y+=sp.vy;sp.life-=sp.decay;if(sp.life<=0){sparks.splice(j,1);continue;}
+    var im2=glow[sp.col.edge]||glow[sp.col.mid]||GW,sz2=sp.size*3.2*sp.life,a2=sp.life*(sp.tw?(.4+.6*Math.abs(Math.sin(t*20+sp.twp))):1);
+    fctx.globalAlpha=Math.max(0,a2);fctx.drawImage(im2,sp.x-sz2,sp.y-sz2,sz2*2,sz2*2);
+    fctx.globalAlpha=Math.min(1,sp.life*1.4);fctx.fillStyle=sp.col.core;fctx.beginPath();fctx.arc(sp.x,sp.y,Math.max(.5,sp.size*sp.life*.5),0,7);fctx.fill();}
+  fctx.globalAlpha=1;
+  vctx.globalCompositeOperation='lighter';vctx.drawImage(fx,0,0,W,H);
+  vctx.save();vctx.globalAlpha=.16;vctx.filter='blur(1.5px)';vctx.translate(0,H*1.64);vctx.scale(1,-1);vctx.drawImage(fx,0,0,W,H);vctx.restore();vctx.filter='none';
+  vctx.globalCompositeOperation='source-over';
+  var vg=vctx.createRadialGradient(W/2,H*.45,H*.3,W/2,H*.5,H*.85);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,0.5)');vctx.fillStyle=vg;vctx.fillRect(0,0,W,H);
+}
+resize();requestAnimationFrame(frame);
+// simulate other holders launching on-chain
+setInterval(function(){var t=pick(TYPES);rocket(t,pick(NAMES),false);},900);
+for(var o=0;o<4;o++)setTimeout(function(){rocket(pick(TYPES),pick(NAMES),false);},300+o*300);
+// your launch
+document.getElementById('launch').onclick=function(){var mine=TYPES[4];rocket(mine,'YOU',true);};
+})();
+</script>
+</body></html>
