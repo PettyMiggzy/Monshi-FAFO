@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "@openzeppelin/contracts@5.0.2/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts@5.0.2/token/common/ERC2981.sol";
-import "@openzeppelin/contracts@5.0.2/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/common/ERC2981.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 /**
  * @title MonshiFireworks — 4th of July drop (50 pieces)
@@ -32,7 +33,7 @@ import "@openzeppelin/contracts@5.0.2/access/Ownable.sol";
  * NOT AUDITED. Review before mainnet. Deploy via Remix (OZ imports resolve
  * automatically) with compiler 0.8.24+.
  */
-contract MonshiFireworks is ERC721, ERC2981, Ownable {
+contract MonshiFireworks is ERC721, ERC2981, Ownable, ReentrancyGuard {
     uint256 public constant MAX_ID = 50;
 
     address payable public immutable TREASURY;
@@ -62,9 +63,10 @@ contract MonshiFireworks is ERC721, ERC2981, Ownable {
     error ForwardFailed();
 
     constructor(address payable treasury, uint64 start, uint64 end)
-        ERC721("Monshi Fireworks — 4th of July", "MFW4")
+        ERC721("Monshi Fireworks - 4th of July", "MFW4")
         Ownable(msg.sender)
     {
+        require(treasury != address(0) && end > start, "bad args");
         TREASURY = treasury;
         saleStart = start;
         saleEnd = end;
@@ -102,7 +104,7 @@ contract MonshiFireworks is ERC721, ERC2981, Ownable {
 
     // ── mint paths ────────────────────────────────────────────────
     /// Buy a specific piece at its tier price.
-    function buy(uint256 id) external payable {
+    function buy(uint256 id) external payable nonReentrant {
         if (!saleLive()) revert SaleClosed();
         if (id == 0 || id > MAX_ID) revert AlreadyMinted();
         if (_ownerOfSafe(id) != address(0)) revert AlreadyMinted();
@@ -115,7 +117,7 @@ contract MonshiFireworks is ERC721, ERC2981, Ownable {
 
     /// Fortune Wheel: 250 MON, weighted-random rarity, random piece of it.
     /// Weights per 1000: Common 700 / Uncommon 200 / Rare 72 / Epic 23 / Legendary 5.
-    function spin() external payable returns (uint256 id) {
+    function spin() external payable nonReentrant returns (uint256 id) {
         if (!saleLive()) revert SaleClosed();
         if (msg.value != SPIN_PRICE) revert WrongPayment();
 
@@ -193,6 +195,7 @@ contract MonshiFireworks is ERC721, ERC2981, Ownable {
     }
 
     function setSaleWindow(uint64 start, uint64 end) external onlyOwner {
+        require(end > start, "bad window");
         saleStart = start;
         saleEnd = end;
     }

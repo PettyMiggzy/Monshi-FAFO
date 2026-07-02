@@ -84,6 +84,8 @@ var RANK={Common:0,Uncommon:1,Rare:2,Epic:3,Legendary:4};
 var BRAND={purple:0x6b27de,indigo:0x7d69ed,teal:0x00a29e};
 var $=function(i){return document.getElementById(i);};
 var TREASURY='0xece5d15e567c801c835029a49b2e4067b0eb63aa';
+var CONTRACT='0x258F09737Cf8549c8c73EBE22F4156e8C405e6C6';
+var SEL_BUY='0xd96a094a',SEL_SPIN='0xf0acd7d5';
 var canvas=$('c');
 var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 var scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x0a0430,0.018);
@@ -110,13 +112,18 @@ orb2.scale.set(30,30,1);orb2.position.set(52,22,-80);scene.add(orb2);
 // stars
 var sg=new THREE.BufferGeometry(),sv=[];for(var i=0;i<500;i++){var R=90+Math.random()*60,a=Math.random()*6.28,b=Math.random()*1.2;sv.push(Math.sin(a)*Math.cos(b)*R,Math.abs(Math.sin(b))*R*0.6+2,Math.cos(a)*Math.cos(b)*R);}
 sg.setAttribute('position',new THREE.Float32BufferAttribute(sv,3));scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0xcfc4ff,size:.5,transparent:true,opacity:.75,fog:false})));
-// distant city skyline ring (brand purple silhouette)
-var cityMat=new THREE.MeshBasicMaterial({color:0x1a0d3e});
-for(var b=0;b<70;b++){var a=(b/70)*Math.PI*2,rr=52+Math.random()*10,h=6+Math.random()*24;
-  var bd=new THREE.Mesh(new THREE.BoxGeometry(3+Math.random()*3,h,3),cityMat);
-  bd.position.set(Math.sin(a)*rr,h/2-1,Math.cos(a)*rr);scene.add(bd);
-  var edge=new THREE.Mesh(new THREE.BoxGeometry(3.05,0.15,3.05),new THREE.MeshBasicMaterial({color:b%3?0x6b27de:0x00a29e,transparent:true,opacity:.6}));
-  edge.position.set(bd.position.x,h-1,bd.position.z);scene.add(edge);}
+// photoreal night-city skyline backdrop (mirrored pano wrapped on a cylinder)
+(function(){var tl=new THREE.TextureLoader();
+tl.load('/public/fireworks-nft/city-pano.jpg',function(tx){
+  tx.wrapS=THREE.MirroredRepeatWrapping;tx.repeat.set(3,1);tx.anisotropy=8;
+  var cyl=new THREE.Mesh(new THREE.CylinderGeometry(72,72,34,64,1,true),
+    new THREE.MeshBasicMaterial({map:tx,side:THREE.BackSide,fog:false}));
+  cyl.position.y=14.5;scene.add(cyl);
+  // soft haze blend where backdrop meets the floor
+  var haze=new THREE.Mesh(new THREE.CylinderGeometry(71,71,9,64,1,true),
+    new THREE.MeshBasicMaterial({color:0x0d0728,transparent:true,opacity:.85,side:THREE.BackSide,fog:false}));
+  haze.position.y=1.5;scene.add(haze);
+});})();
 // reflective floor
 var floorMat=new THREE.MeshStandardMaterial({color:0x0a0628,metalness:.85,roughness:.28});
 var floor=new THREE.Mesh(new THREE.PlaneGeometry(300,300),floorMat);floor.rotation.x=-Math.PI/2;floor.position.y=0;scene.add(floor);
@@ -279,7 +286,7 @@ async function doSpin(){if(spinning)return;var btn=$('spin');
   if(!WALLET){toast('Connect a wallet to spin');return;}
   var wei='0x'+(BigInt(250)*(BigInt(10)**BigInt(18))).toString(16);
   btn.disabled=true;btn.textContent='CONFIRM 250 MON…';
-  try{await window.ethereum.request({method:'eth_sendTransaction',params:[{from:WALLET,to:TREASURY,value:wei}]});}
+  try{await window.ethereum.request({method:'eth_sendTransaction',params:[{from:WALLET,to:CONTRACT,value:wei,data:SEL_SPIN}]});}
   catch(e){toast('Spin cancelled');btn.disabled=false;btn.textContent='🎡 SPIN · 250 MON';return;}
   spinRarity=drawRarity();
   var opts=[];for(var si=0;si<WN;si++)if(WHEEL_SEG[si]===spinRarity)opts.push(si);
@@ -325,7 +332,7 @@ var WALLET=null;
 $('wallet').onclick=async function(){try{if(window.MONSHI&&MONSHI.connectWallet){var w=await MONSHI.connectWallet();if(w){WALLET=w;this.textContent=w.slice(0,6)+'…'+w.slice(-4);toast('Wallet connected');return;}}}catch(e){}toast('No wallet found — install MetaMask/Rabby');};
 $('buy').onclick=async function(){var it=this._it;if(!it)return;
   var ph=phase(); if(ph!=='live'){gateToast(ph);return;}
-  if(!WALLET){try{WALLET=await MONSHI.connectWallet();$('wallet').textContent=WALLET?WALLET.slice(0,6)+'…'+WALLET.slice(-4):'CONNECT';}catch(e){}}if(!WALLET){toast('Connect a wallet first');return;}var wei='0x'+BigInt(Math.round(it.price*1e18)).toString(16);this.classList.add('busy');this.textContent='CONFIRM IN WALLET…';var btn=this;try{var tx=await window.ethereum.request({method:'eth_sendTransaction',params:[{from:WALLET,to:TREASURY,value:wei}]});toast('✅ Purchased '+it.name+' · tx '+tx.slice(0,10)+'…');btn.textContent='✓ PURCHASED';}catch(e){toast('Purchase cancelled');btn.classList.remove('busy');btn.textContent='BUY · '+it.price+' MON';}};
+  if(!WALLET){try{WALLET=await MONSHI.connectWallet();$('wallet').textContent=WALLET?WALLET.slice(0,6)+'…'+WALLET.slice(-4):'CONNECT';}catch(e){}}if(!WALLET){toast('Connect a wallet first');return;}var wei='0x'+BigInt(Math.round(it.price*1e18)).toString(16);this.classList.add('busy');this.textContent='CONFIRM IN WALLET…';var btn=this;try{var data=SEL_BUY+BigInt(it.id).toString(16).padStart(64,'0');var tx=await window.ethereum.request({method:'eth_sendTransaction',params:[{from:WALLET,to:CONTRACT,value:wei,data:data}]});toast('✅ MINTED '+it.name+' · tx '+tx.slice(0,10)+'… · tradeable on OpenSea');btn.textContent='✓ PURCHASED';}catch(e){toast('Purchase cancelled');btn.classList.remove('busy');btn.textContent='BUY · '+it.price+' MON';}};
 // ── loop ──
 var clock=new THREE.Clock(),ready=false;
 function tick(){requestAnimationFrame(tick);var dt=Math.min(clock.getDelta(),0.05),t=clock.elapsedTime;
@@ -340,7 +347,7 @@ function tick(){requestAnimationFrame(tick);var dt=Math.min(clock.getDelta(),0.0
   if(!ready){ready=true;$('loading').style.display='none';}
 }
 $('spin').onclick=doSpin;
-fetch('/public/fireworks-nft/collection.json').then(function(r){return r.json();}).then(function(d){if(d.treasury)TREASURY=d.treasury;buildGallery(d.items||[]);pos.set(0,3.6,11);tick();}).catch(function(){buildGallery([]);tick();toast('Could not load collection');});
+fetch('/public/fireworks-nft/collection.json').then(function(r){return r.json();}).then(function(d){if(d.treasury)TREASURY=d.treasury;if(d.contract)CONTRACT=d.contract;buildGallery(d.items||[]);pos.set(0,3.6,11);tick();}).catch(function(){buildGallery([]);tick();toast('Could not load collection');});
 })();
 </script>
 </body></html>
