@@ -1,0 +1,36 @@
+{
+ "name": "Monshi Firework #021",
+ "description": "Monshi Fireworks \u2014 limited 4th of July drop on Monad. 50 pieces, minted July 4-5 only, then gone forever. Part of the Monshi arcade ecosystem.",
+ "image": "https://monshi-fafo.vercel.app/public/fireworks-nft/collection/mfw_021.jpg",
+ "external_url": "https://monshi-fafo.vercel.app/marketplace.html",
+ "attributes": [
+  {
+   "trait_type": "Rarity",
+   "value": "Common"
+  },
+  {
+   "trait_type": "Firework",
+   "value": "Sparkler"
+  },
+  {
+   "trait_type": "Hat",
+   "value": "cowboy hat"
+  },
+  {
+   "trait_type": "Eyewear",
+   "value": "aviator sunglasses"
+  },
+  {
+   "trait_type": "Accessory",
+   "value": "holding a mini flag"
+  },
+  {
+   "trait_type": "Background",
+   "value": "a starry countryside"
+  },
+  {
+   "trait_type": "Effect",
+   "value": "clean"
+  }
+ ]
+}
