@@ -84,7 +84,7 @@ var RANK={Common:0,Uncommon:1,Rare:2,Epic:3,Legendary:4};
 var BRAND={purple:0x6b27de,indigo:0x7d69ed,teal:0x00a29e};
 var $=function(i){return document.getElementById(i);};
 var TREASURY='0xece5d15e567c801c835029a49b2e4067b0eb63aa';
-var CONTRACT='0x258F09737Cf8549c8c73EBE22F4156e8C405e6C6';
+var CONTRACT='0xdA42B6184d848a05be311fd696dECF412e13D0AE';
 var SEL_BUY='0xd96a094a',SEL_SPIN='0xf0acd7d5';
 var canvas=$('c');
 var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));
@@ -216,7 +216,7 @@ function buildGallery(items){
     panels.push({grp:grp,plane:plane,it:it});
   });
   var ph=phase();
-  $('sub').textContent='FIREWORK NFTs · '+N+' PIECES · '+(ph==='preview'?'🔒 MINT OPENS JULY 4':(ph==='closed'?'SEASON CLOSED':'LIVE NOW — GONE JULY 5'));
+  $('sub').textContent='FIREWORK NFTs · '+N+' PIECES · '+(ph==='closed'?'SEASON CLOSED':'🔴 MINT LIVE NOW — GONE JULY 5');
 }
 function spawnPanelSpark(grp){var rc=new THREE.Color(RC[grp.userData.item.rarity]||'#c084fc');
   for(var i=0;i<10;i++){var a=Math.random()*6.28,sp=0.6+Math.random()*1.3;
@@ -277,8 +277,8 @@ var ODDS=[['Common',700],['Uncommon',200],['Rare',72],['Epic',23],['Legendary',5
 function drawRarity(){var r=Math.random()*1000,acc=0;for(var i=0;i<ODDS.length;i++){acc+=ODDS[i][1];if(r<acc)return ODDS[i][0];}return 'Common';}
 var spinning=false,spinFrom=0,spinTo=0,spinT=0,spinDur=5.2,spinRarity=null;
 // July 4th drop window: preview before Jul 4, live Jul 4-5, closed after
-function phase(){var n=new Date(),y=n.getFullYear(),open=new Date(y,6,4),close=new Date(y,6,6);
-  return n<open?'preview':(n>=close?'closed':'live');}
+function phase(){var n=new Date(),y=n.getFullYear(),close=new Date(y,6,6);
+  return n>=close?'closed':'live';}
 function gateToast(ph){toast(ph==='preview'?'🔒 PREVIEW — mint opens July 4':'🎆 Season closed — the 4th of July drop is gone');}
 async function doSpin(){if(spinning)return;var btn=$('spin');
   var ph=phase(); if(ph!=='live'){gateToast(ph);return;}
@@ -286,7 +286,7 @@ async function doSpin(){if(spinning)return;var btn=$('spin');
   if(!WALLET){toast('Connect a wallet to spin');return;}
   var wei='0x'+(BigInt(250)*(BigInt(10)**BigInt(18))).toString(16);
   btn.disabled=true;btn.textContent='CONFIRM 250 MON…';
-  try{await window.ethereum.request({method:'eth_sendTransaction',params:[{from:WALLET,to:CONTRACT,value:wei,data:SEL_SPIN}]});}
+  try{await window.ethereum.request({method:'eth_sendTransaction',params:[{from:WALLET,to:CONTRACT,value:wei,data:SEL_SPIN,gas:'0x6DDD0'}]});}
   catch(e){toast('Spin cancelled');btn.disabled=false;btn.textContent='🎡 SPIN · 250 MON';return;}
   spinRarity=drawRarity();
   var opts=[];for(var si=0;si<WN;si++)if(WHEEL_SEG[si]===spinRarity)opts.push(si);
@@ -332,7 +332,7 @@ var WALLET=null;
 $('wallet').onclick=async function(){try{if(window.MONSHI&&MONSHI.connectWallet){var w=await MONSHI.connectWallet();if(w){WALLET=w;this.textContent=w.slice(0,6)+'…'+w.slice(-4);toast('Wallet connected');return;}}}catch(e){}toast('No wallet found — install MetaMask/Rabby');};
 $('buy').onclick=async function(){var it=this._it;if(!it)return;
   var ph=phase(); if(ph!=='live'){gateToast(ph);return;}
-  if(!WALLET){try{WALLET=await MONSHI.connectWallet();$('wallet').textContent=WALLET?WALLET.slice(0,6)+'…'+WALLET.slice(-4):'CONNECT';}catch(e){}}if(!WALLET){toast('Connect a wallet first');return;}var wei='0x'+BigInt(Math.round(it.price*1e18)).toString(16);this.classList.add('busy');this.textContent='CONFIRM IN WALLET…';var btn=this;try{var data=SEL_BUY+BigInt(it.id).toString(16).padStart(64,'0');var tx=await window.ethereum.request({method:'eth_sendTransaction',params:[{from:WALLET,to:CONTRACT,value:wei,data:data}]});toast('✅ MINTED '+it.name+' · tx '+tx.slice(0,10)+'… · tradeable on OpenSea');btn.textContent='✓ PURCHASED';}catch(e){toast('Purchase cancelled');btn.classList.remove('busy');btn.textContent='BUY · '+it.price+' MON';}};
+  if(!WALLET){try{WALLET=await MONSHI.connectWallet();$('wallet').textContent=WALLET?WALLET.slice(0,6)+'…'+WALLET.slice(-4):'CONNECT';}catch(e){}}if(!WALLET){toast('Connect a wallet first');return;}var wei='0x'+BigInt(Math.round(it.price*1e18)).toString(16);this.classList.add('busy');this.textContent='CONFIRM IN WALLET…';var btn=this;try{var data=SEL_BUY+BigInt(it.id).toString(16).padStart(64,'0');var tx=await window.ethereum.request({method:'eth_sendTransaction',params:[{from:WALLET,to:CONTRACT,value:wei,data:data,gas:'0x557B0'}]});toast('✅ MINTED '+it.name+' · tx '+tx.slice(0,10)+'… · tradeable on OpenSea');btn.textContent='✓ PURCHASED';}catch(e){toast('Purchase cancelled');btn.classList.remove('busy');btn.textContent='BUY · '+it.price+' MON';}};
 // ── loop ──
 var clock=new THREE.Clock(),ready=false;
 function tick(){requestAnimationFrame(tick);var dt=Math.min(clock.getDelta(),0.05),t=clock.elapsedTime;
