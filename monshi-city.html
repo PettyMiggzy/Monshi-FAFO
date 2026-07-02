@@ -40,7 +40,7 @@
   /* map */
   #mini{position:fixed;right:14px;top:60px;width:118px;height:118px;z-index:20;border:1px solid rgba(125,105,237,.4);border-radius:12px;background:rgba(8,4,22,.6);pointer-events:none;}
   /* overlay */
-  #ov{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(circle at 50% 40%,rgba(40,15,90,.6),rgba(5,3,15,.97));padding:26px;}
+  #ov{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(rgba(5,3,15,.55),rgba(5,3,15,.82) 60%,rgba(5,3,15,.95)),url('/public/monshi-city/hero_splash.jpg') center/cover no-repeat;padding:26px;}
   #ov h1{font-size:min(15vw,60px);letter-spacing:6px;font-weight:900;background:linear-gradient(90deg,#c4b5fd,#00e6d8,#ffd54a);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 40px rgba(125,105,237,.4);line-height:1;}
   #ov .sub{margin-top:14px;color:#b9a9f0;letter-spacing:3px;font-size:13px;}
   #ov .rows{margin:22px 0 26px;color:rgba(196,181,253,.8);font-size:12px;letter-spacing:1px;line-height:2;}
@@ -115,6 +115,7 @@ function loadTex(url,rx,ry){var t=texLoader.load(url);t.colorSpace=THREE.SRGBCol
 var streetTex=loadTex('/public/monshi-city/street.jpg',24,24);
 var facadePurpleTex=loadTex('/public/monshi-city/facade_purple.jpg',1,2);
 var facadeTealTex=loadTex('/public/monshi-city/facade_teal.jpg',1,2);
+var SIGTEX={glass:loadTex('/public/monshi-city/facade_glass.jpg',1,2),fire:loadTex('/public/monshi-city/facade_fire.jpg',1,1),gold:loadTex('/public/monshi-city/facade_gold.jpg',1,2)};
 // distant skyline backdrop (wraps the horizon behind the fog)
 (function(){
   var sky=texLoader.load('/public/monshi-city/city_sky.jpg');sky.colorSpace=THREE.SRGBColorSpace;
@@ -200,8 +201,9 @@ var BUILD=[]; // {mesh,box,door,url,name,accent}
 function coolAccent(hex){var n=parseInt(hex.replace('#',''),16);var r=(n>>16)&255,g=(n>>8)&255;return g>r*1.1;}
 function addBuilding(o){
   var h=o.h, w=o.w, d=o.d;
-  var fTex=(o.facade==='teal'||(o.facade!=='purple'&&coolAccent(o.accent)))?facadeTealTex:facadePurpleTex;
-  var mat=new THREE.MeshStandardMaterial({map:fTex,emissiveMap:fTex,color:0xdcdcea,roughness:0.75,metalness:0.25,emissive:new THREE.Color(o.accent),emissiveIntensity:0.55});
+  var fTex=o.sig?SIGTEX[o.sig]:((o.facade==='teal'||(o.facade!=='purple'&&coolAccent(o.accent)))?facadeTealTex:facadePurpleTex);
+  var eInt=o.sig==='fire'?0.9:(o.sig==='gold'?0.7:0.55);
+  var mat=new THREE.MeshStandardMaterial({map:fTex,emissiveMap:fTex,color:0xdcdcea,roughness:0.75,metalness:0.25,emissive:new THREE.Color(o.accent),emissiveIntensity:eInt});
   var b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
   b.position.set(o.x,h/2,o.z);scene.add(b);
   // rooftop glow
@@ -240,16 +242,16 @@ function makeSign(text,accent){
 }
 
 // portal buildings (the games) — 4 rows down the avenue, doors facing center
-addBuilding({x:-16,z:34,w:11,d:11,h:22,base:'#2a1030',win:'#ffd54a',accent:'#ffb54a',name:'FIREWORKS',url:'/marketplace.html'});
+addBuilding({x:-16,z:34,w:11,d:11,h:22,base:'#2a1030',win:'#ffd54a',accent:'#ffb54a',name:'FIREWORKS',url:'/marketplace.html',sig:'glass'});
 addBuilding({x:16,z:34,w:10,d:10,h:28,base:'#0d2a16',win:'#4ade80',accent:'#4ade80',name:'PUMP',url:'/pump.html'});
 addBuilding({x:-16,z:6,w:10,d:10,h:24,base:'#0c1c34',win:'#60a5fa',accent:'#60a5fa',name:'PONG',url:'/pong.html'});
 addBuilding({x:16,z:6,w:10,d:10,h:20,base:'#2a2410',win:'#ffe14a',accent:'#ffd54a',name:'FLAPPY',url:'/flappy.html'});
 addBuilding({x:-16,z:-22,w:10,d:10,h:26,base:'#1a0f38',win:'#a855f7',accent:'#a855f7',name:'RUNNER',url:'/runner.html'});
 addBuilding({x:16,z:-22,w:10,d:10,h:32,base:'#0c2a28',win:'#00e6d8',accent:'#00e6d8',name:'SHOOTER',url:'/shooter.html'});
 addBuilding({x:-16,z:-50,w:10,d:10,h:23,base:'#2a0d14',win:'#fca5a5',accent:'#ef4444',name:'RACER',url:'/racer.html'});
-addBuilding({x:16,z:-50,w:11,d:11,h:30,base:'#1c0d30',win:'#c084fc',accent:'#a855f7',name:'WHALE',url:'/whale.html'});
+addBuilding({x:16,z:-50,w:11,d:11,h:34,base:'#2a2410',win:'#ffd54a',accent:'#ffcf4a',name:'WHALE',url:'/whale.html',sig:'gold'});
 // outer accent portals
-var burn=addBuilding({x:-30,z:-8,w:9,d:9,h:18,base:'#2a1006',win:'#ff8a3c',accent:'#ff6a2c',name:'BURN',url:'/burn.html'});
+var burn=addBuilding({x:-30,z:-8,w:9,d:9,h:20,base:'#2a1006',win:'#ff8a3c',accent:'#ff6a2c',name:'BURN',url:'/burn.html',sig:'fire'});
 addBuilding({x:30,z:-8,w:9,d:9,h:20,base:'#241033',win:'#f472b6',accent:'#ec4899',name:'SLOTS',url:'/slots.html'});
 addBuilding({x:-30,z:20,w:9,d:9,h:16,base:'#0d2a1a',win:'#4ade80',accent:'#22c55e',name:'PLINKO',url:'/plinko.html'});
 addBuilding({x:30,z:20,w:9,d:9,h:22,base:'#101a34',win:'#7dd3fc',accent:'#38bdf8',name:'BLKJACK',url:'/blackjack.html'});
