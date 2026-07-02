@@ -33,6 +33,8 @@
   #jump{background:radial-gradient(circle at 35% 30%,rgba(0,230,216,.5),rgba(0,120,110,.55));box-shadow:0 0 16px rgba(0,230,216,.5);}
   #fire{background:radial-gradient(circle at 35% 30%,rgba(255,120,180,.6),rgba(180,30,90,.6));box-shadow:0 0 16px rgba(255,90,150,.55);font-size:26px;}
   #hint{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:2px;color:rgba(196,181,253,.5);z-index:20;pointer-events:none;text-align:center;}
+  #banner{position:fixed;top:96px;left:50%;transform:translateX(-50%) translateY(-8px);z-index:30;pointer-events:none;opacity:0;transition:.35s;background:linear-gradient(135deg,rgba(107,39,222,.9),rgba(0,162,158,.85));border:1px solid #ffd54a;border-radius:22px;padding:10px 20px;font-weight:900;letter-spacing:2px;font-size:12px;white-space:nowrap;box-shadow:0 0 26px rgba(255,180,0,.4);}
+  #banner.on{opacity:1;transform:translateX(-50%) translateY(0);}
   /* connect */
   #conn{pointer-events:auto;display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,rgba(0,162,158,.25),rgba(107,39,222,.25));border:1px solid rgba(0,230,216,.5);border-radius:22px;padding:8px 14px;font-size:11px;font-weight:800;letter-spacing:1.5px;color:#eafffb;cursor:pointer;}
   /* map */
@@ -60,6 +62,7 @@
 <canvas id="mini" width="118" height="118" class="hud"></canvas>
 
 <div class="hud" id="prompt"><div class="lbl" id="promptLbl">ENTER</div><div class="go" id="promptGo">▶ ENTER</div></div>
+<div id="banner"></div>
 
 <div id="stick"><div id="nub"></div></div>
 <div id="btns">
@@ -215,23 +218,36 @@ function makeSign(text,accent){
   s.scale.set(6,1.5,1);return s;
 }
 
-// portal buildings (the 4 games) — placed along the avenue, doors facing center
-addBuilding({x:-16,z:-16,w:10,d:10,h:26,base:'#1a0f38',win:'#a855f7',accent:'#a855f7',name:'RUNNER',url:'/runner.html'});
-addBuilding({x:16,z:-16,w:10,d:10,h:30,base:'#0c2a28',win:'#00e6d8',accent:'#00e6d8',name:'SHOOTER',url:'/shooter.html'});
-addBuilding({x:-16,z:22,w:11,d:11,h:22,base:'#2a1030',win:'#ffd54a',accent:'#ffb54a',name:'FIREWORKS',url:'/marketplace.html'});
-addBuilding({x:16,z:22,w:10,d:10,h:28,base:'#0d2a16',win:'#4ade80',accent:'#4ade80',name:'PUMP',url:'/pump.html'});
+// portal buildings (the games) — 4 rows down the avenue, doors facing center
+addBuilding({x:-16,z:34,w:11,d:11,h:22,base:'#2a1030',win:'#ffd54a',accent:'#ffb54a',name:'FIREWORKS',url:'/marketplace.html'});
+addBuilding({x:16,z:34,w:10,d:10,h:28,base:'#0d2a16',win:'#4ade80',accent:'#4ade80',name:'PUMP',url:'/pump.html'});
+addBuilding({x:-16,z:6,w:10,d:10,h:24,base:'#0c1c34',win:'#60a5fa',accent:'#60a5fa',name:'PONG',url:'/pong.html'});
+addBuilding({x:16,z:6,w:10,d:10,h:20,base:'#2a2410',win:'#ffe14a',accent:'#ffd54a',name:'FLAPPY',url:'/flappy.html'});
+addBuilding({x:-16,z:-22,w:10,d:10,h:26,base:'#1a0f38',win:'#a855f7',accent:'#a855f7',name:'RUNNER',url:'/runner.html'});
+addBuilding({x:16,z:-22,w:10,d:10,h:32,base:'#0c2a28',win:'#00e6d8',accent:'#00e6d8',name:'SHOOTER',url:'/shooter.html'});
+addBuilding({x:-16,z:-50,w:10,d:10,h:23,base:'#2a0d14',win:'#fca5a5',accent:'#ef4444',name:'RACER',url:'/racer.html'});
+addBuilding({x:16,z:-50,w:11,d:11,h:30,base:'#1c0d30',win:'#c084fc',accent:'#a855f7',name:'WHALE',url:'/whale.html'});
+// outer accent portals
+var burn=addBuilding({x:-30,z:-8,w:9,d:9,h:18,base:'#2a1006',win:'#ff8a3c',accent:'#ff6a2c',name:'BURN',url:'/burn.html'});
+addBuilding({x:30,z:-8,w:9,d:9,h:20,base:'#241033',win:'#f472b6',accent:'#ec4899',name:'SLOTS',url:'/slots.html'});
+addBuilding({x:-30,z:20,w:9,d:9,h:16,base:'#0d2a1a',win:'#4ade80',accent:'#22c55e',name:'PLINKO',url:'/plinko.html'});
+addBuilding({x:30,z:20,w:9,d:9,h:22,base:'#101a34',win:'#7dd3fc',accent:'#38bdf8',name:'BLKJACK',url:'/blackjack.html'});
 // backdrop skyline (non-portal filler)
 var fillerC=['#150c30','#0e1030','#1c0d28','#0c1c2a'];
-for(var i=0;i<26;i++){
-  var sideX=(i%2?1:-1)*(24+Math.random()*46);
+for(var i=0;i<24;i++){
+  var sideX=(i%2?1:-1)*(42+Math.random()*40);
   var zz=-118+Math.random()*236;
-  if(Math.abs(zz)<40 && Math.abs(sideX)<30) sideX*=1.8;
   addBuilding({x:sideX,z:zz,w:7+Math.random()*8,d:7+Math.random()*8,h:16+Math.random()*46,
     base:fillerC[i%4],win:(Math.random()>.5?'#7d69ed':'#00a29e'),accent:(Math.random()>.5?'#6b27de':'#00a29e')});
 }
+// fire particles rising off the Burn Temple
+var burnFires=[];
+(function(){
+  for(var i=0;i<10;i++){var s=makeGlow('#ff7a2c',1.6);s.position.set(burn.box.x+(Math.random()-.5)*6,18+Math.random()*4,burn.box.z+(Math.random()-.5)*6);scene.add(s);burnFires.push({s:s,base:s.position.y,ph:Math.random()*6});}
+})();
 // giant billboard building at the head of the avenue
 (function(){
-  var bx=0,bz=-70,bw=26,bh=44;
+  var bx=0,bz=-84,bw=28,bh=48;
   var b=new THREE.Mesh(new THREE.BoxGeometry(bw,bh,6),new THREE.MeshStandardMaterial({color:0x0a0620,roughness:0.6,metalness:0.3}));
   b.position.set(bx,bh/2,bz);scene.add(b);
   var screen=new THREE.Mesh(new THREE.PlaneGeometry(22,14),new THREE.MeshBasicMaterial({map:bbTex}));
@@ -298,7 +314,7 @@ function buildMonshi(opt){
 /* ---------- player ---------- */
 var player=buildMonshi({fur:0x8b6ff0});
 scene.add(player.group);
-player.group.position.set(0,0,44);
+player.group.position.set(0,0,54);
 // blob shadow
 var blob=new THREE.Mesh(new THREE.CircleGeometry(0.7,20),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.34}));
 blob.rotation.x=-Math.PI/2;blob.position.y=0.02;scene.add(blob);
@@ -306,7 +322,7 @@ blob.rotation.x=-Math.PI/2;blob.position.y=0.02;scene.add(blob);
 var aura=new THREE.Mesh(new THREE.RingGeometry(0.85,1.15,32),new THREE.MeshBasicMaterial({color:0x00e6d8,transparent:true,opacity:0,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));
 aura.rotation.x=-Math.PI/2;aura.position.y=0.05;scene.add(aura);
 var auraLight=new THREE.PointLight(0x00e6d8,0,10);scene.add(auraLight);
-var trailOn=false,trailPts=[];
+var trailOn=false,trailPts=[],trailColor='#ff7ab5';
 
 /* ---------- central statue ---------- */
 (function(){
@@ -319,6 +335,30 @@ var trailOn=false,trailPts=[];
   var gl=makeGlow('#ffd54a',8);gl.position.set(0,5,0);scene.add(gl);
   var pl=new THREE.PointLight(0xffd54a,1.4,26);pl.position.set(0,6,0);scene.add(pl);
 })();
+
+/* ---------- wandering NPC Monshis ---------- */
+var NPCS=[];
+var npcCols=[0x6b27de,0x00a29e,0xec4899,0x4ade80,0xfca5a5,0x60a5fa,0xffd54a];
+function newTarget(){return new THREE.Vector3((Math.random()-0.5)*14,0,-60+Math.random()*110);}
+for(var n=0;n<7;n++){
+  var m=buildMonshi({fur:npcCols[n%npcCols.length]});
+  m.group.scale.setScalar(0.9);
+  var sx=(Math.random()<0.5?-1:1)*(3+Math.random()*5);
+  m.group.position.set(sx,0,-50+Math.random()*100);
+  scene.add(m.group);
+  var sh=new THREE.Mesh(new THREE.CircleGeometry(0.6,16),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:0.28}));
+  sh.rotation.x=-Math.PI/2;sh.position.y=0.02;scene.add(sh);
+  NPCS.push({m:m,shadow:sh,tgt:newTarget(),ph:Math.random()*6,wait:0});
+}
+
+/* ---------- VIP holder pad ---------- */
+var vipPad=new THREE.Mesh(new THREE.CircleGeometry(3.2,40),new THREE.MeshBasicMaterial({color:0xec4899,transparent:true,opacity:0.18,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));
+vipPad.rotation.x=-Math.PI/2;vipPad.position.set(0,0.03,-30);scene.add(vipPad);
+var vipRing=new THREE.Mesh(new THREE.RingGeometry(3.0,3.3,40),new THREE.MeshBasicMaterial({color:0xffd54a,transparent:true,opacity:0.7,side:THREE.DoubleSide}));
+vipRing.rotation.x=-Math.PI/2;vipRing.position.set(0,0.04,-30);scene.add(vipRing);
+var vipSign=makeSign('VIP · HOLDERS',0xffd54a);vipSign.position.set(0,3.4,-30);vipSign.scale.set(7,1.75,1);scene.add(vipSign);
+var vipLight=new THREE.PointLight(0xec4899,0.8,16);vipLight.position.set(0,3,-30);scene.add(vipLight);
+var vipActive=false,vipShow=0;
 
 /* ---------- fireworks ---------- */
 var fw={rockets:[],parts:[],pool:[]};
@@ -360,6 +400,16 @@ function updateFW(dt){
   }
 }
 var autoTimer=0;
+// transient HUD banner
+var bannerT=0;
+function banner(txt){var el=$('banner');el.textContent=txt;el.classList.add('on');bannerT=3.2;}
+// big multi-shell sky finale (whale buys / celebrations)
+function finale(col){
+  var base=new THREE.Vector3((Math.random()-0.5)*40,1,-40+Math.random()*30);
+  for(var i=0;i<8;i++){(function(k){setTimeout(function(){
+    var f=base.clone();f.x+=(Math.random()-0.5)*60;launchRocket(f,col||new THREE.Color().setHSL(Math.random(),0.9,0.6));
+  },k*160);})(i);}
+}
 
 /* ---------- input ---------- */
 var move={x:0,y:0}, keyMove={x:0,y:0};
@@ -479,8 +529,31 @@ function animate(){
     blob.position.set(pos.x,0.02,pos.z);blob.scale.setScalar(1-Math.min(0.5,pos.y*0.3));
     aura.position.set(pos.x,0.06,pos.z);aura.rotation.z+=dt;auraLight.position.set(pos.x,1.2,pos.z);
     // trail (holders)
-    if(trailOn && mag>0.2){var tp=pos.clone();tp.y=1.2;if(!trailPts.length||tp.distanceTo(trailPts[trailPts.length-1].p)>0.6){var s=makeGlow('#ff7ab5',1);s.position.copy(tp);scene.add(s);trailPts.push({s:s,life:0.8});}}
+    if(trailOn && mag>0.2){var tp=pos.clone();tp.y=1.2;if(!trailPts.length||tp.distanceTo(trailPts[trailPts.length-1].p)>0.6){var s=makeGlow(trailColor,1);s.position.copy(tp);scene.add(s);trailPts.push({s:s,p:tp,life:0.8});}}
     for(var ti=trailPts.length-1;ti>=0;ti--){var t=trailPts[ti];t.life-=dt;t.s.material.opacity=Math.max(0,t.life);t.s.scale.setScalar(t.life*1.4);if(t.life<=0){scene.remove(t.s);trailPts.splice(ti,1);}}
+    // NPC Monshis wander
+    for(var ni=0;ni<NPCS.length;ni++){var npc=NPCS[ni],g=npc.m.group;
+      if(npc.wait>0){npc.wait-=dt;npc.ph+=dt*2;}
+      else{var to=npc.tgt.clone().sub(g.position);var dd=to.length();
+        if(dd<1.2){npc.tgt=newTarget();npc.wait=0.5+Math.random()*2;}
+        else{to.normalize();var ns=2.6*dt;var nx=g.position.x+to.x*ns,nz=g.position.z+to.z*ns;
+          if(!blocked(nx,g.position.z))g.position.x=nx;if(!blocked(g.position.x,nz))g.position.z=nz;
+          var na=Math.atan2(to.x,to.z);var cd=((na-g.rotation.y+Math.PI)%TAU)-Math.PI;g.rotation.y+=cd*Math.min(1,dt*8);
+          npc.ph+=ns*3.4;}
+      }
+      var nsw=Math.sin(npc.ph);npc.m.legs[0].rotation.x=nsw*0.5;npc.m.legs[3].rotation.x=nsw*0.5;npc.m.legs[1].rotation.x=-nsw*0.5;npc.m.legs[2].rotation.x=-nsw*0.5;npc.m.tail.rotation.z=Math.sin(npc.ph*0.6)*0.25;
+      npc.shadow.position.set(g.position.x,0.02,g.position.z);
+    }
+    // burn temple flames flicker
+    for(var bi=0;bi<burnFires.length;bi++){var bf=burnFires[bi];bf.ph+=dt*4;bf.s.position.y=bf.base+Math.sin(bf.ph)*1.4;bf.s.material.opacity=0.5+Math.sin(bf.ph*1.3)*0.35;bf.s.scale.setScalar(1.4+Math.sin(bf.ph)*0.5);}
+    // VIP pad — holders get a personal show when standing on it
+    vipRing.rotation.z+=dt*0.6;vipPad.material.opacity=0.14+Math.sin(clock.elapsedTime*2)*0.06;
+    var onPad=Math.hypot(pos.x-0,pos.z-(-30))<3.2;
+    var isHolder=window.MONSHI&&((MONSHI.hasNFT&&MONSHI.hasNFT())||(MONSHI.getFirework&&MONSHI.getFirework()));
+    if(onPad&&isHolder){vipShow-=dt;if(vipShow<=0){vipShow=0.35;var pc=MONSHI.getFirework&&MONSHI.getFirework();var vc=pc?new THREE.Color(pc.color):new THREE.Color(0xec4899);launchRocket(new THREE.Vector3(pos.x+(Math.random()-0.5)*4,1,pos.z+(Math.random()-0.5)*4),vc);}
+      if(!vipActive){vipActive=true;banner('👑 VIP LOUNGE · ENJOY THE SHOW');}}
+    else if(onPad&&!isHolder){if(!vipActive){vipActive=true;banner('🔒 VIP PAD · HOLDERS ONLY — CONNECT A FIREWORKS NFT');}}
+    else vipActive=false;
     // camera follow
     var camTarget=new THREE.Vector3(pos.x,pos.y+1.6,pos.z);
     var offset=new THREE.Vector3(Math.sin(camYaw)*camDist*Math.cos(camPitch),camDist*Math.sin(camPitch)+2.2,Math.cos(camYaw)*camDist*Math.cos(camPitch));
@@ -493,6 +566,7 @@ function animate(){
     updateFW(dt);
     // neon flicker
     neonA.intensity=1.0+Math.sin(clock.elapsedTime*3)*0.3;neonB.intensity=1.0+Math.cos(clock.elapsedTime*2.4)*0.3;
+    if(bannerT>0){bannerT-=dt;if(bannerT<=0)$('banner').classList.remove('on');}
     drawMap();
   }
   renderer.render(scene,camera);
@@ -509,7 +583,7 @@ function applyIdentity(){
   aura.material.color.set(col);aura.material.opacity=0.85;auraLight.color.set(col);auraLight.intensity=1.4;
   player.furMat.emissive=col.clone().multiplyScalar(0.25);
   var pc=MONSHI.getFirework&&MONSHI.getFirework();
-  if(pc||(MONSHI.hasNFT&&MONSHI.hasNFT())){trailOn=true;}
+  if(pc||(MONSHI.hasNFT&&MONSHI.hasNFT())){trailOn=true;trailColor=pc?pc.color:'#ec4899';}
   $('conn').textContent='🐾 '+((MONSHI.getTierName&&MONSHI.getTierName())||'CONNECTED');
 }
 window.doConnect=function(){if(window.MONSHI&&MONSHI.connectWallet)MONSHI.connectWallet();};
@@ -520,7 +594,8 @@ addEventListener('load',function(){
     window.addEventListener('monshi:connect',function(){applyIdentity();if(MONSHI.fetchFirework)MONSHI.fetchFirework().then(applyIdentity);});
   }
 });
-// live buys ticker
+// live buys ticker — the sky reacts to real on-chain buys
+var lastTopTotal=null,tickerFirst=true;
 function loadTicker(){
   fetch('/api/buyers?window=12&limit=12').then(function(r){return r.json();}).then(function(d){
     var b=(d&&d.buyers)||[];
@@ -529,9 +604,18 @@ function loadTicker(){
     $('tickerInner').textContent='LIVE BUYS · '+parts.join('   ·   ')+'   ·   ';
     bbLines=b.slice(0,4).map(function(x){return x.wallet.slice(0,8)+'  +'+Number(x.total).toLocaleString();});
     drawBillboard();
+    // whale finale: when the top buyer's total grows, light the whole sky
+    var top=Number(b[0].total)||0;
+    if(!tickerFirst && started && lastTopTotal!==null && top>lastTopTotal){
+      finale(new THREE.Color(0x4ade80));
+      banner('🐋 WHALE BUY · '+b[0].wallet.slice(0,6)+'… +'+top.toLocaleString());
+    }
+    lastTopTotal=top;tickerFirst=false;
   }).catch(function(){$('tickerInner').textContent='$MONSHI · LIVE ON MONAD · WELCOME TO MONSHI CITY';});
 }
 loadTicker();setInterval(loadTicker,60000);
+// ambient big finale over the skyline every ~50s
+setInterval(function(){if(started)finale();},50000);
 
 /* ---------- start ---------- */
 $('enter').addEventListener('click',function(){
