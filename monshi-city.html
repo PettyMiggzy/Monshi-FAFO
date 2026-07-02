@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Monshi City · Walk the Arcade</title>
+<link rel="icon" type="image/png" href="/favicon.png?v=2">
+<meta property="og:title" content="Monshi City — walk the 3D arcade">
+<meta property="og:description" content="Free-roam a neon Monad city as your Monshi. Every building is a game. The sky runs on live on-chain buys.">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{width:100%;height:100%;overflow:hidden;background:#05030f;font-family:'Orbitron','Segoe UI',system-ui,sans-serif;color:#fff;touch-action:none;}
+  #c{position:fixed;inset:0;display:block;}
+  .hud{position:fixed;z-index:20;pointer-events:none;}
+  /* top bar */
+  #top{top:0;left:0;right:0;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(180deg,rgba(5,3,15,.75),rgba(5,3,15,0));}
+  #logo{font-weight:900;letter-spacing:2px;font-size:15px;text-shadow:0 0 14px rgba(125,105,237,.9);}
+  #logo b{color:#c4b5fd;}
+  #logo i{color:#00e6d8;font-style:normal;}
+  #ticker{pointer-events:none;overflow:hidden;flex:1;max-width:52%;height:26px;border:1px solid rgba(0,230,216,.35);border-radius:20px;background:rgba(0,20,26,.5);display:flex;align-items:center;}
+  #tickerInner{white-space:nowrap;font-size:11px;letter-spacing:1px;color:#8ff6ee;padding-left:100%;animation:mv 26s linear infinite;}
+  @keyframes mv{to{transform:translateX(-100%);}}
+  /* prompt */
+  #prompt{left:50%;bottom:132px;transform:translateX(-50%) scale(.9);opacity:0;transition:.18s;text-align:center;}
+  #prompt.on{opacity:1;transform:translateX(-50%) scale(1);}
+  #prompt .lbl{font-size:12px;letter-spacing:3px;color:#ffd54a;text-shadow:0 0 12px rgba(255,180,0,.7);}
+  #prompt .go{margin-top:8px;pointer-events:auto;display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#6b27de,#00a29e);border:1px solid #ffd54a;border-radius:26px;padding:11px 22px;font-weight:900;letter-spacing:2px;font-size:13px;cursor:pointer;box-shadow:0 0 26px rgba(125,105,237,.6);}
+  /* controls */
+  #stick{position:fixed;left:20px;bottom:24px;width:126px;height:126px;border-radius:50%;background:radial-gradient(circle,rgba(125,105,237,.12),rgba(125,105,237,.04));border:1.5px solid rgba(125,105,237,.4);z-index:25;touch-action:none;}
+  #nub{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#a78bfa,#6b27de);border:1.5px solid rgba(255,255,255,.55);box-shadow:0 0 18px rgba(125,105,237,.7);}
+  #btns{position:fixed;right:18px;bottom:26px;z-index:25;display:flex;flex-direction:column;gap:12px;align-items:center;}
+  .rb{width:66px;height:66px;border-radius:50%;border:1.5px solid rgba(255,255,255,.35);font-weight:900;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;color:#fff;}
+  #jump{background:radial-gradient(circle at 35% 30%,rgba(0,230,216,.5),rgba(0,120,110,.55));box-shadow:0 0 16px rgba(0,230,216,.5);}
+  #fire{background:radial-gradient(circle at 35% 30%,rgba(255,120,180,.6),rgba(180,30,90,.6));box-shadow:0 0 16px rgba(255,90,150,.55);font-size:26px;}
+  #hint{position:fixed;bottom:6px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:2px;color:rgba(196,181,253,.5);z-index:20;pointer-events:none;text-align:center;}
+  /* connect */
+  #conn{pointer-events:auto;display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,rgba(0,162,158,.25),rgba(107,39,222,.25));border:1px solid rgba(0,230,216,.5);border-radius:22px;padding:8px 14px;font-size:11px;font-weight:800;letter-spacing:1.5px;color:#eafffb;cursor:pointer;}
+  /* map */
+  #mini{position:fixed;right:14px;top:60px;width:118px;height:118px;z-index:20;border:1px solid rgba(125,105,237,.4);border-radius:12px;background:rgba(8,4,22,.6);pointer-events:none;}
+  /* overlay */
+  #ov{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(circle at 50% 40%,rgba(40,15,90,.6),rgba(5,3,15,.97));padding:26px;}
+  #ov h1{font-size:min(15vw,60px);letter-spacing:6px;font-weight:900;background:linear-gradient(90deg,#c4b5fd,#00e6d8,#ffd54a);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 40px rgba(125,105,237,.4);line-height:1;}
+  #ov .sub{margin-top:14px;color:#b9a9f0;letter-spacing:3px;font-size:13px;}
+  #ov .rows{margin:22px 0 26px;color:rgba(196,181,253,.8);font-size:12px;letter-spacing:1px;line-height:2;}
+  #ov .rows b{color:#00e6d8;}
+  #enter{pointer-events:auto;background:linear-gradient(135deg,#6b27de,#00a29e);border:1.5px solid #ffd54a;border-radius:32px;padding:16px 44px;font-family:inherit;font-weight:900;letter-spacing:3px;font-size:16px;color:#fff;cursor:pointer;box-shadow:0 0 40px rgba(125,105,237,.6);}
+  #ldbar{margin-top:20px;font-size:11px;letter-spacing:2px;color:#7d69ed;}
+  .fadeout{opacity:0;pointer-events:none;transition:opacity .6s;}
+  @media(min-width:820px){#stick,#btns{opacity:.55;}#hint{font-size:11px;}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div class="hud" id="top">
+  <div id="logo"><b>MONSHI</b> <i>CITY</i></div>
+  <div id="ticker"><div id="tickerInner">CONNECTING TO MONAD…</div></div>
+  <div id="conn" onclick="doConnect()">🔌 CONNECT</div>
+</div>
+<canvas id="mini" width="118" height="118" class="hud"></canvas>
+
+<div class="hud" id="prompt"><div class="lbl" id="promptLbl">ENTER</div><div class="go" id="promptGo">▶ ENTER</div></div>
+
+<div id="stick"><div id="nub"></div></div>
+<div id="btns">
+  <div class="rb" id="fire">🎆</div>
+  <div class="rb" id="jump">⤴</div>
+</div>
+<div id="hint">DRAG SCREEN TO LOOK · WALK TO A BUILDING TO ENTER ITS GAME</div>
+
+<div id="ov">
+  <h1>MONSHI CITY</h1>
+  <div class="sub">WALK THE ARCADE</div>
+  <div class="rows">
+    🏙️ Every building is a <b>playable game</b><br>
+    🎆 The sky runs on <b>live on-chain buys</b><br>
+    🐾 Roam as your <b>Monshi</b> · holders get an aura
+  </div>
+  <button id="enter">ENTER THE CITY</button>
+  <div id="ldbar">loading world…</div>
+</div>
+
+<script src="//unpkg.com/three@0.150.0/build/three.min.js"></script>
+<script src="/monshi-shared.js"></script>
+<script>
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var TAU=Math.PI*2;
+
+/* ---------- renderer / scene ---------- */
+var canvas=$('c');
+var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));
+renderer.setSize(innerWidth,innerHeight);
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+var scene=new THREE.Scene();
+scene.background=new THREE.Color(0x0a0620);
+scene.fog=new THREE.Fog(0x0a0620,34,138);
+var camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,0.1,400);
+
+/* ---------- lights ---------- */
+scene.add(new THREE.HemisphereLight(0x5a4bd0,0x0a0618,0.55));
+var moon=new THREE.DirectionalLight(0xbfd0ff,0.5);moon.position.set(-40,80,30);scene.add(moon);
+var amb=new THREE.AmbientLight(0x40308a,0.5);scene.add(amb);
+// roaming neon accent lights
+var neonA=new THREE.PointLight(0x00e6d8,1.2,60);neonA.position.set(14,8,-10);scene.add(neonA);
+var neonB=new THREE.PointLight(0xa855f7,1.2,60);neonB.position.set(-16,7,20);scene.add(neonB);
+
+/* ---------- shared glow sprite ---------- */
+function glowTex(col){
+  var c=document.createElement('canvas');c.width=c.height=128;var g=c.getContext('2d');
+  var gr=g.createRadialGradient(64,64,2,64,64,64);
+  gr.addColorStop(0,col);gr.addColorStop(.35,col.replace('rgb','rgba').replace(')',',.6)'));gr.addColorStop(1,'rgba(0,0,0,0)');
+  g.fillStyle=gr;g.fillRect(0,0,128,128);
+  var t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;
+}
+var glowWhite=glowTex('rgb(255,255,255)');
+function makeGlow(hex,size){
+  var s=new THREE.Sprite(new THREE.SpriteMaterial({map:glowWhite,color:hex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+  s.scale.set(size,size,1);return s;
+}
+
+/* ---------- ground / streets ---------- */
+(function(){
+  var groundMat=new THREE.MeshStandardMaterial({color:0x08060f,roughness:0.35,metalness:0.75});
+  var g=new THREE.Mesh(new THREE.PlaneGeometry(400,400),groundMat);
+  g.rotation.x=-Math.PI/2;scene.add(g);
+  // glowing lane strips down the avenue (teal), fake wet reflections
+  var laneMat=new THREE.MeshBasicMaterial({color:0x00a29e,transparent:true,opacity:0.5});
+  for(var z=-120;z<=120;z+=10){
+    var m=new THREE.Mesh(new THREE.PlaneGeometry(0.4,5),laneMat);
+    m.rotation.x=-Math.PI/2;m.position.set(0,0.02,z);scene.add(m);
+  }
+  // sidewalk edge glow
+  var edgeMat=new THREE.MeshBasicMaterial({color:0x7d69ed,transparent:true,opacity:0.55});
+  [-9,9].forEach(function(x){
+    var m=new THREE.Mesh(new THREE.PlaneGeometry(0.3,260),edgeMat);
+    m.rotation.x=-Math.PI/2;m.position.set(x,0.02,0);scene.add(m);
+  });
+})();
+
+/* ---------- building facade texture ---------- */
+function facadeTex(base,win){
+  var c=document.createElement('canvas');c.width=128;c.height=256;var g=c.getContext('2d');
+  g.fillStyle=base;g.fillRect(0,0,128,256);
+  for(var y=14;y<250;y+=20){for(var x=12;x<120;x+=22){
+    var lit=Math.random();
+    g.fillStyle= lit>0.55 ? win : 'rgba(10,8,22,0.9)';
+    g.fillRect(x,y,14,12);
+  }}
+  var t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;
+  t.wrapS=t.wrapT=THREE.RepeatWrapping;return t;
+}
+
+/* ---------- billboard (live ticker) canvas ---------- */
+var bbCanvas=document.createElement('canvas');bbCanvas.width=512;bbCanvas.height=256;
+var bbTex=new THREE.CanvasTexture(bbCanvas);bbTex.colorSpace=THREE.SRGBColorSpace;
+var bbScroll=0,bbLines=['$MONSHI','LIVE ON MONAD','WALK · PLAY · MOON'];
+function drawBillboard(){
+  var g=bbCanvas.getContext('2d');
+  g.fillStyle='#0a0424';g.fillRect(0,0,512,256);
+  g.strokeStyle='#00e6d8';g.lineWidth=6;g.strokeRect(6,6,500,244);
+  g.fillStyle='#c4b5fd';g.font='900 46px Orbitron,sans-serif';g.textAlign='center';
+  g.fillText('$MONSHI',256,64);
+  g.fillStyle='#ffd54a';g.font='700 20px Orbitron,sans-serif';
+  g.fillText('LIVE BUYS · MONAD',256,96);
+  g.font='700 22px Orbitron,sans-serif';g.textAlign='left';
+  var y=138;
+  bbLines.slice(0,4).forEach(function(l){
+    g.fillStyle='#8ff6ee';g.fillText(l,24,y);y+=30;
+  });
+  bbTex.needsUpdate=true;
+}
+drawBillboard();
+
+/* ---------- city buildings ---------- */
+var BUILD=[]; // {mesh,box,door,url,name,accent}
+function addBuilding(o){
+  var h=o.h, w=o.w, d=o.d;
+  var mat=new THREE.MeshStandardMaterial({map:facadeTex(o.base||'#140c2e',o.win||'#00e6d8'),color:0xffffff,roughness:0.7,metalness:0.2,emissive:new THREE.Color(o.accent),emissiveIntensity:0.12});
+  var b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
+  b.position.set(o.x,h/2,o.z);scene.add(b);
+  // rooftop glow
+  var top=makeGlow(o.accent,w*1.4);top.position.set(o.x,h+1,o.z);scene.add(top);
+  // neon sign band near top
+  var band=new THREE.Mesh(new THREE.BoxGeometry(w*1.02,0.6,d*1.02),new THREE.MeshBasicMaterial({color:o.accent}));
+  band.position.set(o.x,h-1.2,o.z);scene.add(band);
+  var rec={box:{x:o.x,z:o.z,w:w,d:d},name:o.name,accent:o.accent};
+  if(o.url){
+    rec.url=o.url;
+    // door faces the avenue (toward x=0): door on the inner face
+    var side=o.x<0?1:-1; // door on +x side if building is left of avenue
+    var doorX=o.x + side*(w/2+0.05);
+    rec.door=new THREE.Vector3(doorX,0,o.z);
+    // glowing doorway
+    var dr=new THREE.Mesh(new THREE.PlaneGeometry(2.4,3.4),new THREE.MeshBasicMaterial({color:o.accent,transparent:true,opacity:0.85,side:THREE.DoubleSide}));
+    dr.position.set(doorX,1.7,o.z);dr.rotation.y=Math.PI/2;scene.add(dr);
+    var dg=makeGlow(o.accent,5);dg.position.set(doorX+side*0.3,2,o.z);scene.add(dg);
+    // floating label sprite
+    rec.marker=new THREE.Vector3(doorX,4.4,o.z);
+    var sign=makeSign(o.name,o.accent);sign.position.set(doorX,4.6,o.z);scene.add(sign);
+    rec.beam=makeGlow(o.accent,3);rec.beam.position.set(doorX,0.3,o.z);scene.add(rec.beam);
+  }
+  BUILD.push(rec);
+  return rec;
+}
+function makeSign(text,accent){
+  var c=document.createElement('canvas');c.width=256;c.height=64;var g=c.getContext('2d');
+  g.fillStyle='rgba(6,3,20,.85)';g.fillRect(0,0,256,64);
+  g.strokeStyle=accent;g.lineWidth=4;g.strokeRect(3,3,250,58);
+  g.fillStyle='#fff';g.font='900 26px Orbitron,sans-serif';g.textAlign='center';g.textBaseline='middle';
+  g.shadowColor=accent;g.shadowBlur=14;g.fillText(text,128,34);
+  var t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;
+  var s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthWrite:false}));
+  s.scale.set(6,1.5,1);return s;
+}
+
+// portal buildings (the 4 games) — placed along the avenue, doors facing center
+addBuilding({x:-16,z:-16,w:10,d:10,h:26,base:'#1a0f38',win:'#a855f7',accent:'#a855f7',name:'RUNNER',url:'/runner.html'});
+addBuilding({x:16,z:-16,w:10,d:10,h:30,base:'#0c2a28',win:'#00e6d8',accent:'#00e6d8',name:'SHOOTER',url:'/shooter.html'});
+addBuilding({x:-16,z:22,w:11,d:11,h:22,base:'#2a1030',win:'#ffd54a',accent:'#ffb54a',name:'FIREWORKS',url:'/marketplace.html'});
+addBuilding({x:16,z:22,w:10,d:10,h:28,base:'#0d2a16',win:'#4ade80',accent:'#4ade80',name:'PUMP',url:'/pump.html'});
+// backdrop skyline (non-portal filler)
+var fillerC=['#150c30','#0e1030','#1c0d28','#0c1c2a'];
+for(var i=0;i<26;i++){
+  var sideX=(i%2?1:-1)*(24+Math.random()*46);
+  var zz=-118+Math.random()*236;
+  if(Math.abs(zz)<40 && Math.abs(sideX)<30) sideX*=1.8;
+  addBuilding({x:sideX,z:zz,w:7+Math.random()*8,d:7+Math.random()*8,h:16+Math.random()*46,
+    base:fillerC[i%4],win:(Math.random()>.5?'#7d69ed':'#00a29e'),accent:(Math.random()>.5?'#6b27de':'#00a29e')});
+}
+// giant billboard building at the head of the avenue
+(function(){
+  var bx=0,bz=-70,bw=26,bh=44;
+  var b=new THREE.Mesh(new THREE.BoxGeometry(bw,bh,6),new THREE.MeshStandardMaterial({color:0x0a0620,roughness:0.6,metalness:0.3}));
+  b.position.set(bx,bh/2,bz);scene.add(b);
+  var screen=new THREE.Mesh(new THREE.PlaneGeometry(22,14),new THREE.MeshBasicMaterial({map:bbTex}));
+  screen.position.set(bx,30,bz+3.2);scene.add(screen);
+  var gl=makeGlow('#00e6d8',30);gl.position.set(bx,30,bz+4);scene.add(gl);
+  BUILD.push({box:{x:bx,z:bz,w:bw,d:6},name:'BILLBOARD',accent:'#00e6d8'});
+})();
+
+/* ---------- Monshi character builder (true 3D low-poly) ---------- */
+function buildMonshi(opt){
+  opt=opt||{};
+  var fur=new THREE.Color(opt.fur||0x7d69ed);
+  var furMat=new THREE.MeshStandardMaterial({color:fur,roughness:0.55,metalness:0.05,emissive:fur.clone().multiplyScalar(0.15)});
+  var cream=new THREE.MeshStandardMaterial({color:0xf3e7cf,roughness:0.6});
+  var pink=new THREE.MeshStandardMaterial({color:0xf2a6c4,roughness:0.5});
+  var dark=new THREE.MeshStandardMaterial({color:0x120a24,roughness:0.4});
+  var g=new THREE.Group();
+  // body
+  var body=new THREE.Mesh(new THREE.CapsuleGeometry(0.42,0.5,6,14),furMat);
+  body.position.y=0.85;body.scale.set(1,1,0.82);g.add(body);
+  // belly
+  var belly=new THREE.Mesh(new THREE.SphereGeometry(0.3,14,12),cream);
+  belly.position.set(0,0.78,0.3);belly.scale.set(0.8,1,0.4);g.add(belly);
+  // head
+  var head=new THREE.Group();head.position.set(0,1.5,0.02);g.add(head);
+  var skull=new THREE.Mesh(new THREE.SphereGeometry(0.46,18,16),furMat);skull.scale.set(1,0.94,0.96);head.add(skull);
+  var face=new THREE.Mesh(new THREE.SphereGeometry(0.3,14,12),cream);face.position.set(0,-0.06,0.34);face.scale.set(1,0.8,0.5);head.add(face);
+  // ears
+  [-1,1].forEach(function(s){
+    var ear=new THREE.Mesh(new THREE.ConeGeometry(0.17,0.36,10),furMat);
+    ear.position.set(0.24*s,0.44,0);ear.rotation.z=-0.3*s;head.add(ear);
+    var inr=new THREE.Mesh(new THREE.ConeGeometry(0.09,0.22,8),pink);
+    inr.position.set(0.24*s,0.42,0.03);inr.rotation.z=-0.3*s;head.add(inr);
+  });
+  // eyes
+  [-1,1].forEach(function(s){
+    var eye=new THREE.Mesh(new THREE.SphereGeometry(0.09,12,12),dark);
+    eye.position.set(0.15*s,0.02,0.42);head.add(eye);
+    var gl=new THREE.Mesh(new THREE.SphereGeometry(0.03,8,8),new THREE.MeshBasicMaterial({color:0xffffff}));
+    gl.position.set(0.15*s+0.03,0.06,0.48);head.add(gl);
+  });
+  // nose
+  var nose=new THREE.Mesh(new THREE.ConeGeometry(0.05,0.06,8),pink);nose.rotation.x=Math.PI/2;nose.position.set(0,-0.08,0.5);head.add(nose);
+  // whiskers
+  [-1,1].forEach(function(s){[0,0.08,-0.08].forEach(function(o){
+    var w=new THREE.Mesh(new THREE.CylinderGeometry(0.006,0.006,0.34,4),new THREE.MeshBasicMaterial({color:0xe8ddff}));
+    w.rotation.z=Math.PI/2;w.position.set(0.34*s,-0.05+o,0.42);w.rotation.y=0.3*s;head.add(w);
+  });});
+  // legs
+  var legs=[];
+  [[-0.24,0.28],[0.24,0.28],[-0.24,-0.24],[0.24,-0.24]].forEach(function(p){
+    var leg=new THREE.Mesh(new THREE.CapsuleGeometry(0.11,0.22,4,8),furMat);
+    leg.position.set(p[0],0.34,p[1]);g.add(leg);legs.push(leg);
+  });
+  // tail
+  var tailCurve=new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0,0.8,-0.35),new THREE.Vector3(-0.15,1.05,-0.7),
+    new THREE.Vector3(-0.05,1.4,-0.85),new THREE.Vector3(0.2,1.6,-0.7)
+  ]);
+  var tail=new THREE.Mesh(new THREE.TubeGeometry(tailCurve,20,0.1,8,false),furMat);g.add(tail);
+  return {group:g,head:head,legs:legs,tail:tail,body:body,furMat:furMat};
+}
+
+/* ---------- player ---------- */
+var player=buildMonshi({fur:0x8b6ff0});
+scene.add(player.group);
+player.group.position.set(0,0,44);
+// blob shadow
+var blob=new THREE.Mesh(new THREE.CircleGeometry(0.7,20),new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:0.34}));
+blob.rotation.x=-Math.PI/2;blob.position.y=0.02;scene.add(blob);
+// aura ring (hidden until wallet connect)
+var aura=new THREE.Mesh(new THREE.RingGeometry(0.85,1.15,32),new THREE.MeshBasicMaterial({color:0x00e6d8,transparent:true,opacity:0,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));
+aura.rotation.x=-Math.PI/2;aura.position.y=0.05;scene.add(aura);
+var auraLight=new THREE.PointLight(0x00e6d8,0,10);scene.add(auraLight);
+var trailOn=false,trailPts=[];
+
+/* ---------- central statue ---------- */
+(function(){
+  var ped=new THREE.Mesh(new THREE.CylinderGeometry(2.4,2.8,1.4,24),new THREE.MeshStandardMaterial({color:0x1a1140,roughness:0.5,metalness:0.4,emissive:0x2a1060,emissiveIntensity:0.3}));
+  ped.position.set(0,0.7,0);scene.add(ped);
+  var statue=buildMonshi({fur:0xffd54a});
+  statue.furMat.metalness=0.9;statue.furMat.roughness=0.25;statue.furMat.emissive=new THREE.Color(0x7a5a10);
+  statue.group.position.set(0,1.4,0);statue.group.scale.set(2.1,2.1,2.1);
+  statue.head.rotation.x=-0.15;scene.add(statue.group);
+  var gl=makeGlow('#ffd54a',8);gl.position.set(0,5,0);scene.add(gl);
+  var pl=new THREE.PointLight(0xffd54a,1.4,26);pl.position.set(0,6,0);scene.add(pl);
+})();
+
+/* ---------- fireworks ---------- */
+var fw={rockets:[],parts:[],pool:[]};
+var sparkTex=glowWhite;
+function spawnParticle(pos,vel,col,life){
+  var p=fw.pool.pop();
+  if(!p){var m=new THREE.Sprite(new THREE.SpriteMaterial({map:sparkTex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));m.scale.set(0.5,0.5,1);scene.add(m);p={s:m};}
+  p.s.visible=true;p.s.material.color.set(col);p.s.position.copy(pos);
+  p.vel=vel;p.life=life;p.max=life;fw.parts.push(p);
+}
+function burst(pos,col){
+  var n=44+Math.floor(Math.random()*30);
+  var c=col||new THREE.Color().setHSL(Math.random(),0.9,0.6);
+  for(var i=0;i<n;i++){
+    var a=Math.random()*TAU,b=Math.acos(2*Math.random()-1),sp=3.5+Math.random()*3.5;
+    var v=new THREE.Vector3(Math.sin(b)*Math.cos(a),Math.cos(b),Math.sin(b)*Math.sin(a)).multiplyScalar(sp);
+    spawnParticle(pos.clone(),v,c,1+Math.random()*0.8);
+  }
+  // flash
+  var fl=makeGlow('#ffffff',9);fl.position.copy(pos);fl.material.color.set(c);scene.add(fl);
+  var t0=1;(function fade(){t0-=0.08;fl.material.opacity=Math.max(0,t0);fl.scale.setScalar(9+(1-t0)*6);if(t0>0)requestAnimationFrame(fade);else scene.remove(fl);})();
+}
+function launchRocket(from,col){
+  var m=makeGlow(col?('#'+col.getHexString()):'#ffffff',1.4);
+  m.position.copy(from);scene.add(m);
+  var target=8+Math.random()*10;
+  fw.rockets.push({s:m,pos:from.clone(),vel:new THREE.Vector3((Math.random()-0.5)*1.2,7+Math.random()*2,(Math.random()-0.5)*1.2),target:target,col:col||new THREE.Color().setHSL(Math.random(),0.9,0.6)});
+}
+function updateFW(dt){
+  for(var i=fw.rockets.length-1;i>=0;i--){
+    var r=fw.rockets[i];r.vel.y-=6*dt;r.pos.addScaledVector(r.vel,dt);r.s.position.copy(r.pos);
+    if(r.vel.y<=0 || r.pos.y>=r.target){burst(r.pos,r.col);scene.remove(r.s);fw.rockets.splice(i,1);}
+  }
+  for(var j=fw.parts.length-1;j>=0;j--){
+    var p=fw.parts[j];p.life-=dt;
+    if(p.life<=0){p.s.visible=false;fw.parts.splice(j,1);fw.pool.push(p);continue;}
+    p.vel.y-=4*dt;p.vel.multiplyScalar(0.985);p.s.position.addScaledVector(p.vel,dt);
+    var k=p.life/p.max;p.s.material.opacity=k;p.s.scale.setScalar(0.28+k*0.35);
+  }
+}
+var autoTimer=0;
+
+/* ---------- input ---------- */
+var move={x:0,y:0}, keyMove={x:0,y:0};
+var camYaw=0, camPitch=0.30, camDist=9.6;
+var velY=0,onGround=true;
+var keys={};
+addEventListener('keydown',function(e){keys[e.code]=true;if(e.code==='Space'){jump();}if(e.code==='KeyE'){tryEnter();}});
+addEventListener('keyup',function(e){keys[e.code]=false;});
+function readKeys(){
+  keyMove.x=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0);
+  keyMove.y=(keys.KeyS||keys.ArrowDown?1:0)-(keys.KeyW||keys.ArrowUp?1:0);
+}
+// joystick
+(function(){
+  var stick=$('stick'),nub=$('nub'),active=false,cx=0,cy=0,R=48;
+  function start(x,y){active=true;var r=stick.getBoundingClientRect();cx=r.left+r.width/2;cy=r.top+r.height/2;moveNub(x,y);}
+  function moveNub(x,y){var dx=x-cx,dy=y-cy,d=Math.hypot(dx,dy);if(d>R){dx=dx/d*R;dy=dy/d*R;}nub.style.transform='translate('+dx+'px,'+dy+'px)';move.x=dx/R;move.y=dy/R;}
+  function end(){active=false;nub.style.transform='translate(0,0)';move.x=0;move.y=0;}
+  stick.addEventListener('touchstart',function(e){e.preventDefault();start(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+  stick.addEventListener('touchmove',function(e){e.preventDefault();if(active)moveNub(e.touches[0].clientX,e.touches[0].clientY);},{passive:false});
+  stick.addEventListener('touchend',function(e){e.preventDefault();end();},{passive:false});
+  stick.addEventListener('mousedown',function(e){start(e.clientX,e.clientY);});
+  addEventListener('mousemove',function(e){if(active)moveNub(e.clientX,e.clientY);});
+  addEventListener('mouseup',function(){if(active)end();});
+})();
+// look drag (screen, excluding controls)
+(function(){
+  var dragId=null,lx=0,ly=0;
+  function inControl(t){return t.closest('#stick')||t.closest('#btns')||t.closest('#top')||t.closest('#prompt');}
+  canvas.addEventListener('touchstart',function(e){var t=e.changedTouches[0];lx=t.clientX;ly=t.clientY;dragId=t.identifier;},{passive:true});
+  canvas.addEventListener('touchmove',function(e){for(var i=0;i<e.changedTouches.length;i++){var t=e.changedTouches[i];if(t.identifier===dragId){camYaw-=(t.clientX-lx)*0.005;camPitch=Math.max(-0.1,Math.min(0.7,camPitch+(t.clientY-ly)*0.004));lx=t.clientX;ly=t.clientY;}}},{passive:true});
+  canvas.addEventListener('touchend',function(e){dragId=null;});
+  var md=false;
+  canvas.addEventListener('mousedown',function(e){md=true;lx=e.clientX;ly=e.clientY;});
+  addEventListener('mousemove',function(e){if(md){camYaw-=(e.clientX-lx)*0.004;camPitch=Math.max(-0.1,Math.min(0.7,camPitch+(e.clientY-ly)*0.003));lx=e.clientX;ly=e.clientY;}});
+  addEventListener('mouseup',function(){md=false;});
+})();
+// buttons
+function jump(){if(onGround){velY=7.2;onGround=false;}}
+function emote(){var pc=MONSHI&&MONSHI.getFirework&&MONSHI.getFirework();var col=pc?new THREE.Color(pc.color):new THREE.Color(0xff7ab5);var from=player.group.position.clone();from.y=1.4;launchRocket(from,col);}
+$('jump').addEventListener('click',jump);
+$('fire').addEventListener('click',emote);
+$('promptGo').addEventListener('click',tryEnter);
+
+/* ---------- portals ---------- */
+var nearPortal=null;
+function updatePortals(){
+  var pp=player.group.position,best=null,bd=6.2;
+  for(var i=0;i<BUILD.length;i++){var b=BUILD[i];if(!b.url)continue;var d=Math.hypot(pp.x-b.door.x,pp.z-b.door.z);if(d<bd){bd=d;best=b;}}
+  nearPortal=best;
+  var el=$('prompt');
+  if(best){el.classList.add('on');$('promptLbl').textContent='ENTER · '+best.name;$('promptGo').textContent='▶ ENTER '+best.name;$('promptGo').style.borderColor=best.accent;}
+  else el.classList.remove('on');
+}
+var entering=false;
+function tryEnter(){if(nearPortal&&!entering){entering=true;var ov=$('ov');ov.style.transition='opacity .45s';ov.classList.remove('fadeout');ov.style.display='flex';ov.style.opacity='0';requestAnimationFrame(function(){ov.style.opacity='1';});setTimeout(function(){location.href=nearPortal.url;},420);}}
+
+/* ---------- collision ---------- */
+function blocked(x,z){
+  for(var i=0;i<BUILD.length;i++){var b=BUILD[i].box;var hw=b.w/2+0.7,hd=b.d/2+0.7;
+    if(x>b.x-hw&&x<b.x+hw&&z>b.z-hd&&z<b.z+hd)return true;}
+  return false;
+}
+
+/* ---------- minimap ---------- */
+var mm=$('mini').getContext('2d');
+function drawMap(){
+  mm.clearRect(0,0,118,118);mm.fillStyle='rgba(8,4,22,.7)';mm.fillRect(0,0,118,118);
+  var sc=0.42,cx=59,cy=59;
+  BUILD.forEach(function(b){
+    mm.fillStyle=b.url?b.accent:'rgba(120,100,200,.35)';
+    var w=Math.max(3,b.box.w*sc*0.4);
+    mm.fillRect(cx+b.box.x*sc-w/2,cy+b.box.z*sc-w/2,w,w);
+  });
+  var p=player.group.position;
+  mm.fillStyle='#fff';mm.beginPath();mm.arc(cx+p.x*sc,cy+p.z*sc,3.2,0,TAU);mm.fill();
+  mm.strokeStyle='rgba(0,230,216,.6)';mm.lineWidth=1;mm.beginPath();
+  mm.moveTo(cx+p.x*sc,cy+p.z*sc);mm.lineTo(cx+p.x*sc-Math.sin(faceAngle)*8,cy+p.z*sc-Math.cos(faceAngle)*8);mm.stroke();
+}
+
+/* ---------- animation state ---------- */
+var walkPhase=0,faceAngle=Math.PI,started=false,clock=new THREE.Clock();
+function animate(){
+  requestAnimationFrame(animate);
+  var dt=Math.min(clock.getDelta(),0.05);
+  if(started){
+    readKeys();
+    var mx=move.x+keyMove.x, my=move.y+keyMove.y;
+    var mag=Math.hypot(mx,my);
+    var pos=player.group.position;
+    if(mag>0.08){
+      if(mag>1){mx/=mag;my/=mag;mag=1;}
+      // movement relative to camera yaw
+      var fwd=camYaw, ang=Math.atan2(mx,my); // screen->world
+      var world=fwd+ang;
+      var speed=6.6*dt*Math.min(1,mag);
+      var nx=pos.x+Math.sin(world)*speed, nz=pos.z+Math.cos(world)*speed;
+      if(!blocked(nx,pos.z))pos.x=nx;
+      if(!blocked(pos.x,nz))pos.z=nz;
+      pos.x=Math.max(-120,Math.min(120,pos.x));pos.z=Math.max(-120,Math.min(120,pos.z));
+      faceAngle=world;
+      walkPhase+=speed*3.4;
+    } else { walkPhase+=dt*2.2; }
+    // face
+    var cur=player.group.rotation.y, tgt=faceAngle;
+    var diff=((tgt-cur+Math.PI)%TAU)-Math.PI;player.group.rotation.y=cur+diff*Math.min(1,dt*10);
+    // jump / gravity
+    velY-=22*dt;pos.y+=velY*dt;if(pos.y<=0){pos.y=0;velY=0;onGround=true;}
+    // leg + tail anim
+    var sw=Math.sin(walkPhase);
+    player.legs[0].rotation.x=sw*0.5;player.legs[3].rotation.x=sw*0.5;
+    player.legs[1].rotation.x=-sw*0.5;player.legs[2].rotation.x=-sw*0.5;
+    player.tail.rotation.z=Math.sin(walkPhase*0.6)*0.25;
+    player.head.rotation.z=Math.sin(walkPhase*0.5)*0.05;
+    player.body.position.y=0.85+Math.abs(Math.sin(walkPhase))*0.04*(mag>0.1?1:0.3);
+    // blob + aura follow
+    blob.position.set(pos.x,0.02,pos.z);blob.scale.setScalar(1-Math.min(0.5,pos.y*0.3));
+    aura.position.set(pos.x,0.06,pos.z);aura.rotation.z+=dt;auraLight.position.set(pos.x,1.2,pos.z);
+    // trail (holders)
+    if(trailOn && mag>0.2){var tp=pos.clone();tp.y=1.2;if(!trailPts.length||tp.distanceTo(trailPts[trailPts.length-1].p)>0.6){var s=makeGlow('#ff7ab5',1);s.position.copy(tp);scene.add(s);trailPts.push({s:s,life:0.8});}}
+    for(var ti=trailPts.length-1;ti>=0;ti--){var t=trailPts[ti];t.life-=dt;t.s.material.opacity=Math.max(0,t.life);t.s.scale.setScalar(t.life*1.4);if(t.life<=0){scene.remove(t.s);trailPts.splice(ti,1);}}
+    // camera follow
+    var camTarget=new THREE.Vector3(pos.x,pos.y+1.6,pos.z);
+    var offset=new THREE.Vector3(Math.sin(camYaw)*camDist*Math.cos(camPitch),camDist*Math.sin(camPitch)+2.2,Math.cos(camYaw)*camDist*Math.cos(camPitch));
+    var desired=camTarget.clone().add(offset);
+    camera.position.lerp(desired,Math.min(1,dt*6));
+    camera.lookAt(camTarget);
+    // portals + fireworks
+    updatePortals();
+    autoTimer-=dt;if(autoTimer<=0){autoTimer=1.4+Math.random()*2.2;var fx=(Math.random()-0.5)*120,fz=-90+Math.random()*40;launchRocket(new THREE.Vector3(fx,1,fz));}
+    updateFW(dt);
+    // neon flicker
+    neonA.intensity=1.0+Math.sin(clock.elapsedTime*3)*0.3;neonB.intensity=1.0+Math.cos(clock.elapsedTime*2.4)*0.3;
+    drawMap();
+  }
+  renderer.render(scene,camera);
+}
+animate();
+
+addEventListener('resize',function(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+
+/* ---------- wallet / live data ---------- */
+function applyIdentity(){
+  if(!window.MONSHI||!MONSHI.wallet)return;
+  var t=MONSHI.tier||{color:'#00e6d8'};
+  var col=new THREE.Color(MONSHI.hasNFT&&MONSHI.hasNFT()?0xec4899:(t.color||'#00e6d8'));
+  aura.material.color.set(col);aura.material.opacity=0.85;auraLight.color.set(col);auraLight.intensity=1.4;
+  player.furMat.emissive=col.clone().multiplyScalar(0.25);
+  var pc=MONSHI.getFirework&&MONSHI.getFirework();
+  if(pc||(MONSHI.hasNFT&&MONSHI.hasNFT())){trailOn=true;}
+  $('conn').textContent='🐾 '+((MONSHI.getTierName&&MONSHI.getTierName())||'CONNECTED');
+}
+window.doConnect=function(){if(window.MONSHI&&MONSHI.connectWallet)MONSHI.connectWallet();};
+addEventListener('load',function(){
+  if(window.MONSHI){
+    try{MONSHI.injectBadge&&MONSHI.injectBadge();}catch(e){}
+    if(MONSHI.wallet)applyIdentity();
+    window.addEventListener('monshi:connect',function(){applyIdentity();if(MONSHI.fetchFirework)MONSHI.fetchFirework().then(applyIdentity);});
+  }
+});
+// live buys ticker
+function loadTicker(){
+  fetch('/api/buyers?window=12&limit=12').then(function(r){return r.json();}).then(function(d){
+    var b=(d&&d.buyers)||[];
+    if(!b.length){$('tickerInner').textContent='$MONSHI · LIVE ON MONAD · WALK THE ARCADE';return;}
+    var parts=b.map(function(x){return x.wallet.slice(0,6)+'…'+x.wallet.slice(-4)+' +'+Number(x.total).toLocaleString()+' 🟢';});
+    $('tickerInner').textContent='LIVE BUYS · '+parts.join('   ·   ')+'   ·   ';
+    bbLines=b.slice(0,4).map(function(x){return x.wallet.slice(0,8)+'  +'+Number(x.total).toLocaleString();});
+    drawBillboard();
+  }).catch(function(){$('tickerInner').textContent='$MONSHI · LIVE ON MONAD · WELCOME TO MONSHI CITY';});
+}
+loadTicker();setInterval(loadTicker,60000);
+
+/* ---------- start ---------- */
+$('enter').addEventListener('click',function(){
+  var ov=$('ov');ov.classList.add('fadeout');setTimeout(function(){ov.style.display='none';},600);
+  started=true;camera.position.set(player.group.position.x,4,player.group.position.z+camDist);
+});
+$('ldbar').textContent='ready · tap ENTER';
+</script>
+</body>
+</html>
