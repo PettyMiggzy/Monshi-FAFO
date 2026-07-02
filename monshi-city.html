@@ -119,25 +119,32 @@ var streetTex=loadTex('/public/monshi-city/street.jpg',24,24);
 var facadePurpleTex=loadTex('/public/monshi-city/facade_purple.jpg',1,2);
 var facadeTealTex=loadTex('/public/monshi-city/facade_teal.jpg',1,2);
 var SIGTEX={glass:loadTex('/public/monshi-city/facade_glass.jpg',1,2),fire:loadTex('/public/monshi-city/facade_fire.jpg',1,1),gold:loadTex('/public/monshi-city/facade_gold.jpg',1,2)};
-// real Monshi character art (billboard sprites)
-var charBackTex=texLoader.load('/public/monshi-city/char_back.png');charBackTex.colorSpace=THREE.SRGBColorSpace;
+// real Monshi character art — animated back run-cycle sheet + static front
 var charFrontTex=texLoader.load('/public/monshi-city/char_front.png');charFrontTex.colorSpace=THREE.SRGBColorSpace;
-var BACK_AR=482/700, FRONT_AR=339/677;
+var FRONT_AR=339/677, RUN_AR=0.7227, N_RUN=6;
+// shared run-cycle image; each character gets its own texture clone for an independent frame
+var charRunImg=new Image(), CHARS=[];
+var charRunTex=new THREE.Texture();charRunTex.colorSpace=THREE.SRGBColorSpace;charRunTex.wrapS=THREE.RepeatWrapping;charRunTex.repeat.set(1/N_RUN,1);
+charRunImg.onload=function(){charRunTex.image=charRunImg;charRunTex.needsUpdate=true;CHARS.forEach(function(c){c.runTex.image=charRunImg;c.runTex.needsUpdate=true;});};
+charRunImg.src='/public/monshi-city/char_run.png';
 function makeChar(h){
   h=h||2.0;
-  var mat=new THREE.SpriteMaterial({map:charBackTex,transparent:true,alphaTest:0.35,depthWrite:true});
-  var s=new THREE.Sprite(mat);s.center.set(0.5,0);s.scale.set(h*BACK_AR,h,1);
+  var runTex=charRunTex.clone();runTex.colorSpace=THREE.SRGBColorSpace;runTex.wrapS=THREE.RepeatWrapping;runTex.repeat.set(1/N_RUN,1);
+  var mat=new THREE.SpriteMaterial({map:runTex,transparent:true,alphaTest:0.3,depthWrite:true});
+  var s=new THREE.Sprite(mat);s.center.set(0.5,0);s.scale.set(h*RUN_AR,h,1);
   var grp=new THREE.Group();grp.add(s);
-  return {group:grp,sprite:s,mat:mat,h:h,dir:'back'};
+  var c={group:grp,sprite:s,mat:mat,runTex:runTex,h:h,dir:'back'};
+  CHARS.push(c);return c;
 }
-// billboard sprites face the camera; pick front/back art by facing vs view, bob while walking
+// billboards face camera; back = animated run cycle, front = static; frame ties to movement
 function updateChar(c,face,moving,phase){
   var p=c.group.position;
   var vx=p.x-camera.position.x, vz=p.z-camera.position.z, vl=Math.hypot(vx,vz)||1;
   var dot=(Math.sin(face)*vx+Math.cos(face)*vz)/vl;
   var want=dot>=0?'back':'front';
-  if(want!==c.dir){c.dir=want;c.mat.map=(want==='back')?charBackTex:charFrontTex;c.mat.needsUpdate=true;c.sprite.scale.x=c.h*(want==='back'?BACK_AR:FRONT_AR);}
-  c.sprite.position.y=moving?Math.abs(Math.sin(phase))*0.09:0;
+  if(want!==c.dir){c.dir=want;c.mat.map=(want==='back')?c.runTex:charFrontTex;c.mat.needsUpdate=true;c.sprite.scale.x=c.h*(want==='back'?RUN_AR:FRONT_AR);}
+  if(want==='back'){var fr=moving?(Math.floor(phase)%N_RUN):0;c.runTex.offset.x=fr/N_RUN;}
+  c.sprite.position.y=moving?Math.abs(Math.sin(phase*2))*0.05:0;
 }
 // distant skyline backdrop (wraps the horizon behind the fog)
 (function(){
