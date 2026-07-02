@@ -109,6 +109,25 @@ var amb=new THREE.AmbientLight(0x40308a,0.5);scene.add(amb);
 var neonA=new THREE.PointLight(0x00e6d8,1.2,60);neonA.position.set(14,8,-10);scene.add(neonA);
 var neonB=new THREE.PointLight(0xa855f7,1.2,60);neonB.position.set(-16,7,20);scene.add(neonB);
 
+/* ---------- generated art textures ---------- */
+var texLoader=new THREE.TextureLoader();
+function loadTex(url,rx,ry){var t=texLoader.load(url);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;if(rx)t.repeat.set(rx,ry);return t;}
+var streetTex=loadTex('/public/monshi-city/street.jpg',24,24);
+var facadePurpleTex=loadTex('/public/monshi-city/facade_purple.jpg',1,2);
+var facadeTealTex=loadTex('/public/monshi-city/facade_teal.jpg',1,2);
+// distant skyline backdrop (wraps the horizon behind the fog)
+(function(){
+  var sky=texLoader.load('/public/monshi-city/city_sky.jpg');sky.colorSpace=THREE.SRGBColorSpace;
+  sky.wrapS=THREE.RepeatWrapping;sky.repeat.set(5,1);
+  var cyl=new THREE.Mesh(new THREE.CylinderGeometry(170,170,150,48,1,true),
+    new THREE.MeshBasicMaterial({map:sky,side:THREE.BackSide,fog:false,depthWrite:false}));
+  cyl.position.y=52;scene.add(cyl);
+  // upper night gradient dome cap
+  var dome=new THREE.Mesh(new THREE.SphereGeometry(178,24,12,0,TAU,0,Math.PI/2),
+    new THREE.MeshBasicMaterial({color:0x0a0620,side:THREE.BackSide,fog:false}));
+  scene.add(dome);
+})();
+
 /* ---------- shared glow sprite ---------- */
 function glowTex(col){
   var c=document.createElement('canvas');c.width=c.height=128;var g=c.getContext('2d');
@@ -125,20 +144,20 @@ function makeGlow(hex,size){
 
 /* ---------- ground / streets ---------- */
 (function(){
-  var groundMat=new THREE.MeshStandardMaterial({color:0x08060f,roughness:0.35,metalness:0.75});
+  var groundMat=new THREE.MeshStandardMaterial({map:streetTex,color:0x8a8aa0,roughness:0.4,metalness:0.55});
   var g=new THREE.Mesh(new THREE.PlaneGeometry(400,400),groundMat);
   g.rotation.x=-Math.PI/2;scene.add(g);
-  // glowing lane strips down the avenue (teal), fake wet reflections
-  var laneMat=new THREE.MeshBasicMaterial({color:0x00a29e,transparent:true,opacity:0.5});
+  // glowing lane strips down the avenue (teal)
+  var laneMat=new THREE.MeshBasicMaterial({color:0x00e6d8,transparent:true,opacity:0.55,blending:THREE.AdditiveBlending});
   for(var z=-120;z<=120;z+=10){
     var m=new THREE.Mesh(new THREE.PlaneGeometry(0.4,5),laneMat);
-    m.rotation.x=-Math.PI/2;m.position.set(0,0.02,z);scene.add(m);
+    m.rotation.x=-Math.PI/2;m.position.set(0,0.03,z);scene.add(m);
   }
   // sidewalk edge glow
-  var edgeMat=new THREE.MeshBasicMaterial({color:0x7d69ed,transparent:true,opacity:0.55});
+  var edgeMat=new THREE.MeshBasicMaterial({color:0x7d69ed,transparent:true,opacity:0.6,blending:THREE.AdditiveBlending});
   [-9,9].forEach(function(x){
     var m=new THREE.Mesh(new THREE.PlaneGeometry(0.3,260),edgeMat);
-    m.rotation.x=-Math.PI/2;m.position.set(x,0.02,0);scene.add(m);
+    m.rotation.x=-Math.PI/2;m.position.set(x,0.03,0);scene.add(m);
   });
 })();
 
@@ -178,9 +197,11 @@ drawBillboard();
 
 /* ---------- city buildings ---------- */
 var BUILD=[]; // {mesh,box,door,url,name,accent}
+function coolAccent(hex){var n=parseInt(hex.replace('#',''),16);var r=(n>>16)&255,g=(n>>8)&255;return g>r*1.1;}
 function addBuilding(o){
   var h=o.h, w=o.w, d=o.d;
-  var mat=new THREE.MeshStandardMaterial({map:facadeTex(o.base||'#140c2e',o.win||'#00e6d8'),color:0xffffff,roughness:0.7,metalness:0.2,emissive:new THREE.Color(o.accent),emissiveIntensity:0.12});
+  var fTex=(o.facade==='teal'||(o.facade!=='purple'&&coolAccent(o.accent)))?facadeTealTex:facadePurpleTex;
+  var mat=new THREE.MeshStandardMaterial({map:fTex,emissiveMap:fTex,color:0xdcdcea,roughness:0.75,metalness:0.25,emissive:new THREE.Color(o.accent),emissiveIntensity:0.55});
   var b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
   b.position.set(o.x,h/2,o.z);scene.add(b);
   // rooftop glow
