@@ -40,7 +40,8 @@
   /* map */
   #mini{position:fixed;right:14px;top:60px;width:118px;height:118px;z-index:20;border:1px solid rgba(125,105,237,.4);border-radius:12px;background:rgba(8,4,22,.6);pointer-events:none;}
   /* overlay */
-  #ov{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:linear-gradient(rgba(5,3,15,.55),rgba(5,3,15,.82) 60%,rgba(5,3,15,.95)),url('/public/monshi-city/hero_splash.jpg') center/cover no-repeat;padding:26px;}
+  #ov{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;background:linear-gradient(rgba(5,3,15,.6) 0%,rgba(5,3,15,.2) 26%,rgba(5,3,15,.12) 52%,rgba(5,3,15,.55) 78%,rgba(5,3,15,.94) 100%),url('/public/monshi-city/hero_splash.jpg') center/cover no-repeat;padding:6vh 26px 6vh;}
+  #ov .ovtop,#ov .ovbot{width:100%;display:flex;flex-direction:column;align-items:center;}
   #ov h1{font-size:min(15vw,60px);letter-spacing:6px;font-weight:900;background:linear-gradient(90deg,#c4b5fd,#00e6d8,#ffd54a);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 40px rgba(125,105,237,.4);line-height:1;}
   #ov .sub{margin-top:14px;color:#b9a9f0;letter-spacing:3px;font-size:13px;}
   #ov .rows{margin:22px 0 26px;color:rgba(196,181,253,.8);font-size:12px;letter-spacing:1px;line-height:2;}
@@ -72,15 +73,17 @@
 <div id="hint">DRAG SCREEN TO LOOK · WALK TO A BUILDING TO ENTER ITS GAME</div>
 
 <div id="ov">
-  <h1>MONSHI CITY</h1>
-  <div class="sub">WALK THE ARCADE</div>
-  <div class="rows">
-    🏙️ Every building is a <b>playable game</b><br>
-    🎆 The sky runs on <b>live on-chain buys</b><br>
-    🐾 Roam as your <b>Monshi</b> · holders get an aura
+  <div class="ovtop">
+    <h1>MONSHI CITY</h1>
+    <div class="sub">WALK THE ARCADE</div>
   </div>
-  <button id="enter">ENTER THE CITY</button>
-  <div id="ldbar">loading world…</div>
+  <div class="ovbot">
+    <div class="rows">
+      🏙️ Every building is a <b>playable game</b> · 🎆 sky runs on <b>live buys</b> · 🐾 roam as your <b>Monshi</b>
+    </div>
+    <button id="enter">ENTER THE CITY</button>
+    <div id="ldbar">loading world…</div>
+  </div>
 </div>
 
 <script src="//unpkg.com/three@0.150.0/build/three.min.js"></script>
@@ -294,6 +297,11 @@ function buildMonshi(opt){
   // belly
   var belly=new THREE.Mesh(new THREE.SphereGeometry(0.3,14,12),cream);
   belly.position.set(0,0.78,0.3);belly.scale.set(0.8,1,0.4);g.add(belly);
+  // Monad diamond on the hoodie chest (Monshi identity mark)
+  var logoW=new THREE.Mesh(new THREE.PlaneGeometry(0.2,0.2),new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.DoubleSide}));
+  logoW.position.set(0,0.98,0.42);logoW.rotation.z=Math.PI/4;g.add(logoW);
+  var logoI=new THREE.Mesh(new THREE.PlaneGeometry(0.1,0.1),new THREE.MeshBasicMaterial({color:fur.getHex(),side:THREE.DoubleSide}));
+  logoI.position.set(0,0.98,0.425);logoI.rotation.z=Math.PI/4;g.add(logoI);
   // head
   var head=new THREE.Group();head.position.set(0,1.5,0.02);g.add(head);
   var skull=new THREE.Mesh(new THREE.SphereGeometry(0.46,18,16),furMat);skull.scale.set(1,0.94,0.96);head.add(skull);
