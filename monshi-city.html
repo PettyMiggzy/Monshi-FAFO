@@ -129,13 +129,12 @@ function dirD(tex,mode,ar){return {tex:tex,mode:mode,ar:ar};}
 // Monshi (player + npc) — full sheets both ways
 var playerBackTex=loadRunSheet('/public/monshi-city/char_run.png'), playerFrontTex=loadRunSheet('/public/monshi-city/char_frontrun.png');
 var npcBackTex=loadRunSheet('/public/monshi-city/char_run.png'), npcFrontTex=loadRunSheet('/public/monshi-city/char_frontrun.png');
-// Toshi — animated back sheet + single front pose;  Chog — single poses
-var toshiBackTex=loadRunSheet('/public/monshi-city/char_run_toshi.png');
-var toshiFrontPose=loadPose('/public/monshi-city/toshi_front_p.png');
-var chogBackPose=loadPose('/public/monshi-city/chog_back_p.png'), chogFrontPose=loadPose('/public/monshi-city/chog_front_p.png');
+// Toshi + Chog — full animated back & front run sheets
+var toshiBackTex=loadRunSheet('/public/monshi-city/char_run_toshi.png'), toshiFrontTex=loadRunSheet('/public/monshi-city/char_frontrun_toshi.png');
+var chogBackTex=loadRunSheet('/public/monshi-city/char_run_chog.png'), chogFrontTex=loadRunSheet('/public/monshi-city/char_frontrun_chog.png');
 function monshiChar(h){return makeChar(h,dirD(npcBackTex,'sheet',RUN_AR),dirD(npcFrontTex,'sheet',FRUN_AR));}
-function toshiChar(h){return makeChar(h,dirD(toshiBackTex,'sheet',0.6836),dirD(toshiFrontPose,'pose',0.6271));}
-function chogChar(h){return makeChar(h,dirD(chogBackPose,'pose',0.6486),dirD(chogFrontPose,'pose',0.6186));}
+function toshiChar(h){return makeChar(h,dirD(toshiBackTex,'sheet',0.6836),dirD(toshiFrontTex,'sheet',0.7383));}
+function chogChar(h){return makeChar(h,dirD(chogBackTex,'sheet',0.6992),dirD(chogFrontTex,'sheet',0.6523));}
 function makeChar(h,back,front){
   h=h||2.0;
   var mat=new THREE.SpriteMaterial({map:back.tex,transparent:true,alphaTest:0.3,depthWrite:true});
