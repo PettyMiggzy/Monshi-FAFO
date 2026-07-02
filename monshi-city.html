@@ -119,30 +119,46 @@ var streetTex=loadTex('/public/monshi-city/street.jpg',24,24);
 var facadePurpleTex=loadTex('/public/monshi-city/facade_purple.jpg',1,2);
 var facadeTealTex=loadTex('/public/monshi-city/facade_teal.jpg',1,2);
 var SIGTEX={glass:loadTex('/public/monshi-city/facade_glass.jpg',1,2),fire:loadTex('/public/monshi-city/facade_fire.jpg',1,1),gold:loadTex('/public/monshi-city/facade_gold.jpg',1,2)};
-// real character art — animated 18-frame run cycles (Monshi + blue Toshi), back AND front
+// real character art — Monshi (18-frame sheets), real Toshi (blue + orange hoodie),
+// and Chog (purple spiky). Sheet-animated where we have a run video, flip-animated single poses otherwise.
 var charFrontTex=texLoader.load('/public/monshi-city/char_front.png');charFrontTex.colorSpace=THREE.SRGBColorSpace; // static pose for the statue
 var N_RUN=18, RUN_AR=0.8086, FRUN_AR=0.75, FRONT_AR=339/677;
 function loadRunSheet(url){var img=new Image();var t=new THREE.Texture(img);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=THREE.RepeatWrapping;t.repeat.set(1/N_RUN,1);img.onload=function(){t.needsUpdate=true;};img.src=url;return t;}
+function loadPose(url){var t=texLoader.load(url);t.colorSpace=THREE.SRGBColorSpace;return t;}
+function dirD(tex,mode,ar){return {tex:tex,mode:mode,ar:ar};}
+// Monshi (player + npc) — full sheets both ways
 var playerBackTex=loadRunSheet('/public/monshi-city/char_run.png'), playerFrontTex=loadRunSheet('/public/monshi-city/char_frontrun.png');
 var npcBackTex=loadRunSheet('/public/monshi-city/char_run.png'), npcFrontTex=loadRunSheet('/public/monshi-city/char_frontrun.png');
-var toshiBackTex=loadRunSheet('/public/monshi-city/char_run_toshi.png'), toshiFrontTex=loadRunSheet('/public/monshi-city/char_frontrun_toshi.png');
-function makeChar(h,backTex,frontTex){
-  h=h||2.0;backTex=backTex||npcBackTex;frontTex=frontTex||npcFrontTex;
-  var mat=new THREE.SpriteMaterial({map:backTex,transparent:true,alphaTest:0.3,depthWrite:true});
-  var s=new THREE.Sprite(mat);s.center.set(0.5,0);s.scale.set(h*RUN_AR,h,1);
+// Toshi — animated back sheet + single front pose;  Chog — single poses
+var toshiBackTex=loadRunSheet('/public/monshi-city/char_run_toshi.png');
+var toshiFrontPose=loadPose('/public/monshi-city/toshi_front_p.png');
+var chogBackPose=loadPose('/public/monshi-city/chog_back_p.png'), chogFrontPose=loadPose('/public/monshi-city/chog_front_p.png');
+function monshiChar(h){return makeChar(h,dirD(npcBackTex,'sheet',RUN_AR),dirD(npcFrontTex,'sheet',FRUN_AR));}
+function toshiChar(h){return makeChar(h,dirD(toshiBackTex,'sheet',0.6836),dirD(toshiFrontPose,'pose',0.6271));}
+function chogChar(h){return makeChar(h,dirD(chogBackPose,'pose',0.6486),dirD(chogFrontPose,'pose',0.6186));}
+function makeChar(h,back,front){
+  h=h||2.0;
+  var mat=new THREE.SpriteMaterial({map:back.tex,transparent:true,alphaTest:0.3,depthWrite:true});
+  var s=new THREE.Sprite(mat);s.center.set(0.5,0);s.scale.set(h*back.ar,h,1);
   var grp=new THREE.Group();grp.add(s);
-  return {group:grp,sprite:s,mat:mat,backTex:backTex,frontTex:frontTex,h:h,dir:'back'};
+  return {group:grp,sprite:s,mat:mat,back:back,front:front,h:h,dir:'back'};
 }
-// billboards face camera; both back & front play an animated run cycle tied to movement
+// billboards face camera; sheets play a run cycle, single poses flip legs to fake a stride
 function updateChar(c,face,moving,phase){
   var p=c.group.position;
   var vx=p.x-camera.position.x, vz=p.z-camera.position.z, vl=Math.hypot(vx,vz)||1;
   var dot=(Math.sin(face)*vx+Math.cos(face)*vz)/vl;
   var want=dot>=0?'back':'front';
-  if(want!==c.dir){c.dir=want;c.mat.map=(want==='back')?c.backTex:c.frontTex;c.mat.needsUpdate=true;c.sprite.scale.x=c.h*(want==='back'?RUN_AR:FRUN_AR);}
-  var tex=(want==='back')?c.backTex:c.frontTex;
-  tex.offset.x=(moving?(Math.floor(phase*1.3)%N_RUN):0)/N_RUN;
-  c.sprite.position.y=moving?Math.abs(Math.sin(phase*2))*0.04:0;
+  var cur=c[want];
+  if(want!==c.dir){c.dir=want;c.mat.map=cur.tex;c.mat.needsUpdate=true;}
+  if(cur.mode==='sheet'){
+    cur.tex.offset.x=(moving?(Math.floor(phase*1.3)%N_RUN):0)/N_RUN;
+    c.sprite.scale.x=c.h*cur.ar;
+  } else {
+    var flip=(moving && Math.sin(phase*1.4)<0)?-1:1;
+    c.sprite.scale.x=c.h*cur.ar*flip;
+  }
+  c.sprite.position.y=moving?Math.abs(Math.sin(phase*2))*0.05:0;
 }
 // distant skyline backdrop (wraps the horizon behind the fog)
 (function(){
@@ -525,7 +541,7 @@ function stepMonshi(m,phase,moving){
 }
 
 /* ---------- player ---------- */
-var player=makeChar(2.1,playerBackTex,playerFrontTex);
+var player=makeChar(2.1,dirD(playerBackTex,'sheet',RUN_AR),dirD(playerFrontTex,'sheet',FRUN_AR));
 scene.add(player.group);
 player.group.position.set(0,0,54);
 // blob shadow
@@ -552,9 +568,10 @@ var trailOn=false,trailPts=[],trailColor='#ff7ab5';
 /* ---------- wandering NPC Monshis (real-art billboards) ---------- */
 var NPCS=[];
 function newTarget(){return new THREE.Vector3((Math.random()-0.5)*14,0,-60+Math.random()*110);}
-for(var n=0;n<5;n++){
-  var isToshi=(n>=3); // 3 Monshi + 2 Toshi
-  var m=makeChar(1.75+Math.random()*0.3, isToshi?toshiBackTex:npcBackTex, isToshi?toshiFrontTex:npcFrontTex);
+for(var n=0;n<6;n++){
+  var h6=1.75+Math.random()*0.3;
+  var kind6=n%3; // mix Monshi / Toshi / Chog
+  var m=(kind6===0)?monshiChar(h6):(kind6===1)?toshiChar(h6):chogChar(h6);
   var sx=(Math.random()<0.5?-1:1)*(3+Math.random()*5);
   m.group.position.set(sx,0,-50+Math.random()*100);
   scene.add(m.group);
