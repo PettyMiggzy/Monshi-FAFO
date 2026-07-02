@@ -119,6 +119,26 @@ var streetTex=loadTex('/public/monshi-city/street.jpg',24,24);
 var facadePurpleTex=loadTex('/public/monshi-city/facade_purple.jpg',1,2);
 var facadeTealTex=loadTex('/public/monshi-city/facade_teal.jpg',1,2);
 var SIGTEX={glass:loadTex('/public/monshi-city/facade_glass.jpg',1,2),fire:loadTex('/public/monshi-city/facade_fire.jpg',1,1),gold:loadTex('/public/monshi-city/facade_gold.jpg',1,2)};
+// real Monshi character art (billboard sprites)
+var charBackTex=texLoader.load('/public/monshi-city/char_back.png');charBackTex.colorSpace=THREE.SRGBColorSpace;
+var charFrontTex=texLoader.load('/public/monshi-city/char_front.png');charFrontTex.colorSpace=THREE.SRGBColorSpace;
+var BACK_AR=482/700, FRONT_AR=339/677;
+function makeChar(h){
+  h=h||2.0;
+  var mat=new THREE.SpriteMaterial({map:charBackTex,transparent:true,alphaTest:0.35,depthWrite:true});
+  var s=new THREE.Sprite(mat);s.center.set(0.5,0);s.scale.set(h*BACK_AR,h,1);
+  var grp=new THREE.Group();grp.add(s);
+  return {group:grp,sprite:s,mat:mat,h:h,dir:'back'};
+}
+// billboard sprites face the camera; pick front/back art by facing vs view, bob while walking
+function updateChar(c,face,moving,phase){
+  var p=c.group.position;
+  var vx=p.x-camera.position.x, vz=p.z-camera.position.z, vl=Math.hypot(vx,vz)||1;
+  var dot=(Math.sin(face)*vx+Math.cos(face)*vz)/vl;
+  var want=dot>=0?'back':'front';
+  if(want!==c.dir){c.dir=want;c.mat.map=(want==='back')?charBackTex:charFrontTex;c.mat.needsUpdate=true;c.sprite.scale.x=c.h*(want==='back'?BACK_AR:FRONT_AR);}
+  c.sprite.position.y=moving?Math.abs(Math.sin(phase))*0.09:0;
+}
 // distant skyline backdrop (wraps the horizon behind the fog)
 (function(){
   var sky=texLoader.load('/public/monshi-city/city_sky.jpg');sky.colorSpace=THREE.SRGBColorSpace;
@@ -381,7 +401,7 @@ function stepMonshi(m,phase,moving){
 }
 
 /* ---------- player ---------- */
-var player=buildMonshi({fur:0x8b6ff0});
+var player=makeChar(2.1);
 scene.add(player.group);
 player.group.position.set(0,0,54);
 // blob shadow
@@ -397,27 +417,25 @@ var trailOn=false,trailPts=[],trailColor='#ff7ab5';
 (function(){
   var ped=new THREE.Mesh(new THREE.CylinderGeometry(2.4,2.8,1.4,24),new THREE.MeshStandardMaterial({color:0x1a1140,roughness:0.5,metalness:0.4,emissive:0x2a1060,emissiveIntensity:0.3}));
   ped.position.set(0,0.7,0);scene.add(ped);
-  var statue=buildMonshi({fur:0xffd54a});
-  statue.furMat.metalness=0.9;statue.furMat.roughness=0.25;statue.furMat.emissive=new THREE.Color(0x7a5a10);
-  statue.group.position.set(0,1.4,0);statue.group.scale.set(2.1,2.1,2.1);
-  statue.head.rotation.x=-0.15;scene.add(statue.group);
-  var gl=makeGlow('#ffd54a',8);gl.position.set(0,5,0);scene.add(gl);
-  var pl=new THREE.PointLight(0xffd54a,1.4,26);pl.position.set(0,6,0);scene.add(pl);
+  // giant real-Monshi standee on the plaza pedestal
+  var mat=new THREE.SpriteMaterial({map:charFrontTex,transparent:true,alphaTest:0.35,depthWrite:true});
+  var st=new THREE.Sprite(mat);st.center.set(0.5,0);var H=4.4;st.scale.set(H*FRONT_AR,H,1);
+  st.position.set(0,1.4,0);scene.add(st);
+  var gl=makeGlow('#ffd54a',11);gl.position.set(0,4,0);scene.add(gl);
+  var pl=new THREE.PointLight(0xffd54a,1.5,30);pl.position.set(0,6,0);scene.add(pl);
 })();
 
-/* ---------- wandering NPC Monshis ---------- */
+/* ---------- wandering NPC Monshis (real-art billboards) ---------- */
 var NPCS=[];
-var npcCols=[0x6b27de,0x00a29e,0xec4899,0x4ade80,0xfca5a5,0x60a5fa,0xffd54a];
 function newTarget(){return new THREE.Vector3((Math.random()-0.5)*14,0,-60+Math.random()*110);}
 for(var n=0;n<7;n++){
-  var m=buildMonshi({fur:npcCols[n%npcCols.length]});
-  m.group.scale.setScalar(0.9);
+  var m=makeChar(1.75+Math.random()*0.3);
   var sx=(Math.random()<0.5?-1:1)*(3+Math.random()*5);
   m.group.position.set(sx,0,-50+Math.random()*100);
   scene.add(m.group);
-  var sh=new THREE.Mesh(new THREE.CircleGeometry(0.6,16),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:0.28}));
+  var sh=new THREE.Mesh(new THREE.CircleGeometry(0.55,16),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:0.28}));
   sh.rotation.x=-Math.PI/2;sh.position.y=0.02;scene.add(sh);
-  NPCS.push({m:m,shadow:sh,tgt:newTarget(),ph:Math.random()*6,wait:0});
+  NPCS.push({m:m,shadow:sh,tgt:newTarget(),ph:Math.random()*6,wait:0,face:0});
 }
 
 /* ---------- VIP holder pad ---------- */
@@ -587,8 +605,8 @@ function animate(){
     var diff=((tgt-cur+Math.PI)%TAU)-Math.PI;player.group.rotation.y=cur+diff*Math.min(1,dt*10);
     // jump / gravity
     velY-=22*dt;pos.y+=velY*dt;if(pos.y<=0){pos.y=0;velY=0;onGround=true;}
-    // walk anim
-    stepMonshi(player,walkPhase,mag>0.1);
+    // character billboard (real Monshi art)
+    updateChar(player,faceAngle,mag>0.1,walkPhase);
     // blob + aura follow
     blob.position.set(pos.x,0.02,pos.z);blob.scale.setScalar(1-Math.min(0.5,pos.y*0.3));
     aura.position.set(pos.x,0.06,pos.z);aura.rotation.z+=dt;auraLight.position.set(pos.x,1.2,pos.z);
@@ -602,10 +620,10 @@ function animate(){
         if(dd<1.2){npc.tgt=newTarget();npc.wait=0.5+Math.random()*2;}
         else{to.normalize();var ns=2.6*dt;var nx=g.position.x+to.x*ns,nz=g.position.z+to.z*ns;
           if(!blocked(nx,g.position.z))g.position.x=nx;if(!blocked(g.position.x,nz))g.position.z=nz;
-          var na=Math.atan2(to.x,to.z);var cd=((na-g.rotation.y+Math.PI)%TAU)-Math.PI;g.rotation.y+=cd*Math.min(1,dt*8);
+          npc.face=Math.atan2(to.x,to.z);
           npc.ph+=ns*3.4;}
       }
-      stepMonshi(npc.m,npc.ph,npc.wait<=0);
+      updateChar(npc.m,npc.face,npc.wait<=0,npc.ph);
       npc.shadow.position.set(g.position.x,0.02,g.position.z);
     }
     // burn temple flames flicker
@@ -645,7 +663,6 @@ function applyIdentity(){
   var t=MONSHI.tier||{color:'#00e6d8'};
   var col=new THREE.Color(MONSHI.hasNFT&&MONSHI.hasNFT()?0xec4899:(t.color||'#00e6d8'));
   aura.material.color.set(col);aura.material.opacity=0.85;auraLight.color.set(col);auraLight.intensity=1.4;
-  player.furMat.emissive=col.clone().multiplyScalar(0.25);
   var pc=MONSHI.getFirework&&MONSHI.getFirework();
   if(pc||(MONSHI.hasNFT&&MONSHI.hasNFT())){trailOn=true;trailColor=pc?pc.color:'#ec4899';}
   $('conn').textContent='🐾 '+((MONSHI.getTierName&&MONSHI.getTierName())||'CONNECTED');
