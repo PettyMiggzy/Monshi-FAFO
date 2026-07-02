@@ -186,39 +186,48 @@ function makeGlow(hex,size){
   s.scale.set(size,size,1);return s;
 }
 
-/* ---------- ground / streets (detailed) ---------- */
-var ROADHALF=10;
+/* ---------- city grid: road network + raised blocks ---------- */
+var GRID=46, ROADHALF=8, KMAX=3;
+var LINES=[]; for(var _k=-KMAX;_k<=KMAX;_k++)LINES.push(_k*GRID);       // road centre-lines
+var BLOCKC=[]; for(var _i=0;_i<LINES.length-1;_i++)BLOCKC.push((LINES[_i]+LINES[_i+1])/2); // block centres
+var BLOCKIN=GRID-2*ROADHALF;                                            // buildable width per block
+var SPAN=KMAX*GRID+ROADHALF;
 (function(){
-  var groundMat=new THREE.MeshStandardMaterial({map:streetTex,color:0x8a8aa0,roughness:0.42,metalness:0.5});
-  var g=new THREE.Mesh(new THREE.PlaneGeometry(700,700),groundMat);
-  g.rotation.x=-Math.PI/2;scene.add(g);
-  var LEN=340;
-  // raised sidewalks both sides (concrete slab look) with neon curb
-  var swMat=new THREE.MeshStandardMaterial({color:0x2a2740,roughness:0.92,metalness:0.08});
-  [-1,1].forEach(function(s){
-    var sw=new THREE.Mesh(new THREE.BoxGeometry(7,0.32,LEN),swMat);
-    sw.position.set(s*(ROADHALF+3.5),0.16,0);scene.add(sw);
-    var curb=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.44,LEN),new THREE.MeshBasicMaterial({color:s<0?0x7d69ed:0x00e6d8,transparent:true,opacity:0.75,blending:THREE.AdditiveBlending}));
-    curb.position.set(s*ROADHALF,0.3,0);scene.add(curb);
-  });
-  // centre dashes (teal glow)
-  var laneMat=new THREE.MeshBasicMaterial({color:0x00e6d8,transparent:true,opacity:0.6,blending:THREE.AdditiveBlending});
-  for(var z=-LEN/2;z<=LEN/2;z+=9){var m=new THREE.Mesh(new THREE.PlaneGeometry(0.5,4),laneMat);m.rotation.x=-Math.PI/2;m.position.set(0,0.05,z);scene.add(m);}
-  // white lane edge lines
-  var wMat=new THREE.MeshBasicMaterial({color:0xcfd6f0,transparent:true,opacity:0.45});
-  [-6,6].forEach(function(x){var m=new THREE.Mesh(new THREE.PlaneGeometry(0.22,LEN),wMat);m.rotation.x=-Math.PI/2;m.position.set(x,0.04,0);scene.add(m);});
-  // crosswalks (zebra) at intersections
-  var cwMat=new THREE.MeshBasicMaterial({color:0xe4e9ff,transparent:true,opacity:0.5});
-  [-96,-40,18,74].forEach(function(cz){for(var i=-8.4;i<=8.4;i+=2.1){var bar=new THREE.Mesh(new THREE.PlaneGeometry(1.15,4.2),cwMat);bar.rotation.x=-Math.PI/2;bar.position.set(i,0.055,cz);scene.add(bar);}});
-  // manhole covers
-  var mhMat=new THREE.MeshStandardMaterial({color:0x15121f,roughness:0.6,metalness:0.7});
-  [[-3,22],[4,-32],[-5,-64],[2,58],[6,-6],[-6,80]].forEach(function(p){var mh=new THREE.Mesh(new THREE.CircleGeometry(0.95,22),mhMat);mh.rotation.x=-Math.PI/2;mh.position.set(p[0],0.05,p[1]);scene.add(mh);});
-  // street lamps along the sidewalks
-  for(var lz=-140;lz<=140;lz+=26){[-1,1].forEach(function(s){
-    var pole=new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.12,6,6),new THREE.MeshStandardMaterial({color:0x14121e,metalness:0.6,roughness:0.5}));
-    pole.position.set(s*(ROADHALF+1.4),3,lz);scene.add(pole);
-    var lamp=makeGlow(s<0?'#c9b6ff':'#8ff6ee',3.4);lamp.position.set(s*(ROADHALF+1.0),6.1,lz);scene.add(lamp);
-  });}
+  // road-level wet asphalt
+  var groundMat=new THREE.MeshStandardMaterial({map:streetTex,color:0x7c7c92,roughness:0.42,metalness:0.5});
+  var g=new THREE.Mesh(new THREE.PlaneGeometry(820,820),groundMat);g.rotation.x=-Math.PI/2;scene.add(g);
+  // dashed centre line along every road (both directions)
+  var dc=document.createElement('canvas');dc.width=8;dc.height=64;var dg=dc.getContext('2d');dg.fillStyle='#00e6d8';dg.fillRect(2,12,4,30);
+  var dashBase=new THREE.CanvasTexture(dc);dashBase.colorSpace=THREE.SRGBColorSpace;dashBase.wrapT=THREE.RepeatWrapping;
+  function centreLine(L,horiz){
+    var t=dashBase.clone();t.needsUpdate=true;t.repeat.set(1,(2*SPAN)/6);
+    var m=new THREE.Mesh(new THREE.PlaneGeometry(0.6,2*SPAN),new THREE.MeshBasicMaterial({map:t,transparent:true,opacity:0.7,blending:THREE.AdditiveBlending,depthWrite:false}));
+    m.rotation.x=-Math.PI/2;if(horiz)m.rotation.z=Math.PI/2;
+    m.position.set(horiz?0:L,0.04,horiz?L:0);scene.add(m);
+  }
+  LINES.forEach(function(L){centreLine(L,false);centreLine(L,true);});
+  // raised block slabs (sidewalks) with neon curbs
+  var slabMat=new THREE.MeshStandardMaterial({color:0x262238,roughness:0.9,metalness:0.1});
+  BLOCKC.forEach(function(cx){BLOCKC.forEach(function(cz){
+    var s=BLOCKIN+4;
+    var slab=new THREE.Mesh(new THREE.BoxGeometry(s,0.3,s),slabMat);slab.position.set(cx,0.15,cz);scene.add(slab);
+    var col=(Math.abs((cx+cz)/GRID)|0)%2?0x7d69ed:0x00a29e;
+    var em=new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:0.6,blending:THREE.AdditiveBlending});
+    [[0,s/2,s,0.16],[0,-s/2,s,0.16],[s/2,0,0.16,s],[-s/2,0,0.16,s]].forEach(function(e){
+      var cb=new THREE.Mesh(new THREE.BoxGeometry(e[2],0.42,e[3]),em);cb.position.set(cx+e[0],0.33,cz+e[1]);scene.add(cb);
+    });
+  });});
+  // crosswalks at the central intersections
+  var cwMat=new THREE.MeshBasicMaterial({color:0xdfe6ff,transparent:true,opacity:0.4});
+  LINES.filter(function(v){return Math.abs(v)<=GRID;}).forEach(function(Lx){LINES.filter(function(v){return Math.abs(v)<=GRID;}).forEach(function(Lz){
+    [ROADHALF+1.5,-ROADHALF-1.5].forEach(function(off){for(var i=-5;i<=5;i+=2.2){var bar=new THREE.Mesh(new THREE.PlaneGeometry(1,ROADHALF*1.3),cwMat);bar.rotation.x=-Math.PI/2;bar.position.set(Lx+i,0.05,Lz+off);scene.add(bar);}});
+  });});
+  // street lamps at every intersection corner
+  LINES.forEach(function(Lx){LINES.forEach(function(Lz){
+    var pole=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.14,6,6),new THREE.MeshStandardMaterial({color:0x14121e,metalness:0.6,roughness:0.5}));
+    pole.position.set(Lx+ROADHALF-1.2,3,Lz+ROADHALF-1.2);scene.add(pole);
+    var lamp=makeGlow('#c9b6ff',3.0);lamp.position.set(Lx+ROADHALF-1.2,6,Lz+ROADHALF-1.2);scene.add(lamp);
+  });});
 })();
 
 /* ---------- building facade texture ---------- */
@@ -273,21 +282,21 @@ function addBuilding(o){
   var rec={box:{x:o.x,z:o.z,w:w,d:d},name:o.name,accent:o.accent};
   if(o.url){
     rec.url=o.url;
-    // door faces the avenue (toward x=0): door on the inner face
-    var side=o.x<0?1:-1; // door on +x side if building is left of avenue
-    var doorX=o.x + side*(w/2+0.05);
-    rec.door=new THREE.Vector3(doorX,0,o.z);
-    // glowing doorway
+    // door faces a chosen side (default toward x=0)
+    var dd=o.doorDir||(o.x<0?'+x':'-x');
+    var nx=dd==='+x'?1:dd==='-x'?-1:0, nz=dd==='+z'?1:dd==='-z'?-1:0;
+    var faceX=(nx!==0), rotY=faceX?Math.PI/2:0;
+    var doorX=o.x+nx*(w/2+0.05), doorZ=o.z+nz*(d/2+0.05);
+    rec.door=new THREE.Vector3(doorX,0,doorZ);
     var dr=new THREE.Mesh(new THREE.PlaneGeometry(2.4,3.4),new THREE.MeshBasicMaterial({color:o.accent,transparent:true,opacity:0.85,side:THREE.DoubleSide}));
-    dr.position.set(doorX,1.7,o.z);dr.rotation.y=Math.PI/2;scene.add(dr);
-    var dg=makeGlow(o.accent,5);dg.position.set(doorX+side*0.3,2,o.z);scene.add(dg);
-    // sign mounted flat on the facade, facing the avenue
-    rec.marker=new THREE.Vector3(doorX,4.4,o.z);
+    dr.position.set(doorX,1.7,doorZ);dr.rotation.y=rotY;scene.add(dr);
+    var dg=makeGlow(o.accent,5);dg.position.set(doorX+nx*0.3,2,doorZ+nz*0.3);scene.add(dg);
+    rec.marker=new THREE.Vector3(doorX,4.4,doorZ);
     var sign=makeSignPlane(o.name,o.accent);
-    sign.position.set(doorX+side*0.05,4.9,o.z);
-    sign.rotation.y=side>0?Math.PI/2:-Math.PI/2;
+    sign.position.set(doorX+nx*0.05,4.9,doorZ+nz*0.05);
+    sign.rotation.y=faceX?(nx>0?Math.PI/2:-Math.PI/2):(nz>0?0:Math.PI);
     scene.add(sign);
-    rec.beam=makeGlow(o.accent,3);rec.beam.position.set(doorX,0.3,o.z);scene.add(rec.beam);
+    rec.beam=makeGlow(o.accent,3);rec.beam.position.set(doorX,0.3,doorZ);scene.add(rec.beam);
   }
   BUILD.push(rec);
   return rec;
@@ -314,36 +323,44 @@ function makeSignPlane(text,accent){
   return m;
 }
 
-// portal buildings (the games) — 4 rows down the avenue, doors facing center
-addBuilding({x:-16,z:34,w:11,d:11,h:22,base:'#2a1030',win:'#ffd54a',accent:'#ffb54a',name:'FIREWORKS',url:'/marketplace.html',sig:'glass'});
-addBuilding({x:16,z:34,w:10,d:10,h:28,base:'#0d2a16',win:'#4ade80',accent:'#4ade80',name:'PUMP',url:'/pump.html'});
-addBuilding({x:-16,z:6,w:10,d:10,h:24,base:'#0c1c34',win:'#60a5fa',accent:'#60a5fa',name:'PONG',url:'/pong.html'});
-addBuilding({x:16,z:6,w:10,d:10,h:20,base:'#2a2410',win:'#ffe14a',accent:'#ffd54a',name:'FLAPPY',url:'/flappy.html'});
-addBuilding({x:-16,z:-22,w:10,d:10,h:26,base:'#1a0f38',win:'#a855f7',accent:'#a855f7',name:'RUNNER',url:'/runner.html'});
-addBuilding({x:16,z:-22,w:10,d:10,h:32,base:'#0c2a28',win:'#00e6d8',accent:'#00e6d8',name:'SHOOTER',url:'/shooter.html'});
-addBuilding({x:-16,z:-50,w:10,d:10,h:23,base:'#2a0d14',win:'#fca5a5',accent:'#ef4444',name:'RACER',url:'/racer.html'});
-addBuilding({x:16,z:-50,w:11,d:11,h:34,base:'#2a2410',win:'#ffd54a',accent:'#ffcf4a',name:'WHALE',url:'/whale.html',sig:'gold'});
-// outer accent portals
-var burn=addBuilding({x:-30,z:-8,w:9,d:9,h:20,base:'#2a1006',win:'#ff8a3c',accent:'#ff6a2c',name:'BURN',url:'/burn.html',sig:'fire'});
-addBuilding({x:30,z:-8,w:9,d:9,h:20,base:'#241033',win:'#f472b6',accent:'#ec4899',name:'SLOTS',url:'/slots.html'});
-addBuilding({x:-30,z:20,w:9,d:9,h:16,base:'#0d2a1a',win:'#4ade80',accent:'#22c55e',name:'PLINKO',url:'/plinko.html'});
-addBuilding({x:30,z:20,w:9,d:9,h:22,base:'#101a34',win:'#7dd3fc',accent:'#38bdf8',name:'BLKJACK',url:'/blackjack.html'});
-// big dense city grid (blocks + cross-streets), taller skyline further out
-var fillerC=['#150c30','#0e1030','#1c0d28','#0c1c2a','#20103a','#0a1420'];
-var winC=['#7d69ed','#00a29e','#a855f7','#00e6d8','#60a5fa'];
-for(var gx=-156;gx<=156;gx+=22){
-  for(var gz=-156;gz<=156;gz+=24){
-    if(Math.abs(gx)<19) continue;                    // keep the avenue clear
-    if(Math.abs(((gz%66)+66)%66-33)<9) continue;     // cross-street gaps
-    if(Math.random()<0.1) continue;                  // occasional empty lot
-    var jx=gx+(Math.random()-0.5)*8, jz=gz+(Math.random()-0.5)*10;
-    var dist=Math.abs(jx);
-    var hh=14+Math.random()*30+Math.max(0,dist-40)*0.28;
-    var wc=winC[(Math.random()*winC.length)|0];
-    addBuilding({x:jx,z:jz,w:8+Math.random()*7,d:8+Math.random()*7,h:hh,
-      base:fillerC[(Math.random()*fillerC.length)|0],win:wc,accent:wc});
-  }
-}
+// games occupy the blocks flanking the central avenue, doors facing the street
+var GAMES=[
+  {col:-23,dir:'+x',z:-115,name:'FIREWORKS',url:'/marketplace.html',accent:'#ffb54a',sig:'glass'},
+  {col:-23,dir:'+x',z:-69, name:'PONG',url:'/pong.html',accent:'#60a5fa'},
+  {col:-23,dir:'+x',z:-23, name:'RUNNER',url:'/runner.html',accent:'#a855f7'},
+  {col:-23,dir:'+x',z:23,  name:'RACER',url:'/racer.html',accent:'#ef4444'},
+  {col:-23,dir:'+x',z:69,  name:'BURN',url:'/burn.html',accent:'#ff6a2c',sig:'fire'},
+  {col:-23,dir:'+x',z:115, name:'PLINKO',url:'/plinko.html',accent:'#22c55e'},
+  {col:23,dir:'-x',z:-115,name:'PUMP',url:'/pump.html',accent:'#4ade80'},
+  {col:23,dir:'-x',z:-69, name:'FLAPPY',url:'/flappy.html',accent:'#ffd54a'},
+  {col:23,dir:'-x',z:-23, name:'SHOOTER',url:'/shooter.html',accent:'#00e6d8'},
+  {col:23,dir:'-x',z:23,  name:'WHALE',url:'/whale.html',accent:'#ffcf4a',sig:'gold'},
+  {col:23,dir:'-x',z:69,  name:'SLOTS',url:'/slots.html',accent:'#ec4899'},
+  {col:23,dir:'-x',z:115, name:'BLKJACK',url:'/blackjack.html',accent:'#38bdf8'}
+];
+var gameAt={};GAMES.forEach(function(g){gameAt[g.col+','+g.z]=g;});
+var winC=['#7d69ed','#00a29e','#a855f7','#00e6d8','#60a5fa','#ec4899'];
+var burn=null, OFF=BLOCKIN/4+1.5;
+BLOCKC.forEach(function(cx){BLOCKC.forEach(function(cz){
+  var gd=gameAt[cx+','+cz];
+  var roadSide=gd?(gd.dir==='+x'?1:-1):0, placed=false;
+  [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(function(sc){
+    var bx=cx+sc[0]*OFF, bz=cz+sc[1]*OFF;
+    if(gd && !placed && sc[0]===roadSide){
+      placed=true;
+      var rec=addBuilding({x:bx,z:bz,w:11,d:11,h:22+Math.random()*12,accent:gd.accent,win:gd.accent,sig:gd.sig,name:gd.name,url:gd.url,doorDir:gd.dir});
+      if(gd.name==='BURN')burn=rec;
+      return;
+    }
+    if(Math.random()<0.82){
+      var dist=Math.max(Math.abs(bx),Math.abs(bz));
+      var hh=14+Math.random()*26+Math.max(0,dist-60)*0.3;
+      var wc=winC[(Math.random()*winC.length)|0];
+      addBuilding({x:bx,z:bz,w:8+Math.random()*4,d:8+Math.random()*4,h:hh,accent:wc,win:wc});
+    }
+  });
+})});
+if(!burn)burn={box:{x:-23,z:69}};
 // fire particles rising off the Burn Temple
 var burnFires=[];
 (function(){
@@ -351,7 +368,7 @@ var burnFires=[];
 })();
 // giant billboard building at the head of the avenue
 (function(){
-  var bx=0,bz=-84,bw=28,bh=48;
+  var bx=0,bz=-165,bw=30,bh=52;
   var b=new THREE.Mesh(new THREE.BoxGeometry(bw,bh,6),new THREE.MeshStandardMaterial({color:0x0a0620,roughness:0.6,metalness:0.3}));
   b.position.set(bx,bh/2,bz);scene.add(b);
   var screen=new THREE.Mesh(new THREE.PlaneGeometry(22,14),new THREE.MeshBasicMaterial({map:bbTex}));
@@ -566,7 +583,10 @@ var trailOn=false,trailPts=[],trailColor='#ff7ab5';
 
 /* ---------- wandering NPC Monshis (real-art billboards) ---------- */
 var NPCS=[];
-function newTarget(){return new THREE.Vector3((Math.random()-0.5)*14,0,-60+Math.random()*110);}
+function newTarget(){ // roam along the road grid
+  if(Math.random()<0.5) return new THREE.Vector3(LINES[(Math.random()*LINES.length)|0],0,-150+Math.random()*300);
+  return new THREE.Vector3(-150+Math.random()*300,0,LINES[(Math.random()*LINES.length)|0]);
+}
 for(var n=0;n<6;n++){
   var h6=1.75+Math.random()*0.3;
   var kind6=n%3; // mix Monshi / Toshi / Chog
@@ -748,7 +768,7 @@ function animate(){
       var nx=pos.x+Math.sin(world)*speed, nz=pos.z+Math.cos(world)*speed;
       if(!blocked(nx,pos.z))pos.x=nx;
       if(!blocked(pos.x,nz))pos.z=nz;
-      pos.x=Math.max(-120,Math.min(120,pos.x));pos.z=Math.max(-120,Math.min(120,pos.z));
+      pos.x=Math.max(-155,Math.min(155,pos.x));pos.z=Math.max(-155,Math.min(155,pos.z));
       faceAngle=world;
       walkPhase+=speed*3.4;
     } else { walkPhase+=dt*2.2; }
