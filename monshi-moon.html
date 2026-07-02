@@ -1,0 +1,291 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2">
+<link rel="shortcut icon" href="/favicon.ico?v=2">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#05010f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="WEN MOON">
+<meta property="og:title" content="MONSHI — WEN MOON 🚀🌙">
+<meta property="og:description" content="Fly to the moon. Flip the top Monad tokens. Beat Toshi. WEN MOON? NOW.">
+<meta property="og:image" content="/public/monshi-run/keyart.jpg">
+<title>MONSHI · WEN MOON 🚀</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;}
+html,body{width:100%;height:100%;overflow:hidden;background:#04030f;font-family:'Space Mono',monospace;color:#fff;}
+#c{position:fixed;inset:0;display:block;touch-action:none;z-index:1;}
+#hud{position:fixed;inset:0;z-index:3;pointer-events:none;display:none;}
+#hud.show{display:block;}
+#score{position:absolute;top:calc(env(safe-area-inset-top,0)+10px);left:14px;font-family:Orbitron;font-weight:900;font-size:22px;color:#EDE9FF;text-shadow:0 0 12px #A855F7;}
+#lives{position:absolute;top:calc(env(safe-area-inset-top,0)+10px);right:14px;font-size:18px;letter-spacing:2px;}
+#alt{position:absolute;top:calc(env(safe-area-inset-top,0)+42px);left:14px;width:150px;}
+#alt .l{font-size:8px;letter-spacing:2px;color:#c4b5fd;}
+#altBar{height:7px;border-radius:5px;background:rgba(80,40,140,.35);border:1px solid rgba(168,85,247,.5);overflow:hidden;margin-top:2px;}
+#altFill{height:100%;width:0;background:linear-gradient(90deg,#7C3AED,#EC4899,#FCD34D);transition:width .5s;}
+#bossbar{position:absolute;top:calc(env(safe-area-inset-top,0)+10px);left:50%;transform:translateX(-50%);width:min(320px,72vw);display:none;text-align:center;}
+#bossbar .nm{font-family:Orbitron;font-weight:700;font-size:12px;letter-spacing:1px;color:#FCA5A5;text-shadow:0 0 8px #EF4444;}
+#bossHP{height:9px;border-radius:5px;background:rgba(60,10,20,.6);border:1px solid #EF4444;overflow:hidden;margin-top:3px;}
+#bossHPfill{height:100%;width:100%;background:linear-gradient(90deg,#EF4444,#F87171);transition:width .1s;}
+#banner{position:absolute;top:34%;left:50%;transform:translateX(-50%);font-family:Orbitron;font-weight:900;font-size:clamp(22px,7vw,44px);opacity:0;text-align:center;white-space:nowrap;text-shadow:0 0 20px currentColor;}
+.screen{position:fixed;inset:0;z-index:5;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  background:radial-gradient(ellipse at 50% 30%,rgba(40,20,90,.55),rgba(2,0,12,.95));padding:24px;}
+.screen.show{display:flex;}
+.logo{font-family:Orbitron;font-weight:900;font-size:clamp(34px,10vw,72px);line-height:.95;letter-spacing:1px;
+  background:linear-gradient(180deg,#fff,#C084FC);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 40px rgba(168,85,247,.6);}
+.sub{color:#C4B5FD;font-size:12px;letter-spacing:3px;margin-top:8px;margin-bottom:20px;}
+.btn{pointer-events:all;cursor:pointer;font-family:Orbitron;font-weight:700;font-size:17px;letter-spacing:1px;color:#fff;
+  background:linear-gradient(180deg,#7C3AED,#6D28D9);border:1px solid #A855F7;border-radius:14px;padding:15px 42px;box-shadow:0 0 26px rgba(124,58,237,.6);transition:.12s;}
+.btn:active{transform:scale(.95);}
+.hint{color:#8B7BB5;font-size:11px;margin-top:20px;line-height:1.9;max-width:340px;}
+.roster{display:flex;gap:8px;margin:6px 0 14px;flex-wrap:wrap;justify-content:center;max-width:320px;}
+.roster img{width:40px;height:40px;border-radius:50%;border:2px solid #7d69ed;object-fit:cover;background:#1a0f38;}
+a.back{position:fixed;top:calc(env(safe-area-inset-top,0)+10px);left:50%;transform:translateX(-50%);z-index:9;color:#C4B5FD;text-decoration:none;font-size:12px;background:rgba(30,10,60,.5);border:1px solid rgba(168,85,247,.35);border-radius:20px;padding:5px 12px;pointer-events:all;display:none;}
+#loading{position:fixed;inset:0;z-index:9;background:#04030f;display:flex;align-items:center;justify-content:center;font-family:Orbitron;letter-spacing:2px;color:#a855f7;}
+</style></head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud">
+  <div id="score">0</div><div id="lives">❤️❤️❤️</div>
+  <div id="alt"><div class="l" id="altLabel">LAUNCH PAD</div><div id="altBar"><div id="altFill"></div></div></div>
+  <div id="bossbar"><div class="nm" id="bossName">BOSS</div><div id="bossHP"><div id="bossHPfill"></div></div></div>
+  <div id="banner"></div>
+</div>
+<a class="back" id="backBtn" href="/">← HUB</a>
+
+<div class="screen show" id="startScreen">
+  <div class="logo">WEN<br>MOON</div>
+  <div class="sub" id="startSub">FLIP THE TOP MONAD TOKENS · REACH THE MOON</div>
+  <div class="roster" id="roster"></div>
+  <button class="btn" id="playBtn">LAUNCH 🚀</button>
+  <div class="best" id="startBest" style="color:#FCD34D;font-family:Orbitron;margin-top:12px;font-size:14px"></div>
+  <div class="hint">Drag / arrows to fly · auto-fire<br>Blast the token bosses, then <b style="color:#60A5FA">Toshi's mothership</b><br>🎆 Firework NFT holders launch with a power weapon</div>
+</div>
+
+<div class="screen" id="overScreen">
+  <div class="logo" id="overTitle">GG</div>
+  <div class="sub" id="overSub">MISSION FAILED</div>
+  <div class="best" id="overStats" style="font-family:Orbitron;color:#EDE9FF;margin-bottom:14px"></div>
+  <button class="btn" id="againBtn">RETRY 🚀</button>
+</div>
+<div id="loading">FUELING THE ROCKET…</div>
+
+<script src="/monshi-shared.js"></script>
+<script src="//unpkg.com/three@0.150.0/build/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+if(!window.THREE){document.getElementById('loading').textContent='3D failed to load';return;}
+var $=function(i){return document.getElementById(i);};
+// ── world ──
+var canvas=$('c');
+var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+var scene=new THREE.Scene();
+// vertical playfield: world units, camera looks down -Z. Fit height ~ FH.
+var FH=20, FW=FH*(9/16);
+var camera=new THREE.OrthographicCamera(-FW/2,FW/2,FH/2,-FH/2,0.1,100);camera.position.z=10;
+function resize(){var w=innerWidth,h=innerHeight;renderer.setSize(w,h);var ar=w/h;FW=FH*ar;
+  camera.left=-FW/2;camera.right=FW/2;camera.top=FH/2;camera.bottom=-FH/2;camera.updateProjectionMatrix();}
+addEventListener('resize',resize);resize();
+scene.add(new THREE.AmbientLight(0xffffff,1));
+var texLoader=new THREE.TextureLoader();
+function glowTex(){var s=64,cv=document.createElement('canvas');cv.width=cv.height=s;var g=cv.getContext('2d');var r=g.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);r.addColorStop(0,'#fff');r.addColorStop(.4,'#ffffffaa');r.addColorStop(1,'#ffffff00');g.fillStyle=r;g.fillRect(0,0,s,s);return new THREE.CanvasTexture(cv);}
+var GT=glowTex();
+// starfield parallax (3 layers)
+var starLayers=[];
+[[400,0.02,0.5,0x9d6bff],[250,0.05,0.8,0xffffff],[120,0.09,1.1,0x7dd3fc]].forEach(function(cfg){
+  var geo=new THREE.BufferGeometry(),v=[];for(var i=0;i<cfg[0];i++)v.push((Math.random()-.5)*FW*2,(Math.random()-.5)*FH*2,-5);
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(v,3));
+  var pts=new THREE.Points(geo,new THREE.PointsMaterial({color:cfg[3],size:cfg[2],transparent:true,opacity:.8}));
+  pts.userData.spd=cfg[1];scene.add(pts);starLayers.push(pts);});
+// nebula bg sprite (space_bg)
+var nebula=new THREE.Sprite(new THREE.SpriteMaterial({map:texLoader.load('/public/monshi-moon/space_bg.jpg'),opacity:.5,transparent:true,depthWrite:false}));
+nebula.scale.set(FW*2.4,FH*1.4,1);nebula.position.z=-6;scene.add(nebula);
+
+function sprite(map,w,h,z){var s=new THREE.Sprite(new THREE.SpriteMaterial({map:map,transparent:true,depthWrite:false}));s.scale.set(w,h,1);s.position.z=z||0;scene.add(s);return s;}
+function pooledGlow(color){return new THREE.Sprite(new THREE.SpriteMaterial({map:GT,color:color,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));}
+
+// ── game state ──
+var G={running:false,score:0,lives:3,bossIdx:-1,stage:'wave',t:0,shake:0,power:1};
+var ship, shipTex, thruster;
+var bullets=[],ebullets=[],enemies=[],parts=[],pool=[];
+var BOSSES=[], TOSHI=null;
+var keys={};
+addEventListener('keydown',function(e){keys[e.key.toLowerCase()]=1;keys[e.code]=1;});
+addEventListener('keyup',function(e){keys[e.key.toLowerCase()]=0;keys[e.code]=0;});
+var px=0,py=-FH/2+3,drag=false;
+canvas.addEventListener('pointerdown',function(e){drag=true;aim(e);});
+addEventListener('pointermove',function(e){if(drag)aim(e);});
+addEventListener('pointerup',function(){drag=false;});
+function aim(e){var r=canvas.getBoundingClientRect();px=((e.clientX-r.left)/r.width-0.5)*FW; py=(0.5-(e.clientY-r.top)/r.height)*FH; py=Math.max(-FH/2+1.5,Math.min(FH/2-6,py));}
+
+// ── boss data ──
+var ALT=['LAUNCH PAD','LOW ORBIT','ESCAPING GRAVITY','DEEP SPACE','ASTEROID BELT','LUNAR APPROACH','🌙 THE MOON'];
+function loadBossTextures(list){
+  BOSSES=list.map(function(b){
+    var t=texLoader.load('/api/boss-img?u='+encodeURIComponent(b.image));
+    return {symbol:b.symbol,name:b.name,tex:t};
+  });
+}
+
+// ── spawns ──
+function spawnWave(){ // minions before a boss
+  for(var i=0;i<5;i++){(function(i){setTimeout(function(){ if(!G.running)return;
+    var e=makeEnemy('minion'); e.spr.position.set((-FW/2+2)+(i)*(FW-4)/4, FH/2+1, 0); e.vy=-2.2; e.hp=2;
+  },i*350);})(i);}
+}
+function makeEnemy(kind){
+  var col=kind==='minion'?0x60a5fa:0xef4444;
+  var spr=pooledGlow(col);spr.scale.set(1.4,1.4,1);scene.add(spr);
+  var e={kind:kind,spr:spr,vy:-1.8,hp:2,fireT:1+Math.random()*2,face:null};
+  enemies.push(e);return e;
+}
+function spawnBoss(){
+  var b=BOSSES[G.bossIdx]; if(!b){spawnToshi();return;}
+  G.stage='boss';
+  var e={kind:'boss',hp:60+G.bossIdx*22,max:60+G.bossIdx*22,symbol:b.symbol,name:b.name,fireT:1,pattern:0,vy:0,tt:0};
+  // PFP face plane in a glowing ring
+  var ring=pooledGlow(0xef4444);ring.scale.set(6,6,1);ring.position.set(0,FH/2-4,-0.1);scene.add(ring);
+  var face=sprite(b.tex,3.4,3.4,0);face.position.set(0,FH/2+3,0);
+  e.spr=face;e.ring=ring;e.targetY=FH/2-4;enemies.push(e);
+  $('bossbar').style.display='block';$('bossName').textContent='$'+b.symbol+' — FLIP IT';$('bossHPfill').style.width='100%';
+  banner('$'+b.symbol+' APPEARS','#F87171');
+}
+function spawnToshi(){
+  G.stage='toshi';
+  var e={kind:'toshi',hp:220,max:220,symbol:'TOSHI',name:'TOSHI',fireT:1,pattern:0,vy:0,tt:0};
+  var face=sprite(TOSHI,7,5.2,0);face.position.set(0,FH/2+4,0);
+  e.spr=face;e.targetY=FH/2-4.5;enemies.push(e);
+  $('bossbar').style.display='block';$('bossName').textContent='TOSHI — FINAL BOSS';$('bossHPfill').style.width='100%';
+  banner('⚠️ TOSHI: "NO MOON FOR MONAD"','#60A5FA');
+}
+
+// ── combat ──
+function fire(){ // player auto-fire
+  for(var s=0;s<(G.power);s++){
+    var b=pooledGlow(0xc084fc);b.scale.set(0.7,1.3,1);var off=(G.power>1?(s-(G.power-1)/2)*0.5:0);
+    b.position.set(ship.position.x+off,ship.position.y+1,0);scene.add(b);bullets.push({spr:b,vy:26,vx:off*4});
+  }
+}
+function ebullet(x,y,vx,vy){var b=pooledGlow(0xff5a5a);b.scale.set(0.6,0.6,1);b.position.set(x,y,0);scene.add(b);ebullets.push({spr:b,vx:vx,vy:vy});}
+function explode(x,y,col,n){for(var i=0;i<(n||16);i++){var a=Math.random()*6.28,s=2+Math.random()*6;var p=pooledGlow(col);p.scale.set(.8,.8,1);p.position.set(x,y,0);scene.add(p);parts.push({spr:p,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:1});}G.shake=Math.min(1,G.shake+0.4);}
+function banner(txt,col){var b=$('banner');b.textContent=txt;b.style.color=col;b.style.transition='none';b.style.opacity='1';requestAnimationFrame(function(){b.style.transition='opacity 1.4s';b.style.opacity='0';});}
+
+// ── lifecycle ──
+var best=parseInt(localStorage.getItem('wenmoon_best')||'0');
+function start(){
+  G.running=true;G.score=0;G.lives=3;G.bossIdx=-1;G.stage='wave';G.power=1;
+  try{ if(window.MONSHI&&MONSHI.getFirework&&MONSHI.getFirework()){G.power=2;} }catch(e){}
+  enemies.forEach(function(e){scene.remove(e.spr);if(e.ring)scene.remove(e.ring);});enemies=[];
+  bullets.forEach(function(b){scene.remove(b.spr);});bullets=[];ebullets.forEach(function(b){scene.remove(b.spr);});ebullets=[];
+  px=0;py=-FH/2+3;ship.position.set(0,py,0);
+  $('startScreen').classList.remove('show');$('overScreen').classList.remove('show');$('hud').classList.add('show');$('backBtn').classList.add('show');
+  updateHUD();nextBoss();
+}
+function nextBoss(){ G.bossIdx++; G.stage='wave'; setTimeout(function(){ if(G.running){spawnWave(); setTimeout(function(){if(G.running)spawnBoss();},3200);} }, 500);
+  $('altLabel').textContent=ALT[Math.min(ALT.length-1,G.bossIdx+1)];
+  $('altFill').style.width=Math.min(100,(G.bossIdx+1)/(BOSSES.length+1)*100)+'%';
+}
+function bossDead(e){
+  explode(e.spr.position.x,e.spr.position.y,0xffd54a,40);
+  scene.remove(e.spr);if(e.ring)scene.remove(e.ring);
+  enemies=enemies.filter(function(x){return x!==e;});
+  $('bossbar').style.display='none';
+  if(e.kind==='toshi'){ win(); return; }
+  G.score+=1000;banner('$'+e.symbol+' FLIPPED! 🚀','#4ADE80');
+  try{ if(window.MONSHI&&MONSHI.getFirework&&MONSHI.getFirework())MONSHI.fireworkCelebrate&&MONSHI.fireworkCelebrate(1); }catch(_){}
+  nextBoss();
+}
+function hurt(){ G.lives--; updateHUD(); explode(ship.position.x,ship.position.y,0xff5a5a,24);
+  if(G.lives<0)over(false); else { G.shake=1; } }
+function updateHUD(){$('score').textContent=G.score.toLocaleString();var s='';for(var i=0;i<Math.max(0,G.lives);i++)s+='❤️';$('lives').textContent=s||'💀';}
+function over(won){G.running=false;$('hud').classList.remove('show');
+  if(G.score>best){best=G.score;localStorage.setItem('wenmoon_best',best);}
+  $('overTitle').textContent=won?'WEN MOON?':'GG';$('overSub').textContent=won?'🌙 NOW. YOU MADE IT.':'MISSION FAILED';
+  $('overStats').innerHTML='SCORE '+G.score.toLocaleString()+' · BEST '+best.toLocaleString();
+  $('overScreen').classList.add('show');}
+function win(){ banner('🌙 TOUCHDOWN — WEN MOON? NOW','#FCD34D'); G.score+=5000; updateHUD(); setTimeout(function(){over(true);},2200); }
+$('playBtn').onclick=start;$('againBtn').onclick=start;
+
+// ── main loop ──
+var clock=new THREE.Clock(),fireT=0,ready=false;
+function tick(){
+  requestAnimationFrame(tick);var dt=Math.min(clock.getDelta(),0.05),t=clock.elapsedTime;G.t=t;
+  for(var i=0;i<starLayers.length;i++){var sl=starLayers[i];var pos=sl.geometry.attributes.position;for(var j=1;j<pos.count*3;j+=3){pos.array[j]-=sl.userData.spd*FH;if(pos.array[j]<-FH)pos.array[j]=FH;}pos.needsUpdate=true;}
+  if(G.running){
+    // ship control
+    var tx=drag?px:ship.position.x, ty=drag?py:ship.position.y;
+    if(keys['arrowleft']||keys['a']){tx-=12*dt;} if(keys['arrowright']||keys['d']){tx+=12*dt;}
+    if(keys['arrowup']||keys['w']){ty+=12*dt;} if(keys['arrowdown']||keys['s']){ty-=12*dt;}
+    tx=Math.max(-FW/2+0.8,Math.min(FW/2-0.8,tx));ty=Math.max(-FH/2+1.5,Math.min(FH/2-6,ty));
+    ship.position.x+=(tx-ship.position.x)*Math.min(1,dt*14);ship.position.y+=(ty-ship.position.y)*Math.min(1,dt*14);
+    if(!drag){ship.position.x=tx;ship.position.y=ty;} else {ship.position.x=px;ship.position.y=py;}
+    thruster.position.set(ship.position.x,ship.position.y-1.1,0);thruster.scale.set(0.9+Math.sin(t*30)*0.2,1.5,1);
+    // auto fire
+    fireT-=dt;if(fireT<=0){fire();fireT=0.16;}
+    // bullets
+    for(var b=bullets.length-1;b>=0;b--){var bu=bullets[b];bu.spr.position.y+=bu.vy*dt;bu.spr.position.x+=(bu.vx||0)*dt;if(bu.spr.position.y>FH/2+1){scene.remove(bu.spr);bullets.splice(b,1);}}
+    for(var eb=ebullets.length-1;eb>=0;eb--){var e2=ebullets[eb];e2.spr.position.x+=e2.vx*dt;e2.spr.position.y+=e2.vy*dt;
+      if(Math.abs(e2.spr.position.x-ship.position.x)<0.8&&Math.abs(e2.spr.position.y-ship.position.y)<0.8){scene.remove(e2.spr);ebullets.splice(eb,1);hurt();continue;}
+      if(e2.spr.position.y<-FH/2-1||Math.abs(e2.spr.position.x)>FW){scene.remove(e2.spr);ebullets.splice(eb,1);}}
+    // enemies
+    for(var en=enemies.length-1;en>=0;en--){var e=enemies[en];
+      if(e.kind==='minion'){e.spr.position.y+=e.vy*dt;e.spr.position.x+=Math.sin(t*2+e.spr.position.y)*dt*1.5;
+        e.fireT-=dt;if(e.fireT<=0&&e.spr.position.y<FH/2-2){ebullet(e.spr.position.x,e.spr.position.y-0.6,0,-9);e.fireT=1.5+Math.random();}
+        if(e.spr.position.y<-FH/2-1){scene.remove(e.spr);enemies.splice(en,1);continue;}
+      } else { // boss / toshi
+        if(e.spr.position.y>e.targetY){e.spr.position.y-=5*dt;if(e.ring)e.ring.position.y=e.spr.position.y;}
+        else { e.tt+=dt; e.spr.position.x=Math.sin(e.tt*0.8)*(FW/2-3); if(e.ring)e.ring.position.set(e.spr.position.x,e.spr.position.y,-0.1);
+          e.fireT-=dt; if(e.fireT<=0){ bossFire(e); e.fireT=(e.kind==='toshi'?0.5:0.8); } }
+      }
+      // player bullet hits
+      for(var b2=bullets.length-1;b2>=0;b2--){var bu2=bullets[b2];var hitR=e.kind==='minion'?0.9:2.0;
+        if(Math.abs(bu2.spr.position.x-e.spr.position.x)<hitR&&Math.abs(bu2.spr.position.y-e.spr.position.y)<hitR){
+          scene.remove(bu2.spr);bullets.splice(b2,1);e.hp--;
+          if(e.kind!=='minion'){$('bossHPfill').style.width=Math.max(0,e.hp/e.max*100)+'%';explode(bu2.spr.position.x,bu2.spr.position.y,0xffd54a,3);}
+          if(e.hp<=0){ if(e.kind==='minion'){explode(e.spr.position.x,e.spr.position.y,0x60a5fa,14);scene.remove(e.spr);enemies.splice(en,1);G.score+=50;updateHUD();} else { bossDead(e); } break; }
+        }}
+      // body collision with ship
+      if(e.spr&&Math.abs(e.spr.position.x-ship.position.x)<1.0&&Math.abs(e.spr.position.y-ship.position.y)<1.0&&e.kind==='minion'){explode(e.spr.position.x,e.spr.position.y,0x60a5fa,14);scene.remove(e.spr);enemies.splice(en,1);hurt();}
+    }
+    // particles
+    for(var p=parts.length-1;p>=0;p--){var pt=parts[p];pt.spr.position.x+=pt.vx*dt;pt.spr.position.y+=pt.vy*dt;pt.vx*=.94;pt.vy*=.94;pt.life-=dt*1.6;pt.spr.material.opacity=Math.max(0,pt.life);if(pt.life<=0){scene.remove(pt.spr);parts.splice(p,1);}}
+  }
+  // camera shake
+  if(G.shake>0){G.shake-=dt*2;camera.position.x=(Math.random()-.5)*G.shake*0.6;camera.position.y=(Math.random()-.5)*G.shake*0.6;}else{camera.position.x=0;camera.position.y=0;}
+  renderer.render(scene,camera);
+  if(!ready){ready=true;$('loading').style.display='none';}
+}
+function bossFire(e){
+  var x=e.spr.position.x,y=e.spr.position.y-1.5;
+  if(e.kind==='toshi'){e.pattern=(e.pattern+1)%3;
+    if(e.pattern===0){for(var i=0;i<7;i++){var a=-Math.PI/2+(i-3)*0.22;ebullet(x,y,Math.cos(a)*7,Math.sin(a)*7);}}
+    else if(e.pattern===1){var dx=ship.position.x-x,dy=ship.position.y-y,m=Math.hypot(dx,dy);ebullet(x,y,dx/m*10,dy/m*10);ebullet(x,y,dx/m*10-1,dy/m*10);ebullet(x,y,dx/m*10+1,dy/m*10);}
+    else{for(var r=0;r<12;r++){var a2=r/12*6.28;ebullet(x,y,Math.cos(a2)*5,Math.sin(a2)*5);}}
+  } else { var dx=ship.position.x-x,dy=ship.position.y-y,m=Math.hypot(dx,dy)||1;
+    ebullet(x,y,dx/m*8,dy/m*8); if(G.bossIdx>=2){ebullet(x,y,dx/m*8-2,dy/m*8);ebullet(x,y,dx/m*8+2,dy/m*8);} }
+}
+
+// ── boot ──
+function boot(){
+  ship=sprite(shipTex,2.4,3.2,1);ship.position.set(0,-FH/2+3,0);
+  thruster=pooledGlow(0xc084fc);thruster.scale.set(1,1.6,1);scene.add(thruster);
+  tick();
+}
+// load art + bosses
+shipTex=texLoader.load('/public/monshi-moon/ship.png',boot,undefined,function(){ // fallback ship
+  var cv=document.createElement('canvas');cv.width=cv.height=128;var g=cv.getContext('2d');g.fillStyle='#A855F7';g.beginPath();g.moveTo(64,8);g.lineTo(108,120);g.lineTo(20,120);g.closePath();g.fill();shipTex=new THREE.CanvasTexture(cv);boot();});
+TOSHI=texLoader.load('/public/monshi-moon/toshi-boss.png');
+fetch('/api/bosses?limit=5').then(function(r){return r.json();}).then(function(d){
+  var list=(d.bosses||[]).slice(0,5);
+  loadBossTextures(list);
+  var ro=$('roster');list.forEach(function(b){var im=document.createElement('img');im.src='/api/boss-img?u='+encodeURIComponent(b.image);im.title='$'+b.symbol;ro.appendChild(im);});
+  $('startSub').textContent='FLIP THE TOP '+list.length+' MONAD TOKENS · BEAT TOSHI · REACH THE MOON';
+}).catch(function(){ // fallback bosses if API down
+  loadBossTextures([{symbol:'CHOG',name:'Chog',image:''},{symbol:'MOYAKI',name:'Moyaki',image:''},{symbol:'DAK',name:'Molandak',image:''}]);
+});
+$('startBest').textContent=best?('BEST  '+best.toLocaleString()):'';
+})();
+</script>
+</body></html>
