@@ -337,3 +337,78 @@
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
   else init();
 })();
+
+// ── Monshi Fireworks NFT utility layer (MFW4 · 4th of July drop) ──
+// Detects owned firework NFTs on-chain and gives every page:
+//   MONSHI.getFirework()        -> {id, rarity, color} of best owned piece (or null)
+//   MONSHI.fireworkCelebrate(n) -> full-screen victory salute in the piece's colors
+(function(){
+  var M = window.MONSHI = window.MONSHI || {};
+  var MFW = '0xdA42B6184d848a05be311fd696dECF412e13D0AE';
+  var RAR = function(id){ return id<=28?'Common':id<=40?'Uncommon':id<=47?'Rare':id<=49?'Epic':'Legendary'; };
+  var COL = {Common:'#9ca3af',Uncommon:'#5aa2ff',Rare:'#ffcf4a',Epic:'#c084fc',Legendary:'#ec4899'};
+  var TIER = {Common:0,Uncommon:1,Rare:2,Epic:3,Legendary:4};
+
+  M.getFirework = function(){
+    try { return JSON.parse(localStorage.getItem('monshi_fw')||'null'); } catch(e){ return null; }
+  };
+
+  // Scan ownerOf(1..50); keep the highest-tier piece the wallet owns.
+  M.fetchFirework = async function(){
+    if(!M.wallet || !window.ethereum) return null;
+    var me = M.wallet.toLowerCase().replace('0x','').padStart(64,'0');
+    var best = null;
+    for (var start=1; start<=50; start+=10){
+      var batch = [];
+      for (var id=start; id<Math.min(start+10,51); id++) (function(id){
+        batch.push(window.ethereum.request({method:'eth_call',params:[{to:MFW,
+          data:'0x6352211e'+id.toString(16).padStart(64,'0')},'latest']})
+          .then(function(r){ if(r && r.slice(-64)===me) return id; return null; })
+          .catch(function(){ return null; }));
+      })(id);
+      var got = (await Promise.all(batch)).filter(Boolean);
+      for (var g=0; g<got.length; g++){
+        var r = RAR(got[g]);
+        if(!best || TIER[r] > TIER[best.rarity]) best = {id:got[g], rarity:r, color:COL[r]};
+      }
+    }
+    if (best) localStorage.setItem('monshi_fw', JSON.stringify(best));
+    else localStorage.removeItem('monshi_fw');
+    return best;
+  };
+
+  // Victory salute: overlay canvas fireworks in the owned piece's colors.
+  M.fireworkCelebrate = function(bursts){
+    var fw = M.getFirework(); var col = fw ? fw.color : '#c084fc';
+    var n = bursts || (fw ? ({Common:2,Uncommon:3,Rare:4,Epic:5,Legendary:8})[fw.rarity] : 2);
+    var cv = document.createElement('canvas');
+    cv.style.cssText = 'position:fixed;inset:0;z-index:99998;pointer-events:none;';
+    document.body.appendChild(cv);
+    var ctx = cv.getContext('2d'), W=cv.width=innerWidth, H=cv.height=innerHeight;
+    var sparks=[], done=false;
+    function burst(x,y){ for(var i=0;i<70;i++){ var a=Math.PI*2*i/70+Math.random()*.1, s=2+Math.random()*3.4;
+      sparks.push({x:x,y:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1,c:Math.random()<.25?'#ffffff':col}); } }
+    for (var b=0;b<n;b++) setTimeout(function(){ burst(W*.15+Math.random()*W*.7, H*.15+Math.random()*H*.4); }, b*260);
+    setTimeout(function(){ done=true; }, n*260+1800);
+    (function tick(){ if(done && !sparks.length){ cv.remove(); return; }
+      ctx.fillStyle='rgba(0,0,0,0.18)'; ctx.globalCompositeOperation='destination-out'; ctx.fillRect(0,0,W,H);
+      ctx.globalCompositeOperation='lighter';
+      for(var i=sparks.length-1;i>=0;i--){ var p=sparks[i];
+        p.vx*=.985; p.vy=p.vy*.985+.05; p.x+=p.vx; p.y+=p.vy; p.l-=.012;
+        if(p.l<=0){ sparks.splice(i,1); continue; }
+        ctx.globalAlpha=Math.max(0,p.l); ctx.fillStyle=p.c;
+        ctx.beginPath(); ctx.arc(p.x,p.y,1.6*p.l+.4,0,7); ctx.fill(); }
+      ctx.globalAlpha=1; requestAnimationFrame(tick); })();
+    if (fw){
+      var t=document.createElement('div');
+      t.style.cssText='position:fixed;top:56px;left:50%;transform:translateX(-50%);z-index:99999;background:rgba(14,7,34,.94);border:1px solid '+col+';border-radius:24px;padding:8px 16px;font-family:Orbitron,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;color:#fff;pointer-events:none;';
+      t.innerHTML='🎆 Monshi Firework #'+fw.id+' salutes your run';
+      document.body.appendChild(t);
+      setTimeout(function(){t.style.transition='opacity .6s';t.style.opacity='0';setTimeout(function(){t.remove();},600);},2600);
+    }
+  };
+
+  // auto-detect on connect + on load if already connected
+  window.addEventListener('monshi:connect', function(){ M.fetchFirework(); });
+  if (M.wallet) setTimeout(function(){ M.fetchFirework(); }, 1500);
+})();

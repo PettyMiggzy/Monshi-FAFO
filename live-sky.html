@@ -121,6 +121,13 @@ function renderArsenal(){var a=$('arsenal');a.innerHTML='';
     a.appendChild(el);});}
 function updateCredits(){$('cN').textContent=state.credits>=999?'∞':state.credits;}
 function onConnected(){state.connected=true;var lvl=computeLevel();state.lvl=lvl;state.max=CREDITS_BY_LVL[lvl];state.credits=state.max;
+  try{ if(window.MONSHI&&MONSHI.fetchFirework) MONSHI.fetchFirework().then(function(fw){ if(!fw)return;
+    var col=parseInt(fw.color.slice(1),16);
+    CAT.push({id:'mynft',name:'MY #'+fw.id+' 🎇',ic:'🎇',rar:fw.rarity,lvl:0,cost:0,
+      col:{core:'#ffffff',mid:fw.color,edge:fw.color},style:fw.rarity==='Legendary'?'finale':'peony',scale:1.5});
+    glow[fw.color]=mkGlow(fw.color); renderArsenal();
+    toast('🎇 Your Monshi Firework #'+fw.id+' ('+fw.rarity+') is loaded — free launches');
+  }); }catch(e){}
   var m=TMETA[lvl];document.documentElement.style.setProperty('--tc',m.c);
   $('tEm').textContent=m.e;$('tNm').textContent=m.n;$('tNm').style.color=m.c;
   $('tBal').textContent=balStr((window.MONSHI&&MONSHI.balance)||0)+' $MONSHI';

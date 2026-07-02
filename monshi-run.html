@@ -115,6 +115,7 @@ a.back.show{display:block;}
   <button class="btn" id="againBtn" style="margin-top:16px">RUN AGAIN</button>
 </div>
 
+<script src="/monshi-shared.js"></script>
 <script src="//unpkg.com/three@0.150.0/build/three.min.js"></script>
 <script>
 (function(){
@@ -384,7 +385,9 @@ function startGame(){
 function gameOver(){
   G.running=false; $('hud').classList.remove('show');
   var fs=Math.floor(G.score);
-  if(fs>best){best=fs;localStorage.setItem('monshi3d_best',best);}
+  var newBest=fs>best;
+  if(newBest){best=fs;localStorage.setItem('monshi3d_best',best);}
+  try{ if(window.MONSHI&&MONSHI.getFirework&&MONSHI.getFirework()) MONSHI.fireworkCelebrate(newBest?8:3); }catch(e){}
   $('goScore').textContent=fs.toLocaleString();
   $('goCoins').textContent=G.coins;
   $('goDist').textContent=Math.floor(G.dist);
